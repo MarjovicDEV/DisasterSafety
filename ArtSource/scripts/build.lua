@@ -24,6 +24,16 @@ L.saveFrames(LV.cabinetFrames(), "Level/cabinet", "Level/cabinet", 120)
 for name, img in pairs(LV.choicePictures()) do
   L.save(img, "Level/" .. name, "Level/" .. name)
 end
+-- Easy / 2 corridor (hanging pots sway) and Easy / 3 classroom after the shaking (teacher waves)
+L.save(LV.corridor(), "Level/bg_corridor", "Level/bg_corridor")
+L.saveFrames(LV.potFrames(), "Level/pots", "Level/pots", 160)
+L.save(LV.classroomAfter(), "Level/bg_classroom_after", "Level/bg_classroom_after")
+L.saveFrames(LV.teacherFrames(), "Level/teacher", "Level/teacher", 300)
+for _, set in ipairs({ LV.choicePictures2(), LV.choicePictures3() }) do
+  for name, img in pairs(set) do
+    L.save(img, "Level/" .. name, "Level/" .. name)
+  end
+end
 
 -- How to Play Tutorial Pages: Tutorial/<name>_0.png and _1.png
 for _, page in ipairs(TU.pages) do

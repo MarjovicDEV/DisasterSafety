@@ -298,5 +298,369 @@ return function(L, CH)
     return pics
   end
 
+  -- Easy / 2: the corridor ===================================================
+  -- No desk to hide under (EQ-47). Jalousie windows on the back wall, hanging flower pots
+  -- (EQ-30), a bulletin board, a classroom door and the stairs down at the far end.
+
+  -- A jalousie window: glass slats over a view of the courtyard.
+  local function jalousie(img, x, y, w, h)
+    framed(img, x, y, w, h, P.teal2, P.glass2)
+    local gw, gh = w - 8, h - 8
+    local view = L.newImage(gw, gh)
+    L.vgrad(view, 0, 0, gw, gh, { P.sky3, P.sky4, P.sky5 })
+    L.ellipse(view, gw * 0.25, gh + 2, gw * 0.4, 12, P.hill)
+    L.ellipse(view, gw * 0.8, gh + 2, gw * 0.35, 9, P.hill2)
+    L.rect(view, gw - 26, gh - 22, 3, 14, P.brown2)
+    L.circle(view, gw - 25, gh - 26, 7, P.green2)
+    L.circle(view, gw - 28, gh - 28, 4, P.green)
+    L.ellipse(view, gw * 0.3, 9, 7, 3, P.white)
+    L.blit(img, view, x + 4, y + 4)
+    -- slats: a dark edge and a light glint every 7 px
+    for sy = y + 9, y + h - 6, 7 do
+      L.hline(img, x + 4, x + w - 5, sy, P.glass3)
+      L.hline(img, x + 4, x + w - 5, sy + 1, P.white)
+    end
+    L.rect(img, x + w // 2 - 1, y + 4, 3, h - 8, P.teal2)
+    L.rect(img, x - 3, y + h, w + 6, 4, P.concrete2)
+    L.hline(img, x - 3, x + w + 2, y + h, P.white)
+  end
+
+  local function tileFloor(img, top, W, H, size)
+    for ty = top, H - 1, size do
+      for tx = 0, W - 1, size do
+        local odd = ((tx // size) + ((ty - top) // size)) % 2 == 1
+        L.rect(img, tx, ty, size, size, odd and P.paper2 or P.paper)
+      end
+    end
+    for ty = top, H - 1, size do L.hline(img, 0, W - 1, ty, P.paper3) end
+  end
+
+  function M.corridor()
+    local W, H = 480, 270
+    local img = L.newImage(W, H)
+    -- ceiling with a beam
+    L.rect(img, 0, 0, W, 12, P.concrete2)
+    L.hline(img, 0, W - 1, 12, P.concrete3)
+    -- upper wall cream, lower wall painted green like many public schools
+    L.vgrad(img, 0, 13, W, 117, { P.cream, P.wall, P.wall })
+    L.rect(img, 0, 130, W, 46, P.teal)
+    L.hline(img, 0, W - 1, 130, P.teal2)
+    L.hline(img, 0, W - 1, 131, P.teal3)
+    L.rect(img, 0, 172, W, 4, P.teal2)
+    -- floor tiles
+    tileFloor(img, 176, W, H, 16)
+
+    jalousie(img, 18, 30, 94, 84)
+    jalousie(img, 140, 30, 92, 84)
+    -- ceiling hooks for the two hanging pots (sprites placed at x 116 and 236)
+    L.rect(img, 125, 10, 2, 3, P.gray4)
+    L.rect(img, 245, 10, 2, 3, P.gray4)
+
+    -- bulletin board
+    framed(img, 262, 34, 84, 66, P.brown2, P.tan2)
+    L.rect(img, 270, 42, 22, 26, P.white)
+    for ly = 48, 64, 4 do L.hline(img, 273, 288, ly, P.gray2) end
+    L.rect(img, 298, 40, 20, 18, P.yellow3)
+    L.poly(img, { 302, 54, 308, 46, 314, 54 }, P.roof)
+    L.rect(img, 304, 54, 8, 2, P.brown)
+    L.rect(img, 322, 44, 18, 24, P.blue3)
+    L.circle(img, 331, 52, 4, P.yellow)
+    L.rect(img, 298, 64, 20, 28, P.pink)
+    L.rect(img, 270, 74, 22, 18, P.green4)
+    for _, pin in ipairs({ { 280, 42 }, { 307, 40 }, { 330, 44 }, { 307, 64 }, { 280, 74 } }) do
+      L.px(img, pin[1], pin[2], P.red)
+    end
+
+    -- classroom door with a room sign
+    framed(img, 356, 60, 46, 116, P.brown2, P.brown)
+    L.rect(img, 364, 72, 30, 22, P.ink)
+    L.rect(img, 365, 73, 28, 20, P.glass2)
+    L.line(img, 368, 88, 377, 77, P.white)
+    L.rect(img, 364, 104, 30, 60, P.brown2)
+    L.rect(img, 366, 106, 26, 56, P.brown3)
+    L.circle(img, 394, 124, 2, P.yellow)
+    L.rect(img, 360, 44, 38, 12, P.white)
+    L.rect(img, 360, 44, 38, 1, P.gray2)
+    L.text(img, 364, 46, "Gr. 4", P.blue2, 1)
+
+    -- stairs going down at the far right, with a hand rail
+    L.rect(img, 410, 120, 70, 56, P.wall2)
+    L.rect(img, 410, 176, 70, H - 176, P.concrete3)
+    for i = 0, 6 do
+      local sx, sy = 412 + i * 10, 176 + i * 9
+      L.rect(img, sx, sy, W - sx, 9, P.concrete)
+      L.hline(img, sx, W - 1, sy, P.white)
+      L.vline(img, sx, sy, sy + 8, P.concrete2)
+    end
+    L.line(img, 408, 138, 480, 196, P.brown2, 2)
+    for i = 0, 3 do
+      local px = 414 + i * 18
+      local top = 140 + math.floor((px - 408) * 58 / 72)
+      L.vline(img, px, top, top + 34, P.brown2)
+    end
+    -- EXIT sign above the stairs
+    L.rect(img, 418, 60, 40, 14, P.green3)
+    L.rect(img, 419, 61, 38, 12, P.green2)
+    L.text(img, 425, 63, "EXIT", P.white, 1)
+    return img
+  end
+
+  -- Hanging flower pot, 2 sway frames, 20x44. Nothing falls; it only sways (Q11).
+  function M.potFrames()
+    local frames = {}
+    for f = 0, 1 do
+      local img = L.newImage(20, 44)
+      local dx = f
+      L.line(img, 10, 0, 4 + dx, 22, P.gray3)
+      L.line(img, 10, 0, 16 + dx, 22, P.gray3)
+      L.line(img, 10, 0, 10 + dx, 22, P.gray4)
+      -- leaves above the rim and vines trailing down
+      L.circle(img, 7 + dx, 20, 3, P.green2)
+      L.circle(img, 13 + dx, 19, 3, P.green)
+      L.circle(img, 10 + dx, 18, 2, P.green4)
+      L.line(img, 4 + dx, 24, 2 + dx, 38, P.green2)
+      L.line(img, 16 + dx, 24, 17 + dx, 41, P.green2)
+      for _, lf in ipairs({ { 2, 30 }, { 3, 36 }, { 17, 29 }, { 17, 36 }, { 18, 41 } }) do
+        L.px(img, lf[1] + dx, lf[2], P.green)
+        L.px(img, lf[1] + dx + 1, lf[2], P.green)
+      end
+      -- clay pot
+      L.poly(img, { 4 + dx, 23, 16 + dx, 23, 14 + dx, 33, 6 + dx, 33 }, P.orange2)
+      L.rect(img, 3 + dx, 21, 14, 3, P.orange)
+      L.hline(img, 4 + dx, 15 + dx, 21, P.fire2)
+      L.vline(img, 7 + dx, 25, 31, P.orange)
+      L.outline(img, P.ink)
+      frames[#frames + 1] = img
+    end
+    return frames
+  end
+
+  -- Easy / 3: the classroom after the shaking ================================
+  -- Calm and still: the fan and cabinet are painted in, the door is open to the courtyard,
+  -- and the teacher (a separate sprite at x 418, y 126) waves from the doorway.
+  function M.classroomAfter()
+    local img = M.classroom()
+    L.blit(img, M.fanFrames()[1], 204, 0)
+    L.blit(img, M.cabinetFrames()[1], 364, 64)
+    -- open doorway with the courtyard outside
+    local view = L.newImage(44, 108)
+    L.vgrad(view, 0, 0, 44, 70, { P.sky3, P.sky4, P.sky5 })
+    L.ellipse(view, 30, 70, 24, 10, P.hill)
+    L.rect(view, 0, 70, 44, 38, P.grass)
+    L.rect(view, 0, 82, 44, 26, P.concrete)
+    L.hline(view, 0, 43, 82, P.concrete2)
+    L.rect(view, 6, 46, 3, 26, P.brown2)
+    L.circle(view, 7, 42, 8, P.green2)
+    L.circle(view, 4, 39, 5, P.green)
+    L.blit(img, view, 412, 64)
+    -- the door leaf swung open against the wall
+    L.rect(img, 460, 62, 12, 114, P.ink)
+    L.rect(img, 461, 63, 10, 112, P.brown)
+    L.rect(img, 462, 70, 8, 20, P.glass2)
+    L.rect(img, 462, 100, 8, 70, P.brown3)
+    -- warm light on the floor in front of the door
+    for y = 178, 196 do
+      for x = 404 - (y - 178), 468 do
+        if ((x + y) % 4 == 0) then L.px(img, x, y, P.yellow3) end
+      end
+    end
+    return img
+  end
+
+  -- The teacher, facing left toward the class, waving. 2 frames, 30x50.
+  function M.teacher(f)
+    local img = L.newImage(30, 50)
+    local hx, hy = (f == 0) and 3 or 7, (f == 0) and 9 or 7
+    -- far arm resting
+    L.line(img, 20, 21, 21, 30, P.gray1, 2)
+    L.rect(img, 20, 31, 2, 2, P.skin2)
+    -- skirt, legs, shoes
+    L.poly(img, { 9, 31, 21, 31, 23, 42, 7, 42 }, P.teal2)
+    L.vline(img, 15, 33, 41, P.teal)
+    L.rect(img, 11, 42, 3, 5, P.skin1)
+    L.rect(img, 16, 42, 3, 5, P.skin2)
+    L.rect(img, 9, 47, 5, 2, P.ink)
+    L.rect(img, 15, 47, 5, 2, P.ink)
+    -- blouse with a collar and an ID on a lanyard
+    L.rect(img, 9, 19, 13, 13, P.white)
+    L.vline(img, 21, 19, 31, P.gray1)
+    L.poly(img, { 12, 19, 15, 23, 18, 19 }, P.teal3)
+    L.line(img, 12, 20, 14, 26, P.red)
+    L.line(img, 18, 20, 16, 26, P.red)
+    L.rect(img, 13, 26, 4, 4, P.blue3)
+    L.hline(img, 13, 16, 26, P.blue2)
+    -- neck and head
+    L.rect(img, 14, 17, 3, 3, P.skin1)
+    L.circle(img, 15, 11, 6, P.skin1)
+    for y = 4, 17 do
+      for x = 8, 22 do
+        if L.get(img, x, y) == P.skin1 and (y < 8 or x > 18) then L.px(img, x, y, P.hair) end
+      end
+    end
+    L.circle(img, 20, 5, 3, P.hair)          -- bun
+    L.px(img, 19, 4, P.hair2)
+    L.vline(img, 11, 10, 11, P.ink)          -- eye
+    L.px(img, 10, 13, P.blush)
+    -- waving arm, up and to the front
+    L.line(img, 10, 20, (10 + hx) // 2, 15, P.white, 2)
+    L.line(img, (10 + hx) // 2, 15, hx, hy, P.skin1, 2)
+    L.rect(img, hx - 1, hy - 2, 3, 3, P.skin1)
+    L.outline(img, P.ink)
+    return img
+  end
+
+  function M.teacherFrames() return { M.teacher(0), M.teacher(1) } end
+
+  -- Choice pictures for Easy / 2 and Easy / 3, 72x52 ==========================
+  local function corridorBackdrop()
+    local img = L.newImage(PW, PH)
+    L.vgrad(img, 0, 0, PW, 26, { P.cream, P.wall })
+    L.rect(img, 0, 26, PW, 12, P.teal)
+    L.hline(img, 0, PW - 1, 26, P.teal2)
+    L.hline(img, 0, PW - 1, 27, P.teal3)
+    tileFloor(img, 38, PW, PH, 7)
+    return img
+  end
+
+  local function smallJalousie(img, x, y, w, h)
+    L.rect(img, x, y, w, h, P.ink)
+    L.rect(img, x + 1, y + 1, w - 2, h - 2, P.teal2)
+    L.vgrad(img, x + 3, y + 3, w - 6, h - 6, { P.sky3, P.sky5 })
+    for sy = y + 6, y + h - 4, 4 do L.hline(img, x + 3, x + w - 4, sy, P.glass3) end
+    L.rect(img, x + w // 2, y + 3, 1, h - 6, P.teal2)
+  end
+
+  local function smallPot(img, x, y)
+    L.line(img, x + 4, y, x, y + 7, P.gray3)
+    L.line(img, x + 4, y, x + 8, y + 7, P.gray3)
+    L.circle(img, x + 2, y + 6, 2, P.green2)
+    L.circle(img, x + 6, y + 6, 2, P.green)
+    L.poly(img, { x, y + 8, x + 9, y + 8, x + 7, y + 13, x + 2, y + 13 }, P.orange2)
+    L.rect(img, x - 1, y + 7, 11, 2, P.orange)
+    L.vline(img, x - 1, y + 9, y + 15, P.green2)
+    L.vline(img, x + 9, y + 9, y + 14, P.green2)
+  end
+
+  -- an open door at the right edge, showing the bright courtyard
+  local function openDoor(img, x)
+    L.rect(img, x, 3, PW - x, 36, P.ink)
+    L.vgrad(img, x + 1, 4, PW - x - 1, 22, { P.sky3, P.sky5 })
+    L.rect(img, x + 1, 26, PW - x - 1, 6, P.grass)
+    L.rect(img, x + 1, 32, PW - x - 1, 7, P.concrete)
+    L.rect(img, x - 4, 3, 4, 36, P.brown)
+    L.vline(img, x - 4, 3, 38, P.ink)
+  end
+
+  -- A child crouched low with both arms over the head (Duck, Cover, and Hold with no desk).
+  local function coverKid()
+    local k = L.newImage(32, 24)
+    L.rect(k, 3, 20, 8, 2, P.ink)                  -- shoes
+    L.rect(k, 4, 17, 6, 3, P.skin1)
+    L.rect(k, 3, 12, 11, 6, P.navy)                -- shorts, knees bent
+    L.ellipse(k, 14, 12, 8, 6, P.white)            -- back
+    for y = 13, 18 do for x = 7, 22 do if L.get(k, x, y) == P.white then L.px(k, x, y, P.gray1) end end end
+    L.rect(k, 9, 7, 5, 7, P.red)                   -- backpack
+    L.rect(k, 9, 7, 5, 2, P.red2)
+    L.circle(k, 22, 14, 6, P.skin1)                -- head tucked low
+    for y = 7, 20 do
+      for x = 15, 29 do
+        if L.get(k, x, y) == P.skin1 and (y < 13 or x < 20) then L.px(k, x, y, P.hair) end
+      end
+    end
+    L.px(k, 25, 15, P.ink); L.px(k, 25, 16, P.ink) -- eye, looking down
+    L.px(k, 26, 18, P.blush)
+    -- both arms folded over the head
+    L.line(k, 17, 8, 22, 5, P.white, 2)
+    L.line(k, 22, 5, 28, 8, P.skin1, 2)
+    L.rect(k, 28, 8, 3, 3, P.skin1)
+    L.line(k, 19, 10, 25, 7, P.skin2, 2)
+    L.outline(k, P.ink)
+    return k
+  end
+
+  local function speedLines(img, x, ys)
+    for _, y in ipairs(ys) do L.hline(img, x, x + 8, y, P.ink2) end
+  end
+
+  function M.choicePictures2()
+    local pics = {}
+
+    -- Duck and cover your head
+    local cover = corridorBackdrop()
+    smallJalousie(cover, 4, 4, 26, 20)
+    L.blit(cover, coverKid(), 22, 22)
+    shakeLines(cover, 60, 6)
+    shakeLines(cover, 14, 28)
+    pics.choice_cover = cover
+
+    -- Run down the stairs
+    local stairs = corridorBackdrop()
+    L.rect(stairs, 46, 16, PW - 46, 22, P.wall2)
+    L.rect(stairs, 46, 38, PW - 46, PH - 38, P.concrete3)
+    for i = 0, 3 do
+      local sx, sy = 48 + i * 6, 38 + i * 4
+      L.rect(stairs, sx, sy, PW - sx, 4, P.concrete)
+      L.hline(stairs, sx, PW - 1, sy, P.white)
+    end
+    L.line(stairs, 46, 22, 71, 38, P.brown2, 2)
+    L.blit(stairs, CH.student(1, false), 20, 4)
+    speedLines(stairs, 4, { 16, 23, 30 })
+    pics.choice_stairs = stairs
+
+    -- Stand by the window
+    local win = corridorBackdrop()
+    smallJalousie(win, 4, 3, 34, 32)
+    L.blit(win, CH.student(0, true), 36, 6, true)
+    shakeLines(win, 40, 2)
+    shakeLines(win, 1, 38)
+    pics.choice_hall_window = win
+
+    -- Stand under the hanging plants
+    local plants = corridorBackdrop()
+    L.blit(plants, CH.student(0, false), 22, 9)
+    smallPot(plants, 31, -3)
+    smallPot(plants, 56, -3)
+    shakeLines(plants, 44, 2)
+    shakeLines(plants, 68, 2)
+    pics.choice_plants = plants
+
+    return pics
+  end
+
+  function M.choicePictures3()
+    local pics = {}
+
+    -- Walk out with your teacher: the class follows the teacher in a line
+    local walk = pictureBackdrop()
+    openDoor(walk, 62)
+    L.blit(walk, CH.student(3, false), -2, 6)
+    L.blit(walk, CH.student(0, true), 16, 6)
+    L.blit(walk, M.teacher(1), 34, 0, true)
+    pics.choice_walk = walk
+
+    -- Run and push to the door
+    local push = pictureBackdrop()
+    openDoor(push, 60)
+    L.blit(push, CH.student(1, true), 24, 5)
+    L.blit(push, CH.student(4, false), 36, 4)
+    speedLines(push, 2, { 14, 21, 28 })
+    L.px(push, 50, 8, P.yellow2); L.px(push, 52, 6, P.yellow2); L.px(push, 54, 9, P.yellow2)
+    L.px(push, 51, 11, P.yellow2)
+    pics.choice_push = push
+
+    -- Stay under the desk, though the shaking has stopped and the door is open
+    local stay = pictureBackdrop()
+    openDoor(stay, 60)
+    L.rect(stay, 4, 20, 50, 4, P.brown)
+    L.hline(stay, 4, 53, 20, P.brown3)
+    L.hline(stay, 4, 53, 24, P.ink)
+    L.rect(stay, 6, 25, 3, 21, P.brown2)
+    L.rect(stay, 49, 25, 3, 21, P.brown2)
+    L.blit(stay, crouchingKid(), 17, 25)
+    pics.choice_stay = stay
+
+    return pics
+  end
+
   return M
 end

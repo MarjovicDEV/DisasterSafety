@@ -191,6 +191,12 @@ def make_sfx():
     beat = 0.15
     s["sfx_complete"] = mix(render_voice(lead, beat, square, 0.24, duty=0.25, staccato=0.92),
                             render_voice(bass, beat, triangle, 0.34, staccato=0.9))
+    # A Difficulty or Episode is now Open ("Normal is open!"): a soft rising 4-note jingle,
+    # shorter and quieter than sfx_complete, with a triangle echo for sparkle.
+    opened = [("C5", 0.1), ("E5", 0.1), ("G5", 0.1), ("C6", 0.35)]
+    s["sfx_opened"] = mix(
+        seq(*[sweep(note_freq(n), note_freq(n), d, triangle, 0.3, decay=0.1 if n == "C6" else None) for n, d in opened]),
+        seq(silence(0.05), *[sweep(note_freq(n) * 2, note_freq(n) * 2, d, triangle, 0.08, decay=0.08) for n, d in opened]))
     return s
 
 
