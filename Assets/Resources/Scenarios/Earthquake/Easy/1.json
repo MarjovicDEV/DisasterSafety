@@ -1,0 +1,47 @@
+{
+    "level": "Earthquake/Easy/1",
+    "phase": "during",
+    "setting": "classroom",
+    "goal": { "text": "Stay safe when the ground shakes.", "sources": ["EQ-28"] },
+    "intro": { "text": "The ground is shaking! What will you do?", "sources": [] },
+    "hint": { "text": "Find something strong to hide under.", "sources": ["EQ-10"] },
+    "lesson": {
+        "text": "When the ground shakes: Duck, Cover, and Hold! Stay put until the shaking stops.",
+        "sources": ["EQ-09", "EQ-13"]
+    },
+    "choices": [
+        {
+            "id": "run",
+            "label": "Run outside",
+            "picture": "choice_run",
+            "safe": false,
+            "heading": "Not safe yet",
+            "feedback": "Stay inside while it shakes. When it stops, walk out with your teacher.",
+            "sources": ["EQ-16", "EQ-19", "EQ-20", "EQ-35"]
+        },
+        {
+            "id": "desk",
+            "label": "Duck under the desk",
+            "picture": "choice_desk",
+            "safe": true,
+            "feedback": "Duck under your desk. Hold on to it. Stay there until the shaking stops.",
+            "sources": ["EQ-10", "EQ-11", "EQ-13"]
+        },
+        {
+            "id": "window",
+            "label": "Go to the window",
+            "picture": "choice_window",
+            "safe": false,
+            "feedback": "Window glass can break. Stay away from windows.",
+            "sources": ["EQ-14", "EQ-21", "EQ-24"]
+        },
+        {
+            "id": "cabinet",
+            "label": "Stand by the tall cabinet",
+            "picture": "choice_cabinet",
+            "safe": false,
+            "feedback": "Cabinets and shelves can fall. Stay away from heavy things.",
+            "sources": ["EQ-14", "EQ-31"]
+        }
+    ]
+}
