@@ -30,6 +30,18 @@ _Avoid_: Cleared, passed, done
 The situation one Level presents: a picture, a goal, short instructions, an optional Hint, and three or four Choices. Each Level has exactly one Scenario.
 _Avoid_: Question, quiz, puzzle
 
+**Setting**:
+The place a Scenario happens, such as the classroom or the corridor. The Setting picks the scene art. Each Setting has a key: `classroom`, `corridor`, or `classroom_after`.
+_Avoid_: Location, map, background (the background is only the picture)
+
+**Phase**:
+When a Scenario happens compared with the disaster: before, during, or after. In a "during" Scenario the scene shakes. An "after" Scenario starts still.
+_Avoid_: Stage, step, timing
+
+**Evacuation Area**:
+The open space near the school building where classes gather after the shaking stops, so teachers can count every learner.
+_Avoid_: Safe zone, assembly point
+
 **Choice**:
 One action the Learner can pick in a Scenario. Exactly one Choice per Scenario is the Safe Choice; every other Choice is an Unsafe Choice.
 _Avoid_: Answer, option
