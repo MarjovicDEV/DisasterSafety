@@ -42,6 +42,20 @@ namespace DisasterSafety.Tests
         }
 
         [Test]
+        public void AnyIn_FindsPlayableLevelInRequestedDifficulty()
+        {
+            var content = new PlayableLevels(new LevelId(Episode.Earthquake, Difficulty.Normal, 2));
+            Assert.That(content.AnyIn(Episode.Earthquake, Difficulty.Normal), Is.True);
+        }
+
+        [Test]
+        public void AnyIn_ReturnsFalseWithoutPlayableLevelsInRequestedDifficulty()
+        {
+            var content = new PlayableLevels(FirstLevel, new LevelId(Episode.Fire, Difficulty.Normal, 1));
+            Assert.That(content.AnyIn(Episode.Earthquake, Difficulty.Normal), Is.False);
+        }
+
+        [Test]
         public void Destination_IsLastPlayedEpisodeAndDifficulty()
         {
             var p = WithProgress();

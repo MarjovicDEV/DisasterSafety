@@ -29,6 +29,15 @@ namespace DisasterSafety.Tests
         }
 
         [Test]
+        public void DuringScenario_WithStillSetting_IsAProblem()
+        {
+            var s = TestScenarios.Classroom();
+            s.phase = ScenarioPhases.During;
+            s.setting = ScenarioSettings.ClassroomAfter;
+            Assert.That(ScenarioRules.Problems(s), Does.Contain("Setting 'classroom_after' cannot shake for a during Scenario."));
+        }
+
+        [Test]
         public void MissingChoicePicture_IsAProblem()
         {
             var s = TestScenarios.Classroom();

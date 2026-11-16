@@ -27,6 +27,8 @@ namespace DisasterSafety.Core
             if (!s.TryGetLevel(out _)) problems.Add("Level '" + s.level + "' is not in the Curriculum.");
             if (!ScenarioSettings.IsKnown(s.setting)) problems.Add("Setting '" + s.setting + "' has no scene art.");
             if (!ScenarioPhases.IsKnown(s.phase)) problems.Add("Phase '" + s.phase + "' must be before, during or after.");
+            if (s.Shakes && !ScenarioSettings.CanShake(s.setting))
+                problems.Add("Setting '" + s.setting + "' cannot shake for a during Scenario.");
 
             CheckLine(problems, s.goal, "goal", needsSource: true);
             CheckLine(problems, s.intro, "intro", needsSource: false);

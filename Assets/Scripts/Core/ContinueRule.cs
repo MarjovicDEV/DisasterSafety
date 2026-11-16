@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DisasterSafety.Core
 {
@@ -16,6 +17,9 @@ namespace DisasterSafety.Core
 
         public bool Any => levels.Count > 0;
         public bool IsPlayable(LevelId id) => levels.Contains(id);
+
+        public bool AnyIn(Episode episode, Difficulty difficulty) =>
+            levels.Any(level => level.Episode == episode && level.Difficulty == difficulty);
     }
 
     /// <summary>Continue is offered only when Saved Progress exists and at least one Playable Level exists.</summary>

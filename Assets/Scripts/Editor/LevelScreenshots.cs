@@ -45,7 +45,7 @@ namespace DisasterSafety.EditorTools
             Shot("11-level-hint", c.choicesPanel, c.bantay.bubble);
 
             // An Unsafe Choice (the window), then the Safe Choice.
-            var window = Array.FindIndex(s.choices, x => x.id == "window");
+            var window = ChoiceIndex(s, "window");
             c.choiceCards[window].SetTried(true);
             Feedback(c, s.choices[window]);
             Shot("12-feedback-unsafe", c.choicesPanel, c.dimmer, c.feedbackPanel);
@@ -71,7 +71,7 @@ namespace DisasterSafety.EditorTools
             c.bantay.bubbleText.text = classroomAfter.intro.text;
             Shot("30-level3", c.choicesPanel, c.bantay.bubble);
 
-            var stay = Array.FindIndex(classroomAfter.choices, choice => choice.id == "stay");
+            var stay = ChoiceIndex(classroomAfter, "stay");
             c.choiceCards[stay].SetTried(true);
             Feedback(c, classroomAfter.choices[stay]);
             Shot("31-level3-feedback-unsafe", c.choicesPanel, c.dimmer, c.feedbackPanel);
@@ -107,6 +107,14 @@ namespace DisasterSafety.EditorTools
                 if (used) c.choiceCards[i].Show(scenario.choices[i], Picture(c, scenario.choices[i].picture));
             }
             return scenario;
+        }
+
+        static int ChoiceIndex(Scenario scenario, string id)
+        {
+            var index = Array.FindIndex(scenario.choices, choice => choice.id == id);
+            if (index < 0)
+                throw new InvalidOperationException($"Cannot capture Level screenshots. Scenario '{scenario.level}' is missing Choice '{id}'.");
+            return index;
         }
 
         static void Feedback(LevelController c, ScenarioChoice choice)

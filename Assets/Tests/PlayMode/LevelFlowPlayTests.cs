@@ -250,7 +250,7 @@ namespace DisasterSafety.Tests
             Assert.That(c.completedPanel.IsVisible, Is.True);
             Assert.That(c.LastResult.Opened, Is.Empty);
             Assert.That(c.openedRibbon.activeSelf, Is.False);
-            yield return Wait(2.7f);
+            yield return Wait(LevelController.OpenedLineDelay + 0.2f);
             Assert.That(c.cheerBantay.bubbleText.text, Is.EqualTo("You did it, Ana!"));
         }
 

@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.IO;
-using System.Linq;
 using DisasterSafety.Core;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -15,6 +14,8 @@ namespace DisasterSafety.Game.UI
     /// </summary>
     public sealed class LevelController : MonoBehaviour
     {
+        public const float OpenedLineDelay = 2.5f;
+
         [Header("Scene")]
         public LevelSetting[] settings;
         public RectTransform world;
@@ -112,7 +113,7 @@ namespace DisasterSafety.Game.UI
 
             if (scenario.Shakes)
             {
-                ActiveSetting?.shaker.StartShake();
+                ActiveSetting?.shaker?.StartShake();
                 AudioManager.Play(Sfx.Rumble, 0.9f);
                 yield return new WaitForSeconds(0.4f);
             }
@@ -200,7 +201,7 @@ namespace DisasterSafety.Game.UI
         {
             if (attempt == null || IsPaused || !attempt.Choose(index)) return;
             var choice = scenario.choices[index];
-            if (scenario.Shakes) ActiveSetting?.shaker.Calm();
+            if (scenario.Shakes) ActiveSetting?.shaker?.Calm();
             bantay.HideBubble();
 
             feedbackBanner.sprite = attempt.LastChoiceSafe ? safeBanner : unsafeBanner;
@@ -231,7 +232,7 @@ namespace DisasterSafety.Game.UI
             attempt.TryAgain();
             feedbackPanel.Hide();
             dimmer.Hide();
-            if (scenario.Shakes) ActiveSetting?.shaker.ResumeWobble();
+            if (scenario.Shakes) ActiveSetting?.shaker?.ResumeWobble();
             bantay.Say(UIStrings.BantayThinkAgain, true);
         }
 
@@ -304,12 +305,11 @@ namespace DisasterSafety.Game.UI
             AudioManager.Play(Sfx.Opened);
         }
 
-        IEnumerator SayOpened(string name, Episode episode, Difficulty difficulty)
+        IEnumerator SayOpened(string openedName, Episode episode, Difficulty difficulty)
         {
-            yield return new WaitForSecondsRealtime(2.5f);
-            var hasPlayableLevel = Enumerable.Range(1, Curriculum.LevelCount(difficulty))
-                .Any(number => GameServices.Content.IsPlayable(new LevelId(episode, difficulty, number)));
-            cheerBantay.Say(hasPlayableLevel ? UIStrings.BantayOpened(name) : UIStrings.BantayOpenedSoon(name));
+            yield return new WaitForSecondsRealtime(OpenedLineDelay);
+            var hasPlayableLevel = GameServices.Content.AnyIn(episode, difficulty);
+            cheerBantay.Say(hasPlayableLevel ? UIStrings.BantayOpened(openedName) : UIStrings.BantayOpenedSoon(openedName));
         }
 
         void Pause()

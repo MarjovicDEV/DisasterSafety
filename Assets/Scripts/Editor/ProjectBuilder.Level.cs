@@ -97,8 +97,8 @@ namespace DisasterSafety.EditorTools
             var setting = BuildSetting(world, ScenarioSettings.Classroom, "Classroom", out var shaking);
             setting.shaker.wobblers = new[]
             {
-                BuildLevelAnimation(shaking, "Ceiling Fan", Frames("Level/fan", 2), 204, 0, 6f, wobbles: true),
-                BuildLevelAnimation(shaking, "Tall Cabinet", Frames("Level/cabinet", 2), 364, 64, 5f, wobbles: true),
+                BuildLevelAnimation(shaking, "Ceiling Fan", Frames("Level/fan", 2), 204, 0, 6f, onlyWhileShaking: true),
+                BuildLevelAnimation(shaking, "Tall Cabinet", Frames("Level/cabinet", 2), 364, 64, 5f, onlyWhileShaking: true),
             };
             return setting;
         }
@@ -112,8 +112,8 @@ namespace DisasterSafety.EditorTools
             var pots = Frames("Level/pots", 2);
             setting.shaker.wobblers = new[]
             {
-                BuildLevelAnimation(shaking, "Hanging Pot Left", pots, 116, 12, 4f, wobbles: true),
-                BuildLevelAnimation(shaking, "Hanging Pot Right", pots, 236, 12, 4f, wobbles: true),
+                BuildLevelAnimation(shaking, "Hanging Pot Left", pots, 116, 12, 4f, onlyWhileShaking: true),
+                BuildLevelAnimation(shaking, "Hanging Pot Right", pots, 236, 12, 4f, onlyWhileShaking: true),
             };
             return setting;
         }
@@ -123,7 +123,7 @@ namespace DisasterSafety.EditorTools
             var setting = BuildSetting(world, ScenarioSettings.ClassroomAfter, "Classroom After", out var foreground, shakes: false);
             // Keep Bantay and the Hint clear of the teacher in the doorway.
             setting.guidanceOffsetX = -880f;
-            BuildLevelAnimation(foreground, "Teacher", Frames("Level/teacher", 2), 418, 126, 3f, wobbles: false);
+            BuildLevelAnimation(foreground, "Teacher", Frames("Level/teacher", 2), 418, 126, 3f, onlyWhileShaking: false);
             return setting;
         }
 
@@ -147,14 +147,14 @@ namespace DisasterSafety.EditorTools
             return setting;
         }
 
-        static SpriteAnimator BuildLevelAnimation(RectTransform parent, string name, Sprite[] frames, int x, int y, float fps, bool wobbles)
+        static SpriteAnimator BuildLevelAnimation(RectTransform parent, string name, Sprite[] frames, int x, int y, float fps, bool onlyWhileShaking)
         {
             var image = ArtImage(parent, name, frames[0], x, y);
             var animator = image.gameObject.AddComponent<SpriteAnimator>();
             animator.frames = frames;
             animator.framesPerSecond = fps;
-            animator.randomStart = wobbles;
-            animator.enabled = !wobbles;
+            animator.randomStart = onlyWhileShaking;
+            animator.enabled = !onlyWhileShaking;
             return animator;
         }
 
@@ -354,12 +354,12 @@ namespace DisasterSafety.EditorTools
             c.openedRibbon = opened.gameObject;
             c.openedRibbon.SetActive(false);
 
-            // Bantay cheers inside the panel, with the Display Name in the bubble.
+            // Leave room for Bantay's two-line bubble below the title.
             c.cheerBantay = BuildBantay(box);
             var dog = (RectTransform)c.cheerBantay.transform;
             dog.anchorMin = dog.anchorMax = new Vector2(1f, 1f);
             dog.pivot = new Vector2(1f, 0f);
-            dog.anchoredPosition = new Vector2(-150f, -480f);
+            dog.anchoredPosition = new Vector2(-150f, -504f);
 
             // The Safe Choice and its explanation
             var holder = Rect("Safe Picture", box);
