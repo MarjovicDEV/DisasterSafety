@@ -70,6 +70,28 @@ namespace DisasterSafety.Tests
             c.howToPlayButton.onClick.Invoke();
             yield return Wait(0.4f);
             Assert.That(c.howToPlayPanel.IsVisible, Is.True);
+
+            // The picture tutorial pages forward with Next, back with Back, and ends on DONE.
+            var t = c.tutorial;
+            Assert.That(t.PageIndex, Is.EqualTo(0));
+            Assert.That(t.previous.interactable, Is.False);
+            Assert.That(t.title.text, Does.StartWith("Step 1"));
+            t.next.onClick.Invoke();
+            Assert.That(t.PageIndex, Is.EqualTo(1));
+            Assert.That(t.Back(), Is.True);
+            Assert.That(t.Back(), Is.False, "Back on page 1 leaves How to Play");
+            for (var i = 0; i < UIStrings.TutorialPages.Length; i++) t.next.onClick.Invoke();
+            Assert.That(t.PageIndex, Is.EqualTo(UIStrings.TutorialPages.Length - 1));
+            Assert.That(t.next.interactable, Is.False);
+            Assert.That(t.closeLabel.text, Is.EqualTo(UIStrings.Done));
+            Assert.That(t.picture.sprite, Is.Not.Null);
+            c.howToPlayBack.onClick.Invoke();
+            yield return Wait(0.4f);
+
+            // Reopening starts again at page 1.
+            c.howToPlayButton.onClick.Invoke();
+            yield return Wait(0.4f);
+            Assert.That(t.PageIndex, Is.EqualTo(0));
             c.howToPlayBack.onClick.Invoke();
             yield return Wait(0.4f);
 
