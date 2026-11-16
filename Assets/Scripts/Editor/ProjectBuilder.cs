@@ -111,6 +111,7 @@ namespace DisasterSafety.EditorTools
             lib.unsafeChoice = Clip("Sfx/sfx_unsafe");
             lib.star = Clip("Sfx/sfx_star");
             lib.complete = Clip("Sfx/sfx_complete");
+            lib.opened = Clip("Sfx/sfx_opened");
             EditorUtility.SetDirty(lib);
         }
 

@@ -24,6 +24,7 @@ namespace DisasterSafety.Game
         public AudioClip unsafeChoice;
         public AudioClip star;
         public AudioClip complete;
+        public AudioClip opened;
 
         public AudioClip Get(Sfx sfx)
         {
@@ -44,6 +45,7 @@ namespace DisasterSafety.Game
                 case Sfx.Unsafe: return unsafeChoice;
                 case Sfx.Star: return star;
                 case Sfx.Complete: return complete;
+                case Sfx.Opened: return opened;
                 default: return null;
             }
         }

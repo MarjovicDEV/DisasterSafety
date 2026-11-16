@@ -335,6 +335,25 @@ namespace DisasterSafety.EditorTools
             }
             c.stars = reveal;
 
+            var opened = Rect("Opened Ribbon", box);
+            opened.anchorMin = opened.anchorMax = new Vector2(0.5f, 1f);
+            opened.pivot = new Vector2(0.5f, 0.5f);
+            opened.sizeDelta = new Vector2(520f, 80f);
+            opened.anchoredPosition = new Vector2(-370f, -428f);
+            Img(opened, S("UI/button_yellow"), Color.white, sliced: true);
+
+            var hat = S("Icons/icon_hardhat");
+            var hatR = Rect("Hard Hat", opened);
+            Centered(hatR, -204f, 4f, hat.rect.width * Px, hat.rect.height * Px);
+            Img(hatR, hat, Color.white);
+
+            var openedLabel = Stretch(Rect("Text", opened));
+            openedLabel.offsetMin = new Vector2(104f, 12f);
+            openedLabel.offsetMax = new Vector2(-16f, 0f);
+            c.openedText = Label(openedLabel, string.Empty, f4, Ink, TextAnchor.MiddleCenter, shadow: false);
+            c.openedRibbon = opened.gameObject;
+            c.openedRibbon.SetActive(false);
+
             // Bantay cheers inside the panel, with the Display Name in the bubble.
             c.cheerBantay = BuildBantay(box);
             var dog = (RectTransform)c.cheerBantay.transform;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.IO;
+using System.Linq;
 using DisasterSafety.Core;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -46,6 +47,8 @@ namespace DisasterSafety.Game.UI
         [Tooltip("A second Bantay inside Level Completed who cheers with the Display Name.")]
         public BantayGuide cheerBantay;
         public StarReveal stars;
+        public GameObject openedRibbon;
+        public Text openedText;
         public Image safePicture;
         public Text safeChoiceText;
         public Text lessonText;
@@ -277,6 +280,36 @@ namespace DisasterSafety.Game.UI
             bantay.HideBubble();
             cheerBantay.tapLine = () => UIStrings.BantayCheer(GameServices.Progress.DisplayName);
             cheerBantay.Celebrate(headline);
+
+            var openedKey = saved && LastResult.Opened.Count > 0 ? LastResult.Opened[0] : null;
+            var openedName = OpenedName(openedKey, out var openedEpisode, out var openedDifficulty);
+            openedRibbon.SetActive(openedName != null);
+            if (openedName == null) return;
+
+            openedText.text = UIStrings.Opened(openedName);
+            StartCoroutine(PlayOpenedSound());
+            StartCoroutine(SayOpened(openedName, openedEpisode, openedDifficulty));
+        }
+
+        static string OpenedName(string key, out Episode episode, out Difficulty difficulty)
+        {
+            if (!Curriculum.TryParseKey(key, out episode, out difficulty)) return null;
+            return difficulty == Difficulty.Easy ? UIStrings.EpisodeName(episode) : UIStrings.DifficultyName(difficulty);
+        }
+
+        IEnumerator PlayOpenedSound()
+        {
+            yield return new WaitUntil(() => stars.Done);
+            yield return new WaitForSecondsRealtime(0.2f);
+            AudioManager.Play(Sfx.Opened);
+        }
+
+        IEnumerator SayOpened(string name, Episode episode, Difficulty difficulty)
+        {
+            yield return new WaitForSecondsRealtime(2.5f);
+            var hasPlayableLevel = Enumerable.Range(1, Curriculum.LevelCount(difficulty))
+                .Any(number => GameServices.Content.IsPlayable(new LevelId(episode, difficulty, number)));
+            cheerBantay.Say(hasPlayableLevel ? UIStrings.BantayOpened(name) : UIStrings.BantayOpenedSoon(name));
         }
 
         void Pause()

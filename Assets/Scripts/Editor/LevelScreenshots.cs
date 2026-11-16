@@ -57,10 +57,7 @@ namespace DisasterSafety.EditorTools
 
             c.choiceCards[window].SetTried(false);
             c.cheerBantay.bubbleText.text = UIStrings.LevelCompletedHeadline("Niño");
-            c.safePicture.sprite = Picture(c, s.SafeChoice.picture);
-            c.safeChoiceText.text = UIStrings.SafeChoiceLine(s.SafeChoice.label);
-            c.lessonText.text = s.lesson.text;
-            c.stars.ShowInstant(2);
+            Completed(c, s, 2);
             Shot("15-level-completed", c.dimmer, c.completedPanel, c.cheerBantay.bubble);
 
             var corridor = PrepareLevel(c, new LevelId(Episode.Earthquake, Difficulty.Easy, 2));
@@ -78,6 +75,22 @@ namespace DisasterSafety.EditorTools
             c.choiceCards[stay].SetTried(true);
             Feedback(c, classroomAfter.choices[stay]);
             Shot("31-level3-feedback-unsafe", c.choicesPanel, c.dimmer, c.feedbackPanel);
+
+            var openedName = UIStrings.DifficultyName(Difficulty.Normal);
+            c.openedText.text = UIStrings.Opened(openedName);
+            c.openedRibbon.SetActive(true);
+            c.cheerBantay.bubbleText.text = UIStrings.BantayOpenedSoon(openedName);
+            Completed(c, classroomAfter, 3);
+            Shot("32-level-completed-normal-open", c.dimmer, c.completedPanel, c.cheerBantay.bubble);
+        }
+
+        static void Completed(LevelController c, Scenario scenario, int stars)
+        {
+            var safe = scenario.SafeChoice;
+            c.safePicture.sprite = Picture(c, safe.picture);
+            c.safeChoiceText.text = UIStrings.SafeChoiceLine(safe.label);
+            c.lessonText.text = scenario.lesson.text;
+            c.stars.ShowInstant(stars);
         }
 
         static Scenario PrepareLevel(LevelController c, LevelId level)

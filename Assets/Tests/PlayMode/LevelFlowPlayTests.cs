@@ -223,7 +223,35 @@ namespace DisasterSafety.Tests
             c.choiceCards[Walk].button.onClick.Invoke();
             c.finishButton.onClick.Invoke();
             Assert.That(c.completedPanel.IsVisible, Is.True);
-            Assert.That(SavedOnDisk().IsCompleted(third), Is.True);
+            Assert.That(c.LastResult.Opened, Does.Contain("Earthquake/Normal"));
+            Assert.That(c.openedRibbon.activeInHierarchy, Is.True);
+            Assert.That(c.openedText.text, Is.EqualTo("Normal is open!"));
+            Assert.That(c.nextButton.gameObject.activeSelf, Is.False);
+            var saved = SavedOnDisk();
+            Assert.That(saved.IsCompleted(third), Is.True);
+            Assert.That(saved.IsOpen(Episode.Earthquake, Difficulty.Normal), Is.True);
+
+            Assert.That(c.cheerBantay.bubbleText.text, Is.EqualTo("You did it, Ana!"));
+            const string openedLine = "Normal is open! New levels are coming soon.";
+            yield return WaitFor(() => c.cheerBantay.bubble.IsVisible && c.cheerBantay.bubbleText.text == openedLine,
+                "Bantay to announce that Normal is open", 5f);
+
+            c.cheerBantay.OnPointerClick(null);
+            Assert.That(c.cheerBantay.bubbleText.text, Is.EqualTo("Woof woof! Great job, Ana!"));
+
+            var completed = c;
+            c.replayButton.onClick.Invoke();
+            yield return WaitFor(() => completed == null, "the old Level to unload");
+            yield return ReadyToChoose(Level);
+            c = Level();
+            Assert.That(c.Level, Is.EqualTo(third));
+            c.choiceCards[Walk].button.onClick.Invoke();
+            c.finishButton.onClick.Invoke();
+            Assert.That(c.completedPanel.IsVisible, Is.True);
+            Assert.That(c.LastResult.Opened, Is.Empty);
+            Assert.That(c.openedRibbon.activeSelf, Is.False);
+            yield return Wait(2.7f);
+            Assert.That(c.cheerBantay.bubbleText.text, Is.EqualTo("You did it, Ana!"));
         }
 
         [UnityTest]

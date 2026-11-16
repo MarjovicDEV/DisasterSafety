@@ -133,6 +133,9 @@ namespace DisasterSafety.Game
             string.IsNullOrEmpty(name) ? "You did it!" : "You did it, " + name + "!";
         public static string SaveProblem(string name) => LevelCompletedHeadline(name) + " I could not save this time.";
         public static string SafeChoiceLine(string label) => "Safe choice: " + label;
+        public static string Opened(string what) => what + " is open!";
+        public static string BantayOpenedSoon(string what) => what + " is open! New levels are coming soon.";
+        public static string BantayOpened(string what) => what + " is open! Let's play!";
         public const string Replay = "REPLAY";
         public const string NextLevel = "NEXT";
         public const string LevelsButton = "LEVELS";

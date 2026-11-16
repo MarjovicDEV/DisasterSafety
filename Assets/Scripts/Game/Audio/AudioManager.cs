@@ -19,7 +19,8 @@ namespace DisasterSafety.Game
         Safe,
         Unsafe,
         Star,
-        Complete
+        Complete,
+        Opened
     }
 
     /// <summary>Plays the menu music and UI sounds, following the Settings switches.</summary>
