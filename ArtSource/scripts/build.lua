@@ -14,6 +14,12 @@ L.ROOT = app.params.out or root
 local BG = dofile(here .. "background.lua")(L)
 local CH = dofile(here .. "characters.lua")(L)
 local UI = dofile(here .. "ui.lua")(L)
+local TU = dofile(here .. "tutorial.lua")(L, CH, UI)
+
+-- How to Play Tutorial Pages: Tutorial/<name>_0.png and _1.png
+for _, page in ipairs(TU.pages) do
+  L.saveFrames({ page.draw(0), page.draw(1) }, "Tutorial/" .. page.name, "Tutorial/" .. page.name, 400)
+end
 
 -- Background and ambient animation
 L.save(BG.background(), "Background/bg_courtyard", "Background/bg_courtyard")
