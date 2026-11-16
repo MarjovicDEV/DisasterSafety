@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d290c03b22081134a8191ee0599bf45f, type: 3}
+  m_Name: AudioLibrary
+  m_EditorClassIdentifier: DisasterSafety.Game::DisasterSafety.Game.AudioLibrary
+  menuMusic: {fileID: 8300000, guid: e2f416a092371874da904704442c1316, type: 3}
+  click: {fileID: 8300000, guid: e6121a1a8d56c9d42a94c2deb271a962, type: 3}
+  back: {fileID: 8300000, guid: 1927eec3db610fa41a475d174c9435e7, type: 3}
+  open: {fileID: 8300000, guid: 82002e5ff840bfa48a00eed3040ddce1, type: 3}
+  confirm: {fileID: 8300000, guid: 70e32bc36cd0ca144aed2b1c9483a490, type: 3}
+  locked: {fileID: 8300000, guid: a47355de6c873e345936c8a2384ec5b8, type: 3}
+  type: {fileID: 8300000, guid: 898d089ca5462b8418492bf9da135e7d, type: 3}
+  toggle: {fileID: 8300000, guid: 816ca3f500c2d1646b9d6d565aeaf4b3, type: 3}
+  sparkle: {fileID: 8300000, guid: e61606b71b1bd4a4ea181316fc0e87a0, type: 3}
+  bark: {fileID: 8300000, guid: 23bdaf16f12cce5488e06652e75cd144, type: 3}
+  soon: {fileID: 8300000, guid: d8a9d5dfe596f6e439f2cdb76c8de58c, type: 3}

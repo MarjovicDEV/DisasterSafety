@@ -1,0 +1,21 @@
+{
+    "name": "DisasterSafety.Editor",
+    "rootNamespace": "DisasterSafety.EditorTools",
+    "references": [
+        "DisasterSafety.Core",
+        "DisasterSafety.Game",
+        "UnityEngine.UI",
+        "Unity.InputSystem"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
