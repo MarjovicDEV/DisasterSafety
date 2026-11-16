@@ -127,6 +127,24 @@ namespace DisasterSafety.Tests
         }
 
         [Test]
+        public void OpenLevelSelect_FromLevelCompleted_ShowsThatEpisodeAndDifficulty()
+        {
+            Assert.That(nav.OpenLevelSelect(Episode.Earthquake, Difficulty.Easy), Is.True);
+            Assert.That(nav.Current, Is.EqualTo(MenuScreen.LevelSelect));
+            Assert.That(nav.SelectedEpisode, Is.EqualTo(Episode.Earthquake));
+            Assert.That(nav.SelectedDifficulty, Is.EqualTo(Difficulty.Easy));
+            nav.Back();
+            Assert.That(nav.Current, Is.EqualTo(MenuScreen.DifficultySelect));
+        }
+
+        [Test]
+        public void OpenLevelSelect_ForALockedDifficulty_StaysOnMain()
+        {
+            Assert.That(nav.OpenLevelSelect(Episode.Earthquake, Difficulty.Hard), Is.False);
+            Assert.That(nav.Current, Is.EqualTo(MenuScreen.Main));
+        }
+
+        [Test]
         public void Changed_ReportsEveryMove()
         {
             MenuScreen from = MenuScreen.Main, to = MenuScreen.Main;

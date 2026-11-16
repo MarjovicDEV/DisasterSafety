@@ -58,6 +58,16 @@ namespace DisasterSafety.Core
             return true;
         }
 
+        /// <summary>Level Completed's "Levels" button: Level Selection for the Level just played.</summary>
+        public bool OpenLevelSelect(Episode episode, Difficulty difficulty)
+        {
+            if (Current != MenuScreen.Main || !state.IsOpen(episode, difficulty)) return false;
+            SelectedEpisode = episode;
+            SelectedDifficulty = difficulty;
+            GoTo(MenuScreen.LevelSelect);
+            return true;
+        }
+
         public void OpenSettings() => GoTo(MenuScreen.Settings);
         public void OpenHowToPlay() => GoTo(MenuScreen.HowToPlay);
         public void RequestExit() => GoTo(MenuScreen.ExitConfirm);
