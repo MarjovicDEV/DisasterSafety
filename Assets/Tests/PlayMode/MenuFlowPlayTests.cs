@@ -136,13 +136,13 @@ namespace DisasterSafety.Tests
             Assert.That(c.levelSlots[2].gameObject.activeSelf, Is.True);
             Assert.That(c.levelSlots[3].gameObject.activeSelf, Is.False, "Easy has 3 Levels");
 
-            // Level 1 is a Playable Level; Level 2 has no Scenario yet, so Start stays off for it.
-            c.levelSlots[1].button.onClick.Invoke();
-            yield return null;
-            Assert.That(c.startButton.interactable, Is.False, "Level 2 is not a Playable Level yet");
-            c.levelSlots[0].button.onClick.Invoke();
-            yield return null;
-            Assert.That(c.startButton.interactable, Is.True, "Earthquake/Easy/1 is a Playable Level");
+            // Each Easy Level has a valid Scenario.
+            for (var i = 0; i < 3; i++)
+            {
+                c.levelSlots[i].button.onClick.Invoke();
+                yield return null;
+                Assert.That(c.startButton.interactable, Is.True, $"Earthquake/Easy/{i + 1} is a Playable Level");
+            }
 
             // Back walks Level -> Difficulty -> Episode -> Main, and Continue stays off for a name-only save.
             c.levelBack.onClick.Invoke();

@@ -52,10 +52,31 @@ namespace DisasterSafety.Tests
         }
 
         [Test]
-        public void FirstPlayableLevel_Exists()
+        public void EasyLevels_AllExist()
         {
             var levels = Files().Select(Load).Select(s => s.level).ToList();
-            Assert.That(levels, Does.Contain("Earthquake/Easy/1"));
+            Assert.That(levels, Is.SupersetOf(new[] { "Earthquake/Easy/1", "Earthquake/Easy/2", "Earthquake/Easy/3" }));
+        }
+
+        [Test]
+        public void EveryChoicePicture_HasArt()
+        {
+            foreach (var path in Files())
+            foreach (var choice in Load(path).choices)
+            {
+                var picture = "Assets/Art/Level/" + choice.picture + ".png";
+                Assert.That(File.Exists(picture), Is.True, path + ": missing " + picture);
+            }
+        }
+
+        [Test]
+        public void EverySetting_HasArt()
+        {
+            foreach (var path in Files())
+            {
+                var background = "Assets/Art/Level/bg_" + Load(path).setting + ".png";
+                Assert.That(File.Exists(background), Is.True, path + ": missing " + background);
+            }
         }
 
         [Test]

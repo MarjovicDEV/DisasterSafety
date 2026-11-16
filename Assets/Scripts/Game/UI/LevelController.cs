@@ -15,7 +15,9 @@ namespace DisasterSafety.Game.UI
     public sealed class LevelController : MonoBehaviour
     {
         [Header("Scene")]
-        public SceneShaker shaker;
+        public LevelSetting[] settings;
+        public RectTransform world;
+        public RectTransform goalBanner;
         public Text goalText;
         public Text levelLabel;
         public Button pauseButton;
@@ -66,6 +68,7 @@ namespace DisasterSafety.Game.UI
 
         public Attempt Attempt => attempt;
         public LevelId Level => level;
+        public LevelSetting ActiveSetting { get; private set; }
         public CompletionResult LastResult { get; private set; }
         public bool IsPaused => pausePanel != null && pausePanel.IsVisible;
 
@@ -92,6 +95,7 @@ namespace DisasterSafety.Game.UI
                 yield break;
             }
 
+            ShowSetting(scenario.setting);
             goalText.text = scenario.goal.text;
             levelLabel.text = UIStrings.LevelLabel(level);
             for (var i = 0; i < choiceCards.Length; i++)
@@ -102,10 +106,12 @@ namespace DisasterSafety.Game.UI
             }
             bantay.tapLine = () => attempt.HintUsed ? UIStrings.HintLine(scenario.hint.text) : scenario.intro.text;
 
-            // The ground starts shaking, Bantay reads the situation, then the Choices pop in.
-            shaker.StartShake();
-            AudioManager.Play(Sfx.Rumble, 0.9f);
-            yield return new WaitForSeconds(0.4f);
+            if (scenario.Shakes)
+            {
+                ActiveSetting?.shaker.StartShake();
+                AudioManager.Play(Sfx.Rumble, 0.9f);
+                yield return new WaitForSeconds(0.4f);
+            }
             bantay.Say(scenario.intro.text, true, 5f);
             yield return new WaitForSeconds(1.1f);
             choicesPanel.Show();
@@ -113,6 +119,26 @@ namespace DisasterSafety.Game.UI
             yield return new WaitForSeconds(6f);
             if (attempt.Phase == AttemptPhase.Choosing && !attempt.HintUsed && attempt.UnsafeChoices == 0)
                 bantay.Say(UIStrings.BantayHintReady);
+        }
+
+        public void ShowSetting(string key)
+        {
+            ActiveSetting = Array.Find(settings, setting => setting.key == key);
+            if (ActiveSetting == null)
+            {
+                Debug.LogError("No Level art group for Setting '" + key + "'.");
+                if (settings.Length > 0) ActiveSetting = settings[0];
+            }
+
+            foreach (var setting in settings)
+                setting.gameObject.SetActive(setting == ActiveSetting);
+
+            if (ActiveSetting == null) return;
+
+            var artAnchor = new Vector2(0.5f, ActiveSetting.alignArtTop ? 1f : 0.5f);
+            world.anchorMin = world.anchorMax = world.pivot = artAnchor;
+            world.anchoredPosition = Vector2.zero;
+            goalBanner.anchoredPosition = ActiveSetting.goalPosition;
         }
 
         void Wire()
@@ -169,7 +195,7 @@ namespace DisasterSafety.Game.UI
         {
             if (attempt == null || IsPaused || !attempt.Choose(index)) return;
             var choice = scenario.choices[index];
-            shaker.Calm();
+            if (scenario.Shakes) ActiveSetting?.shaker.Calm();
             bantay.HideBubble();
 
             feedbackBanner.sprite = attempt.LastChoiceSafe ? safeBanner : unsafeBanner;
@@ -200,7 +226,7 @@ namespace DisasterSafety.Game.UI
             attempt.TryAgain();
             feedbackPanel.Hide();
             dimmer.Hide();
-            shaker.ResumeWobble();
+            if (scenario.Shakes) ActiveSetting?.shaker.ResumeWobble();
             bantay.Say(UIStrings.BantayThinkAgain, true);
         }
 

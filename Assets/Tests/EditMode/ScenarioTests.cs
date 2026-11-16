@@ -13,6 +13,40 @@ namespace DisasterSafety.Tests
         }
 
         [Test]
+        public void UnknownSetting_IsAProblem()
+        {
+            var s = TestScenarios.Classroom();
+            s.setting = "gym";
+            Assert.That(ScenarioRules.Problems(s), Does.Contain("Setting 'gym' has no scene art."));
+        }
+
+        [Test]
+        public void UnknownPhase_IsAProblem()
+        {
+            var s = TestScenarios.Classroom();
+            s.phase = "later";
+            Assert.That(ScenarioRules.Problems(s), Does.Contain("Phase 'later' must be before, during or after."));
+        }
+
+        [Test]
+        public void MissingChoicePicture_IsAProblem()
+        {
+            var s = TestScenarios.Classroom();
+            s.choices[TestScenarios.Safe].picture = " ";
+            Assert.That(ScenarioRules.Problems(s), Does.Contain("Choice 'desk' needs a picture."));
+        }
+
+        [TestCase("before", false)]
+        [TestCase("during", true)]
+        [TestCase("after", false)]
+        public void OnlyDuringScenariosShake(string phase, bool shakes)
+        {
+            var s = TestScenarios.Classroom();
+            s.phase = phase;
+            Assert.That(s.Shakes, Is.EqualTo(shakes));
+        }
+
+        [Test]
         public void ExactlyOneSafeChoice_IsRequired()
         {
             var none = TestScenarios.Classroom();

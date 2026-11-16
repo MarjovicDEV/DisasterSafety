@@ -38,6 +38,8 @@ namespace DisasterSafety.Core
             }
         }
 
+        public bool Shakes => phase == ScenarioPhases.During;
+
         public bool TryGetLevel(out LevelId id) => LevelId.TryParse(level, out id);
 
         public int SafeChoiceIndex

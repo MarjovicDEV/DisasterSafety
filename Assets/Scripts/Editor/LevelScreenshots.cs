@@ -10,12 +10,12 @@ namespace DisasterSafety.EditorTools
 {
     /// <summary>
     /// Renders the Level scene's screens (playing, Hint, both Feedback cards, Pause, Level
-    /// Completed) to PNG without entering Play mode, filled with the real Earthquake/Easy/1
-    /// Scenario. Runs as part of MenuScreenshots.Capture. For layout review only.
+    /// Completed) to PNG without entering Play mode, filled with authored Earthquake Scenarios.
+    /// Runs as part of MenuScreenshots.Capture. For layout review only.
     /// </summary>
     public static class LevelScreenshots
     {
-        const string ScenarioPath = "Assets/Resources/Scenarios/Earthquake/Easy/1.json";
+        const string ScenarioFolder = "Assets/Resources/Scenarios";
 
         public static void Capture(string dir)
         {
@@ -27,16 +27,7 @@ namespace DisasterSafety.EditorTools
             canvas.worldCamera = cam;
             canvas.planeDistance = 5f;
 
-            var s = Scenario.Parse(File.ReadAllText(ScenarioPath));
-            var level = new LevelId(Episode.Earthquake, Difficulty.Easy, 1);
-            c.goalText.text = s.goal.text;
-            c.levelLabel.text = UIStrings.LevelLabel(level);
-            for (var i = 0; i < c.choiceCards.Length; i++)
-            {
-                var used = i < s.choices.Length;
-                c.choiceCards[i].gameObject.SetActive(used);
-                if (used) c.choiceCards[i].Show(s.choices[i], Picture(c, s.choices[i].picture));
-            }
+            var s = PrepareLevel(c, new LevelId(Episode.Earthquake, Difficulty.Easy, 1));
 
             var all = new[] { c.choicesPanel, c.dimmer, c.feedbackPanel, c.completedPanel, c.pausePanel, c.bantay.bubble, c.cheerBantay.bubble };
 
@@ -71,6 +62,29 @@ namespace DisasterSafety.EditorTools
             c.lessonText.text = s.lesson.text;
             c.stars.ShowInstant(2);
             Shot("15-level-completed", c.dimmer, c.completedPanel, c.cheerBantay.bubble);
+
+            var corridor = PrepareLevel(c, new LevelId(Episode.Earthquake, Difficulty.Easy, 2));
+            c.bantay.bubbleText.text = corridor.intro.text;
+            Shot("20-level2", c.choicesPanel, c.bantay.bubble);
+
+            Feedback(c, corridor.SafeChoice);
+            Shot("21-level2-feedback-safe", c.choicesPanel, c.dimmer, c.feedbackPanel);
+        }
+
+        static Scenario PrepareLevel(LevelController c, LevelId level)
+        {
+            var scenario = Scenario.Parse(File.ReadAllText(Path.Combine(ScenarioFolder, level.Key + ".json")));
+            c.ShowSetting(scenario.setting);
+
+            c.goalText.text = scenario.goal.text;
+            c.levelLabel.text = UIStrings.LevelLabel(level);
+            for (var i = 0; i < c.choiceCards.Length; i++)
+            {
+                var used = i < scenario.choices.Length;
+                c.choiceCards[i].gameObject.SetActive(used);
+                if (used) c.choiceCards[i].Show(scenario.choices[i], Picture(c, scenario.choices[i].picture));
+            }
+            return scenario;
         }
 
         static void Feedback(LevelController c, ScenarioChoice choice)

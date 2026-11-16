@@ -103,14 +103,14 @@ namespace DisasterSafety.Tests
             Assert.That(c.Level, Is.EqualTo(First));
             Assert.That(c.goalText.text, Is.EqualTo("Stay safe when the ground shakes."));
             Assert.That(c.choiceCards[Desk].label.text, Is.EqualTo("Duck under the desk"));
-            Assert.That(c.shaker.wobblers, Has.All.Matches<SpriteAnimator>(w => w.enabled), "fan and cabinet wobble while it shakes");
+            Assert.That(c.ActiveSetting.shaker.wobblers, Has.All.Matches<SpriteAnimator>(w => w.enabled), "fan and cabinet wobble while it shakes");
 
             // An Unsafe Choice shows kind Feedback and can be tried again; the card is marked tried.
             c.choiceCards[Run].button.onClick.Invoke();
             yield return Wait(0.4f);
             Assert.That(c.feedbackPanel.IsVisible, Is.True);
             Assert.That(c.feedbackHeading.text, Is.EqualTo("Not safe yet"), "Run outside has its own heading");
-            Assert.That(c.shaker.wobblers, Has.All.Matches<SpriteAnimator>(w => !w.enabled), "the shaking calms after a Choice");
+            Assert.That(c.ActiveSetting.shaker.wobblers, Has.All.Matches<SpriteAnimator>(w => !w.enabled), "the shaking calms after a Choice");
             Assert.That(c.tryAgainButton.gameObject.activeSelf, Is.True);
             Assert.That(c.finishButton.gameObject.activeSelf, Is.False);
             Assert.That(c.choiceCards[Run].button.interactable, Is.False, "a tried Unsafe Choice cannot be picked again");
@@ -138,7 +138,7 @@ namespace DisasterSafety.Tests
             Assert.That(c.LastResult.Stars, Is.EqualTo(1));
             Assert.That(c.cheerBantay.bubbleText.text, Does.Contain("Ana"));
             Assert.That(c.safeChoiceText.text, Does.Contain("Duck under the desk"));
-            Assert.That(c.nextButton.gameObject.activeSelf, Is.False, "Level 2 is not playable yet");
+            Assert.That(c.nextButton.gameObject.activeSelf, Is.True, "Next is shown when Level 2 is playable");
             var saved = SavedOnDisk();
             Assert.That(saved.IsCompleted(First), Is.True);
             Assert.That(saved.StarsFor(First), Is.EqualTo(1));

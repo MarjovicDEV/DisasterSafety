@@ -6,7 +6,7 @@ namespace DisasterSafety.Core
     /// <summary>
     /// What every authored Scenario must satisfy before its Level counts as a Playable Level:
     /// a Level inside the Curriculum, 3 or 4 Choices with exactly one Safe Choice, Feedback for
-    /// every Choice, and a cited source for every safety line.
+    /// every Choice, a cited source for every safety line, and a known Setting and Phase.
     /// </summary>
     public static class ScenarioRules
     {
@@ -25,6 +25,8 @@ namespace DisasterSafety.Core
             }
 
             if (!s.TryGetLevel(out _)) problems.Add("Level '" + s.level + "' is not in the Curriculum.");
+            if (!ScenarioSettings.IsKnown(s.setting)) problems.Add("Setting '" + s.setting + "' has no scene art.");
+            if (!ScenarioPhases.IsKnown(s.phase)) problems.Add("Phase '" + s.phase + "' must be before, during or after.");
 
             CheckLine(problems, s.goal, "goal", needsSource: true);
             CheckLine(problems, s.intro, "intro", needsSource: false);
@@ -49,6 +51,7 @@ namespace DisasterSafety.Core
                 if (string.IsNullOrWhiteSpace(c.id)) problems.Add(name + " needs an id.");
                 else if (!ids.Add(c.id)) problems.Add(name + ": Choice ids must be unique.");
                 if (string.IsNullOrWhiteSpace(c.label)) problems.Add(name + " needs a label.");
+                if (string.IsNullOrWhiteSpace(c.picture)) problems.Add(name + " needs a picture.");
                 if (string.IsNullOrWhiteSpace(c.feedback)) problems.Add(name + " needs Feedback.");
                 if (!HasSources(c.sources)) problems.Add(name + " needs a source for its Feedback.");
                 if (c.safe) safe++;

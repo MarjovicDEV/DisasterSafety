@@ -1,3 +1,4 @@
+using DisasterSafety.Core;
 using DisasterSafety.Game;
 using DisasterSafety.Game.UI;
 using UnityEditor;
@@ -17,7 +18,12 @@ namespace DisasterSafety.EditorTools
     {
         public const string LevelScenePath = "Assets/Scenes/Level.unity";
 
-        static readonly string[] ChoicePictureNames = { "choice_desk", "choice_run", "choice_window", "choice_cabinet" };
+        static readonly string[] ChoicePictureNames =
+        {
+            "choice_desk", "choice_run", "choice_window", "choice_cabinet",
+            "choice_cover", "choice_stairs", "choice_hall_window", "choice_plants",
+            "choice_walk", "choice_push", "choice_stay",
+        };
 
         static void BuildLevelScene()
         {
@@ -41,7 +47,15 @@ namespace DisasterSafety.EditorTools
 
             var c = new GameObject("LevelController", typeof(LevelController)).GetComponent<LevelController>();
 
-            c.shaker = BuildClassroom(root);
+            var world = Rect("World", root);
+            world.anchorMin = world.anchorMax = new Vector2(0.5f, 0.5f);
+            world.pivot = new Vector2(0.5f, 0.5f);
+            world.sizeDelta = new Vector2(1920f, 1080f);
+            world.gameObject.AddComponent<EnvelopeScaler>();
+            c.world = world;
+
+            c.settings = new[] { BuildClassroom(world), BuildCorridor(world) };
+            c.settings[1].gameObject.SetActive(false);
 
             var ui = Stretch(Rect("SafeArea", root));
             ui.gameObject.AddComponent<SafeAreaFitter>();
@@ -76,34 +90,60 @@ namespace DisasterSafety.EditorTools
             EditorSceneManager.SaveScene(scene, LevelScenePath);
         }
 
-        // The classroom picture. A still copy sits behind the shaking copy so the edges never show a gap.
-        static SceneShaker BuildClassroom(RectTransform root)
+        static LevelSetting BuildClassroom(RectTransform world)
         {
-            var world = Rect("World", root);
-            world.anchorMin = world.anchorMax = new Vector2(0.5f, 0.5f);
-            world.pivot = new Vector2(0.5f, 0.5f);
-            world.sizeDelta = new Vector2(1920f, 1080f);
-            world.gameObject.AddComponent<EnvelopeScaler>();
+            var setting = BuildSetting(world, ScenarioSettings.Classroom, "Classroom");
+            var shaking = setting.shaker.target;
+            setting.shaker.wobblers = new[]
+            {
+                BuildWobbler(shaking, "Ceiling Fan", Frames("Level/fan", 2), 204, 0, 6f),
+                BuildWobbler(shaking, "Tall Cabinet", Frames("Level/cabinet", 2), 364, 64, 5f),
+            };
+            return setting;
+        }
 
-            ArtImage(world, "Backing", S("Level/bg_classroom"), 0, 0);
+        static LevelSetting BuildCorridor(RectTransform world)
+        {
+            var setting = BuildSetting(world, ScenarioSettings.Corridor, "Corridor");
+            // Keep the pots in frame on wide screens and the Goal clear of Bantay's bubble.
+            setting.alignArtTop = true;
+            setting.goalPosition = new Vector2(-212f, -252f);
+            var shaking = setting.shaker.target;
+            var pots = Frames("Level/pots", 2);
+            setting.shaker.wobblers = new[]
+            {
+                BuildWobbler(shaking, "Hanging Pot Left", pots, 116, 12, 4f),
+                BuildWobbler(shaking, "Hanging Pot Right", pots, 236, 12, 4f),
+            };
+            return setting;
+        }
 
-            var shaking = Stretch(Rect("Shaking", world));
-            ArtImage(shaking, "Classroom", S("Level/bg_classroom"), 0, 0);
+        // A still copy behind the shaking copy keeps the edges covered.
+        static LevelSetting BuildSetting(RectTransform world, string key, string name)
+        {
+            var group = Stretch(Rect(name, world));
+            var setting = group.gameObject.AddComponent<LevelSetting>();
+            setting.key = key;
 
-            var fan = ArtImage(shaking, "Ceiling Fan", S("Level/fan_0"), 204, 0);
-            var fanAnim = fan.gameObject.AddComponent<SpriteAnimator>();
-            fanAnim.frames = Frames("Level/fan", 2);
-            fanAnim.framesPerSecond = 6f;
+            var background = S("Level/bg_" + key);
+            ArtImage(group, "Backing", background, 0, 0);
+            var shaking = Stretch(Rect("Shaking", group));
+            ArtImage(shaking, name, background, 0, 0);
 
-            var cabinet = ArtImage(shaking, "Tall Cabinet", S("Level/cabinet_0"), 364, 64);
-            var cabAnim = cabinet.gameObject.AddComponent<SpriteAnimator>();
-            cabAnim.frames = Frames("Level/cabinet", 2);
-            cabAnim.framesPerSecond = 5f;
+            setting.shaker = shaking.gameObject.AddComponent<SceneShaker>();
+            setting.shaker.target = shaking;
+            return setting;
+        }
 
-            var shaker = shaking.gameObject.AddComponent<SceneShaker>();
-            shaker.target = shaking;
-            shaker.wobblers = new[] { fanAnim, cabAnim };
-            return shaker;
+        static SpriteAnimator BuildWobbler(RectTransform shaking, string name, Sprite[] frames, int x, int y, float fps)
+        {
+            var image = ArtImage(shaking, name, frames[0], x, y);
+            var animator = image.gameObject.AddComponent<SpriteAnimator>();
+            animator.frames = frames;
+            animator.framesPerSecond = fps;
+            animator.randomStart = true;
+            animator.enabled = false;
+            return animator;
         }
 
         static void BuildLevelTopBar(RectTransform ui, LevelController c)
@@ -119,6 +159,7 @@ namespace DisasterSafety.EditorTools
 
             // Goal banner, top centre
             var goal = Rect("Goal", ui);
+            c.goalBanner = goal;
             goal.anchorMin = goal.anchorMax = new Vector2(0.5f, 1f);
             goal.pivot = new Vector2(0.5f, 1f);
             goal.sizeDelta = new Vector2(900f, 120f);
