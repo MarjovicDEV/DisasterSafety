@@ -23,14 +23,31 @@ namespace DisasterSafety.Game
         public const string Music = "Music";
         public const string Sounds = "Sounds";
 
-        public const string HowToPlayTitle = "How to Play";
-        // Placeholder text: replace with the final instructions.
-        public const string HowToPlayBody =
-            "1. Pick a topic, like Earthquake.\n" +
-            "2. Pick Easy, Normal, or Hard.\n" +
-            "3. Read what is happening.\n" +
-            "4. Tap the safest thing to do.\n" +
-            "5. Get stars and learn to stay safe!";
+        public const string Done = "DONE";
+        public static string TutorialPageTitle(int index, string title) => "Step " + (index + 1) + ": " + title;
+
+        /// <summary>
+        /// How to Play Tutorial Pages, in order. Each page has a matching picture
+        /// (Assets/Art/Tutorial/tutorial_&lt;Art&gt;_0/1.png) drawn by ArtSource/scripts/tutorial.lua.
+        /// </summary>
+        public static readonly TutorialPageText[] TutorialPages =
+        {
+            new TutorialPageText("topic", "Pick a Topic",
+                "Tap a topic card. Start with Earthquake!",
+                "Tip: Finish a topic to open the next one."),
+            new TutorialPageText("difficulty", "Pick a Level",
+                "Tap Easy first. Normal and Hard open later.",
+                "Tip: More hard hats means a harder challenge."),
+            new TutorialPageText("story", "Read the Story",
+                "Something is happening! Read and look at the picture.",
+                "Tip: Take your time. Read slowly."),
+            new TutorialPageText("choice", "Tap the Safest Choice",
+                "Pick the thing that keeps you safe.",
+                "Tip: Earthquake? DROP, COVER, and HOLD ON!"),
+            new TutorialPageText("stars", "Earn Stars",
+                "Safe choices earn stars. Try to get all 3!",
+                "Tip: Play again anytime to earn more stars."),
+        };
 
         public const string ExitTitle = "Leave the game?";
         public const string ExitBody = "Your stars are saved.";

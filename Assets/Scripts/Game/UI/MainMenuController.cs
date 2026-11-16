@@ -39,6 +39,7 @@ namespace DisasterSafety.Game.UI
 
         [Header("How to Play")]
         public Button howToPlayBack;
+        public TutorialView tutorial;
 
         [Header("Exit")]
         public Button exitYes;
@@ -111,6 +112,8 @@ namespace DisasterSafety.Game.UI
             if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame)
             {
                 AudioManager.Play(Sfx.Back);
+                // Inside How to Play, Back turns to the previous Tutorial Page first.
+                if (nav.Current == MenuScreen.HowToPlay && tutorial != null && tutorial.Back()) return;
                 nav.Back();
             }
         }
@@ -254,6 +257,9 @@ namespace DisasterSafety.Game.UI
                 case MenuScreen.Settings:
                     musicSwitch.Show(GameServices.Audio.MusicOn);
                     soundSwitch.Show(GameServices.Audio.SoundOn);
+                    break;
+                case MenuScreen.HowToPlay:
+                    if (tutorial != null) tutorial.Open();
                     break;
                 case MenuScreen.NameEntry:
                     nameInput.text = string.Empty;

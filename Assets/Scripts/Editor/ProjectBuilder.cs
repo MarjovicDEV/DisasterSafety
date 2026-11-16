@@ -638,20 +638,78 @@ namespace DisasterSafety.EditorTools
 
         static void BuildHowToPlay(RectTransform ui, MainMenuController c)
         {
-            var box = Dialog(ui, "How To Play", 1340f, 800f, out c.howToPlayPanel);
-            DialogTitle(box, UIStrings.HowToPlayTitle, f8);
+            var box = Dialog(ui, "How To Play", 1440f, 940f, out c.howToPlayPanel);
+            var pages = UIStrings.TutorialPages;
+            DialogTitle(box, UIStrings.TutorialPageTitle(0, pages[0].Title), f6);
+            var title = box.Find("Title").GetComponent<Text>();
 
+            // Picture: framed, animated, and swipeable.
+            var holder = Rect("Picture", box);
+            Centered(holder, 0f, 150f, 576f, 336f);
+            Img(holder, S("UI/input_box"), Color.white, sliced: true, raycast: true);
+            var pic = Rect("Art", holder);
+            Centered(pic, 0f, 0f, 136f * Px, 76f * Px);
+            var frames = new Sprite[pages.Length * 2];
+            for (var i = 0; i < pages.Length; i++)
+            {
+                frames[i * 2] = S("Tutorial/tutorial_" + pages[i].Art + "_0");
+                frames[i * 2 + 1] = S("Tutorial/tutorial_" + pages[i].Art + "_1");
+            }
+            var picImg = Img(pic, frames[0], Color.white);
+
+            var prev = MakeButton(box, "Previous", "blue", null, null, S("Icons/icon_play"), Sfx.Click);
+            Centered((RectTransform)prev.transform, -620f, 150f, 140f, 140f);
+            // Mirror the Next arrow so Previous does not look like the orange BACK button.
+            prev.transform.Find("Face/Icon").localScale = new Vector3(-1f, 1f, 1f);
+            var next = MakeButton(box, "Next", "green", null, null, S("Icons/icon_play"), Sfx.Click);
+            Centered((RectTransform)next.transform, 620f, 150f, 140f, 140f);
+
+            var cr = Rect("Caption", box);
+            Centered(cr, 0f, -60f, 1300f, 70f);
+            var caption = Label(cr, pages[0].Caption, f4, Ink, TextAnchor.MiddleCenter, shadow: false);
+            caption.horizontalOverflow = HorizontalWrapMode.Wrap;
+
+            // Bantay's Tip for this page.
             var dog = S("Characters/bantay_3");
             var dr = Rect("Bantay", box);
-            Centered(dr, -470f, 40f, dog.rect.width * Px * 1.5f, dog.rect.height * Px * 1.5f);
+            Centered(dr, -540f, -170f, dog.rect.width * Px * 0.75f, dog.rect.height * Px * 0.75f);
             Img(dr, dog, Color.white);
+            var bubble = Rect("Tip Bubble", box);
+            Centered(bubble, 80f, -170f, 1000f, 130f);
+            Img(bubble, S("UI/bubble"), Color.white, sliced: true);
+            var tr = Stretch(Rect("Tip", bubble));
+            tr.offsetMin = new Vector2(32f, 16f);
+            tr.offsetMax = new Vector2(-32f, -16f);
+            var tip = Label(tr, pages[0].Tip, f4, Ink, TextAnchor.MiddleLeft, shadow: false);
+            tip.horizontalOverflow = HorizontalWrapMode.Wrap;
 
-            var tr = Rect("Body", box);
-            Centered(tr, 120f, 30f, 900f, 420f);
-            var body = Label(tr, UIStrings.HowToPlayBody, f4, Ink, TextAnchor.MiddleLeft, shadow: false);
-            body.horizontalOverflow = HorizontalWrapMode.Wrap;
+            // Star page dots.
+            var starOn = S("Icons/icon_star");
+            var starOff = S("Icons/icon_starEmpty");
+            var dots = new Image[pages.Length];
+            for (var i = 0; i < pages.Length; i++)
+            {
+                var d = Rect("Dot " + (i + 1), box);
+                Centered(d, (i - (pages.Length - 1) / 2f) * 64f, -275f, 48f, 48f);
+                dots[i] = Img(d, i == 0 ? starOn : starOff, Color.white);
+            }
 
             c.howToPlayBack = DialogButton(box, "Back", "orange", UIStrings.Back, S("Icons/icon_back"), Sfx.Back, 0f, 320f);
+
+            var view = holder.gameObject.AddComponent<TutorialView>();
+            view.title = title;
+            view.caption = caption;
+            view.tip = tip;
+            view.picture = picImg;
+            view.pictureHolder = holder;
+            view.previous = prev;
+            view.next = next;
+            view.closeLabel = c.howToPlayBack.GetComponentInChildren<Text>();
+            view.dots = dots;
+            view.dotOn = starOn;
+            view.dotOff = starOff;
+            view.frames = frames;
+            c.tutorial = view;
         }
 
         static void BuildExit(RectTransform ui, MainMenuController c)

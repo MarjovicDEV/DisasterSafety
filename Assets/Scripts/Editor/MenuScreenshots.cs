@@ -90,6 +90,15 @@ namespace DisasterSafety.EditorTools
                     Render(cam, canvas, size, Path.Combine(dir, shot.name + "-" + size.x + "x" + size.y + ".png"));
                 }
             }
+
+            // Every How to Play Tutorial Page, at the reference resolution.
+            foreach (var p in all) p.gameObject.SetActive(p == c.mainPanel || p == c.dimmer || p == c.howToPlayPanel);
+            for (var page = 0; page < Game.UIStrings.TutorialPages.Length; page++)
+            {
+                c.tutorial.Open();
+                for (var n = 0; n < page; n++) c.tutorial.NextPage();
+                Render(cam, canvas, Sizes[0], Path.Combine(dir, "06-howtoplay-page" + (page + 1) + ".png"));
+            }
             Debug.Log("Screenshots written to " + dir);
         }
 
