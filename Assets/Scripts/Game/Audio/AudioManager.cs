@@ -14,7 +14,12 @@ namespace DisasterSafety.Game
         Toggle,
         Sparkle,
         Bark,
-        Soon
+        Soon,
+        Rumble,
+        Safe,
+        Unsafe,
+        Star,
+        Complete
     }
 
     /// <summary>Plays the menu music and UI sounds, following the Settings switches.</summary>
@@ -28,6 +33,7 @@ namespace DisasterSafety.Game
         AudioLibrary library;
         AudioSource music;
         AudioSource effects;
+        AudioSource pitched;
         Coroutine fade;
 
         public static void EnsureExists()
@@ -40,10 +46,13 @@ namespace DisasterSafety.Game
             instance.Setup();
         }
 
-        public static void Play(Sfx sfx, float volume = 1f)
+        public static void Play(Sfx sfx, float volume = 1f) => Play(sfx, volume, 1f);
+
+        /// <summary>Plays a sound at a set pitch, e.g. a higher chime for each Star.</summary>
+        public static void Play(Sfx sfx, float volume, float pitch)
         {
             EnsureExists();
-            instance.PlayOneShot(sfx, volume);
+            instance.PlayOneShot(sfx, volume, pitch);
         }
 
         void Setup()
@@ -55,6 +64,8 @@ namespace DisasterSafety.Game
             music.volume = 0f;
             effects = gameObject.AddComponent<AudioSource>();
             effects.playOnAwake = false;
+            pitched = gameObject.AddComponent<AudioSource>();
+            pitched.playOnAwake = false;
 
             if (library != null && library.menuMusic != null)
             {
@@ -89,11 +100,18 @@ namespace DisasterSafety.Game
             music.volume = target;
         }
 
-        void PlayOneShot(Sfx sfx, float volume)
+        void PlayOneShot(Sfx sfx, float volume, float pitch)
         {
             if (!GameServices.Audio.SoundOn || library == null) return;
             var clip = library.Get(sfx);
             if (clip == null) return;
+            // PlayOneShot follows the source's pitch, so a pitched sound gets its own source.
+            if (!Mathf.Approximately(pitch, 1f))
+            {
+                pitched.pitch = pitch;
+                pitched.PlayOneShot(clip, SfxVolume * volume);
+                return;
+            }
             effects.pitch = sfx == Sfx.Type || sfx == Sfx.Click ? Random.Range(0.94f, 1.06f) : 1f;
             effects.PlayOneShot(clip, SfxVolume * volume);
         }

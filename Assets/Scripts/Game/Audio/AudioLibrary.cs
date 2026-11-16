@@ -19,6 +19,11 @@ namespace DisasterSafety.Game
         public AudioClip sparkle;
         public AudioClip bark;
         public AudioClip soon;
+        public AudioClip rumble;
+        public AudioClip safe;
+        public AudioClip unsafeChoice;
+        public AudioClip star;
+        public AudioClip complete;
 
         public AudioClip Get(Sfx sfx)
         {
@@ -34,6 +39,11 @@ namespace DisasterSafety.Game
                 case Sfx.Sparkle: return sparkle;
                 case Sfx.Bark: return bark;
                 case Sfx.Soon: return soon;
+                case Sfx.Rumble: return rumble;
+                case Sfx.Safe: return safe;
+                case Sfx.Unsafe: return unsafeChoice;
+                case Sfx.Star: return star;
+                case Sfx.Complete: return complete;
                 default: return null;
             }
         }

@@ -97,6 +97,11 @@ namespace DisasterSafety.Game.UI
             mainPanel.SetInstant(true);
             RefreshMain();
 
+            // Level Completed's "Levels" button lands here on Level Selection for that Level.
+            var entry = GameServices.MenuOpensLevelSelect;
+            GameServices.MenuOpensLevelSelect = null;
+            if (entry.HasValue && nav.OpenLevelSelect(entry.Value.Item1, entry.Value.Item2)) yield break;
+
             yield return new WaitForSeconds(0.8f);
             if (GameServices.StartupLoadStatus == SaveLoadStatus.Preserved)
                 bantay.Say(UIStrings.BantaySaveKept, true);
@@ -398,9 +403,10 @@ namespace DisasterSafety.Game.UI
 
         void OnStart()
         {
-            // Scenario scenes arrive in the gameplay milestone; Start stays disabled until then.
+            if (selectedLevel <= 0) return;
             var id = new LevelId(nav.SelectedEpisode, nav.SelectedDifficulty, selectedLevel);
-            Debug.Log("Start requested for " + id.Key);
+            if (!GameServices.Content.IsPlayable(id) || !IsOpen(id.Episode, id.Difficulty)) return;
+            GameScenes.PlayLevel(id);
         }
 
         static void Quit()

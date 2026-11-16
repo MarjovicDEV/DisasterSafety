@@ -18,6 +18,14 @@ namespace DisasterSafety.Game.UI
         public Text bubbleText;
         public float sayDuration = 4.5f;
 
+        /// <summary>
+        /// When set (in a Level), tapping Bantay repeats this line instead of a Main Menu Tip.
+        /// </summary>
+        public System.Func<string> tapLine;
+
+        /// <summary>Set by Celebrate: the bubble stays up even after a tap.</summary>
+        bool keepBubble;
+
         int tipIndex;
         float talkUntil;
         float hideAt = -1f;
@@ -28,10 +36,13 @@ namespace DisasterSafety.Game.UI
         {
             tipIndex = Random.Range(0, UIStrings.Tips.Length);
             nextBlink = Time.time + Random.Range(2f, 4f);
-            if (bubble != null) bubble.SetInstant(false);
+            // Bantay may be told to speak before Start runs (e.g. inside a panel that just opened).
+            if (bubble != null && hideAt < 0f) bubble.SetInstant(false);
         }
 
-        public void Say(string text, bool bark = false)
+        public void Say(string text, bool bark = false) => Say(text, bark, sayDuration);
+
+        public void Say(string text, bool bark, float seconds)
         {
             if (bubbleText != null) bubbleText.text = text;
             if (bubble != null)
@@ -40,13 +51,42 @@ namespace DisasterSafety.Game.UI
                 bubble.Show();
             }
             talkUntil = Time.time + Mathf.Clamp(text.Length * 0.05f, 0.6f, 2.2f);
-            hideAt = Time.time + sayDuration;
+            hideAt = Time.time + (keepBubble ? 100000f : seconds);
             if (bark) AudioManager.Play(Sfx.Bark, 0.7f);
             Hop();
         }
 
+        /// <summary>Three happy hops for a Completed Level. Bantay cheers effort, never Stars.</summary>
+        public void Celebrate(string line)
+        {
+            keepBubble = true;
+            Say(line, true);
+            if (hop != null) StopCoroutine(hop);
+            hop = StartCoroutine(CelebrateRoutine());
+        }
+
+        public void HideBubble()
+        {
+            hideAt = -1f;
+            if (bubble != null) bubble.Hide();
+        }
+
+        IEnumerator CelebrateRoutine()
+        {
+            for (var i = 0; i < 3; i++)
+            {
+                yield return HopRoutine();
+                yield return new WaitForSeconds(0.08f);
+            }
+        }
+
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (tapLine != null)
+            {
+                Say(tapLine(), true);
+                return;
+            }
             Say(UIStrings.Tips[tipIndex], true);
             tipIndex = (tipIndex + 1) % UIStrings.Tips.Length;
         }

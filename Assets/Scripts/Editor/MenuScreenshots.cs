@@ -17,7 +17,7 @@ namespace DisasterSafety.EditorTools
     /// </summary>
     public static class MenuScreenshots
     {
-        static readonly Vector2Int[] Sizes = { new Vector2Int(1920, 1080), new Vector2Int(2400, 1080) };
+        internal static readonly Vector2Int[] Sizes = { new Vector2Int(1920, 1080), new Vector2Int(2400, 1080) };
 
         [MenuItem("Disaster Safety/Capture Menu Screenshots")]
         public static void CaptureToProjectFolder() => Capture(Path.GetFullPath("Screenshots"));
@@ -99,10 +99,11 @@ namespace DisasterSafety.EditorTools
                 for (var n = 0; n < page; n++) c.tutorial.NextPage();
                 Render(cam, canvas, Sizes[0], Path.Combine(dir, "06-howtoplay-page" + (page + 1) + ".png"));
             }
+            LevelScreenshots.Capture(dir);
             Debug.Log("Screenshots written to " + dir);
         }
 
-        static void Render(Camera cam, Canvas canvas, Vector2Int size, string path)
+        internal static void Render(Camera cam, Canvas canvas, Vector2Int size, string path)
         {
             var rt = new RenderTexture(size.x, size.y, 24, RenderTextureFormat.ARGB32);
             cam.targetTexture = rt;

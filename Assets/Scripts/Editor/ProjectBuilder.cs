@@ -13,13 +13,14 @@ using UnityEngine.UI;
 namespace DisasterSafety.EditorTools
 {
     /// <summary>
-    /// Builds the Boot and MainMenu scenes, the audio library, the pixel fonts, the Build
+    /// Builds the Boot, MainMenu and Level scenes, the audio library, the pixel fonts, the Build
     /// Settings scene list and the Android orientation settings from the generated art.
     /// Menu: Disaster Safety > Build Everything. Batch: -executeMethod
     /// DisasterSafety.EditorTools.ProjectBuilder.BuildAllBatch
-    /// Re-running it replaces both scenes, so make layout changes here, not by hand.
+    /// Re-running it replaces every scene, so make layout changes here, not by hand.
+    /// The Level scene lives in ProjectBuilder.Level.cs.
     /// </summary>
-    public static class ProjectBuilder
+    public static partial class ProjectBuilder
     {
         public const string BootScenePath = "Assets/Scenes/Boot.unity";
         public const string MenuScenePath = "Assets/Scenes/MainMenu.unity";
@@ -47,10 +48,12 @@ namespace DisasterSafety.EditorTools
             ConfigurePlayer();
             BuildBootScene();
             BuildMenuScene();
+            BuildLevelScene();
             EditorBuildSettings.scenes = new[]
             {
                 new EditorBuildSettingsScene(BootScenePath, true),
                 new EditorBuildSettingsScene(MenuScenePath, true),
+                new EditorBuildSettingsScene(LevelScenePath, true),
             };
             AssetDatabase.SaveAssets();
             Debug.Log("Disaster Safety: build complete.");
@@ -103,6 +106,11 @@ namespace DisasterSafety.EditorTools
             lib.sparkle = Clip("Sfx/sfx_sparkle");
             lib.bark = Clip("Sfx/sfx_bark");
             lib.soon = Clip("Sfx/sfx_soon");
+            lib.rumble = Clip("Sfx/sfx_rumble");
+            lib.safe = Clip("Sfx/sfx_safe");
+            lib.unsafeChoice = Clip("Sfx/sfx_unsafe");
+            lib.star = Clip("Sfx/sfx_star");
+            lib.complete = Clip("Sfx/sfx_complete");
             EditorUtility.SetDirty(lib);
         }
 

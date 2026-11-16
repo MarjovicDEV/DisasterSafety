@@ -20,6 +20,14 @@ namespace DisasterSafety.Game.UI
             if (randomStart) time = Random.value * 10f;
         }
 
+        /// <summary>Stops on the first frame (used when the shaking calms down).</summary>
+        public void Rest()
+        {
+            enabled = false;
+            if (image == null) image = GetComponent<Image>();
+            if (frames != null && frames.Length > 0) image.sprite = frames[0];
+        }
+
         void Update()
         {
             if (frames == null || frames.Length == 0 || framesPerSecond <= 0f) return;

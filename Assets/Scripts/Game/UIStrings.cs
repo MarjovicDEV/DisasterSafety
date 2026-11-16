@@ -43,9 +43,9 @@ namespace DisasterSafety.Game
                 "Tip: Take your time. Read slowly."),
             new TutorialPageText("choice", "Tap the Safest Choice",
                 "Pick the thing that keeps you safe.",
-                "Tip: Earthquake? DROP, COVER, and HOLD ON!"),
+                "Tip: Earthquake? DUCK, COVER, and HOLD!"),
             new TutorialPageText("stars", "Earn Stars",
-                "Safe choices earn stars. Try to get all 3!",
+                "Pick the safe choice first, with no Hint, for 3 stars!",
                 "Tip: Play again anytime to earn more stars."),
         };
 
@@ -101,18 +101,50 @@ namespace DisasterSafety.Game
         public static string BantayDifficultyLocked(Difficulty needed) => "Finish " + DifficultyName(needed) + " first!";
         public const string BantaySaveKept = "Your old save had a problem. I kept a copy safe.";
 
-        /// <summary>Short, accurate safety tips Bantay says when tapped.</summary>
+        /// <summary>
+        /// Short safety facts Bantay says when tapped on the Main Menu. Only lines that trace
+        /// to a cited finding in docs/research appear here (EQ-09, EQ-37, EQ-35). Tips for the
+        /// other Episodes return when each Episode has been researched.
+        /// </summary>
         public static readonly string[] Tips =
         {
-            "Earthquake? DROP, COVER, and HOLD ON!",
-            "Fire? Get out and stay out!",
-            "Smoke? Stay low and go!",
-            "Typhoon? Stay inside, away from windows.",
-            "Flood? Never walk or play in floodwater.",
-            "Heavy rain on a hill? Watch for landslides!",
+            "Earthquake? DUCK, COVER, and HOLD!",
             "Know your school's evacuation area.",
             "Listen to your teacher during drills.",
-            "Keep a go bag with water and a flashlight.",
         };
+
+        // Level screen ----------------------------------------------------------
+        public const string Hint = "HINT";
+        public const string Pause = "PAUSE";
+        public const string PauseTitle = "Paused";
+        public const string Resume = "RESUME";
+        public const string Restart = "RESTART";
+        public const string QuitToMenu = "QUIT TO MENU";
+        public const string PauseBody = "Stars you earned are kept.";
+
+        public const string SafeHeading = "Safe!";
+        public const string UnsafeHeading = "Not safe";
+        public const string TryAgain = "TRY AGAIN";
+        public const string Finish = "FINISH";
+        public const string Tried = "Tried";
+
+        public const string LevelCompletedTitle = "Level Completed!";
+        public static string LevelCompletedHeadline(string name) =>
+            string.IsNullOrEmpty(name) ? "You did it!" : "You did it, " + name + "!";
+        public static string SaveProblem(string name) => LevelCompletedHeadline(name) + " I could not save this time.";
+        public static string SafeChoiceLine(string label) => "Safe choice: " + label;
+        public const string Replay = "REPLAY";
+        public const string NextLevel = "NEXT";
+        public const string LevelsButton = "LEVELS";
+        public const string MainMenuButton = "MENU";
+
+        public static string LevelLabel(LevelId id) =>
+            EpisodeName(id.Episode) + " - " + DifficultyName(id.Difficulty) + " - " + id.Number;
+
+        public static string HintLine(string hint) => "Hint: " + hint;
+        public const string BantayThinkAgain = "Let's think again together!";
+        public const string BantayHintReady = "Need help? Tap HINT!";
+        public static string BantayCheer(string name) =>
+            string.IsNullOrEmpty(name) ? "Woof woof! Great job!" : "Woof woof! Great job, " + name + "!";
     }
 }

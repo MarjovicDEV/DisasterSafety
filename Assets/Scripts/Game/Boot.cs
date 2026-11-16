@@ -9,7 +9,7 @@ namespace DisasterSafety.Game
     /// </summary>
     public sealed class Boot : MonoBehaviour
     {
-        public const string MainMenuScene = "MainMenu";
+        public const string MainMenuScene = GameScenes.MainMenu;
 
         void Start()
         {
