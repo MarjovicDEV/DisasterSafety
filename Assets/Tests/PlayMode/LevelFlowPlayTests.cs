@@ -8,6 +8,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+using UnityEngine.UI;
 
 namespace DisasterSafety.Tests
 {
@@ -168,6 +169,61 @@ namespace DisasterSafety.Tests
             yield return Wait(0.5f);
             Assert.That(m.levelPanel.IsVisible, Is.True);
             Assert.That(m.levelHeader.text, Is.EqualTo("Earthquake - Easy"));
+        }
+
+        [UnityTest]
+        public IEnumerator EasyDifficulty_CompletingAllThreeLevels_OpensNormal()
+        {
+            var second = new LevelId(Episode.Earthquake, Difficulty.Easy, 2);
+            var third = new LevelId(Episode.Earthquake, Difficulty.Easy, 3);
+
+            GameServices.Initialize(dir);
+            GameServices.Progress.SetDisplayName("Ana");
+            GameServices.SaveProgress();
+            GameScenes.PlayLevel(First);
+            yield return ReadyToChoose(Level);
+
+            var c = Level();
+            Assert.That(c.Level, Is.EqualTo(First));
+            c.choiceCards[Desk].button.onClick.Invoke();
+            c.finishButton.onClick.Invoke();
+            Assert.That(c.nextButton.gameObject.activeSelf, Is.True, "Level 1 leads to Level 2");
+            c.nextButton.onClick.Invoke();
+
+            yield return WaitFor(() => Level()?.Level.Equals(second) == true, "Level 2 to load");
+            yield return ReadyToChoose(Level);
+            c = Level();
+            Assert.That(c.ActiveSetting.key, Is.EqualTo("corridor"));
+            Assert.That(c.ActiveSetting.shaker.IsShaking, Is.True);
+
+            const int Stairs = 0, Cover = 2;
+            c.choiceCards[Stairs].button.onClick.Invoke();
+            Assert.That(c.feedbackHeading.text, Is.EqualTo("Not safe yet"));
+            c.tryAgainButton.onClick.Invoke();
+            yield return ReadyToChoose(Level);
+            c.choiceCards[Cover].button.onClick.Invoke();
+            c.finishButton.onClick.Invoke();
+            Assert.That(c.nextButton.gameObject.activeSelf, Is.True, "Level 2 leads to Level 3");
+            c.nextButton.onClick.Invoke();
+
+            yield return WaitFor(() => Level()?.Level.Equals(third) == true && Level().ActiveSetting != null, "Level 3 to load");
+            c = Level();
+            Assert.That(c.ActiveSetting.key, Is.EqualTo("classroom_after"));
+            Assert.That(c.ActiveSetting.shaker == null || !c.ActiveSetting.shaker.IsShaking, Is.True);
+            Assert.That(c.bantay.bubbleText.text, Is.EqualTo("The shaking stopped. Your teacher is at the door."));
+
+            var teacher = c.ActiveSetting.GetComponentInChildren<SpriteAnimator>();
+            Assert.That(teacher, Is.Not.Null, "the teacher waves in the still classroom");
+            var teacherImage = teacher.GetComponent<Image>();
+            var firstFrame = teacherImage.sprite;
+            yield return WaitFor(() => teacherImage.sprite != firstFrame, "the teacher to wave");
+            yield return ReadyToChoose(Level);
+
+            const int Walk = 1;
+            c.choiceCards[Walk].button.onClick.Invoke();
+            c.finishButton.onClick.Invoke();
+            Assert.That(c.completedPanel.IsVisible, Is.True);
+            Assert.That(SavedOnDisk().IsCompleted(third), Is.True);
         }
 
         [UnityTest]

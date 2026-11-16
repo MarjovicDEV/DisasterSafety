@@ -54,17 +54,19 @@ namespace DisasterSafety.EditorTools
             world.gameObject.AddComponent<EnvelopeScaler>();
             c.world = world;
 
-            c.settings = new[] { BuildClassroom(world), BuildCorridor(world) };
-            c.settings[1].gameObject.SetActive(false);
+            c.settings = new[] { BuildClassroom(world), BuildCorridor(world), BuildClassroomAfter(world) };
+            for (var i = 1; i < c.settings.Length; i++)
+                c.settings[i].gameObject.SetActive(false);
 
             var ui = Stretch(Rect("SafeArea", root));
             ui.gameObject.AddComponent<SafeAreaFitter>();
 
             BuildLevelTopBar(ui, c);
             BuildChoices(ui, c);
-            c.bantay = BuildBantay(ui);
+            c.guidance = Stretch(Rect("Guidance", ui));
+            c.bantay = BuildBantay(c.guidance);
             ((RectTransform)c.bantay.transform).anchoredPosition = new Vector2(-40f, 384f);
-            BuildHintButton(ui, c);
+            BuildHintButton(c.guidance, c);
 
             c.dimmer = Panel(Stretch(Rect("Dimmer", ui)), ScreenPanel.Style.Fade);
             Img(c.dimmer.transform, S("UI/solid"), new Color(Ink.r, Ink.g, Ink.b, 0.6f), raycast: true);
@@ -92,34 +94,41 @@ namespace DisasterSafety.EditorTools
 
         static LevelSetting BuildClassroom(RectTransform world)
         {
-            var setting = BuildSetting(world, ScenarioSettings.Classroom, "Classroom");
-            var shaking = setting.shaker.target;
+            var setting = BuildSetting(world, ScenarioSettings.Classroom, "Classroom", out var shaking);
             setting.shaker.wobblers = new[]
             {
-                BuildWobbler(shaking, "Ceiling Fan", Frames("Level/fan", 2), 204, 0, 6f),
-                BuildWobbler(shaking, "Tall Cabinet", Frames("Level/cabinet", 2), 364, 64, 5f),
+                BuildLevelAnimation(shaking, "Ceiling Fan", Frames("Level/fan", 2), 204, 0, 6f, wobbles: true),
+                BuildLevelAnimation(shaking, "Tall Cabinet", Frames("Level/cabinet", 2), 364, 64, 5f, wobbles: true),
             };
             return setting;
         }
 
         static LevelSetting BuildCorridor(RectTransform world)
         {
-            var setting = BuildSetting(world, ScenarioSettings.Corridor, "Corridor");
+            var setting = BuildSetting(world, ScenarioSettings.Corridor, "Corridor", out var shaking);
             // Keep the pots in frame on wide screens and the Goal clear of Bantay's bubble.
             setting.alignArtTop = true;
             setting.goalPosition = new Vector2(-212f, -252f);
-            var shaking = setting.shaker.target;
             var pots = Frames("Level/pots", 2);
             setting.shaker.wobblers = new[]
             {
-                BuildWobbler(shaking, "Hanging Pot Left", pots, 116, 12, 4f),
-                BuildWobbler(shaking, "Hanging Pot Right", pots, 236, 12, 4f),
+                BuildLevelAnimation(shaking, "Hanging Pot Left", pots, 116, 12, 4f, wobbles: true),
+                BuildLevelAnimation(shaking, "Hanging Pot Right", pots, 236, 12, 4f, wobbles: true),
             };
             return setting;
         }
 
-        // A still copy behind the shaking copy keeps the edges covered.
-        static LevelSetting BuildSetting(RectTransform world, string key, string name)
+        static LevelSetting BuildClassroomAfter(RectTransform world)
+        {
+            var setting = BuildSetting(world, ScenarioSettings.ClassroomAfter, "Classroom After", out var foreground, shakes: false);
+            // Keep Bantay and the Hint clear of the teacher in the doorway.
+            setting.guidanceOffsetX = -880f;
+            BuildLevelAnimation(foreground, "Teacher", Frames("Level/teacher", 2), 418, 126, 3f, wobbles: false);
+            return setting;
+        }
+
+        // A still copy behind the foreground keeps the edges covered during shaking.
+        static LevelSetting BuildSetting(RectTransform world, string key, string name, out RectTransform foreground, bool shakes = true)
         {
             var group = Stretch(Rect(name, world));
             var setting = group.gameObject.AddComponent<LevelSetting>();
@@ -127,22 +136,25 @@ namespace DisasterSafety.EditorTools
 
             var background = S("Level/bg_" + key);
             ArtImage(group, "Backing", background, 0, 0);
-            var shaking = Stretch(Rect("Shaking", group));
-            ArtImage(shaking, name, background, 0, 0);
+            foreground = Stretch(Rect(shakes ? "Shaking" : "Still", group));
+            ArtImage(foreground, name, background, 0, 0);
 
-            setting.shaker = shaking.gameObject.AddComponent<SceneShaker>();
-            setting.shaker.target = shaking;
+            if (shakes)
+            {
+                setting.shaker = foreground.gameObject.AddComponent<SceneShaker>();
+                setting.shaker.target = foreground;
+            }
             return setting;
         }
 
-        static SpriteAnimator BuildWobbler(RectTransform shaking, string name, Sprite[] frames, int x, int y, float fps)
+        static SpriteAnimator BuildLevelAnimation(RectTransform parent, string name, Sprite[] frames, int x, int y, float fps, bool wobbles)
         {
-            var image = ArtImage(shaking, name, frames[0], x, y);
+            var image = ArtImage(parent, name, frames[0], x, y);
             var animator = image.gameObject.AddComponent<SpriteAnimator>();
             animator.frames = frames;
             animator.framesPerSecond = fps;
-            animator.randomStart = true;
-            animator.enabled = false;
+            animator.randomStart = wobbles;
+            animator.enabled = !wobbles;
             return animator;
         }
 

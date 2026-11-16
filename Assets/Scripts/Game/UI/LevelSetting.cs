@@ -7,6 +7,7 @@ namespace DisasterSafety.Game.UI
         public string key;
         public SceneShaker shaker;
         public bool alignArtTop;
+        public float guidanceOffsetX;
         public Vector2 goalPosition = new Vector2(0f, -24f);
     }
 }

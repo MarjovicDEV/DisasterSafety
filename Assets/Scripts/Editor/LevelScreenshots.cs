@@ -69,6 +69,15 @@ namespace DisasterSafety.EditorTools
 
             Feedback(c, corridor.SafeChoice);
             Shot("21-level2-feedback-safe", c.choicesPanel, c.dimmer, c.feedbackPanel);
+
+            var classroomAfter = PrepareLevel(c, new LevelId(Episode.Earthquake, Difficulty.Easy, 3));
+            c.bantay.bubbleText.text = classroomAfter.intro.text;
+            Shot("30-level3", c.choicesPanel, c.bantay.bubble);
+
+            var stay = Array.FindIndex(classroomAfter.choices, choice => choice.id == "stay");
+            c.choiceCards[stay].SetTried(true);
+            Feedback(c, classroomAfter.choices[stay]);
+            Shot("31-level3-feedback-unsafe", c.choicesPanel, c.dimmer, c.feedbackPanel);
         }
 
         static Scenario PrepareLevel(LevelController c, LevelId level)

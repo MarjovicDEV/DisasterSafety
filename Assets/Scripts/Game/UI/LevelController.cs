@@ -18,6 +18,7 @@ namespace DisasterSafety.Game.UI
         public LevelSetting[] settings;
         public RectTransform world;
         public RectTransform goalBanner;
+        public RectTransform guidance;
         public Text goalText;
         public Text levelLabel;
         public Button pauseButton;
@@ -139,6 +140,7 @@ namespace DisasterSafety.Game.UI
             world.anchorMin = world.anchorMax = world.pivot = artAnchor;
             world.anchoredPosition = Vector2.zero;
             goalBanner.anchoredPosition = ActiveSetting.goalPosition;
+            guidance.anchoredPosition = new Vector2(ActiveSetting.guidanceOffsetX, 0f);
         }
 
         void Wire()
