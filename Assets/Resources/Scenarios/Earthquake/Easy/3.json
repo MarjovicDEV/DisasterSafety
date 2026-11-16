@@ -1,0 +1,39 @@
+{
+    "level": "Earthquake/Easy/3",
+    "phase": "after",
+    "setting": "classroom_after",
+    "goal": { "text": "Leave the classroom the safe way.", "sources": ["EQ-34"] },
+    "intro": { "text": "The shaking stopped. Your teacher is at the door.", "sources": [] },
+    "hint": { "text": "Follow your teacher, one step at a time.", "sources": ["EQ-35", "EQ-36"] },
+    "lesson": {
+        "text": "When the shaking stops, walk out with your teacher. Aftershocks may come, so stay ready.",
+        "sources": ["EQ-34", "EQ-35", "EQ-42"]
+    },
+    "choices": [
+        {
+            "id": "stay",
+            "label": "Stay under the desk",
+            "picture": "choice_stay",
+            "safe": false,
+            "heading": "Time to go",
+            "feedback": "The shaking stopped. Now leave the classroom with your teacher.",
+            "sources": ["EQ-19", "EQ-34", "EQ-35"]
+        },
+        {
+            "id": "walk",
+            "label": "Walk out with your teacher",
+            "picture": "choice_walk",
+            "safe": true,
+            "feedback": "Walk out with your class. Follow your teacher to the evacuation area.",
+            "sources": ["EQ-34", "EQ-35", "EQ-37"]
+        },
+        {
+            "id": "push",
+            "label": "Run and push to the door",
+            "picture": "choice_push",
+            "safe": false,
+            "feedback": "Walk. Do not run. Do not push.",
+            "sources": ["EQ-20", "EQ-36"]
+        }
+    ]
+}
