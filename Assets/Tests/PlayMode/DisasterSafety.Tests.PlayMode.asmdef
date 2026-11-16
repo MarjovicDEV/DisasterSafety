@@ -1,0 +1,24 @@
+{
+    "name": "DisasterSafety.Tests.PlayMode",
+    "rootNamespace": "DisasterSafety.Tests",
+    "references": [
+        "DisasterSafety.Core",
+        "DisasterSafety.Game",
+        "UnityEngine.UI",
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
