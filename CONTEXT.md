@@ -56,6 +56,16 @@ _Avoid_: Checkpoint, resume point
 A save file the game could not read, kept beside the new one under a different name instead of being deleted.
 _Avoid_: Backup, corrupt save, broken save
 
+## Guidance
+
+**Tutorial Page**:
+One picture-and-caption step of How to Play, showing the Learner one thing to do. How to Play is a short sequence of Tutorial Pages.
+_Avoid_: Slide, tutorial step, help screen
+
+**Tip**:
+One short line of advice from Bantay. A Tip on a Tutorial Page explains how to play; a Tip on the Main Menu is a safety reminder.
+_Avoid_: Hint (reserved for in-level help), fact, message
+
 ## Characters
 
 **Bantay**:
