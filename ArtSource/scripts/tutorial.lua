@@ -159,7 +159,7 @@ return function(L, CH, UI)
   -- 4. Tap the safest choice ---------------------------------------------
   local function choice(f)
     local img = backdrop()
-    -- left: drop, cover, and hold on under a desk
+    -- left: duck, cover, and hold under a desk
     card(img, 6, 6, 58, 58, f == 1 and P.yellow3 or P.white, P.gray2)
     if f == 1 then
       L.rect(img, 5, 5, 60, 1, P.yellow); L.rect(img, 5, 64, 60, 1, P.yellow)

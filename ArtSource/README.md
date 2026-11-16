@@ -10,7 +10,9 @@ All sprites are drawn by Lua scripts that run in Aseprite 1.3:
 |---|---|
 | `scripts/background.lua` | School courtyard (480x270), Philippine flag (4 frames), clouds, birds |
 | `scripts/characters.lua` | Walking boy and girl students (6 frames each), Bantay the guide dog (idle, wag, blink, talk) |
-| `scripts/ui.lua` | 9-slice buttons and panels, icons, Episode emblems, title logo, particles, font atlas |
+| `scripts/ui.lua` | 9-slice buttons and panels, icons (including pause, hint, replay, levels), Episode emblems, title logo, particles, font atlas |
+| `scripts/tutorial.lua` | How to Play Tutorial Page pictures (2 frames each) |
+| `scripts/level.lua` | Level scene: classroom (480x270), ceiling fan and tall cabinet (2 wobble frames each), one 72x52 picture per Choice |
 | `scripts/font.lua` | 5x7 pixel font with lower case, digits, punctuation, ñ and Ñ |
 | `scripts/lib.lua` | Palette and drawing helpers |
 | `scripts/build.lua` | Runs everything and saves the results |
@@ -39,8 +41,10 @@ Scale rule: one art pixel is four UI units at 1920x1080. Unity imports everythin
 python -I ArtSource/audio/make_audio.py D:/GameDEV/DisasterSafety
 ```
 
-It writes `Assets/Audio/Music/bgm_menu.wav` and `Assets/Audio/Sfx/*.wav`.
+It writes `Assets/Audio/Music/bgm_menu.wav` and `Assets/Audio/Sfx/*.wav`. The Level sounds are `sfx_rumble` (a soft, low earthquake rumble, kept quiet on purpose), `sfx_safe`, `sfx_unsafe` (a kind two-note "hmm", never a buzzer), `sfx_star` (the game raises its pitch for each Star) and `sfx_complete`.
 
 ## After rebuilding
 
-In Unity, run **Disaster Safety > Build Everything**. It reimports the art and rebuilds the pixel fonts, the audio library, the Boot and MainMenu scenes, and the Build Settings scene list. Rebuilding replaces both scenes, so change layouts in `Assets/Scripts/Editor/ProjectBuilder.cs` rather than by hand.
+In Unity, run **Disaster Safety > Build Everything**. It reimports the art and rebuilds the pixel fonts, the audio library, the Boot, MainMenu and Level scenes, and the Build Settings scene list. Rebuilding replaces every scene, so change layouts in `Assets/Scripts/Editor/ProjectBuilder.cs` and `ProjectBuilder.Level.cs` rather than by hand.
+
+The Level art is gentle on purpose: the classroom shakes by at most 2 art pixels and nothing falls (see `docs/design/first-playable-level.md`). Choice pictures are matched to Scenario files by name (`"picture": "choice_desk"` uses `Assets/Art/Level/choice_desk.png`).

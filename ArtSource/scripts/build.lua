@@ -15,6 +15,15 @@ local BG = dofile(here .. "background.lua")(L)
 local CH = dofile(here .. "characters.lua")(L)
 local UI = dofile(here .. "ui.lua")(L)
 local TU = dofile(here .. "tutorial.lua")(L, CH, UI)
+local LV = dofile(here .. "level.lua")(L, CH)
+
+-- Level scene: classroom, wobbling fan and cabinet, and one picture per Choice
+L.save(LV.classroom(), "Level/bg_classroom", "Level/bg_classroom")
+L.saveFrames(LV.fanFrames(), "Level/fan", "Level/fan", 120)
+L.saveFrames(LV.cabinetFrames(), "Level/cabinet", "Level/cabinet", 120)
+for name, img in pairs(LV.choicePictures()) do
+  L.save(img, "Level/" .. name, "Level/" .. name)
+end
 
 -- How to Play Tutorial Pages: Tutorial/<name>_0.png and _1.png
 for _, page in ipairs(TU.pages) do

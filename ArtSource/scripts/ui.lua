@@ -258,6 +258,37 @@ return function(L)
     L.outline(pencil, P.ink, true)
     I.pencil = pencil
 
+    -- Level screen icons ------------------------------------------------
+    local pause = L.newImage(16, 16)
+    L.rect(pause, 3, 2, 4, 12, P.white)
+    L.rect(pause, 9, 2, 4, 12, P.white)
+    I.pause = finishIcon(pause)
+
+    -- Hint: a light bulb
+    local bulb = L.newImage(16, 18)
+    L.circle(bulb, 7.5, 6.5, 5.5, P.yellow)
+    L.rect(bulb, 5, 10, 6, 3, P.yellow)
+    L.rect(bulb, 5, 13, 6, 2, P.gray2)
+    L.rect(bulb, 6, 15, 4, 1, P.gray3)
+    L.px(bulb, 5, 4, P.yellow3); L.px(bulb, 5, 5, P.yellow3); L.px(bulb, 6, 3, P.yellow3)
+    L.vline(bulb, 7, 8, 11, P.yellow2); L.vline(bulb, 8, 8, 11, P.yellow2)
+    L.outline(bulb, P.ink, true)
+    I.hint = bulb
+
+    -- Replay: a round arrow
+    local replay = L.newImage(16, 16)
+    for a = 0, 300, 6 do
+      local r = math.rad(a - 60)
+      L.rect(replay, math.floor(7.5 + math.cos(r) * 5.5) - 1, math.floor(8 + math.sin(r) * 5.5) - 1, 2, 2, P.white)
+    end
+    L.poly(replay, { 9, 0, 15, 4, 9, 7 }, P.white)
+    I.replay = finishIcon(replay, false)
+
+    -- Levels: a grid of tiles
+    local grid = L.newImage(16, 16)
+    for gy = 0, 1 do for gx = 0, 1 do L.rect(grid, 2 + gx * 7, 2 + gy * 7, 5, 5, P.white) end end
+    I.levels = finishIcon(grid, false)
+
     return I
   end
 

@@ -170,7 +170,47 @@ def make_sfx():
     s["sfx_bark"] = seq([v * (0.8 + 0.2 * rnd.random()) for v in arf], silence(0.05),
                         [v * 0.8 for v in sweep(950, 420, 0.1, square, 0.4, 0.4)])
     s["sfx_soon"] = seq(sweep(note_freq("G5"), note_freq("G5"), 0.08, triangle, 0.4), sweep(note_freq("E5"), note_freq("E5"), 0.14, triangle, 0.4))
+
+    # Level sounds -------------------------------------------------------
+    s["sfx_rumble"] = make_rumble()
+    # Safe Choice: a bright rising arpeggio
+    s["sfx_safe"] = mix(
+        seq(*[sweep(note_freq(n), note_freq(n), 0.08, square, 0.22, 0.25) for n in ["C5", "E5", "G5"]],
+            sweep(note_freq("C6"), note_freq("C6"), 0.3, square, 0.22, 0.25, decay=0.12)),
+        seq(silence(0.04), *[sweep(note_freq(n), note_freq(n), 0.08, triangle, 0.18) for n in ["E5", "G5", "C6"]],
+            sweep(note_freq("E6"), note_freq("E6"), 0.3, triangle, 0.18, decay=0.12)))
+    # Unsafe Choice: a soft, kind "hmm" (two low triangle notes, never a buzzer)
+    s["sfx_unsafe"] = seq(sweep(note_freq("A4"), note_freq("A4"), 0.14, triangle, 0.32),
+                          sweep(note_freq("F4"), note_freq("F4"), 0.24, triangle, 0.32, decay=0.1))
+    # One Star landing: a bell chime (the game raises its pitch for each Star)
+    s["sfx_star"] = mix(sweep(note_freq("E6"), note_freq("E6"), 0.5, triangle, 0.3, decay=0.12),
+                        sweep(note_freq("B6"), note_freq("B6"), 0.4, triangle, 0.12, decay=0.08))
+    # Level Completed: a short fanfare
+    lead = [("G4", 0.5), ("C5", 0.5), ("E5", 0.5), ("G5", 1), ("E5", 0.5), ("G5", 2)]
+    bass = [("C3", 1), ("G3", 1), ("C3", 1.5), ("C4", 1.5)]
+    beat = 0.15
+    s["sfx_complete"] = mix(render_voice(lead, beat, square, 0.24, duty=0.25, staccato=0.92),
+                            render_voice(bass, beat, triangle, 0.34, staccato=0.9))
     return s
+
+
+def make_rumble(dur=2.6):
+    """A low, soft earthquake rumble: filtered noise with a slow swell, no sharp hits."""
+    rnd = random.Random(11)
+    n = int(dur * RATE)
+    out = []
+    lp1 = lp2 = 0.0
+    k = 2 * math.pi * 70 / RATE  # one-pole low-pass near 70 Hz, twice
+    for i in range(n):
+        x = rnd.random() * 2 - 1
+        lp1 += k * (x - lp1)
+        lp2 += k * (lp1 - lp2)
+        t = i / n
+        swell = math.sin(math.pi * t) ** 0.8          # rises then fades away
+        wobble = 0.75 + 0.25 * math.sin(2 * math.pi * 3.2 * i / RATE)
+        out.append(lp2 * swell * wobble)
+    peak = max(abs(v) for v in out)
+    return [v / peak * 0.42 for v in out]               # quiet on purpose
 
 
 def main():
