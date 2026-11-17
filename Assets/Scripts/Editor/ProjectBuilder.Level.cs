@@ -162,7 +162,9 @@ namespace DisasterSafety.EditorTools
         static LevelSetting BuildSchoolyard(RectTransform world)
         {
             var setting = BuildSetting(world, ScenarioSettings.Schoolyard, "Schoolyard", out var shaking);
-            // Stand Bantay and the Hint in front of the building, clear of the tree and the post.
+            // Keep the tree crown below the Goal on wide screens, and stand Bantay and the Hint
+            // in front of the building, clear of the tree and the post.
+            setting.alignArtTop = true;
             setting.guidanceOffsetX = -1230f;
             setting.shaker.wobblers = new[]
             {
