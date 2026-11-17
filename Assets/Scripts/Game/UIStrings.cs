@@ -151,6 +151,11 @@ namespace DisasterSafety.Game
         public static string HintLine(string hint) => "Hint: " + hint;
         public const string BantayThinkAgain = "Let's think again together!";
         public const string BantayHintReady = "Need help? Tap HINT!";
+
+        // The Student's Reactions in a Level. They never judge a Choice and never mention Stars.
+        public const string ReactionWhoa = "Whoa!";
+        public const string ReactionWait = "Hmm, wait...";
+        public const string ReactionSafe = "I'm safe!";
         public static string BantayCheer(string name) =>
             string.IsNullOrEmpty(name) ? "Woof woof! Great job!" : "Woof woof! Great job, " + name + "!";
     }

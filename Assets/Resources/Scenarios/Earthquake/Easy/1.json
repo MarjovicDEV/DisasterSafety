@@ -14,6 +14,8 @@
             "id": "run",
             "label": "Run outside",
             "picture": "choice_run",
+            "icon": "icon_door",
+            "action": "door",
             "safe": false,
             "heading": "Not safe yet",
             "feedback": "Stay inside while it shakes. When it stops, walk out with your teacher.",
@@ -23,6 +25,8 @@
             "id": "desk",
             "label": "Duck under the desk",
             "picture": "choice_desk",
+            "icon": "icon_desk",
+            "action": "desk",
             "safe": true,
             "feedback": "Duck under your desk. Hold on to it. Stay there until the shaking stops.",
             "sources": ["EQ-10", "EQ-11", "EQ-13"]
@@ -31,6 +35,8 @@
             "id": "window",
             "label": "Go to the window",
             "picture": "choice_window",
+            "icon": "icon_window",
+            "action": "window",
             "safe": false,
             "feedback": "Window glass can break. Stay away from windows.",
             "sources": ["EQ-14", "EQ-21", "EQ-24"]
@@ -39,6 +45,8 @@
             "id": "cabinet",
             "label": "Stand by the tall cabinet",
             "picture": "choice_cabinet",
+            "icon": "icon_cabinet",
+            "action": "cabinet",
             "safe": false,
             "feedback": "Cabinets and shelves can fall. Stay away from heavy things.",
             "sources": ["EQ-14", "EQ-31"]

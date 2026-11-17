@@ -260,6 +260,42 @@ namespace DisasterSafety.Tests
         }
 
         [UnityTest]
+        public IEnumerator GirlPick_Easy1UsesTheGirlFrames()
+        {
+            yield return BootToMenu();
+            var c = UnityEngine.Object.FindAnyObjectByType<MainMenuController>();
+            c.playButton.onClick.Invoke();
+            yield return Wait(0.4f);
+            c.nameInput.text = "Ana";
+            c.nameOk.onClick.Invoke();
+            yield return Wait(0.5f);
+            Assert.That(c.studentPanel.IsVisible, Is.True);
+            c.studentGirl.onClick.Invoke();
+            yield return Wait(0.5f);
+            Assert.That(GameServices.Progress.Student, Is.EqualTo(StudentKind.Girl));
+
+            c.episodeCards[0].button.onClick.Invoke();
+            yield return Wait(0.5f);
+            c.difficultyCards[0].button.onClick.Invoke();
+            yield return Wait(0.5f);
+            c.levelSlots[0].button.onClick.Invoke();
+            yield return null;
+            c.startButton.onClick.Invoke();
+
+            LevelController level = null;
+            for (var t = 0f; t < 10f && (level = UnityEngine.Object.FindAnyObjectByType<LevelController>()) == null; t += Time.unscaledDeltaTime)
+                yield return null;
+            Assert.That(level, Is.Not.Null);
+            for (var t = 0f; t < 5f && level.Student == null; t += Time.unscaledDeltaTime) yield return null;
+            yield return Wait(0.3f);
+
+            var student = level.Student;
+            Assert.That(student.Kind, Is.EqualTo(StudentKind.Girl));
+            Assert.That(student.CurrentSprite.name, Does.StartWith("girl_"));
+            Assert.That(student.Frames, Is.SameAs(student.girl));
+        }
+
+        [UnityTest]
         public IEnumerator CorruptSave_IsPreserved_AndMenuStillLoads()
         {
             File.WriteAllText(Path.Combine(dir, "save.json"), "{ broken");

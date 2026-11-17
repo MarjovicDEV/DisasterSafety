@@ -71,6 +71,7 @@ namespace DisasterSafety.EditorTools
                 BuildClassroom(world), BuildCorridor(world), BuildClassroomAfter(world),
                 BuildBedroom(world), BuildHome(world), BuildSchoolyard(world), BuildBeach(world),
                 BuildMallA(world), BuildMallB(world), BuildHomeAfter(world), BuildEvacuationArea(world),
+                BuildClassroomV2(world),
             };
             for (var i = 1; i < c.settings.Length; i++)
                 c.settings[i].gameObject.SetActive(false);
@@ -80,6 +81,8 @@ namespace DisasterSafety.EditorTools
 
             BuildLevelTopBar(ui, c);
             BuildChoices(ui, c);
+            BuildCaption(ui, c);
+            BuildActionBar(ui, c);
             c.guidance = Stretch(Rect("Guidance", ui));
             c.bantay = BuildBantay(c.guidance);
             ((RectTransform)c.bantay.transform).anchoredPosition = new Vector2(-40f, 384f);
@@ -269,6 +272,212 @@ namespace DisasterSafety.EditorTools
             return animator;
         }
 
+        // The Student flow's classroom: the v2 art, the Student, and the desk front drawn over a ducking Student.
+        // Placements and spots are in ArtSource/README.md (v2 classroom and the Student).
+        static LevelSetting BuildClassroomV2(RectTransform world)
+        {
+            var group = Stretch(Rect("Classroom V2", world));
+            var setting = group.gameObject.AddComponent<LevelSetting>();
+            setting.key = ScenarioSettings.ActionArtKey(ScenarioSettings.Classroom);
+            // On wide screens keep the floor, the Student and the Action Bar apart: crop the ceiling, not the floor.
+            setting.artAnchorY = 0f;
+
+            var background = S("Level/v2/bg_classroom");
+            ArtImage(group, "Backing", background, 0, 0);
+            var shaking = Stretch(Rect("Shaking", group));
+            ArtImage(shaking, "Classroom V2", background, 0, 0);
+            setting.shaker = shaking.gameObject.AddComponent<SceneShaker>();
+            setting.shaker.target = shaking;
+            setting.shaker.shakeSeconds = 2.5f;
+            setting.shaker.wobblers = new[]
+            {
+                BuildLevelAnimation(shaking, "Ceiling Fan", Frames("Level/v2/fan", 2), 204, 0, 6f, onlyWhileShaking: true),
+                BuildLevelAnimation(shaking, "Tall Cabinet", Frames("Level/v2/cabinet", 2), 424, 100, 5f, onlyWhileShaking: true),
+            };
+
+            setting.student = BuildStudent(shaking, withBubble: true);
+            var deskFront = ArtImage(shaking, "Desk Front", S("Level/v2/desk_front"), 198, 188);
+            deskFront.gameObject.SetActive(false);
+
+            setting.startX = 126f;
+            setting.actionSpots = new[]
+            {
+                // Unsafe Choices stop clear of the desk and its chair (x 198 to 302), the door and the window.
+                new ActionSpot { key = "door", x = 46f, stopAt = 0.4f, endPose = StudentPose.Idle },
+                new ActionSpot { key = "desk", x = 240f, stopAt = 1f, endPose = StudentPose.Duck, overlay = deskFront.gameObject },
+                new ActionSpot { key = "window", x = 372f, stopAt = 0.8f, endPose = StudentPose.Idle },
+                new ActionSpot { key = "cabinet", x = 440f, stopAt = 0.75f, endPose = StudentPose.Idle },
+            };
+            return setting;
+        }
+
+        static StudentFrames StudentSet(string kind) => new StudentFrames
+        {
+            idle = Frames("Student/" + kind + "_idle", 2),
+            surprised = Frames("Student/" + kind + "_surprised", 2),
+            walk = Frames("Student/" + kind + "_walk", 4),
+            duck = Frames("Student/" + kind + "_duck", 2),
+            wait = Frames("Student/" + kind + "_wait", 2),
+            happy = Frames("Student/" + kind + "_happy", 2),
+            portrait = S("Student/" + kind + "_portrait"),
+        };
+
+        // The frame's bottom-left corner is the origin, so the feet stand on the floor line at y = 230 art pixels.
+        static StudentActor BuildStudent(RectTransform parent, bool withBubble)
+        {
+            var r = Rect("Student", parent);
+            r.anchorMin = r.anchorMax = Vector2.zero;
+            r.pivot = new Vector2(0.5f, 0f);
+            r.sizeDelta = new Vector2(32f * Px, 50f * Px);
+            r.anchoredPosition = new Vector2(126f * Px, 1080f - 230f * Px);
+
+            var actor = r.gameObject.AddComponent<StudentActor>();
+            actor.boy = StudentSet("boy");
+            actor.girl = StudentSet("girl");
+            actor.feetY = 1080f - 230f * Px;
+            actor.unitsPerPixel = Px;
+            var body = Stretch(Rect("Body", r));
+            actor.body = Img(body, actor.boy.idle[0], Color.white);
+
+            if (withBubble)
+            {
+                var bubble = BuildSpeechBubble(r, 340f, 104f);
+                var br = (RectTransform)bubble.transform;
+                br.anchorMin = br.anchorMax = new Vector2(0.5f, 1f);
+                br.pivot = new Vector2(0.5f, 0f);
+                br.anchoredPosition = new Vector2(0f, 8f);
+                bubble.Hide();
+                actor.bubble = bubble;
+            }
+            return actor;
+        }
+
+        static SpeechBubble BuildSpeechBubble(RectTransform parent, float w, float h)
+        {
+            var r = Rect("Speech Bubble", parent);
+            r.sizeDelta = new Vector2(w, h);
+            Img(r, S("UI/speech_bubble"), Color.white, sliced: true);
+            var textR = Stretch(Rect("Text", r));
+            textR.offsetMin = new Vector2(24f, 24f);
+            textR.offsetMax = new Vector2(-24f, -12f);
+            var label = Label(textR, string.Empty, f4, Ink, TextAnchor.MiddleCenter, shadow: false);
+            label.horizontalOverflow = HorizontalWrapMode.Wrap;
+            var bubble = r.gameObject.AddComponent<SpeechBubble>();
+            bubble.text = label;
+            return bubble;
+        }
+
+        static void BuildCaption(RectTransform ui, LevelController c)
+        {
+            var cap = Rect("Caption", ui);
+            cap.anchorMin = cap.anchorMax = new Vector2(0.5f, 1f);
+            cap.pivot = new Vector2(0.5f, 1f);
+            cap.sizeDelta = new Vector2(960f, 204f);
+            cap.anchoredPosition = new Vector2(0f, -24f);
+            Img(cap, S("UI/caption_banner"), Color.white, sliced: true);
+
+            var goal = Rect("Goal", cap);
+            goal.anchorMin = goal.anchorMax = new Vector2(0.5f, 1f);
+            goal.pivot = new Vector2(0.5f, 1f);
+            goal.sizeDelta = new Vector2(880f, 64f);
+            goal.anchoredPosition = new Vector2(0f, -28f);
+            c.captionGoal = Label(goal, string.Empty, f4, new Color32(0x2a, 0x3a, 0x72, 0xff), TextAnchor.MiddleCenter, shadow: false);
+            c.captionGoal.horizontalOverflow = HorizontalWrapMode.Wrap;
+
+            var body = Rect("Body", cap);
+            body.anchorMin = body.anchorMax = new Vector2(0.5f, 1f);
+            body.pivot = new Vector2(0.5f, 1f);
+            body.sizeDelta = new Vector2(880f, 96f);
+            body.anchoredPosition = new Vector2(0f, -96f);
+            c.captionBody = Label(body, string.Empty, f4, Ink, TextAnchor.UpperCenter, shadow: false);
+            c.captionBody.horizontalOverflow = HorizontalWrapMode.Wrap;
+            c.captionBody.lineSpacing = 1f;
+
+            c.caption = cap;
+            cap.gameObject.SetActive(false);
+        }
+
+        static void BuildActionBar(RectTransform ui, LevelController c)
+        {
+            var holder = Stretch(Rect("Action Bar", ui));
+            var bar = holder.gameObject.AddComponent<ActionBar>();
+            bar.panel = Panel(holder, ScreenPanel.Style.Slide);
+            var slide = Stretch(Rect("Slide", holder));
+            bar.panel.content = slide;
+
+            var row = Rect("Row", slide);
+            row.anchorMin = row.anchorMax = new Vector2(0.5f, 0f);
+            row.pivot = new Vector2(0.5f, 0f);
+            row.sizeDelta = new Vector2(1780f, 124f);
+            row.anchoredPosition = new Vector2(0f, 12f);
+            var layout = row.gameObject.AddComponent<HorizontalLayoutGroup>();
+            layout.spacing = 20f;
+            layout.childAlignment = TextAnchor.MiddleCenter;
+            layout.childControlWidth = layout.childControlHeight = false;
+            layout.childForceExpandWidth = layout.childForceExpandHeight = false;
+
+            bar.buttons = new ActionButton[4];
+            for (var i = 0; i < 4; i++)
+            {
+                var b = Rect("Action " + (i + 1), row);
+                b.sizeDelta = new Vector2(430f, 124f);
+                var img = Img(b, S("UI/action_button"), Color.white, sliced: true, raycast: true);
+                var button = b.gameObject.AddComponent<Button>();
+                button.targetGraphic = img;
+                button.transition = Selectable.Transition.None;
+                button.navigation = new Navigation { mode = Navigation.Mode.None };
+
+                var face = Stretch(Rect("Face", b));
+                face.offsetMin = new Vector2(0f, 12f); // sit above the 3-pixel lip
+                var h = face.gameObject.AddComponent<HorizontalLayoutGroup>();
+                h.padding = new RectOffset(20, 16, 8, 8);
+                h.spacing = 16f;
+                h.childAlignment = TextAnchor.MiddleLeft;
+                h.childControlWidth = h.childControlHeight = true;
+                h.childForceExpandWidth = h.childForceExpandHeight = false;
+
+                var ir = Rect("Icon", face);
+                var iconImg = Img(ir, S("UI/icon_desk"), Color.white);
+                var ile = ir.gameObject.AddComponent<LayoutElement>();
+                ile.preferredWidth = ile.preferredHeight = 16f * Px;
+
+                var lr = Rect("Label", face);
+                var label = Label(lr, string.Empty, f4, Ink, TextAnchor.MiddleLeft, shadow: false);
+                label.horizontalOverflow = HorizontalWrapMode.Wrap;
+                label.lineSpacing = 0.9f;
+                var lle = lr.gameObject.AddComponent<LayoutElement>();
+                lle.flexibleWidth = 1f;
+                lle.preferredWidth = 280f;
+
+                var bounce = b.gameObject.AddComponent<PressBounce>();
+                bounce.face = face;
+                bounce.sound = Sfx.Click;
+
+                var tried = Rect("Tried", b);
+                tried.anchorMin = tried.anchorMax = new Vector2(1f, 1f);
+                tried.pivot = new Vector2(1f, 1f);
+                tried.sizeDelta = new Vector2(130f, 52f);
+                tried.anchoredPosition = new Vector2(-8f, -8f);
+                Img(tried, S("UI/button_gray"), Color.white, sliced: true);
+                var triedText = Stretch(Rect("Text", tried));
+                triedText.offsetMin = new Vector2(0f, 8f);
+                Label(triedText, UIStrings.Tried, f3, Color.white, TextAnchor.MiddleCenter);
+                tried.gameObject.SetActive(false);
+
+                var action = b.gameObject.AddComponent<ActionButton>();
+                action.button = button;
+                action.icon = iconImg;
+                action.label = label;
+                action.triedMark = tried.gameObject;
+                action.group = b.gameObject.AddComponent<CanvasGroup>();
+                bar.buttons[i] = action;
+            }
+
+            bar.icons = new[] { S("UI/icon_door"), S("UI/icon_desk"), S("UI/icon_window"), S("UI/icon_cabinet") };
+            c.actionBar = bar;
+            holder.gameObject.SetActive(false);
+        }
+
         static void BuildLevelTopBar(RectTransform ui, LevelController c)
         {
             // Level label chip, top left
@@ -408,6 +617,7 @@ namespace DisasterSafety.EditorTools
             c.feedbackHeading = Label(headingR, UIStrings.SafeHeading, f8, Color.white, TextAnchor.MiddleCenter);
 
             var holder = Rect("Picture", box);
+            c.feedbackPictureHolder = holder.gameObject;
             Centered(holder, -400f, -10f, 400f, 296f);
             Img(holder, S("UI/input_box"), Color.white, sliced: true);
             var pic = Rect("Art", holder);
@@ -494,6 +704,29 @@ namespace DisasterSafety.EditorTools
             var pic = Rect("Art", holder);
             Centered(pic, 0f, 0f, 72f * Px, 52f * Px);
             c.safePicture = Img(pic, S("Level/choice_desk"), Color.white);
+
+            // The Student flow shows the happy Student here, and a speech bubble where Bantay stands.
+            var studentHolder = Rect("Student Holder", box);
+            studentHolder.anchorMin = studentHolder.anchorMax = new Vector2(0f, 1f);
+            studentHolder.pivot = new Vector2(0f, 1f);
+            studentHolder.sizeDelta = new Vector2(320f, 232f);
+            studentHolder.anchoredPosition = new Vector2(70f, -476f);
+            Img(studentHolder, S("UI/input_box"), Color.white, sliced: true);
+            var happy = BuildStudent(studentHolder, withBubble: false);
+            var happyRect = (RectTransform)happy.transform;
+            happyRect.anchorMin = happyRect.anchorMax = new Vector2(0.5f, 0f);
+            happyRect.anchoredPosition = new Vector2(0f, 14f);
+            happy.unitsPerPixel = Px;
+            c.completedStudent = happy;
+            studentHolder.gameObject.SetActive(false);
+
+            var cheer = BuildSpeechBubble(box, 620f, 150f);
+            var cheerR = (RectTransform)cheer.transform;
+            cheerR.anchorMin = cheerR.anchorMax = new Vector2(1f, 1f);
+            cheerR.pivot = new Vector2(1f, 1f);
+            cheerR.anchoredPosition = new Vector2(-80f, -250f);
+            cheer.Hide();
+            c.completedBubble = cheer;
 
             var choiceR = Rect("Safe Choice", box);
             choiceR.anchorMin = choiceR.anchorMax = new Vector2(0f, 1f);

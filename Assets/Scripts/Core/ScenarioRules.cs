@@ -39,6 +39,11 @@ namespace DisasterSafety.Core
             if (count < MinChoices || count > MaxChoices)
                 problems.Add("A Scenario needs 3 or 4 Choices, not " + count + ".");
 
+            var withAction = s.ChoicesWithAction;
+            if (withAction > 0 && withAction < count)
+                problems.Add("Either every Choice has an action or none does, not " + withAction + " of " + count + ".");
+            var usesActions = withAction > 0 && withAction == count;
+
             var safe = 0;
             var ids = new HashSet<string>();
             for (var i = 0; i < count; i++)
@@ -53,7 +58,13 @@ namespace DisasterSafety.Core
                 if (string.IsNullOrWhiteSpace(c.id)) problems.Add(name + " needs an id.");
                 else if (!ids.Add(c.id)) problems.Add(name + ": Choice ids must be unique.");
                 if (string.IsNullOrWhiteSpace(c.label)) problems.Add(name + " needs a label.");
-                if (string.IsNullOrWhiteSpace(c.picture)) problems.Add(name + " needs a picture.");
+                if (!usesActions && string.IsNullOrWhiteSpace(c.picture)) problems.Add(name + " needs a picture.");
+                if (usesActions)
+                {
+                    if (string.IsNullOrWhiteSpace(c.icon)) problems.Add(name + " needs an icon.");
+                    if (!ScenarioSettings.HasActionSpot(s.setting, c.action))
+                        problems.Add(name + ": action '" + c.action + "' is not an action spot in Setting '" + s.setting + "'.");
+                }
                 if (string.IsNullOrWhiteSpace(c.feedback)) problems.Add(name + " needs Feedback.");
                 if (!HasSources(c.sources)) problems.Add(name + " needs a source for its Feedback.");
                 if (c.safe) safe++;

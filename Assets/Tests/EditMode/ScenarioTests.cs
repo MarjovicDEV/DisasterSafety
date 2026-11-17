@@ -61,6 +61,59 @@ namespace DisasterSafety.Tests
             Assert.That(ScenarioRules.Problems(s), Does.Contain("Choice 'desk' needs a picture."));
         }
 
+        [Test]
+        public void ScenarioWithoutActions_UsesTheOldFlow()
+        {
+            var s = TestScenarios.Classroom();
+            Assert.That(s.UsesActions, Is.False);
+            Assert.That(ScenarioRules.Problems(s), Is.Empty);
+        }
+
+        [Test]
+        public void ScenarioWithAnActionOnEveryChoice_UsesTheNewFlow()
+        {
+            var s = TestScenarios.ClassroomWithActions();
+            Assert.That(s.UsesActions, Is.True);
+            Assert.That(ScenarioRules.Problems(s), Is.Empty);
+        }
+
+        [Test]
+        public void NewFlowChoice_MayLeaveThePictureEmpty()
+        {
+            var s = TestScenarios.ClassroomWithActions();
+            foreach (var c in s.choices) c.picture = string.Empty;
+            Assert.That(ScenarioRules.Problems(s), Is.Empty);
+        }
+
+        [Test]
+        public void MixedActions_AreRejected()
+        {
+            var s = TestScenarios.ClassroomWithActions();
+            s.choices[2].action = string.Empty;
+            Assert.That(s.UsesActions, Is.False);
+            Assert.That(ScenarioRules.Problems(s), Has.Some.Contains("every Choice has an action or none does"));
+        }
+
+        [Test]
+        public void NewFlowChoice_NeedsAnIcon()
+        {
+            var s = TestScenarios.ClassroomWithActions();
+            s.choices[1].icon = " ";
+            Assert.That(ScenarioRules.Problems(s), Does.Contain("Choice 'desk' needs an icon."));
+        }
+
+        [Test]
+        public void NewFlowAction_MustBeAnActionSpotOfTheSetting()
+        {
+            var s = TestScenarios.ClassroomWithActions();
+            s.choices[3].action = "roof";
+            Assert.That(ScenarioRules.Problems(s), Has.Some.Contains("action 'roof'"));
+
+            var corridor = TestScenarios.ClassroomWithActions();
+            corridor.setting = ScenarioSettings.Corridor;
+            Assert.That(ScenarioRules.Problems(corridor), Has.Some.Contains("is not an action spot in Setting 'corridor'"));
+        }
+
         [TestCase("before", false)]
         [TestCase("during", true)]
         [TestCase("after", false)]

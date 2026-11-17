@@ -92,6 +92,34 @@ namespace DisasterSafety.Tests
         }
 
         [Test]
+        public void EveryNewFlowIcon_HasArt()
+        {
+            foreach (var path in Files())
+            {
+                var s = Load(path);
+                if (!s.UsesActions) continue;
+                foreach (var choice in s.choices)
+                {
+                    var icon = "Assets/Art/UI/" + choice.icon + ".png";
+                    Assert.That(File.Exists(icon), Is.True, path + ": missing " + icon);
+                }
+            }
+        }
+
+        [Test]
+        public void OnlyEarthquakeEasy1_UsesTheNewFlow()
+        {
+            var levels = Files().Select(Load).Where(s => s.UsesActions).Select(s => s.level).ToList();
+            Assert.That(levels, Is.EqualTo(new[] { "Earthquake/Easy/1" }));
+            foreach (var path in Files())
+            {
+                var s = Load(path);
+                if (s.UsesActions) continue;
+                Assert.That(s.ChoicesWithAction, Is.EqualTo(0), path + " must use the old flow, with no action on any Choice");
+            }
+        }
+
+        [Test]
         public void EverySetting_HasArt()
         {
             foreach (var path in Files())

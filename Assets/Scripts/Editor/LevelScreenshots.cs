@@ -28,7 +28,7 @@ namespace DisasterSafety.EditorTools
             var scenarios = GameServices.LoadScenarios();
             var s = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Easy, 1));
 
-            var all = new[] { c.choicesPanel, c.dimmer, c.feedbackPanel, c.completedPanel, c.pausePanel, c.bantay.bubble, c.cheerBantay.bubble };
+            var all = new[] { c.choicesPanel, c.dimmer, c.feedbackPanel, c.completedPanel, c.pausePanel, c.bantay.bubble, c.cheerBantay.bubble, c.actionBar.panel };
 
             void Shot(string name, params ScreenPanel[] show)
             {
@@ -134,6 +134,74 @@ namespace DisasterSafety.EditorTools
             Completed(c, evacuation, 3);
             Shot("58-level-completed-fire-open", c.dimmer, c.completedPanel, c.cheerBantay.bubble);
             c.openedRibbon.SetActive(false);
+
+            CaptureStudentFlow(c, scenarios, Shot);
+        }
+
+        // Easy 1 in the Student flow (60-65, and the Feedback layout). Poses and spots come from the Setting group.
+        static void CaptureStudentFlow(LevelController c, ScenarioLibrary scenarios, Action<string, ScreenPanel[]> shot)
+        {
+            var s = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Easy, 1));
+            c.ShowSetting(ScenarioSettings.ActionArtKey(s.setting));
+            c.UseStudentLayout();
+            c.captionGoal.text = s.goal.text;
+            c.captionBody.text = s.intro.text;
+            c.actionBar.Setup(s, _ => { });
+
+            var setting = c.ActiveSetting;
+            var student = setting.student;
+            student.SetKind(StudentKind.Boy);
+            student.bubble.Hide();
+            foreach (var spot in setting.actionSpots)
+                if (spot.overlay != null) spot.overlay.SetActive(false);
+
+            void Stand(float x, StudentPose pose, bool faceLeft = false)
+            {
+                student.PlaceAt(x);
+                student.Face(faceLeft);
+                student.ShowFrame(pose, 0);
+            }
+
+            Stand(setting.startX, StudentPose.Idle);
+            shot("60-pilot-start", new ScreenPanel[0]);
+
+            Stand(setting.startX, StudentPose.Surprised);
+            student.bubble.Say(UIStrings.ReactionWhoa);
+            shot("61-pilot-shaking", new ScreenPanel[0]);
+
+            Stand(setting.startX, StudentPose.Idle);
+            student.bubble.Hide();
+            shot("62-pilot-actionbar", new[] { c.actionBar.panel });
+
+            var desk = setting.SpotFor("desk");
+            Stand(desk.x, desk.endPose);
+            desk.overlay.SetActive(true);
+            student.bubble.Say(UIStrings.ReactionSafe);
+            shot("63-pilot-duck", new ScreenPanel[0]);
+            desk.overlay.SetActive(false);
+
+            var window = setting.SpotFor("window");
+            Stand(Mathf.Lerp(setting.startX, window.x, window.stopAt), StudentPose.Wait);
+            student.bubble.Say(UIStrings.ReactionWait);
+            shot("64-pilot-wait", new ScreenPanel[0]);
+            student.bubble.Hide();
+
+            var unsafeChoice = s.choices[ChoiceIndex(s, "window")];
+            c.feedbackBanner.sprite = c.unsafeBanner;
+            c.feedbackHeading.text = UIStrings.UnsafeHeading;
+            c.feedbackText.text = unsafeChoice.feedback;
+            c.tryAgainButton.gameObject.SetActive(true);
+            c.finishButton.gameObject.SetActive(false);
+            shot("67-pilot-feedback", new[] { c.dimmer, c.feedbackPanel });
+
+            c.safeChoiceText.text = UIStrings.SafeChoiceLine(s.SafeChoice.label);
+            c.lessonText.text = s.lesson.text;
+            c.stars.ShowInstant(3);
+            c.completedStudent.SetKind(StudentKind.Boy);
+            c.completedStudent.ShowFrame(StudentPose.Happy, 0);
+            c.completedBubble.Say(UIStrings.LevelCompletedHeadline("Niño"), -1f);
+            shot("65-pilot-completed", new[] { c.dimmer, c.completedPanel });
+            c.completedBubble.Hide();
         }
 
         static void Completed(LevelController c, Scenario scenario, int stars)

@@ -54,6 +54,22 @@ namespace DisasterSafety.Core
         }
 
         public ScenarioChoice SafeChoice => SafeChoiceIndex >= 0 ? choices[SafeChoiceIndex] : null;
+
+        /// <summary>True when every Choice has an action: the Student acts it out (Action Bar and Caption).</summary>
+        public bool UsesActions => ChoicesWithAction > 0 && ChoicesWithAction == choices.Length;
+
+        /// <summary>How many Choices name an action spot. A Scenario must have all of them or none.</summary>
+        public int ChoicesWithAction
+        {
+            get
+            {
+                if (choices == null) return 0;
+                var n = 0;
+                foreach (var c in choices)
+                    if (c != null && !string.IsNullOrWhiteSpace(c.action)) n++;
+                return n;
+            }
+        }
     }
 
     /// <summary>One sentence or two, with the research findings it comes from (e.g. "EQ-10").</summary>
@@ -72,6 +88,10 @@ namespace DisasterSafety.Core
         public string label;
         /// <summary>Art key for the card picture and the Feedback picture.</summary>
         public string picture;
+        /// <summary>Art key of the 16x16 Action Bar icon, e.g. "icon_desk". Empty in a Scenario without actions.</summary>
+        public string icon;
+        /// <summary>Key of the action spot in the Setting the Student walks to, e.g. "desk". Empty in a Scenario without actions.</summary>
+        public string action;
         public bool safe;
         /// <summary>Optional Feedback heading, e.g. "Not safe yet". Empty uses "Safe!" or "Not safe".</summary>
         public string heading;

@@ -31,5 +31,18 @@ namespace DisasterSafety.Tests
             lesson = Line("Duck, Cover, and Hold!", "EQ-09"),
             choices = new[] { Choice("run", false), Choice("desk", true), Choice("window", false), Choice("cabinet", false) },
         };
+
+        /// <summary>The classroom Scenario with an icon and an action on every Choice (the Student acts it out).</summary>
+        public static Scenario ClassroomWithActions(string level = "Earthquake/Easy/1")
+        {
+            var s = Classroom(level);
+            var actions = new[] { "door", "desk", "window", "cabinet" };
+            for (var i = 0; i < s.choices.Length; i++)
+            {
+                s.choices[i].icon = "icon_" + actions[i];
+                s.choices[i].action = actions[i];
+            }
+            return s;
+        }
     }
 }
