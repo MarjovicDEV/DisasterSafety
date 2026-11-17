@@ -15,8 +15,6 @@ namespace DisasterSafety.EditorTools
     /// </summary>
     public static class LevelScreenshots
     {
-        const string ScenarioFolder = "Assets/Resources/Scenarios";
-
         public static void Capture(string dir)
         {
             EditorSceneManager.OpenScene(ProjectBuilder.LevelScenePath, OpenSceneMode.Single);
@@ -27,7 +25,8 @@ namespace DisasterSafety.EditorTools
             canvas.worldCamera = cam;
             canvas.planeDistance = 5f;
 
-            var s = PrepareLevel(c, new LevelId(Episode.Earthquake, Difficulty.Easy, 1));
+            var scenarios = GameServices.LoadScenarios();
+            var s = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Easy, 1));
 
             var all = new[] { c.choicesPanel, c.dimmer, c.feedbackPanel, c.completedPanel, c.pausePanel, c.bantay.bubble, c.cheerBantay.bubble };
 
@@ -35,7 +34,10 @@ namespace DisasterSafety.EditorTools
             {
                 foreach (var p in all) p.gameObject.SetActive(Array.IndexOf(show, p) >= 0);
                 foreach (var size in MenuScreenshots.Sizes)
+                {
+                    c.choicesLayout?.Apply((float)size.x / size.y);
                     MenuScreenshots.Render(cam, canvas, size, Path.Combine(dir, name + "-" + size.x + "x" + size.y + ".png"));
+                }
             }
 
             c.bantay.bubbleText.text = s.intro.text;
@@ -60,14 +62,14 @@ namespace DisasterSafety.EditorTools
             Completed(c, s, 2);
             Shot("15-level-completed", c.dimmer, c.completedPanel, c.cheerBantay.bubble);
 
-            var corridor = PrepareLevel(c, new LevelId(Episode.Earthquake, Difficulty.Easy, 2));
+            var corridor = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Easy, 2));
             c.bantay.bubbleText.text = corridor.intro.text;
             Shot("20-level2", c.choicesPanel, c.bantay.bubble);
 
             Feedback(c, corridor.SafeChoice);
             Shot("21-level2-feedback-safe", c.choicesPanel, c.dimmer, c.feedbackPanel);
 
-            var classroomAfter = PrepareLevel(c, new LevelId(Episode.Earthquake, Difficulty.Easy, 3));
+            var classroomAfter = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Easy, 3));
             c.bantay.bubbleText.text = classroomAfter.intro.text;
             Shot("30-level3", c.choicesPanel, c.bantay.bubble);
 
@@ -79,7 +81,7 @@ namespace DisasterSafety.EditorTools
             var openedName = UIStrings.DifficultyName(Difficulty.Normal);
             c.openedText.text = UIStrings.Opened(openedName);
             c.openedRibbon.SetActive(true);
-            c.cheerBantay.bubbleText.text = UIStrings.BantayOpened(openedName);
+            c.cheerBantay.bubbleText.text = LevelController.OpenedLine(openedName, Episode.Earthquake, Difficulty.Normal, scenarios.Playable);
             Completed(c, classroomAfter, 3);
             Shot("32-level-completed-normal-open", c.dimmer, c.completedPanel, c.cheerBantay.bubble);
 
@@ -87,7 +89,7 @@ namespace DisasterSafety.EditorTools
             Scenario normal = null;
             for (var i = 0; i < normalShots.Length; i++)
             {
-                normal = PrepareLevel(c, new LevelId(Episode.Earthquake, Difficulty.Normal, i + 1));
+                normal = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Normal, i + 1));
                 c.bantay.bubbleText.text = normal.intro.text;
                 Shot(normalShots[i], c.choicesPanel, c.bantay.bubble);
             }
@@ -102,7 +104,7 @@ namespace DisasterSafety.EditorTools
             var hardName = UIStrings.DifficultyName(Difficulty.Hard);
             c.openedText.text = UIStrings.Opened(hardName);
             c.openedRibbon.SetActive(true);
-            c.cheerBantay.bubbleText.text = UIStrings.BantayOpenedSoon(hardName);
+            c.cheerBantay.bubbleText.text = LevelController.OpenedLine(hardName, Episode.Earthquake, Difficulty.Hard, scenarios.Playable);
             Completed(c, normal, 3);
             Shot("46-level-completed-hard-open", c.dimmer, c.completedPanel, c.cheerBantay.bubble);
         }
@@ -116,9 +118,10 @@ namespace DisasterSafety.EditorTools
             c.stars.ShowInstant(stars);
         }
 
-        static Scenario PrepareLevel(LevelController c, LevelId level)
+        static Scenario PrepareLevel(LevelController c, ScenarioLibrary scenarios, LevelId level)
         {
-            var scenario = Scenario.Parse(File.ReadAllText(Path.Combine(ScenarioFolder, level.Key + ".json")));
+            if (!scenarios.TryGet(level, out var scenario))
+                throw new InvalidOperationException($"Cannot capture Level screenshots. '{level.Key}' has no Playable Level.");
             c.ShowSetting(scenario.setting);
 
             c.goalText.text = scenario.goal.text;

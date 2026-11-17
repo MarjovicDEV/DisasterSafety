@@ -192,6 +192,7 @@ namespace DisasterSafety.Tests
             {
                 c.levelSlots[i].button.onClick.Invoke();
                 yield return null;
+                Assert.That(c.levelSlots[i].selectedFrame.activeSelf, Is.True, $"Normal {i + 1} is selected");
                 Assert.That(c.startButton.interactable, Is.True, $"Earthquake/Normal/{i + 1} is a Playable Level");
             }
         }
