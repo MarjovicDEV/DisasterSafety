@@ -10,7 +10,9 @@
     },
     "intro": {
         "text": "You are at the beach. The shaking stopped. The sea is going out!",
-        "sources": []
+        "sources": [
+            "EQ-85"
+        ]
     },
     "hint": {
         "text": "The water can come back fast. Where can it not reach?",
