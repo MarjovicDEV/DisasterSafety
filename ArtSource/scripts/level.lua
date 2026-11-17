@@ -215,31 +215,46 @@ return function(L, CH)
     L.vline(img, x + 2, y + 2, y + 6, P.ink2)
   end
 
-  -- A child crouched low and holding on, drawn on its own so it can be outlined.
+  -- Colours for the crouching-child pixel maps below (the same palette as characters.lua).
+  local KID_KEY = { a = P.ink, b = P.hair, c = P.hair2, d = P.skin1, e = P.skin2, f = P.blush, g = P.skin3,
+        h = P.gray1, i = P.white, j = P.gray2, k = P.red2, l = P.red, m = P.navy2, n = P.navy, o = P.ink2 }
+
+  -- A child crouched low under the desk, holding on to the desk leg (Duck, Cover, and Hold).
+  -- A hand-placed 30x30 pixel map in the style of the standing students (same head), facing right.
   local function crouchingKid()
-    local k = L.newImage(34, 22)
-    -- legs and shoes
-    L.rect(k, 3, 12, 9, 5, P.navy)
-    L.rect(k, 2, 16, 7, 3, P.skin1)
-    L.rect(k, 1, 19, 7, 2, P.ink)
-    -- back and shirt
-    L.ellipse(k, 14, 10, 8, 6, P.white)
-    for y = 11, 16 do for x = 6, 22 do if L.get(k, x, y) == P.white then L.px(k, x, y, P.gray1) end end end
-    L.rect(k, 8, 6, 6, 8, P.red)
-    L.rect(k, 8, 6, 6, 2, P.red2)
-    -- head tucked low, with hair
-    L.circle(k, 24, 9, 6, P.skin1)
-    for y = 2, 15 do
-      for x = 17, 31 do
-        if L.get(k, x, y) == P.skin1 and (y < 8 or x < 22) then L.px(k, x, y, P.hair) end
-      end
-    end
-    L.px(k, 27, 9, P.ink); L.px(k, 27, 10, P.ink)
-    L.px(k, 28, 12, P.blush)
-    -- arm reaching to the desk leg, hand gripping it
-    L.line(k, 18, 12, 30, 16, P.skin1, 2)
-    L.rect(k, 30, 14, 3, 4, P.skin1)
-    L.outline(k, P.ink)
+    local k = L.newImage(30, 30)
+    L.map(k, 0, 0, {
+      "..........aaaaaaaaa...........",
+      ".........aaabbbbbaaa..........",
+      "........aabcccccbbbaa.........",
+      ".......aabbbbbbbbbbbaa........",
+      "......aabbbbbbbbbbbbdaa.......",
+      "......aabbbbbbbbbbbbdaa.......",
+      ".....aabbbbbbdddddbbddaa......",
+      ".....aabbbbbbdddbdddddaa......",
+      ".....aabbbbbbdddddadddaa......",
+      ".....aabbbbbbeedddadddaa......",
+      ".....aabbbbbbddddddddddaa.....",
+      "......aabbbbbddddddfdaaa......",
+      "......aaddddddddddddgaa.......",
+      ".......aadddddddddddaa........",
+      "....aaaaaadddddddddaa....aaa..",
+      "...akkkkkkhiikiiiiia....addea.",
+      "...akkkkkkhiikiiiiiiaaaaaddda.",
+      "...akllllkhiiiiiiiiidddddddda.",
+      "...akllllkhiiiiiiiiidddddddda.",
+      "...akllllkhiiiiiiiiaeeeeeddda.",
+      "...akkkkkkhiiiiiiiiaaaaaaddea.",
+      "...akllllkhiiiiiiiiaaa...aaa..",
+      "...akllllnnnnnnnnnnnnna.......",
+      "...akkkkknnnnnnnnnnnnna.......",
+      "....aaaaannnnnnnnnnnnna.......",
+      "........ammmmmmmmmmmmma.......",
+      ".........aeeeaaaaaddda........",
+      ".........aeeea...adddaa.......",
+      "........aoooooa.aooooooa......",
+      "........aoooooa.aooooooa......",
+    }, KID_KEY)
     return k
   end
 
@@ -248,12 +263,12 @@ return function(L, CH)
 
     -- Duck under the desk and hold on
     local desk1 = pictureBackdrop()
-    L.rect(desk1, 12, 20, 50, 4, P.brown)
-    L.hline(desk1, 12, 61, 20, P.brown3)
-    L.hline(desk1, 12, 61, 24, P.ink)
-    L.rect(desk1, 14, 25, 3, 21, P.brown2)
-    L.rect(desk1, 57, 25, 3, 21, P.brown2)
-    L.blit(desk1, crouchingKid(), 25, 25)
+    L.rect(desk1, 12, 12, 50, 4, P.brown)
+    L.hline(desk1, 12, 61, 12, P.brown3)
+    L.hline(desk1, 12, 61, 16, P.ink)
+    L.rect(desk1, 14, 17, 3, 30, P.brown2)
+    L.rect(desk1, 57, 17, 3, 30, P.brown2)
+    L.blit(desk1, crouchingKid(), 31, 18)
     shakeLines(desk1, 4, 8)
     shakeLines(desk1, 66, 8)
     pics.choice_desk = desk1
@@ -552,29 +567,39 @@ return function(L, CH)
   end
 
   -- A child crouched low with both arms over the head (Duck, Cover, and Hold with no desk).
+  -- A 34x28 pixel map with folded knees, a tucked chin, and arms braced over the head.
   local function coverKid()
-    local k = L.newImage(32, 24)
-    L.rect(k, 3, 20, 8, 2, P.ink)                  -- shoes
-    L.rect(k, 4, 17, 6, 3, P.skin1)
-    L.rect(k, 3, 12, 11, 6, P.navy)                -- shorts, knees bent
-    L.ellipse(k, 14, 12, 8, 6, P.white)            -- back
-    for y = 13, 18 do for x = 7, 22 do if L.get(k, x, y) == P.white then L.px(k, x, y, P.gray1) end end end
-    L.rect(k, 9, 7, 5, 7, P.red)                   -- backpack
-    L.rect(k, 9, 7, 5, 2, P.red2)
-    L.circle(k, 22, 14, 6, P.skin1)                -- head tucked low
-    for y = 7, 20 do
-      for x = 15, 29 do
-        if L.get(k, x, y) == P.skin1 and (y < 13 or x < 20) then L.px(k, x, y, P.hair) end
-      end
-    end
-    L.px(k, 25, 15, P.ink); L.px(k, 25, 16, P.ink) -- eye, looking down
-    L.px(k, 26, 18, P.blush)
-    -- both arms folded over the head
-    L.line(k, 17, 8, 22, 5, P.white, 2)
-    L.line(k, 22, 5, 28, 8, P.skin1, 2)
-    L.rect(k, 28, 8, 3, 3, P.skin1)
-    L.line(k, 19, 10, 25, 7, P.skin2, 2)
-    L.outline(k, P.ink)
+    local k = L.newImage(34, 28)
+    L.map(k, 0, 0, {
+      "..................................",
+      "..................................",
+      "....................aaaaa.........",
+      "...................aedddda........",
+      ".................aaeeddddea.......",
+      "..............aaaeeeeeaaaaa.......",
+      ".............aeeeeeeaadddda.......",
+      "............aeeeeaaabadeddda......",
+      "........aaaaeeeeabbbcaddeddda.....",
+      "......aallaaeeeabcccccaadeddda....",
+      ".....allkkkaeeeaccccccccadddda....",
+      "....alkkkkaeeeeabccbbbbccadddda...",
+      "...alkkkkkaeeeabbbbbbbbddadddda...",
+      "...akkkkklaiiiabbbbbbddddadddda...",
+      "..alkklllliiiiabbbbbdddadaddea....",
+      "..allllllliiiiaaaaabddddaaddea....",
+      "..allkklllaiiiiaiidaedfdaddeea....",
+      "..akkkkkkaaiiiiiiiiiaaaaaddea.....",
+      "..kkkkkkaahhhhhaiiiiidddddeaa.....",
+      "..akkkkaahhhhhhhaiiiddddeeaa......",
+      "...akkaanahhhhhhiaiadddeeaa.......",
+      "....aaaannnaahhiaammaaaaa.........",
+      "...aaaaaannnnnaannammaa...........",
+      "..aooooaaannnnnnnaammma...........",
+      ".aohhhhoaannnnnaaammma............",
+      ".aohhhhooaaaaaammmmaaa............",
+      ".aaaaaaaaaaaaaaaaaa...............",
+      "..................................",
+    }, KID_KEY)
     return k
   end
 
@@ -588,7 +613,7 @@ return function(L, CH)
     -- Duck and cover your head
     local cover = corridorBackdrop()
     smallJalousie(cover, 4, 4, 26, 20)
-    L.blit(cover, coverKid(), 22, 22)
+    L.blit(cover, coverKid(), 22, 20)
     shakeLines(cover, 60, 6)
     shakeLines(cover, 14, 28)
     pics.choice_cover = cover
@@ -651,16 +676,23 @@ return function(L, CH)
     -- Stay under the desk, though the shaking has stopped and the door is open
     local stay = pictureBackdrop()
     openDoor(stay, 60)
-    L.rect(stay, 4, 20, 50, 4, P.brown)
-    L.hline(stay, 4, 53, 20, P.brown3)
-    L.hline(stay, 4, 53, 24, P.ink)
-    L.rect(stay, 6, 25, 3, 21, P.brown2)
-    L.rect(stay, 49, 25, 3, 21, P.brown2)
-    L.blit(stay, crouchingKid(), 17, 25)
+    L.rect(stay, 4, 12, 50, 4, P.brown)
+    L.hline(stay, 4, 53, 12, P.brown3)
+    L.hline(stay, 4, 53, 16, P.ink)
+    L.rect(stay, 6, 17, 3, 30, P.brown2)
+    L.rect(stay, 49, 17, 3, 30, P.brown2)
+    L.blit(stay, crouchingKid(), 23, 18)
     pics.choice_stay = stay
 
     return pics
   end
+
+  -- Shared helpers for normal.lua (Earthquake / Normal art), so both files draw alike.
+  M.helpers = {
+    framed = framed, windowPane = windowPane, books = books, tileFloor = tileFloor, openDoor = openDoor,
+    pictureBackdrop = pictureBackdrop, shakeLines = shakeLines, speedLines = speedLines,
+    crouchingKid = crouchingKid, coverKid = coverKid, PW = PW, PH = PH,
+  }
 
   return M
 end
