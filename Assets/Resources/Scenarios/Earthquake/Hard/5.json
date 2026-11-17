@@ -1,0 +1,72 @@
+{
+    "level": "Earthquake/Hard/5",
+    "phase": "after",
+    "setting": "home_after",
+    "goal": {
+        "text": "Help when someone is hurt after an earthquake.",
+        "sources": [
+            "EQ-90"
+        ]
+    },
+    "intro": {
+        "text": "The shaking stopped. Someone in your family hurt their leg.",
+        "sources": []
+    },
+    "hint": {
+        "text": "Who can help them the right way?",
+        "sources": [
+            "EQ-90"
+        ]
+    },
+    "lesson": {
+        "text": "After the shaking, check yourself and others. Get help for anyone who is hurt.",
+        "sources": [
+            "EQ-90"
+        ]
+    },
+    "choices": [
+        {
+            "id": "pull_up",
+            "label": "Pull them up to walk",
+            "picture": "choice_pull_up",
+            "safe": false,
+            "heading": "Not safe yet",
+            "feedback": "Do not move them. Keep them still and get help.",
+            "sources": [
+                "EQ-90"
+            ]
+        },
+        {
+            "id": "call_adult",
+            "label": "Call a grown-up for help",
+            "picture": "choice_call_adult",
+            "safe": true,
+            "feedback": "Good. Keep them still and get help from an adult.",
+            "sources": [
+                "EQ-90",
+                "EQ-72"
+            ]
+        },
+        {
+            "id": "fix_pipe",
+            "label": "Fix the broken pipe yourself",
+            "picture": "choice_fix_pipe",
+            "safe": false,
+            "feedback": "Adults check water and electric lines. Help them first.",
+            "sources": [
+                "EQ-91",
+                "EQ-72"
+            ]
+        },
+        {
+            "id": "leave",
+            "label": "Leave them and go outside",
+            "picture": "choice_leave_hurt",
+            "safe": false,
+            "feedback": "Stay and call for help. They need an adult.",
+            "sources": [
+                "EQ-90"
+            ]
+        }
+    ]
+}

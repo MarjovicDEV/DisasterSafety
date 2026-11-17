@@ -1,0 +1,78 @@
+{
+    "level": "Earthquake/Hard/6",
+    "phase": "after",
+    "setting": "home_after",
+    "goal": {
+        "text": "Leave home safely after the earthquake.",
+        "sources": [
+            "EQ-92"
+        ]
+    },
+    "intro": {
+        "text": "Your family must leave the house. What do you bring?",
+        "sources": []
+    },
+    "hint": {
+        "text": "What did your family pack for 3 days?",
+        "sources": [
+            "EQ-68",
+            "EQ-93"
+        ]
+    },
+    "lesson": {
+        "text": "Bring your go bag and walk out. Expect aftershocks.",
+        "sources": [
+            "EQ-93",
+            "EQ-92",
+            "EQ-42"
+        ]
+    },
+    "choices": [
+        {
+            "id": "no_go_bag",
+            "label": "Leave without the go bag",
+            "picture": "choice_no_go_bag",
+            "safe": false,
+            "heading": "Not ready yet",
+            "feedback": "Your go bag has what you need. Bring it with you.",
+            "sources": [
+                "EQ-93",
+                "EQ-68"
+            ]
+        },
+        {
+            "id": "toys",
+            "label": "Run back in for your toys",
+            "picture": "choice_back_for_toys",
+            "safe": false,
+            "heading": "Not safe yet",
+            "feedback": "Do not go back in. Aftershocks can come. Walk out now.",
+            "sources": [
+                "EQ-43",
+                "EQ-42",
+                "EQ-92"
+            ]
+        },
+        {
+            "id": "no_note",
+            "label": "Leave without a note",
+            "picture": "choice_no_note",
+            "safe": false,
+            "heading": "Not ready yet",
+            "feedback": "Leave a message so others know where you went.",
+            "sources": [
+                "EQ-93"
+            ]
+        },
+        {
+            "id": "go_bag",
+            "label": "Grab the go bag and walk out",
+            "picture": "choice_go_bag_out",
+            "safe": true,
+            "feedback": "Bring the go bag. Leave a note saying where you went.",
+            "sources": [
+                "EQ-93"
+            ]
+        }
+    ]
+}

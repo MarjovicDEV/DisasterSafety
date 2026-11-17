@@ -1,0 +1,75 @@
+{
+    "level": "Earthquake/Hard/1",
+    "phase": "before",
+    "setting": "home",
+    "goal": {
+        "text": "Make a family plan for earthquakes.",
+        "sources": [
+            "EQ-64"
+        ]
+    },
+    "intro": {
+        "text": "Your family is making an earthquake plan. Join in!",
+        "sources": []
+    },
+    "hint": {
+        "text": "Where will your family meet after it shakes?",
+        "sources": [
+            "EQ-64"
+        ]
+    },
+    "lesson": {
+        "text": "Plan with your family. Agree on a meeting place and know a family number.",
+        "sources": [
+            "EQ-64",
+            "EQ-67"
+        ]
+    },
+    "choices": [
+        {
+            "id": "own_way",
+            "label": "Each of us finds our own way",
+            "picture": "choice_own_way",
+            "safe": false,
+            "heading": "Not ready yet",
+            "feedback": "Agree on one place to meet. Then you can find each other.",
+            "sources": [
+                "EQ-64",
+                "EQ-65"
+            ]
+        },
+        {
+            "id": "meeting_place",
+            "label": "Agree on a meeting place",
+            "picture": "choice_meeting_place",
+            "safe": true,
+            "feedback": "Good plan. Also remember one family phone number.",
+            "sources": [
+                "EQ-64",
+                "EQ-67"
+            ]
+        },
+        {
+            "id": "meet_home",
+            "label": "Plan to meet back at home",
+            "picture": "choice_meet_home",
+            "safe": false,
+            "feedback": "Your house may be damaged. Meet at an open place.",
+            "sources": [
+                "EQ-94",
+                "EQ-55"
+            ]
+        },
+        {
+            "id": "phone_numbers",
+            "label": "Keep numbers only in the phone",
+            "picture": "choice_phone_numbers",
+            "safe": false,
+            "heading": "Not ready yet",
+            "feedback": "Phones can be lost. Remember or write down a family number.",
+            "sources": [
+                "EQ-67"
+            ]
+        }
+    ]
+}

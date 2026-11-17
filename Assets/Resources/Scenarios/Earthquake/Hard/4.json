@@ -1,0 +1,76 @@
+{
+    "level": "Earthquake/Hard/4",
+    "phase": "after",
+    "setting": "mall_b",
+    "goal": {
+        "text": "Leave the mall safely after the shaking.",
+        "sources": [
+            "EQ-92"
+        ]
+    },
+    "intro": {
+        "text": "The shaking stopped. Everyone is leaving the mall.",
+        "sources": []
+    },
+    "hint": {
+        "text": "What is the safe way down after an earthquake?",
+        "sources": [
+            "EQ-92"
+        ]
+    },
+    "lesson": {
+        "text": "After the shaking, use the stairs and walk out. Wait in an open area.",
+        "sources": [
+            "EQ-92",
+            "EQ-38"
+        ]
+    },
+    "choices": [
+        {
+            "id": "stairs",
+            "label": "Walk down the stairs and out",
+            "picture": "choice_mall_stairs",
+            "safe": true,
+            "feedback": "Walk, do not run. Go to the open parking area.",
+            "sources": [
+                "EQ-92",
+                "EQ-36",
+                "EQ-38"
+            ]
+        },
+        {
+            "id": "elevator",
+            "label": "Take the elevator down",
+            "picture": "choice_elevator_after",
+            "safe": false,
+            "feedback": "Do not use elevators after an earthquake. Use the stairs.",
+            "sources": [
+                "EQ-92"
+            ]
+        },
+        {
+            "id": "run_push",
+            "label": "Run and push to get out",
+            "picture": "choice_run_push",
+            "safe": false,
+            "heading": "Not safe yet",
+            "feedback": "Walk fast, but do not run or push.",
+            "sources": [
+                "EQ-92",
+                "EQ-36"
+            ]
+        },
+        {
+            "id": "mall_wall",
+            "label": "Wait by the mall wall outside",
+            "picture": "choice_mall_wall",
+            "safe": false,
+            "heading": "Not safe yet",
+            "feedback": "Things can fall from the building. Move to the open area.",
+            "sources": [
+                "EQ-94",
+                "EQ-81"
+            ]
+        }
+    ]
+}

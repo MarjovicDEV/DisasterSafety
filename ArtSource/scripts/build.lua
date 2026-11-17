@@ -51,6 +51,19 @@ for name, img in pairs(NM.choicePicturesNormal()) do
   L.save(img, "Level/" .. name, "Level/" .. name)
 end
 
+-- Earthquake / Hard: mall_a (hanging sign, glass display), mall_b, home_after,
+-- evacuation_area, and one picture per Choice
+local HD = dofile(here .. "hard.lua")(L, CH, LV, NM)
+L.save(HD.mallA(), "Level/bg_mall_a", "Level/bg_mall_a")
+L.saveFrames(HD.mallSignFrames(), "Level/mall_sign", "Level/mall_sign", 160)
+L.saveFrames(HD.shopDisplayFrames(), "Level/shop_display", "Level/shop_display", 120)
+L.save(HD.mallB(), "Level/bg_mall_b", "Level/bg_mall_b")
+L.save(HD.homeAfter(), "Level/bg_home_after", "Level/bg_home_after")
+L.save(HD.evacuationArea(), "Level/bg_evacuation_area", "Level/bg_evacuation_area")
+for name, img in pairs(HD.choicePicturesHard()) do
+  L.save(img, "Level/" .. name, "Level/" .. name)
+end
+
 -- How to Play Tutorial Pages: Tutorial/<name>_0.png and _1.png
 for _, page in ipairs(TU.pages) do
   L.saveFrames({ page.draw(0), page.draw(1) }, "Tutorial/" .. page.name, "Tutorial/" .. page.name, 400)

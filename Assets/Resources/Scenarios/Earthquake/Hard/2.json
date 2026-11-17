@@ -1,0 +1,76 @@
+{
+    "level": "Earthquake/Hard/2",
+    "phase": "before",
+    "setting": "schoolyard",
+    "goal": {
+        "text": "Know your way out of school.",
+        "sources": [
+            "EQ-53",
+            "EQ-54"
+        ]
+    },
+    "intro": {
+        "text": "Your class is learning the evacuation route today.",
+        "sources": []
+    },
+    "hint": {
+        "text": "Which way has nothing that can fall?",
+        "sources": [
+            "EQ-56"
+        ]
+    },
+    "lesson": {
+        "text": "Know your school exits. Learn the safe route to the evacuation area.",
+        "sources": [
+            "EQ-53",
+            "EQ-54"
+        ]
+    },
+    "choices": [
+        {
+            "id": "route_post",
+            "label": "Take the path by the post",
+            "picture": "choice_route_post",
+            "safe": false,
+            "feedback": "Posts can fall when it shakes. Pick a route away from them.",
+            "sources": [
+                "EQ-56",
+                "EQ-81"
+            ]
+        },
+        {
+            "id": "route_tree",
+            "label": "Walk the path under the tree",
+            "picture": "choice_route_tree",
+            "safe": false,
+            "feedback": "Trees can fall too. Choose a route in the open.",
+            "sources": [
+                "EQ-81",
+                "EQ-56"
+            ]
+        },
+        {
+            "id": "route_field",
+            "label": "Take the route across the field",
+            "picture": "choice_route_field",
+            "safe": true,
+            "feedback": "This route goes to the evacuation area. Nothing can fall on it.",
+            "sources": [
+                "EQ-54",
+                "EQ-56"
+            ]
+        },
+        {
+            "id": "route_later",
+            "label": "Find the way when it happens",
+            "picture": "choice_route_later",
+            "safe": false,
+            "heading": "Not ready yet",
+            "feedback": "Learn the route now, in drills. Then you will know it.",
+            "sources": [
+                "EQ-53",
+                "EQ-71"
+            ]
+        }
+    ]
+}

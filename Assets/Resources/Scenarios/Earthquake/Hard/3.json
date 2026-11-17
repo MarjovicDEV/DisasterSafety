@@ -1,0 +1,77 @@
+{
+    "level": "Earthquake/Hard/3",
+    "phase": "during",
+    "setting": "mall_a",
+    "goal": {
+        "text": "Stay safe when it shakes at the mall.",
+        "sources": [
+            "EQ-16"
+        ]
+    },
+    "intro": {
+        "text": "You are at the mall food court. The ground is shaking!",
+        "sources": []
+    },
+    "hint": {
+        "text": "Is there a strong table near you?",
+        "sources": [
+            "EQ-75"
+        ]
+    },
+    "lesson": {
+        "text": "In the mall, Duck, Cover, and Hold. Stay away from glass and elevators.",
+        "sources": [
+            "EQ-74",
+            "EQ-76",
+            "EQ-78"
+        ]
+    },
+    "choices": [
+        {
+            "id": "run_exit",
+            "label": "Run to the mall exit",
+            "picture": "choice_run_exit",
+            "safe": false,
+            "heading": "Not safe yet",
+            "feedback": "Do not run while it shakes. Take cover where you are.",
+            "sources": [
+                "EQ-77",
+                "EQ-16",
+                "EQ-74"
+            ]
+        },
+        {
+            "id": "elevator",
+            "label": "Ride the elevator down",
+            "picture": "choice_elevator_during",
+            "safe": false,
+            "feedback": "Never use the elevator in an earthquake. Take cover first.",
+            "sources": [
+                "EQ-78"
+            ]
+        },
+        {
+            "id": "shop_window",
+            "label": "Stand by the glass shop window",
+            "picture": "choice_shop_window",
+            "safe": false,
+            "feedback": "Glass can break and fall. Stay away from shop windows.",
+            "sources": [
+                "EQ-14",
+                "EQ-76"
+            ]
+        },
+        {
+            "id": "table",
+            "label": "Duck under the food court table",
+            "picture": "choice_food_court_table",
+            "safe": true,
+            "feedback": "Duck, Cover, and Hold. Stay until the shaking stops.",
+            "sources": [
+                "EQ-74",
+                "EQ-75",
+                "EQ-13"
+            ]
+        }
+    ]
+}
