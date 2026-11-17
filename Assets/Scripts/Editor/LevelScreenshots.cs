@@ -83,13 +83,28 @@ namespace DisasterSafety.EditorTools
             Completed(c, classroomAfter, 3);
             Shot("32-level-completed-normal-open", c.dimmer, c.completedPanel, c.cheerBantay.bubble);
 
-            var normalShots = new[] { "40-normal1", "41-normal2", "42-normal3" };
+            var normalShots = new[] { "40-normal1", "41-normal2", "42-normal3", "43-normal4", "44-normal5" };
+            Scenario normal = null;
             for (var i = 0; i < normalShots.Length; i++)
             {
-                var normal = PrepareLevel(c, new LevelId(Episode.Earthquake, Difficulty.Normal, i + 1));
+                normal = PrepareLevel(c, new LevelId(Episode.Earthquake, Difficulty.Normal, i + 1));
                 c.bantay.bubbleText.text = normal.intro.text;
                 Shot(normalShots[i], c.choicesPanel, c.bantay.bubble);
             }
+
+            // Normal 5 (the beach): an Unsafe Choice, then Level Completed opening Hard.
+            var fish = ChoiceIndex(normal, "fish");
+            c.choiceCards[fish].SetTried(true);
+            Feedback(c, normal.choices[fish]);
+            Shot("45-normal5-feedback-unsafe", c.choicesPanel, c.dimmer, c.feedbackPanel);
+            c.choiceCards[fish].SetTried(false);
+
+            var hardName = UIStrings.DifficultyName(Difficulty.Hard);
+            c.openedText.text = UIStrings.Opened(hardName);
+            c.openedRibbon.SetActive(true);
+            c.cheerBantay.bubbleText.text = UIStrings.BantayOpenedSoon(hardName);
+            Completed(c, normal, 3);
+            Shot("46-level-completed-hard-open", c.dimmer, c.completedPanel, c.cheerBantay.bubble);
         }
 
         static void Completed(LevelController c, Scenario scenario, int stars)

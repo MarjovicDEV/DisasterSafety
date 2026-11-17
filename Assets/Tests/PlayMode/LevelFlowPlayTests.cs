@@ -255,6 +255,54 @@ namespace DisasterSafety.Tests
         }
 
         [UnityTest]
+        public IEnumerator NormalDifficulty_CompletingAllFiveLevels_OpensHard()
+        {
+            var settings = new[] { "bedroom", "home", "home", "schoolyard", "beach" };
+            var shakes = new[] { false, false, true, true, false };
+
+            GameServices.Initialize(dir);
+            GameServices.Progress.SetDisplayName("Ana");
+            GameServices.Progress.Open(Episode.Earthquake, Difficulty.Normal);
+            GameServices.SaveProgress();
+            GameScenes.PlayLevel(new LevelId(Episode.Earthquake, Difficulty.Normal, 1));
+
+            LevelController c = null;
+            for (var n = 1; n <= settings.Length; n++)
+            {
+                var level = new LevelId(Episode.Earthquake, Difficulty.Normal, n);
+                yield return WaitFor(() => Level()?.Level.Equals(level) == true, "Normal " + n + " to load");
+                yield return ReadyToChoose(Level);
+                c = Level();
+                Assert.That(c.ActiveSetting.key, Is.EqualTo(settings[n - 1]), "Setting of Normal " + n);
+                var shaking = c.ActiveSetting.shaker != null && c.ActiveSetting.shaker.IsShaking;
+                Assert.That(shaking, Is.EqualTo(shakes[n - 1]), "shaking in Normal " + n);
+
+                Assert.That(GameServices.Scenarios.TryGet(level, out var scenario), Is.True);
+                c.choiceCards[scenario.SafeChoiceIndex].button.onClick.Invoke();
+                Assert.That(c.finishButton.gameObject.activeSelf, Is.True, "the Safe Choice of Normal " + n + " can Finish");
+                c.finishButton.onClick.Invoke();
+                Assert.That(c.completedPanel.IsVisible, Is.True, "Level Completed after Normal " + n);
+                if (n < settings.Length)
+                {
+                    Assert.That(c.nextButton.gameObject.activeSelf, Is.True, "Normal " + n + " leads to Normal " + (n + 1));
+                    c.nextButton.onClick.Invoke();
+                }
+            }
+
+            Assert.That(c.LastResult.Opened, Does.Contain("Earthquake/Hard"));
+            Assert.That(c.openedRibbon.activeInHierarchy, Is.True);
+            Assert.That(c.openedText.text, Is.EqualTo("Hard is open!"));
+            Assert.That(c.nextButton.gameObject.activeSelf, Is.False, "Normal 5 is the last Normal Level");
+            var saved = SavedOnDisk();
+            Assert.That(saved.IsCompleted(new LevelId(Episode.Earthquake, Difficulty.Normal, 5)), Is.True);
+            Assert.That(saved.IsOpen(Episode.Earthquake, Difficulty.Hard), Is.True);
+
+            const string openedLine = "Hard is open! New levels are coming soon.";
+            yield return WaitFor(() => c.cheerBantay.bubble.IsVisible && c.cheerBantay.bubbleText.text == openedLine,
+                "Bantay to announce that Hard is open", LevelController.OpenedLineDelay + 2f);
+        }
+
+        [UnityTest]
         public IEnumerator Replay_KeepsTheBestStars()
         {
             GameServices.Initialize(dir);

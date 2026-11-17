@@ -62,7 +62,7 @@ namespace DisasterSafety.EditorTools
             c.settings = new[]
             {
                 BuildClassroom(world), BuildCorridor(world), BuildClassroomAfter(world),
-                BuildBedroom(world), BuildHome(world),
+                BuildBedroom(world), BuildHome(world), BuildSchoolyard(world), BuildBeach(world),
             };
             for (var i = 1; i < c.settings.Length; i++)
                 c.settings[i].gameObject.SetActive(false);
@@ -156,6 +156,28 @@ namespace DisasterSafety.EditorTools
                 BuildLevelAnimation(shaking, "Hanging Lamp", Frames("Level/lamp", 2), 232, 0, 4f, onlyWhileShaking: true),
                 BuildLevelAnimation(shaking, "Glass Cabinet", Frames("Level/glass_cabinet", 2), 330, 64, 5f, onlyWhileShaking: true),
             };
+            return setting;
+        }
+
+        static LevelSetting BuildSchoolyard(RectTransform world)
+        {
+            var setting = BuildSetting(world, ScenarioSettings.Schoolyard, "Schoolyard", out var shaking);
+            // Stand Bantay and the Hint in front of the building, clear of the tree and the post.
+            setting.guidanceOffsetX = -1230f;
+            setting.shaker.wobblers = new[]
+            {
+                BuildLevelAnimation(shaking, "Big Tree", Frames("Level/tree", 2), 260, 34, 3f, onlyWhileShaking: true),
+                BuildLevelAnimation(shaking, "Electric Post", Frames("Level/post", 2), 360, 14, 4f, onlyWhileShaking: true),
+            };
+            return setting;
+        }
+
+        static LevelSetting BuildBeach(RectTransform world)
+        {
+            var setting = BuildSetting(world, ScenarioSettings.Beach, "Beach", out var foreground, shakes: false);
+            // Nudge the Hint right of the last fish on the sand; the hill path stays clear.
+            setting.guidanceOffsetX = 56f;
+            BuildLevelAnimation(foreground, "Waves", Frames("Level/waves", 2), 140, 128, 2.5f, onlyWhileShaking: false);
             return setting;
         }
 
