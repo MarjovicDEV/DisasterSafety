@@ -124,6 +124,16 @@ namespace DisasterSafety.EditorTools
             Feedback(c, mall.choices[elevator]);
             Shot("57-hard3-feedback-unsafe", c.choicesPanel, c.dimmer, c.feedbackPanel);
             c.choiceCards[elevator].SetTried(false);
+
+            // Hard 7 (the Evacuation Area): Level Completed opening Fire, which has no Playable Level yet.
+            var evacuation = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Hard, 7));
+            var fireName = UIStrings.EpisodeName(Episode.Fire);
+            c.openedText.text = UIStrings.Opened(fireName);
+            c.openedRibbon.SetActive(true);
+            c.cheerBantay.bubbleText.text = LevelController.OpenedLine(fireName, Episode.Fire, Difficulty.Easy, scenarios.Playable);
+            Completed(c, evacuation, 3);
+            Shot("58-level-completed-fire-open", c.dimmer, c.completedPanel, c.cheerBantay.bubble);
+            c.openedRibbon.SetActive(false);
         }
 
         static void Completed(LevelController c, Scenario scenario, int stars)

@@ -198,6 +198,39 @@ namespace DisasterSafety.Tests
         }
 
         [UnityTest]
+        public IEnumerator HardOpen_LevelSelection_StartsEveryHardLevel()
+        {
+            GameServices.Initialize(dir);
+            GameServices.Progress.SetDisplayName("Ana");
+            GameServices.Progress.Open(Episode.Earthquake, Difficulty.Hard);
+            GameServices.SaveProgress();
+            yield return BootToMenu();
+            var c = UnityEngine.Object.FindAnyObjectByType<MainMenuController>();
+
+            c.playButton.onClick.Invoke();
+            yield return Wait(0.5f);
+            Assert.That(c.episodePanel.IsVisible, Is.True);
+            c.episodeCards[0].button.onClick.Invoke();
+            yield return Wait(0.5f);
+            Assert.That(c.difficultyPanel.IsVisible, Is.True);
+            c.difficultyCards[2].button.onClick.Invoke();
+            yield return Wait(0.5f);
+            Assert.That(c.levelPanel.IsVisible, Is.True, "Hard is open");
+
+            Assert.That(c.levelSlots.Length, Is.GreaterThanOrEqualTo(7));
+            for (var i = 0; i < c.levelSlots.Length; i++)
+                Assert.That(c.levelSlots[i].gameObject.activeSelf, Is.EqualTo(i < 7), "Hard has 7 Levels");
+
+            for (var i = 0; i < 7; i++)
+            {
+                c.levelSlots[i].button.onClick.Invoke();
+                yield return null;
+                Assert.That(c.levelSlots[i].selectedFrame.activeSelf, Is.True, $"Hard {i + 1} is selected");
+                Assert.That(c.startButton.interactable, Is.True, $"Earthquake/Hard/{i + 1} is a Playable Level");
+            }
+        }
+
+        [UnityTest]
         public IEnumerator CorruptSave_IsPreserved_AndMenuStillLoads()
         {
             File.WriteAllText(Path.Combine(dir, "save.json"), "{ broken");

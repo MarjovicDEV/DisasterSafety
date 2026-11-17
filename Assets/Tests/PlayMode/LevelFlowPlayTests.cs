@@ -297,9 +297,58 @@ namespace DisasterSafety.Tests
             Assert.That(saved.IsCompleted(new LevelId(Episode.Earthquake, Difficulty.Normal, 5)), Is.True);
             Assert.That(saved.IsOpen(Episode.Earthquake, Difficulty.Hard), Is.True);
 
-            const string openedLine = "Hard is open! New levels are coming soon.";
+            const string openedLine = "Hard is open! Let's play!";
             yield return WaitFor(() => c.cheerBantay.bubble.IsVisible && c.cheerBantay.bubbleText.text == openedLine,
                 "Bantay to announce that Hard is open", LevelController.OpenedLineDelay + 2f);
+        }
+
+        [UnityTest]
+        public IEnumerator HardDifficulty_CompletingAllSevenLevels_CompletesTheEpisode()
+        {
+            var settings = new[] { "home", "schoolyard", "mall_a", "mall_b", "home_after", "home_after", "evacuation_area" };
+            var shakes = new[] { false, false, true, false, false, false, false };
+
+            GameServices.Initialize(dir);
+            GameServices.Progress.SetDisplayName("Ana");
+            GameServices.Progress.Open(Episode.Earthquake, Difficulty.Hard);
+            GameServices.SaveProgress();
+            GameScenes.PlayLevel(new LevelId(Episode.Earthquake, Difficulty.Hard, 1));
+
+            LevelController c = null;
+            for (var n = 1; n <= settings.Length; n++)
+            {
+                var level = new LevelId(Episode.Earthquake, Difficulty.Hard, n);
+                yield return WaitFor(() => Level()?.Level.Equals(level) == true, "Hard " + n + " to load");
+                yield return ReadyToChoose(Level);
+                c = Level();
+                Assert.That(c.ActiveSetting.key, Is.EqualTo(settings[n - 1]), "Setting of Hard " + n);
+                var shaking = c.ActiveSetting.shaker != null && c.ActiveSetting.shaker.IsShaking;
+                Assert.That(shaking, Is.EqualTo(shakes[n - 1]), "shaking in Hard " + n);
+
+                Assert.That(GameServices.Scenarios.TryGet(level, out var scenario), Is.True);
+                c.choiceCards[scenario.SafeChoiceIndex].button.onClick.Invoke();
+                Assert.That(c.finishButton.gameObject.activeSelf, Is.True, "the Safe Choice of Hard " + n + " can Finish");
+                c.finishButton.onClick.Invoke();
+                Assert.That(c.completedPanel.IsVisible, Is.True, "Level Completed after Hard " + n);
+                if (n < settings.Length)
+                {
+                    Assert.That(c.nextButton.gameObject.activeSelf, Is.True, "Hard " + n + " leads to Hard " + (n + 1));
+                    c.nextButton.onClick.Invoke();
+                }
+            }
+
+            Assert.That(c.LastResult.EpisodeCompleted, Is.True, "Hard 7 completes the Earthquake Episode");
+            Assert.That(c.LastResult.Opened, Does.Contain("Fire/Easy"));
+            Assert.That(c.openedRibbon.activeInHierarchy, Is.True);
+            Assert.That(c.openedText.text, Is.EqualTo("Fire is open!"));
+            Assert.That(c.nextButton.gameObject.activeSelf, Is.False, "Hard 7 is the last Earthquake Level");
+            var saved = SavedOnDisk();
+            Assert.That(saved.IsCompleted(new LevelId(Episode.Earthquake, Difficulty.Hard, 7)), Is.True);
+            Assert.That(saved.IsOpen(Episode.Fire, Difficulty.Easy), Is.True);
+
+            const string openedLine = "Fire is open! New levels are coming soon.";
+            yield return WaitFor(() => c.cheerBantay.bubble.IsVisible && c.cheerBantay.bubbleText.text == openedLine,
+                "Bantay to announce that Fire is open", LevelController.OpenedLineDelay + 2f);
         }
 
         [UnityTest]
