@@ -27,7 +27,7 @@ _Avoid_: Cleared, passed, done
 ## Gameplay
 
 **Scenario**:
-The situation one Level presents: a picture, a goal, short instructions, an optional Hint, and three or four Choices. Each Level has exactly one Scenario.
+The situation one Level presents: a Setting, a goal, a short intro, an optional Hint, and three or four Choices that the Student acts out. Each Level has exactly one Scenario.
 _Avoid_: Question, quiz, puzzle
 
 **Setting**:
@@ -47,8 +47,16 @@ The emergency supply kit a family packs before an earthquake: water, food, a fla
 _Avoid_: Survival kit, emergency bag (PHIVOLCS uses both; the game says go bag)
 
 **Choice**:
-One action the Learner can pick in a Scenario. Exactly one Choice per Scenario is the Safe Choice; every other Choice is an Unsafe Choice.
-_Avoid_: Answer, option
+One action the Learner can pick in a Scenario, shown as a short command in the Action Bar and acted out by the Student. Exactly one Choice per Scenario is the Safe Choice; every other Choice is an Unsafe Choice.
+_Avoid_: Answer, option, Action (the game says Choice; "action" is only the animation)
+
+**Action Bar**:
+The bar at the bottom of a Level that lists the Scenario's Choices as short commands, each with a small icon. In a "during" Scenario it slides up after the first shake.
+_Avoid_: Choice cards, menu, answer panel
+
+**Caption**:
+The banner at the top of a Level that tells the Scenario intro and the Goal, and shows the Hint when the Learner asks for it.
+_Avoid_: Narrator, subtitle, dialog
 
 **Safe Choice**:
 The Choice that matches official safety guidance for the Scenario. A Level is completed only when the Learner picks the Safe Choice.
@@ -63,8 +71,8 @@ The short, kind explanation shown after every Choice: why it is safe or unsafe, 
 _Avoid_: Result, verdict, correction
 
 **Hint**:
-Optional in-level help the Learner may ask for during a Scenario. It points toward the Safe Choice without naming it.
-_Avoid_: Tip (reserved for Bantay's lines), clue
+Optional in-level help the Learner may ask for during a Scenario, shown in the Caption. It points toward the Safe Choice without naming it.
+_Avoid_: Tip (reserved for How to Play and Main Menu lines), clue
 
 **Attempt**:
 One play of a Level, from its start until Level Completed, Restart, or Quit to Menu. Nothing about an unfinished Attempt is saved.
@@ -121,11 +129,19 @@ One picture-and-caption step of How to Play, showing the Learner one thing to do
 _Avoid_: Slide, tutorial step, help screen
 
 **Tip**:
-One short line of advice from Bantay. A Tip on a Tutorial Page explains how to play; a Tip on the Main Menu is a short safety fact.
+One short line of advice in the Student's speech bubble. A Tip on a Tutorial Page explains how to play; a Tip on the Main Menu is a short safety fact.
 _Avoid_: Hint (reserved for in-level help), message
 
 ## Characters
 
-**Bantay**:
-The game's guide character, a friendly dog in a yellow hard hat who greets and instructs the Learner. Bantay is decoration and guidance only and never scores or judges: Bantay may cheer a Completed Level and encourage the Learner after an Unsafe Choice, but never calls a Choice wrong and never mentions Stars.
-_Avoid_: Mascot, helper, NPC
+**Student**:
+The Learner's character: a boy or a girl in the school uniform, picked once with the Display Name. The Student acts out every Choice in the Level, greets the Learner on the Main Menu and gives the Tips in How to Play.
+_Avoid_: Avatar, player, hero
+
+**Reaction**:
+A short line in the Student's speech bubble during a Level, such as "Whoa!", "Hmm, wait..." or "I'm safe!". Reactions never call a Choice wrong and never mention Stars.
+_Avoid_: Feedback (the explanation after a Choice), dialog
+
+**Bantay** (retired):
+The former guide dog. Removed by docs/adr/0001-v2-art-and-no-bantay.md; the Caption, the Student and Reactions took over its jobs. Its sprites stay in the repo only until every Level uses the new flow.
+_Avoid_: using the name for anything new
