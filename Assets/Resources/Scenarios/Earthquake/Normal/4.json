@@ -1,0 +1,74 @@
+{
+    "level": "Earthquake/Normal/4",
+    "phase": "during",
+    "setting": "schoolyard",
+    "goal": {
+        "text": "Stay safe when it shakes outside.",
+        "sources": [
+            "EQ-80"
+        ]
+    },
+    "intro": {
+        "text": "It is recess. You are outside when the ground shakes!",
+        "sources": []
+    },
+    "hint": {
+        "text": "Where is there nothing that can fall on you?",
+        "sources": [
+            "EQ-80",
+            "EQ-81"
+        ]
+    },
+    "lesson": {
+        "text": "Outside? Move to an open area, away from trees, posts and buildings.",
+        "sources": [
+            "EQ-80",
+            "EQ-81"
+        ]
+    },
+    "choices": [
+        {
+            "id": "tree",
+            "label": "Hide under the big tree",
+            "picture": "choice_tree",
+            "safe": false,
+            "feedback": "Stay away from trees when the ground shakes.",
+            "sources": [
+                "EQ-81"
+            ]
+        },
+        {
+            "id": "field",
+            "label": "Go to the open field",
+            "picture": "choice_open_field",
+            "safe": true,
+            "feedback": "Move to an open area. Stay away from trees, posts and buildings.",
+            "sources": [
+                "EQ-80",
+                "EQ-81"
+            ]
+        },
+        {
+            "id": "building",
+            "label": "Run back into the building",
+            "picture": "choice_building",
+            "safe": false,
+            "heading": "Not safe yet",
+            "feedback": "Stay away from buildings while it shakes. Go to an open area.",
+            "sources": [
+                "EQ-81",
+                "EQ-80"
+            ]
+        },
+        {
+            "id": "post",
+            "label": "Stand by the electric post",
+            "picture": "choice_post",
+            "safe": false,
+            "feedback": "Stay away from posts and power lines.",
+            "sources": [
+                "EQ-81"
+            ]
+        }
+    ]
+}

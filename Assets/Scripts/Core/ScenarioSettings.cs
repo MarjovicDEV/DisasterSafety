@@ -10,11 +10,16 @@ namespace DisasterSafety.Core
         public const string Classroom = "classroom";
         public const string Corridor = "corridor";
         public const string ClassroomAfter = "classroom_after";
+        public const string Bedroom = "bedroom";
+        public const string Home = "home";
+        public const string Schoolyard = "schoolyard";
+        public const string Beach = "beach";
 
-        public static IReadOnlyList<string> All { get; } = Array.AsReadOnly(new[] { Classroom, Corridor, ClassroomAfter });
+        public static IReadOnlyList<string> All { get; } =
+            Array.AsReadOnly(new[] { Classroom, Corridor, ClassroomAfter, Bedroom, Home, Schoolyard, Beach });
 
         public static bool IsKnown(string key) => All.Contains(key);
 
-        public static bool CanShake(string key) => key == Classroom || key == Corridor;
+        public static bool CanShake(string key) => key == Classroom || key == Corridor || key == Home || key == Schoolyard;
     }
 }

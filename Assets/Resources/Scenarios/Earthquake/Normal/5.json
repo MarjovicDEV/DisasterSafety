@@ -1,0 +1,74 @@
+{
+    "level": "Earthquake/Normal/5",
+    "phase": "after",
+    "setting": "beach",
+    "goal": {
+        "text": "Stay safe near the sea after a strong earthquake.",
+        "sources": [
+            "EQ-84"
+        ]
+    },
+    "intro": {
+        "text": "You are at the beach. The shaking stopped. The sea is going out!",
+        "sources": []
+    },
+    "hint": {
+        "text": "The water can come back fast. Where can it not reach?",
+        "sources": [
+            "EQ-86",
+            "EQ-87"
+        ]
+    },
+    "lesson": {
+        "text": "Near the sea, a strong earthquake can bring a tsunami. Go to high ground and stay until the all clear.",
+        "sources": [
+            "EQ-84",
+            "EQ-86",
+            "EQ-89"
+        ]
+    },
+    "choices": [
+        {
+            "id": "fish",
+            "label": "Pick up the fish on the sand",
+            "picture": "choice_fish",
+            "safe": false,
+            "feedback": "Never go down the beach for fish. Go to high ground.",
+            "sources": [
+                "EQ-88",
+                "EQ-86"
+            ]
+        },
+        {
+            "id": "watch",
+            "label": "Stay and watch the waves",
+            "picture": "choice_watch_waves",
+            "safe": false,
+            "feedback": "Never stay to watch for a tsunami. Go to high ground.",
+            "sources": [
+                "EQ-88"
+            ]
+        },
+        {
+            "id": "high_ground",
+            "label": "Go to high ground right away",
+            "picture": "choice_high_ground",
+            "safe": true,
+            "feedback": "A strong earthquake near the sea can bring a tsunami. Move to high ground now.",
+            "sources": [
+                "EQ-84",
+                "EQ-86"
+            ]
+        },
+        {
+            "id": "wait",
+            "label": "Wait on the beach for news",
+            "picture": "choice_wait_beach",
+            "safe": false,
+            "feedback": "Do not stay in low places by the sea. A warning may not come in time.",
+            "sources": [
+                "EQ-87"
+            ]
+        }
+    ]
+}

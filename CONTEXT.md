@@ -31,7 +31,7 @@ The situation one Level presents: a picture, a goal, short instructions, an opti
 _Avoid_: Question, quiz, puzzle
 
 **Setting**:
-The place a Scenario happens, such as the classroom or the corridor. The Setting picks the scene art. Each Setting has a key: `classroom`, `corridor`, or `classroom_after`.
+The place a Scenario happens, such as the classroom or the corridor. The Setting picks the scene art. Each Setting has a key: `classroom`, `corridor`, `classroom_after`, `bedroom`, `home`, `schoolyard`, or `beach`.
 _Avoid_: Location, map, background (the background is only the picture)
 
 **Phase**:
@@ -41,6 +41,10 @@ _Avoid_: Stage, step, timing
 **Evacuation Area**:
 The open space near the school building where classes gather after the shaking stops, so teachers can count every learner.
 _Avoid_: Safe zone, assembly point
+
+**Go Bag**:
+The emergency supply kit a family packs before an earthquake: water, food, a flashlight, a whistle and other things for 3 days, kept where it is easy to reach.
+_Avoid_: Survival kit, emergency bag (PHIVOLCS uses both; the game says go bag)
 
 **Choice**:
 One action the Learner can pick in a Scenario. Exactly one Choice per Scenario is the Safe Choice; every other Choice is an Unsafe Choice.

@@ -1,0 +1,77 @@
+{
+    "level": "Earthquake/Normal/3",
+    "phase": "during",
+    "setting": "home",
+    "goal": {
+        "text": "Stay safe when the ground shakes at home.",
+        "sources": [
+            "EQ-74"
+        ]
+    },
+    "intro": {
+        "text": "You are in the living room. The ground is shaking!",
+        "sources": []
+    },
+    "hint": {
+        "text": "Is there something strong to hide under?",
+        "sources": [
+            "EQ-75"
+        ]
+    },
+    "lesson": {
+        "text": "At home, Duck, Cover, and Hold under a strong table. Stay away from glass.",
+        "sources": [
+            "EQ-74",
+            "EQ-75",
+            "EQ-76"
+        ]
+    },
+    "choices": [
+        {
+            "id": "run",
+            "label": "Run out the door",
+            "picture": "choice_run_home",
+            "safe": false,
+            "heading": "Not safe yet",
+            "feedback": "Do not run while it shakes. Stay inside and take cover.",
+            "sources": [
+                "EQ-77",
+                "EQ-78",
+                "EQ-74"
+            ]
+        },
+        {
+            "id": "glass",
+            "label": "Stand by the glass cabinet",
+            "picture": "choice_glass_cabinet",
+            "safe": false,
+            "feedback": "Glass and shelves can fall and break. Stay away from them.",
+            "sources": [
+                "EQ-76"
+            ]
+        },
+        {
+            "id": "sofa",
+            "label": "Lie down beside the sofa",
+            "picture": "choice_sofa",
+            "safe": false,
+            "feedback": "Lying beside furniture is not the safe way. Get under a strong table.",
+            "sources": [
+                "EQ-79",
+                "EQ-75"
+            ]
+        },
+        {
+            "id": "table",
+            "label": "Duck under the strong table",
+            "picture": "choice_table",
+            "safe": true,
+            "feedback": "Duck, Cover, and Hold under the table. Stay until the shaking stops.",
+            "sources": [
+                "EQ-74",
+                "EQ-75",
+                "EQ-13"
+            ]
+        }
+    ]
+}

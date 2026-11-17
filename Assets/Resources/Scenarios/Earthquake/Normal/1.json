@@ -1,0 +1,72 @@
+{
+    "level": "Earthquake/Normal/1",
+    "phase": "before",
+    "setting": "bedroom",
+    "goal": {
+        "text": "Make your room safer before an earthquake.",
+        "sources": [
+            "EQ-52"
+        ]
+    },
+    "intro": {
+        "text": "Your family is getting ready for earthquakes. Help fix your room!",
+        "sources": []
+    },
+    "hint": {
+        "text": "Heavy things can fall. Where are they safest?",
+        "sources": [
+            "EQ-61"
+        ]
+    },
+    "lesson": {
+        "text": "Before an earthquake, make your home safer. Keep heavy things low and beds away from windows.",
+        "sources": [
+            "EQ-61",
+            "EQ-62"
+        ]
+    },
+    "choices": [
+        {
+            "id": "picture",
+            "label": "Hang a big picture over the bed",
+            "picture": "choice_picture_bed",
+            "safe": false,
+            "feedback": "A heavy picture can fall on your bed. Hang it somewhere else.",
+            "sources": [
+                "EQ-62"
+            ]
+        },
+        {
+            "id": "low_shelf",
+            "label": "Put heavy things on a low shelf",
+            "picture": "choice_low_shelf",
+            "safe": true,
+            "feedback": "Keep heavy things on low shelves, not high ones.",
+            "sources": [
+                "EQ-61"
+            ]
+        },
+        {
+            "id": "bed_window",
+            "label": "Move the bed under the window",
+            "picture": "choice_bed_window",
+            "safe": false,
+            "feedback": "Window glass can break. Keep your bed away from windows.",
+            "sources": [
+                "EQ-62",
+                "EQ-14"
+            ]
+        },
+        {
+            "id": "books_top",
+            "label": "Put books on top of the tall cabinet",
+            "picture": "choice_books_top",
+            "safe": false,
+            "feedback": "Things up high can fall when it shakes. Keep them low.",
+            "sources": [
+                "EQ-61",
+                "EQ-31"
+            ]
+        }
+    ]
+}
