@@ -27,6 +27,7 @@ namespace DisasterSafety.Game.UI
         public Button hintButton;
         public BantayGuide bantay;
         public ScreenPanel choicesPanel;
+        public LevelChoicesLayout choicesLayout;
         public ChoiceCard[] choiceCards;
         [Tooltip("Choice pictures; matched to a Scenario Choice by sprite name.")]
         public Sprite[] pictures;
@@ -145,6 +146,7 @@ namespace DisasterSafety.Game.UI
             world.anchoredPosition = Vector2.zero;
             goalBanner.anchoredPosition = ActiveSetting.goalPosition;
             guidance.anchoredPosition = new Vector2(ActiveSetting.guidanceOffsetX, 0f);
+            choicesLayout?.UseCompactLayoutOnWideScreens(ActiveSetting.compactChoicesOnWideScreens);
         }
 
         void Wire()
@@ -308,9 +310,11 @@ namespace DisasterSafety.Game.UI
         IEnumerator SayOpened(string openedName, Episode episode, Difficulty difficulty)
         {
             yield return new WaitForSecondsRealtime(OpenedLineDelay);
-            var hasPlayableLevel = GameServices.Content.AnyIn(episode, difficulty);
-            cheerBantay.Say(hasPlayableLevel ? UIStrings.BantayOpened(openedName) : UIStrings.BantayOpenedSoon(openedName));
+            cheerBantay.Say(OpenedLine(openedName, episode, difficulty, GameServices.Content));
         }
+
+        public static string OpenedLine(string openedName, Episode episode, Difficulty difficulty, PlayableLevels content) =>
+            content.AnyIn(episode, difficulty) ? UIStrings.BantayOpened(openedName) : UIStrings.BantayOpenedSoon(openedName);
 
         void Pause()
         {

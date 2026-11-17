@@ -129,7 +129,7 @@ namespace DisasterSafety.EditorTools
 
         static LevelSetting BuildClassroomAfter(RectTransform world)
         {
-            var setting = BuildSetting(world, ScenarioSettings.ClassroomAfter, "Classroom After", out var foreground, shakes: false);
+            var setting = BuildSetting(world, ScenarioSettings.ClassroomAfter, "Classroom After", out var foreground);
             // Keep Bantay and the Hint clear of the teacher in the doorway.
             setting.guidanceOffsetX = -880f;
             BuildLevelAnimation(foreground, "Teacher", Frames("Level/teacher", 2), 418, 126, 3f, onlyWhileShaking: false);
@@ -138,9 +138,10 @@ namespace DisasterSafety.EditorTools
 
         static LevelSetting BuildBedroom(RectTransform world)
         {
-            var setting = BuildSetting(world, ScenarioSettings.Bedroom, "Bedroom", out _, shakes: false);
+            var setting = BuildSetting(world, ScenarioSettings.Bedroom, "Bedroom", out _);
             // Stand Bantay and the Hint between the bed and the low shelf, clear of the bookcase.
             setting.guidanceOffsetX = -760f;
+            setting.compactChoicesOnWideScreens = true;
             return setting;
         }
 
@@ -151,6 +152,7 @@ namespace DisasterSafety.EditorTools
             // clear of the table, the glass cabinet and the door.
             setting.goalPosition = new Vector2(-490f, -120f);
             setting.guidanceOffsetX = -1230f;
+            setting.compactChoicesOnWideScreens = true;
             setting.shaker.wobblers = new[]
             {
                 BuildLevelAnimation(shaking, "Hanging Lamp", Frames("Level/lamp", 2), 232, 0, 4f, onlyWhileShaking: true),
@@ -162,33 +164,35 @@ namespace DisasterSafety.EditorTools
         static LevelSetting BuildSchoolyard(RectTransform world)
         {
             var setting = BuildSetting(world, ScenarioSettings.Schoolyard, "Schoolyard", out var shaking);
-            // Keep the tree crown below the Goal on wide screens, and stand Bantay and the Hint
-            // in front of the building, clear of the tree and the post.
+            // Keep the tree clear of the Goal, the post clear of Pause, and the field clear of Bantay.
+            // The tree and post fit above the Choices at three UI units per art pixel.
             setting.alignArtTop = true;
-            setting.guidanceOffsetX = -1230f;
+            setting.guidanceOffsetX = -1212f;
             setting.shaker.wobblers = new[]
             {
-                BuildLevelAnimation(shaking, "Big Tree", Frames("Level/tree", 2), 260, 34, 3f, onlyWhileShaking: true),
-                BuildLevelAnimation(shaking, "Electric Post", Frames("Level/post", 2), 360, 14, 4f, onlyWhileShaking: true),
+                BuildLevelAnimation(shaking, "Big Tree", Frames("Level/tree", 2), 334, 34, 3f, onlyWhileShaking: true, artScale: 0.75f),
+                BuildLevelAnimation(shaking, "Electric Post", Frames("Level/post", 2), 390, 14, 4f, onlyWhileShaking: true, artScale: 0.75f),
             };
             return setting;
         }
 
         static LevelSetting BuildBeach(RectTransform world)
         {
-            var setting = BuildSetting(world, ScenarioSettings.Beach, "Beach", out var foreground, shakes: false);
+            var setting = BuildSetting(world, ScenarioSettings.Beach, "Beach", out var foreground);
             // Nudge the Hint right of the last fish on the sand; the hill path stays clear.
             setting.guidanceOffsetX = 56f;
+            setting.compactChoicesOnWideScreens = true;
             BuildLevelAnimation(foreground, "Waves", Frames("Level/waves", 2), 140, 128, 2.5f, onlyWhileShaking: false);
             return setting;
         }
 
         // A still copy behind the foreground keeps the edges covered during shaking.
-        static LevelSetting BuildSetting(RectTransform world, string key, string name, out RectTransform foreground, bool shakes = true)
+        static LevelSetting BuildSetting(RectTransform world, string key, string name, out RectTransform foreground)
         {
             var group = Stretch(Rect(name, world));
             var setting = group.gameObject.AddComponent<LevelSetting>();
             setting.key = key;
+            var shakes = ScenarioSettings.CanShake(key);
 
             var background = S("Level/bg_" + key);
             ArtImage(group, "Backing", background, 0, 0);
@@ -203,9 +207,9 @@ namespace DisasterSafety.EditorTools
             return setting;
         }
 
-        static SpriteAnimator BuildLevelAnimation(RectTransform parent, string name, Sprite[] frames, int x, int y, float fps, bool onlyWhileShaking)
+        static SpriteAnimator BuildLevelAnimation(RectTransform parent, string name, Sprite[] frames, int x, int y, float fps, bool onlyWhileShaking, float artScale = 1f)
         {
-            var image = ArtImage(parent, name, frames[0], x, y);
+            var image = ArtImage(parent, name, frames[0], x, y, artScale);
             var animator = image.gameObject.AddComponent<SpriteAnimator>();
             animator.frames = frames;
             animator.framesPerSecond = fps;
@@ -266,7 +270,9 @@ namespace DisasterSafety.EditorTools
         {
             var holder = Stretch(Rect("Choices", ui));
             c.choicesPanel = Panel(holder, ScreenPanel.Style.Slide);
-            var row = Rect("Row", holder);
+            // Animate a parent so the Choice row can resize without moving the slide's rest position.
+            var slide = Stretch(Rect("Slide", holder));
+            var row = Rect("Row", slide);
             row.anchorMin = row.anchorMax = new Vector2(0.5f, 0f);
             row.pivot = new Vector2(0.5f, 0f);
             row.sizeDelta = new Vector2(1720f, 340f);
@@ -276,7 +282,7 @@ namespace DisasterSafety.EditorTools
             layout.childAlignment = TextAnchor.MiddleCenter;
             layout.childControlWidth = layout.childControlHeight = false;
             layout.childForceExpandWidth = layout.childForceExpandHeight = false;
-            c.choicesPanel.content = row;
+            c.choicesPanel.content = slide;
 
             c.choiceCards = new ChoiceCard[4];
             for (var i = 0; i < 4; i++)
@@ -317,11 +323,21 @@ namespace DisasterSafety.EditorTools
                 card.button = b;
                 card.picture = pic;
                 card.label = label;
+                card.compactLabelFont = f3;
+                card.compactLabelWidth = 384f;
                 card.triedMark = tried.gameObject;
                 card.group = b.gameObject.AddComponent<CanvasGroup>();
                 tried.gameObject.SetActive(false);
                 c.choiceCards[i] = card;
             }
+
+            c.choicesLayout = holder.gameObject.AddComponent<LevelChoicesLayout>();
+            c.choicesLayout.row = row;
+            c.choicesLayout.cards = c.choiceCards;
+            c.choicesLayout.compactHeight = 272f;
+            c.choicesLayout.compactBottomInset = 10f;
+            c.choicesLayout.compactPictureScale = 11f / 16f;
+            c.choicesLayout.compactPictureTopInset = 8f;
         }
 
         static void BuildFeedback(RectTransform ui, LevelController c)
@@ -442,7 +458,7 @@ namespace DisasterSafety.EditorTools
             lessonR.anchoredPosition = new Vector2(420f, -556f);
             c.lessonText = Label(lessonR, string.Empty, f4, Ink, TextAnchor.UpperLeft, shadow: false);
             c.lessonText.horizontalOverflow = HorizontalWrapMode.Wrap;
-            c.lessonText.lineSpacing = 1.15f;
+            c.lessonText.lineSpacing = 1f;
 
             // Buttons in a row; a hidden Next leaves no gap.
             var row = Rect("Buttons", box);

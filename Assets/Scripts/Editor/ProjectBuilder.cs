@@ -241,13 +241,13 @@ namespace DisasterSafety.EditorTools
             AddWalker(walkers, "Student Boy", Frames("Characters/student_boy", 6), 96f, -120f, 2040f, 140f, 0.4f);
         }
 
-        static RectTransform ArtImage(RectTransform parent, string name, Sprite sprite, int artX, int artY)
+        static RectTransform ArtImage(RectTransform parent, string name, Sprite sprite, int artX, int artY, float artScale = 1f)
         {
             var r = Rect(name, parent);
             r.anchorMin = r.anchorMax = Vector2.zero;
             r.pivot = Vector2.zero;
-            var w = sprite.rect.width * Px;
-            var h = sprite.rect.height * Px;
+            var w = sprite.rect.width * Px * artScale;
+            var h = sprite.rect.height * Px * artScale;
             r.sizeDelta = new Vector2(w, h);
             r.anchoredPosition = new Vector2(artX * Px, 1080f - artY * Px - h);
             Img(r, sprite, Color.white);

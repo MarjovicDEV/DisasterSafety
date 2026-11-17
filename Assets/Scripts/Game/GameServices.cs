@@ -83,7 +83,8 @@ namespace DisasterSafety.Game
 
         public static bool CanContinue => ContinueRule.CanContinue(SavedProgressOrNull, Content);
 
-        static ScenarioLibrary LoadScenarios()
+        /// <summary>Loads and validates the build's Scenarios without opening the Learner's save.</summary>
+        public static ScenarioLibrary LoadScenarios()
         {
             var assets = Resources.LoadAll<TextAsset>(ScenarioFolder);
             var parsed = new List<Scenario>();
