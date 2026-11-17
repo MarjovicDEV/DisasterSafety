@@ -181,43 +181,56 @@ return function(L, CH, LV)
     return frames
   end
 
-  -- Schoolyard: sky, school building, open field; tree (x 260, y 34) and post (x 360, y 14) are sprites
+  -- Put the open field between the school and the separate tree and post sprites.
   function M.schoolyard()
     local W, Hh = 480, 270
     local img = L.newImage(W, Hh)
-    L.vgrad(img, 0, 0, W, 150, { P.sky2, P.sky3, P.sky4, P.sky5 })
-    L.ellipse(img, 120, 26, 16, 6, P.white); L.ellipse(img, 136, 22, 10, 6, P.white)
-    L.ellipse(img, 360, 18, 14, 5, P.white)
-    -- far hills
-    L.ellipse(img, 300, 150, 140, 22, P.hill)
-    L.ellipse(img, 460, 150, 90, 16, P.hill2)
-    -- school building
-    L.poly(img, { 0, 52, 96, 30, 196, 52 }, P.roof)
-    L.rect(img, 0, 50, 196, 4, P.roof2)
-    L.rect(img, 0, 54, 190, 102, P.wall)
-    L.rect(img, 0, 96, 190, 4, P.wall2)
-    for x = 10, 170, 36 do
-      for _, y in ipairs({ 62, 106 }) do
-        L.rect(img, x, y, 24, 22, P.ink); L.rect(img, x + 1, y + 1, 22, 20, P.glass2); L.vline(img, x + 12, y + 1, y + 20, P.teal2)
+    L.vgrad(img, 0, 0, W, 90, { P.sky2, P.sky3, P.sky4, P.sky5 })
+    L.ellipse(img, 234, 19, 16, 5, P.white); L.ellipse(img, 249, 15, 10, 5, P.white)
+    L.ellipse(img, 382, 34, 17, 4, P.white); L.ellipse(img, 398, 31, 10, 5, P.white)
+    L.ellipse(img, 282, 91, 112, 19, P.hill)
+    L.ellipse(img, 432, 93, 108, 16, P.hill2)
+
+    L.vgrad(img, 0, 90, W, Hh - 90, { P.grass2, P.grass2, P.grass3, P.grass3 })
+    L.ellipse(img, 256, 112, 52, 15, P.green4)
+    L.ellipse(img, 256, 111, 47, 11, P.grass)
+    L.ellipse(img, 362, 129, 13, 3, P.green3)
+    L.ellipse(img, 412, 126, 7, 2, P.green3)
+    L.seed(52)
+    for _ = 1, 120 do
+      local x, y = L.randi(0, W - 1), L.randi(94, Hh - 2)
+      if ((x - 256) / 54)^2 + ((y - 112) / 17)^2 > 1 then
+        L.px(img, x, y, P.grass2); L.px(img, x + 1, y - 1, P.grass3)
       end
     end
-    L.rect(img, 150, 120, 30, 36, P.ink); L.rect(img, 151, 121, 28, 35, P.brown)
-    L.rect(img, 0, 152, 196, 4, P.concrete3)
-    -- flag pole by the building
-    L.vline(img, 214, 40, 158, P.gray3)
-    L.rect(img, 215, 42, 18, 6, P.flagBlue); L.rect(img, 215, 48, 18, 6, P.flagRed)
-    L.poly(img, { 215, 42, 222, 48, 215, 54 }, P.flagWhite)
-    -- ground: grass with a wide open field in the middle
-    L.vgrad(img, 0, 156, W, Hh - 156, { P.grass, P.grass2, P.grass2, P.grass3 })
-    L.ellipse(img, 250, 200, 120, 28, P.green4)
-    L.ellipse(img, 250, 200, 110, 22, P.grass)
-    L.seed(52)
-    for _ = 1, 60 do
-      local x, y = L.randi(0, W - 1), L.randi(160, Hh - 2)
-      L.px(img, x, y, P.grass3); L.px(img, x, y - 1, P.grass3)
+
+    -- The walkway leads from the school door to the edge of the yard.
+    L.poly(img, { 121, 111, 151, 111, 163, 156, 194, 270, 105, 270, 116, 156 }, P.concrete2)
+    L.poly(img, { 124, 111, 148, 111, 159, 155, 183, 270, 112, 270, 120, 155 }, P.concrete)
+    L.poly(img, { 149, 123, 156, 122, 202, 117, 203, 120, 156, 134 }, P.concrete)
+
+    -- School building and flag.
+    L.poly(img, { 0, 50, 86, 29, 174, 50 }, P.roof)
+    L.hline(img, 4, 169, 50, P.roof3)
+    L.rect(img, 0, 51, 174, 4, P.roof2)
+    L.rect(img, 0, 55, 170, 57, P.wall)
+    L.rect(img, 0, 77, 170, 3, P.wall2)
+    for x = 8, 144, 32 do
+      for _, y in ipairs({ 59, 84 }) do
+        if y == 59 or x < 104 then
+          L.rect(img, x, y, 21, 16, P.ink)
+          L.rect(img, x + 1, y + 1, 19, 14, P.glass2)
+          L.vline(img, x + 10, y + 1, y + 14, P.teal2)
+        end
+      end
     end
-    -- path from the building door
-    L.poly(img, { 150, 156, 180, 156, 190, 270, 130, 270 }, P.concrete)
+    L.rect(img, 119, 83, 32, 29, P.ink)
+    L.rect(img, 121, 85, 28, 27, P.brown)
+    L.rect(img, 138, 99, 3, 2, P.tan)
+    L.rect(img, 0, 112, 174, 3, P.concrete3)
+    L.vline(img, 187, 43, 102, P.gray3)
+    L.rect(img, 188, 44, 18, 6, P.flagBlue); L.rect(img, 188, 50, 18, 6, P.flagRed)
+    L.poly(img, { 188, 44, 195, 50, 188, 56 }, P.flagWhite)
     return img
   end
 
