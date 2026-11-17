@@ -232,7 +232,7 @@ namespace DisasterSafety.Tests
             Assert.That(saved.IsOpen(Episode.Earthquake, Difficulty.Normal), Is.True);
 
             Assert.That(c.cheerBantay.bubbleText.text, Is.EqualTo("You did it, Ana!"));
-            const string openedLine = "Normal is open! New levels are coming soon.";
+            const string openedLine = "Normal is open! Let's play!";
             yield return WaitFor(() => c.cheerBantay.bubble.IsVisible && c.cheerBantay.bubbleText.text == openedLine,
                 "Bantay to announce that Normal is open", 5f);
 

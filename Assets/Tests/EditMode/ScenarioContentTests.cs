@@ -59,6 +59,17 @@ namespace DisasterSafety.Tests
         }
 
         [Test]
+        public void NormalLevels_AllExist()
+        {
+            var levels = Files().Select(Load).Select(s => s.level).ToList();
+            Assert.That(levels, Is.SupersetOf(new[]
+            {
+                "Earthquake/Normal/1", "Earthquake/Normal/2", "Earthquake/Normal/3",
+                "Earthquake/Normal/4", "Earthquake/Normal/5",
+            }));
+        }
+
+        [Test]
         public void EveryChoicePicture_HasArt()
         {
             foreach (var path in Files())

@@ -20,6 +20,18 @@ namespace DisasterSafety.Tests
             Assert.That(ScenarioRules.Problems(s), Does.Contain("Setting 'gym' has no scene art."));
         }
 
+        [TestCase(ScenarioSettings.Classroom, true)]
+        [TestCase(ScenarioSettings.Corridor, true)]
+        [TestCase(ScenarioSettings.Home, true)]
+        [TestCase(ScenarioSettings.Schoolyard, true)]
+        [TestCase(ScenarioSettings.ClassroomAfter, false)]
+        [TestCase(ScenarioSettings.Bedroom, false)]
+        [TestCase(ScenarioSettings.Beach, false)]
+        public void CanShake_OnlyForSettingsWithAShaker(string setting, bool shakes)
+        {
+            Assert.That(ScenarioSettings.CanShake(setting), Is.EqualTo(shakes));
+        }
+
         [Test]
         public void UnknownPhase_IsAProblem()
         {

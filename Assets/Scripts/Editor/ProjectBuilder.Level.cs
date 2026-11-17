@@ -23,6 +23,11 @@ namespace DisasterSafety.EditorTools
             "choice_desk", "choice_run", "choice_window", "choice_cabinet",
             "choice_cover", "choice_stairs", "choice_hall_window", "choice_plants",
             "choice_walk", "choice_push", "choice_stay",
+            "choice_low_shelf", "choice_picture_bed", "choice_bed_window", "choice_books_top",
+            "choice_go_bag", "choice_pack_later", "choice_bag_hidden", "choice_bag_toys",
+            "choice_table", "choice_run_home", "choice_glass_cabinet", "choice_sofa",
+            "choice_open_field", "choice_tree", "choice_post", "choice_building",
+            "choice_high_ground", "choice_fish", "choice_watch_waves", "choice_wait_beach",
         };
 
         static void BuildLevelScene()
@@ -54,7 +59,11 @@ namespace DisasterSafety.EditorTools
             world.gameObject.AddComponent<EnvelopeScaler>();
             c.world = world;
 
-            c.settings = new[] { BuildClassroom(world), BuildCorridor(world), BuildClassroomAfter(world) };
+            c.settings = new[]
+            {
+                BuildClassroom(world), BuildCorridor(world), BuildClassroomAfter(world),
+                BuildBedroom(world), BuildHome(world),
+            };
             for (var i = 1; i < c.settings.Length; i++)
                 c.settings[i].gameObject.SetActive(false);
 
@@ -124,6 +133,29 @@ namespace DisasterSafety.EditorTools
             // Keep Bantay and the Hint clear of the teacher in the doorway.
             setting.guidanceOffsetX = -880f;
             BuildLevelAnimation(foreground, "Teacher", Frames("Level/teacher", 2), 418, 126, 3f, onlyWhileShaking: false);
+            return setting;
+        }
+
+        static LevelSetting BuildBedroom(RectTransform world)
+        {
+            var setting = BuildSetting(world, ScenarioSettings.Bedroom, "Bedroom", out _, shakes: false);
+            // Stand Bantay and the Hint between the bed and the low shelf, clear of the bookcase.
+            setting.guidanceOffsetX = -760f;
+            return setting;
+        }
+
+        static LevelSetting BuildHome(RectTransform world)
+        {
+            var setting = BuildSetting(world, ScenarioSettings.Home, "Home", out var shaking);
+            // Keep the Goal off the hanging lamp, and Bantay and the Hint in front of the sofa,
+            // clear of the table, the glass cabinet and the door.
+            setting.goalPosition = new Vector2(-490f, -120f);
+            setting.guidanceOffsetX = -1230f;
+            setting.shaker.wobblers = new[]
+            {
+                BuildLevelAnimation(shaking, "Hanging Lamp", Frames("Level/lamp", 2), 232, 0, 4f, onlyWhileShaking: true),
+                BuildLevelAnimation(shaking, "Glass Cabinet", Frames("Level/glass_cabinet", 2), 330, 64, 5f, onlyWhileShaking: true),
+            };
             return setting;
         }
 

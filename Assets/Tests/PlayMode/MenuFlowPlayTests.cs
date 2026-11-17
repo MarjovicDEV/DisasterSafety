@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.IO;
+using DisasterSafety.Core;
 using DisasterSafety.Game;
 using DisasterSafety.Game.UI;
 using NUnit.Framework;
@@ -161,6 +162,38 @@ namespace DisasterSafety.Tests
             yield return Wait(0.5f);
             Assert.That(c.namePanel.IsVisible, Is.False);
             Assert.That(c.episodePanel.IsVisible, Is.True);
+        }
+
+        [UnityTest]
+        public IEnumerator NormalOpen_LevelSelection_StartsEveryNormalLevel()
+        {
+            GameServices.Initialize(dir);
+            GameServices.Progress.SetDisplayName("Ana");
+            GameServices.Progress.Open(Episode.Earthquake, Difficulty.Normal);
+            GameServices.SaveProgress();
+            yield return BootToMenu();
+            var c = UnityEngine.Object.FindAnyObjectByType<MainMenuController>();
+
+            c.playButton.onClick.Invoke();
+            yield return Wait(0.5f);
+            Assert.That(c.episodePanel.IsVisible, Is.True);
+            c.episodeCards[0].button.onClick.Invoke();
+            yield return Wait(0.5f);
+            Assert.That(c.difficultyPanel.IsVisible, Is.True);
+            c.difficultyCards[1].button.onClick.Invoke();
+            yield return Wait(0.5f);
+            Assert.That(c.levelPanel.IsVisible, Is.True, "Normal is open");
+
+            Assert.That(c.levelSlots.Length, Is.GreaterThanOrEqualTo(5));
+            for (var i = 0; i < c.levelSlots.Length; i++)
+                Assert.That(c.levelSlots[i].gameObject.activeSelf, Is.EqualTo(i < 5), "Normal has 5 Levels");
+
+            for (var i = 0; i < 5; i++)
+            {
+                c.levelSlots[i].button.onClick.Invoke();
+                yield return null;
+                Assert.That(c.startButton.interactable, Is.True, $"Earthquake/Normal/{i + 1} is a Playable Level");
+            }
         }
 
         [UnityTest]

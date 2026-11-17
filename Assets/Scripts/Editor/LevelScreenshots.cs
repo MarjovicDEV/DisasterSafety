@@ -82,6 +82,14 @@ namespace DisasterSafety.EditorTools
             c.cheerBantay.bubbleText.text = UIStrings.BantayOpenedSoon(openedName);
             Completed(c, classroomAfter, 3);
             Shot("32-level-completed-normal-open", c.dimmer, c.completedPanel, c.cheerBantay.bubble);
+
+            var normalShots = new[] { "40-normal1", "41-normal2", "42-normal3" };
+            for (var i = 0; i < normalShots.Length; i++)
+            {
+                var normal = PrepareLevel(c, new LevelId(Episode.Earthquake, Difficulty.Normal, i + 1));
+                c.bantay.bubbleText.text = normal.intro.text;
+                Shot(normalShots[i], c.choicesPanel, c.bantay.bubble);
+            }
         }
 
         static void Completed(LevelController c, Scenario scenario, int stars)
