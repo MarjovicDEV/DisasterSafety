@@ -195,6 +195,7 @@ namespace DisasterSafety.EditorTools
             BuildHowToPlay(ui, c);
             BuildExit(ui, c);
             BuildNameEntry(ui, c);
+            BuildStudentPick(ui, c);
 
             var effects = Stretch(Rect("Effects", root));
             var juice = effects.gameObject.AddComponent<Juice>();
@@ -772,6 +773,23 @@ namespace DisasterSafety.EditorTools
 
             c.nameBack = DialogButton(box, "Back", "orange", UIStrings.Back, S("Icons/icon_back"), Sfx.Back, -220f, 320f);
             c.nameOk = DialogButton(box, "OK", "green", UIStrings.Ok, S("Icons/icon_check"), Sfx.Click, 220f, 320f);
+        }
+
+        static void BuildStudentPick(RectTransform ui, MainMenuController c)
+        {
+            var box = Dialog(ui, "Student Pick", 1160f, 760f, out c.studentPanel);
+            DialogTitle(box, UIStrings.StudentTitle, f6);
+            c.studentBoy = StudentChoice(box, "Boy", S("Student/boy_portrait"), UIStrings.StudentBoy, "blue", -260f);
+            c.studentGirl = StudentChoice(box, "Girl", S("Student/girl_portrait"), UIStrings.StudentGirl, "orange", 260f);
+        }
+
+        static Button StudentChoice(RectTransform box, string name, Sprite portrait, string label, string color, float x)
+        {
+            const float scale = 6.5f;
+            var pr = Rect(name + " Portrait", box);
+            Centered(pr, x, 10f, portrait.rect.width * scale, portrait.rect.height * scale);
+            Img(pr, portrait, Color.white);
+            return DialogButton(box, name, color, label, null, Sfx.Click, x, 340f);
         }
 
         // Shared page parts ---------------------------------------------------------------

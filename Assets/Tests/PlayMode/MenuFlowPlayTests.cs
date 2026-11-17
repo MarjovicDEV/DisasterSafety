@@ -118,6 +118,16 @@ namespace DisasterSafety.Tests
             yield return Wait(0.5f);
             Assert.That(GameServices.Progress.DisplayName, Is.EqualTo("Niño"));
             Assert.That(File.Exists(Path.Combine(dir, "save.json")), Is.True);
+
+            // A new Display Name leads to the Student picker; picking the girl saves Girl.
+            Assert.That(c.studentPanel.IsVisible, Is.True);
+            Assert.That(c.episodePanel.IsVisible, Is.False);
+            Assert.That(GameServices.Progress.Student, Is.EqualTo(StudentKind.None));
+            c.studentGirl.onClick.Invoke();
+            yield return Wait(0.5f);
+            Assert.That(GameServices.Progress.Student, Is.EqualTo(StudentKind.Girl));
+            Assert.That(new SaveService(dir).Load().Progress.Student, Is.EqualTo(StudentKind.Girl));
+            Assert.That(c.studentPanel.IsVisible, Is.False);
             Assert.That(c.episodePanel.IsVisible, Is.True);
 
             // Locked Episode is refused; Earthquake opens Difficulty Selection.
@@ -169,6 +179,7 @@ namespace DisasterSafety.Tests
         {
             GameServices.Initialize(dir);
             GameServices.Progress.SetDisplayName("Ana");
+            GameServices.Progress.SetStudent(StudentKind.Boy);
             GameServices.Progress.Open(Episode.Earthquake, Difficulty.Normal);
             GameServices.SaveProgress();
             yield return BootToMenu();
@@ -202,6 +213,7 @@ namespace DisasterSafety.Tests
         {
             GameServices.Initialize(dir);
             GameServices.Progress.SetDisplayName("Ana");
+            GameServices.Progress.SetStudent(StudentKind.Boy);
             GameServices.Progress.Open(Episode.Earthquake, Difficulty.Hard);
             GameServices.SaveProgress();
             yield return BootToMenu();
@@ -228,6 +240,23 @@ namespace DisasterSafety.Tests
                 Assert.That(c.levelSlots[i].selectedFrame.activeSelf, Is.True, $"Hard {i + 1} is selected");
                 Assert.That(c.startButton.interactable, Is.True, $"Earthquake/Hard/{i + 1} is a Playable Level");
             }
+        }
+
+        [UnityTest]
+        public IEnumerator NameWithoutStudent_ShowsPickerOnceAtMainMenu()
+        {
+            GameServices.Initialize(dir);
+            GameServices.Progress.SetDisplayName("Ana");
+            GameServices.SaveProgress();
+            yield return BootToMenu();
+            var c = UnityEngine.Object.FindAnyObjectByType<MainMenuController>();
+
+            Assert.That(c.studentPanel.IsVisible, Is.True, "an old save with a name and no pick shows the picker");
+            c.studentBoy.onClick.Invoke();
+            yield return Wait(0.5f);
+            Assert.That(GameServices.Progress.Student, Is.EqualTo(StudentKind.Boy));
+            Assert.That(c.studentPanel.IsVisible, Is.False);
+            Assert.That(c.mainPanel.IsVisible, Is.True);
         }
 
         [UnityTest]

@@ -14,6 +14,8 @@ namespace DisasterSafety.Core
 
         public int saveVersion;
         public string displayName = string.Empty;
+        /// <summary>"boy" or "girl"; empty means the Learner has not picked a Student yet. No version bump needed.</summary>
+        public string student = string.Empty;
         public List<string> openEpisodes = new List<string>();
         /// <summary>Open Episode/Difficulty pairs, e.g. "Earthquake/Easy".</summary>
         public List<string> openDifficulties = new List<string>();

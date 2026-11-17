@@ -8,6 +8,7 @@ namespace DisasterSafety.Tests
         sealed class FakeState : IMenuState
         {
             public bool HasDisplayName { get; set; }
+            public bool HasStudent { get; set; }
             public bool CanContinue { get; set; }
             public (Episode, Difficulty) ContinueDestination { get; set; } = (Episode.Earthquake, Difficulty.Easy);
             public bool IsOpen(Episode e) => e == Episode.Earthquake;
@@ -33,7 +34,38 @@ namespace DisasterSafety.Tests
             nav.Play();
             Assert.That(nav.Current, Is.EqualTo(MenuScreen.NameEntry));
             nav.NameSaved();
+            Assert.That(nav.Current, Is.EqualTo(MenuScreen.StudentPick));
+            nav.StudentPicked();
             Assert.That(nav.Current, Is.EqualTo(MenuScreen.EpisodeSelect));
+        }
+
+        [Test]
+        public void OfferStudentPick_NameWithoutStudent_ShowsPickerAndPickReturnsToMain()
+        {
+            state.HasDisplayName = true;
+            Assert.That(nav.OfferStudentPick(), Is.True);
+            Assert.That(nav.Current, Is.EqualTo(MenuScreen.StudentPick));
+            nav.StudentPicked();
+            Assert.That(nav.Current, Is.EqualTo(MenuScreen.Main));
+        }
+
+        [Test]
+        public void OfferStudentPick_WithStudentOrWithoutName_DoesNothing()
+        {
+            Assert.That(nav.OfferStudentPick(), Is.False, "no Display Name yet");
+            state.HasDisplayName = true;
+            state.HasStudent = true;
+            Assert.That(nav.OfferStudentPick(), Is.False, "already picked");
+            Assert.That(nav.Current, Is.EqualTo(MenuScreen.Main));
+        }
+
+        [Test]
+        public void Back_FromStudentPick_GoesToMain()
+        {
+            state.HasDisplayName = true;
+            nav.OfferStudentPick();
+            nav.Back();
+            Assert.That(nav.Current, Is.EqualTo(MenuScreen.Main));
         }
 
         [Test]

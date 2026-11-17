@@ -9,6 +9,7 @@ namespace DisasterSafety.Core
         HowToPlay,
         ExitConfirm,
         NameEntry,
+        StudentPick,
         EpisodeSelect,
         DifficultySelect,
         LevelSelect
@@ -18,6 +19,7 @@ namespace DisasterSafety.Core
     public interface IMenuState
     {
         bool HasDisplayName { get; }
+        bool HasStudent { get; }
         bool CanContinue { get; }
         (Episode, Difficulty) ContinueDestination { get; }
         bool IsOpen(Episode episode);
@@ -46,7 +48,24 @@ namespace DisasterSafety.Core
 
         public void Play() => GoTo(state.HasDisplayName ? MenuScreen.EpisodeSelect : MenuScreen.NameEntry);
 
-        public void NameSaved() => GoTo(MenuScreen.EpisodeSelect);
+        MenuScreen afterStudentPick = MenuScreen.EpisodeSelect;
+
+        public void NameSaved()
+        {
+            afterStudentPick = MenuScreen.EpisodeSelect;
+            GoTo(MenuScreen.StudentPick);
+        }
+
+        /// <summary>Main Menu start: a save with a Display Name but no Student shows the picker, then returns to Main.</summary>
+        public bool OfferStudentPick()
+        {
+            if (Current != MenuScreen.Main || !state.HasDisplayName || state.HasStudent) return false;
+            afterStudentPick = MenuScreen.Main;
+            GoTo(MenuScreen.StudentPick);
+            return true;
+        }
+
+        public void StudentPicked() => GoTo(afterStudentPick);
 
         public bool Continue()
         {

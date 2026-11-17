@@ -75,10 +75,11 @@ namespace DisasterSafety.EditorTools
                 ("06-howtoplay", new[] { c.mainPanel, c.dimmer, c.howToPlayPanel }),
                 ("07-exit", new[] { c.mainPanel, c.dimmer, c.exitPanel }),
                 ("08-name", new[] { c.mainPanel, c.dimmer, c.namePanel }),
+                ("66-student-picker", new[] { c.mainPanel, c.dimmer, c.studentPanel }),
             };
             var all = new[]
             {
-                c.mainPanel, c.settingsPanel, c.howToPlayPanel, c.exitPanel, c.namePanel, c.episodePanel,
+                c.mainPanel, c.settingsPanel, c.howToPlayPanel, c.exitPanel, c.namePanel, c.studentPanel, c.episodePanel,
                 c.difficultyPanel, c.levelPanel, c.dimmer, c.bantay.bubble
             };
 

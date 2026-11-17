@@ -20,6 +20,7 @@ namespace DisasterSafety.Game.UI
         public ScreenPanel howToPlayPanel;
         public ScreenPanel exitPanel;
         public ScreenPanel namePanel;
+        public ScreenPanel studentPanel;
         public ScreenPanel episodePanel;
         public ScreenPanel difficultyPanel;
         public ScreenPanel levelPanel;
@@ -51,6 +52,10 @@ namespace DisasterSafety.Game.UI
         public Button nameOk;
         public Button nameBack;
 
+        [Header("Student pick")]
+        public Button studentBoy;
+        public Button studentGirl;
+
         [Header("Episode Selection")]
         public EpisodeCard[] episodeCards;
         public Button episodeBack;
@@ -77,6 +82,7 @@ namespace DisasterSafety.Game.UI
 
         // IMenuState ----------------------------------------------------------
         public bool HasDisplayName => GameServices.Progress.HasDisplayName;
+        public bool HasStudent => GameServices.Progress.HasStudent;
         public bool CanContinue => GameServices.CanContinue;
         public (Episode, Difficulty) ContinueDestination => ContinueRule.Destination(GameServices.Progress);
         public bool IsOpen(Episode episode) => GameServices.Progress.IsOpen(episode);
@@ -102,6 +108,9 @@ namespace DisasterSafety.Game.UI
             GameServices.MenuOpensLevelSelect = null;
             if (entry.HasValue && nav.OpenLevelSelect(entry.Value.Item1, entry.Value.Item2)) yield break;
 
+            // A save with a Display Name but no Student shows the picker once.
+            if (nav.OfferStudentPick()) yield break;
+
             yield return new WaitForSeconds(0.8f);
             if (GameServices.StartupLoadStatus == SaveLoadStatus.Preserved)
                 bantay.Say(UIStrings.BantaySaveKept, true);
@@ -125,7 +134,7 @@ namespace DisasterSafety.Game.UI
 
         ScreenPanel[] AllPanels() => new[]
         {
-            mainPanel, settingsPanel, howToPlayPanel, exitPanel, namePanel, episodePanel, difficultyPanel, levelPanel, dimmer
+            mainPanel, settingsPanel, howToPlayPanel, exitPanel, namePanel, studentPanel, episodePanel, difficultyPanel, levelPanel, dimmer
         };
 
         void Wire()
@@ -181,6 +190,9 @@ namespace DisasterSafety.Game.UI
             nameOk.onClick.AddListener(SubmitName);
             nameBack.onClick.AddListener(nav.Back);
 
+            studentBoy.onClick.AddListener(() => PickStudent(StudentKind.Boy));
+            studentGirl.onClick.AddListener(() => PickStudent(StudentKind.Girl));
+
             foreach (var card in episodeCards)
             {
                 var c = card;
@@ -206,7 +218,8 @@ namespace DisasterSafety.Game.UI
 
         // Screen changes ---------------------------------------------------------
         static bool IsDialog(MenuScreen s) =>
-            s == MenuScreen.Settings || s == MenuScreen.HowToPlay || s == MenuScreen.ExitConfirm || s == MenuScreen.NameEntry;
+            s == MenuScreen.Settings || s == MenuScreen.HowToPlay || s == MenuScreen.ExitConfirm || s == MenuScreen.NameEntry
+            || s == MenuScreen.StudentPick;
 
         ScreenPanel PanelFor(MenuScreen s)
         {
@@ -217,6 +230,7 @@ namespace DisasterSafety.Game.UI
                 case MenuScreen.HowToPlay: return howToPlayPanel;
                 case MenuScreen.ExitConfirm: return exitPanel;
                 case MenuScreen.NameEntry: return namePanel;
+                case MenuScreen.StudentPick: return studentPanel;
                 case MenuScreen.EpisodeSelect: return episodePanel;
                 case MenuScreen.DifficultySelect: return difficultyPanel;
                 case MenuScreen.LevelSelect: return levelPanel;
@@ -354,23 +368,38 @@ namespace DisasterSafety.Game.UI
             }
 
             GameServices.Progress.SetDisplayName(name);
+            SaveQuietly("the Display Name");
+
+            AudioManager.Play(Sfx.Confirm);
+            Juice.Sparkles((RectTransform)nameOk.transform, 10);
+            nav.NameSaved();
+            bantay.Say(UIStrings.BantayNiceToMeet(name), true);
+        }
+
+        void PickStudent(StudentKind kind)
+        {
+            GameServices.Progress.SetStudent(kind);
+            SaveQuietly("the Student");
+            AudioManager.Play(Sfx.Confirm);
+            var button = kind == StudentKind.Boy ? studentBoy : studentGirl;
+            Juice.Sparkles((RectTransform)button.transform, 10);
+            nav.StudentPicked();
+        }
+
+        static void SaveQuietly(string what)
+        {
             try
             {
                 GameServices.SaveProgress();
             }
             catch (IOException ex)
             {
-                Debug.LogError("Could not save the Display Name: " + ex.Message);
+                Debug.LogError("Could not save " + what + ": " + ex.Message);
             }
             catch (UnauthorizedAccessException ex)
             {
-                Debug.LogError("Could not save the Display Name: " + ex.Message);
+                Debug.LogError("Could not save " + what + ": " + ex.Message);
             }
-
-            AudioManager.Play(Sfx.Confirm);
-            Juice.Sparkles((RectTransform)nameOk.transform, 10);
-            nav.NameSaved();
-            bantay.Say(UIStrings.BantayNiceToMeet(name), true);
         }
 
         void OnEpisode(EpisodeCard card)

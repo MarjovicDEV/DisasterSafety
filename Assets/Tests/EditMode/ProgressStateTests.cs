@@ -72,5 +72,40 @@ namespace DisasterSafety.Tests
         {
             Assert.That(ProgressState.NewGame().StarsFor(new LevelId(Episode.Fire, Difficulty.Hard, 7)), Is.EqualTo(0));
         }
+
+        [Test]
+        public void NewGame_HasNoStudent()
+        {
+            var p = ProgressState.NewGame();
+            Assert.That(p.Student, Is.EqualTo(StudentKind.None));
+            Assert.That(p.Data.student, Is.Empty);
+        }
+
+        [Test]
+        public void SetStudent_StoresTheKindAsText()
+        {
+            var p = ProgressState.NewGame();
+            p.SetStudent(StudentKind.Girl);
+            Assert.That(p.Student, Is.EqualTo(StudentKind.Girl));
+            Assert.That(p.Data.student, Is.EqualTo("girl"));
+            p.SetStudent(StudentKind.Boy);
+            Assert.That(p.Data.student, Is.EqualTo("boy"));
+        }
+
+        [Test]
+        public void UnknownStudentText_ReadsAsNone()
+        {
+            var p = new ProgressState(new SaveData { saveVersion = 1, student = "robot" });
+            Assert.That(p.Student, Is.EqualTo(StudentKind.None));
+        }
+
+        [Test]
+        public void SetStudent_None_ClearsThePick()
+        {
+            var p = ProgressState.NewGame();
+            p.SetStudent(StudentKind.Boy);
+            p.SetStudent(StudentKind.None);
+            Assert.That(p.Student, Is.EqualTo(StudentKind.None));
+        }
     }
 }

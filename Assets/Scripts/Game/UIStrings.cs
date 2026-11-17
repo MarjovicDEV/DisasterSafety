@@ -58,6 +58,10 @@ namespace DisasterSafety.Game
         public const string NameTooLong = "Use 12 letters or less.";
         public const string NameInvalid = "Use letters and numbers only.";
 
+        public const string StudentTitle = "Who are you?";
+        public const string StudentBoy = "Boy";
+        public const string StudentGirl = "Girl";
+
         public const string EpisodeTitle = "Choose a Topic";
         public const string DifficultyTitle = "Choose a Level";
         public const string ComingSoon = "Coming soon!";

@@ -54,6 +54,33 @@ namespace DisasterSafety.Tests
             Assert.That(result.Progress.IsOpen(Episode.Fire), Is.False);
         }
 
+        [Test]
+        public void SaveThenLoad_RoundTripsTheStudentPick()
+        {
+            var p = ProgressState.NewGame();
+            p.SetDisplayName("Ana");
+            p.SetStudent(StudentKind.Girl);
+            service.Save(p);
+
+            Assert.That(service.Load().Progress.Student, Is.EqualTo(StudentKind.Girl));
+        }
+
+        [Test]
+        public void Load_OldSaveWithoutStudent_ReadsNoneAndKeepsTheRest()
+        {
+            File.WriteAllText(SavePath,
+                "{\"saveVersion\":1,\"displayName\":\"Ana\",\"openEpisodes\":[\"Earthquake\"],"
+                + "\"openDifficulties\":[\"Earthquake/Easy\"],"
+                + "\"completedLevels\":[{\"level\":\"Earthquake/Easy/2\",\"stars\":2}],"
+                + "\"lastEpisode\":\"Earthquake\",\"lastDifficulty\":\"Easy\"}");
+
+            var result = service.Load();
+            Assert.That(result.Status, Is.EqualTo(SaveLoadStatus.Loaded));
+            Assert.That(result.Progress.Student, Is.EqualTo(StudentKind.None));
+            Assert.That(result.Progress.DisplayName, Is.EqualTo("Ana"));
+            Assert.That(result.Progress.StarsFor(new LevelId(Episode.Earthquake, Difficulty.Easy, 2)), Is.EqualTo(2));
+        }
+
         [TestCase("{ this is not json")]
         [TestCase("")]
         [TestCase("{}")]

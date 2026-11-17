@@ -32,6 +32,28 @@ namespace DisasterSafety.Core
 
         public void ClearDisplayName() => Data.displayName = string.Empty;
 
+        /// <summary>The Student the Learner picked; None until they pick one, and for any text we do not know.</summary>
+        public StudentKind Student
+        {
+            get
+            {
+                switch (Data.student)
+                {
+                    case "boy": return StudentKind.Boy;
+                    case "girl": return StudentKind.Girl;
+                    default: return StudentKind.None;
+                }
+            }
+        }
+
+        public bool HasStudent => Student != StudentKind.None;
+
+        /// <summary>Stores the pick. The caller saves, as with the Display Name.</summary>
+        public void SetStudent(StudentKind kind)
+        {
+            Data.student = kind == StudentKind.Boy ? "boy" : kind == StudentKind.Girl ? "girl" : string.Empty;
+        }
+
         public bool IsOpen(Episode episode) => Data.openEpisodes.Contains(episode.ToString());
 
         public bool IsOpen(Episode episode, Difficulty difficulty) =>
