@@ -79,7 +79,7 @@ namespace DisasterSafety.EditorTools
             var openedName = UIStrings.DifficultyName(Difficulty.Normal);
             c.openedText.text = UIStrings.Opened(openedName);
             c.openedRibbon.SetActive(true);
-            c.cheerBantay.bubbleText.text = UIStrings.BantayOpenedSoon(openedName);
+            c.cheerBantay.bubbleText.text = UIStrings.BantayOpened(openedName);
             Completed(c, classroomAfter, 3);
             Shot("32-level-completed-normal-open", c.dimmer, c.completedPanel, c.cheerBantay.bubble);
 
