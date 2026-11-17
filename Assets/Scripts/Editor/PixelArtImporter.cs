@@ -37,7 +37,7 @@ namespace DisasterSafety.EditorTools
             importer.SetTextureSettings(settings);
         }
 
-        /// <summary>9-slice borders in art pixels (left, bottom, right, top). Must match ArtSource/scripts/ui.lua.</summary>
+        /// <summary>9-slice borders in art pixels (left, bottom, right, top). Must match ArtSource/scripts/ui.lua and ui_v2.lua.</summary>
         public static Vector4 BorderFor(string fileName)
         {
             if (fileName.StartsWith("button_")) return new Vector4(9, 9, 9, 9);
@@ -46,6 +46,9 @@ namespace DisasterSafety.EditorTools
                 case "panel": return new Vector4(10, 10, 10, 10);
                 case "bubble": return new Vector4(7, 7, 7, 7);
                 case "input_box": return new Vector4(6, 6, 6, 6);
+                case "caption_banner": return new Vector4(8, 8, 8, 8);
+                case "action_button": return new Vector4(9, 9, 9, 9);
+                case "speech_bubble": return new Vector4(8, 8, 8, 8);
                 default: return Vector4.zero;
             }
         }

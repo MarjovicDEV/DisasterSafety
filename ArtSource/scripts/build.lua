@@ -11,6 +11,14 @@ local L = dofile(here .. "lib.lua")
 L.F = dofile(here .. "font.lua")
 L.ROOT = app.params.out or root
 
+-- Optional: --script-param only=student,classroom_v2,ui_v2 builds just those parts, so new art
+-- can be drawn without rewriting the committed files. Parts: v1 (everything below up to the
+-- v2 section), student, classroom_v2, ui_v2. Without `only`, every part is built.
+local only = {}
+for part in (app.params.only or ""):gmatch("[^,%s]+") do only[part] = true end
+local function want(part) return next(only) == nil or only[part] == true end
+
+if want("v1") then
 local BG = dofile(here .. "background.lua")(L)
 local CH = dofile(here .. "characters.lua")(L)
 local UI = dofile(here .. "ui.lua")(L)
@@ -116,5 +124,40 @@ local f = io.open(L.ROOT .. "/Assets/Art/Font/pixel_font.txt", "w")
 f:write("# codepoint x y width (atlas top-left origin, cell height 11, baseline after row 9)\n")
 for _, line in ipairs(lines) do f:write(line, "\n") end
 f:close()
+end -- v1
+
+-- v2 art (docs/adr/0001-v2-art-and-no-bantay.md) ----------------------------
+local ST = dofile(here .. "student.lua")(L)
+
+-- The Student, boy and girl: Student/<kind>_<pose>_<n>.png and Student/<kind>_portrait.png
+if want("student") then
+  for _, kind in ipairs({ "boy", "girl" }) do
+    for _, pose in ipairs(ST.POSES) do
+      local name = "Student/" .. kind .. "_" .. pose.name
+      L.saveFrames(ST.frames(kind, pose.name), name, name, pose.ms)
+    end
+    L.save(ST.portraitImage(kind), "Student/" .. kind .. "_portrait", "Student/" .. kind .. "_portrait")
+  end
+end
+
+-- The v2 classroom: Level/v2/bg_classroom, desk_front, fan_0/1, cabinet_0/1
+local CR = dofile(here .. "classroom_v2.lua")(L, ST)
+if want("classroom_v2") then
+  L.save(CR.background(), "Level/v2/bg_classroom", "Level/v2/bg_classroom")
+  L.save(CR.deskFront(), "Level/v2/desk_front", "Level/v2/desk_front")
+  L.saveFrames(CR.fanFrames(), "Level/v2/fan", "Level/v2/fan", 120)
+  L.saveFrames(CR.cabinetFrames(), "Level/v2/cabinet", "Level/v2/cabinet", 120)
+end
+
+-- v2 UI: the 4 Choice icons and the Caption, Action Bar button and speech bubble 9-slices
+if want("ui_v2") then
+  local UV = dofile(here .. "ui_v2.lua")(L, ST, CR)
+  for name, img in pairs(UV.icons()) do
+    L.save(img, "UI/icon_" .. name, "UI/icon_" .. name)
+  end
+  L.save(UV.captionBanner(), "UI/caption_banner", "UI/caption_banner")
+  L.save(UV.actionButton(), "UI/action_button", "UI/action_button")
+  L.save(UV.speechBubble(), "UI/speech_bubble", "UI/speech_bubble")
+end
 
 print("Built " .. #L.made .. " images")
