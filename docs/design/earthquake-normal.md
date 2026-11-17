@@ -88,7 +88,7 @@ Claude made the design, the art, the Scenario files and the handoff. ChatGPT/Cod
 | Part | Text | Source |
 |---|---|---|
 | Goal | Stay safe near the sea after a strong earthquake. | EQ-84 |
-| Bantay intro | You are at the beach. The shaking stopped. The sea is going out! | story line |
+| Bantay intro | You are at the beach. The shaking stopped. The sea is going out! | story line, EQ-85 for the sea going out |
 | Hint | The water can come back fast. Where can it not reach? | EQ-86, EQ-87 |
 | Safe Choice: Go to high ground right away (`choice_high_ground`) | A strong earthquake near the sea can bring a tsunami. Move to high ground now. | EQ-84, EQ-86 |
 | Unsafe Choice: Pick up the fish on the sand (`choice_fish`) | Never go down the beach for fish. Go to high ground. | EQ-88, EQ-86 |
@@ -105,6 +105,14 @@ The Feedback heading is "Safe!" or "Not safe" unless a heading is given, as in E
 - 20 Choice pictures, 72x52, named in the scripts above.
 
 Sizes and placements are in docs/specs/earthquake-normal.md.
+
+## Layout follow-up
+
+- Raise the schoolyard field above the Choices at both screen sizes. Keep the schoolyard art aligned to the top and draw the field between the school and the tree, away from Bantay and the Hint. Place the tree at (334, 34) and the post at (390, 14), both at three UI units per art pixel, so their bases also clear the Choices.
+- Use the smaller bitmap font and a 384-unit label width when a Choice label cannot fit at the regular size. This keeps the Choice pictures large and gives the longest labels two lines.
+- Set the Level Completed lesson line spacing to 1.0. The Normal 5 lesson keeps the regular font and clears the buttons.
+
+- Shorten and lower the Choice row as the bedroom, home and beach screens get wider. At 2400x1080 the row clears the furniture and the beach path. The card pictures are smaller and the label area keeps its original height.
 
 ## Not verified
 

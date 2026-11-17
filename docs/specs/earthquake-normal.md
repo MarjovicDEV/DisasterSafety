@@ -15,8 +15,8 @@ Already done and committed, so use these as they are:
   | `lamp_0.png`, `lamp_1.png` | 24x44 | hanging lamp at (232, 0) |
   | `glass_cabinet_0.png`, `glass_cabinet_1.png` | 46x112 | glass cabinet at (330, 64) |
   | `bg_schoolyard.png` | 480x270 | Setting `schoolyard` |
-  | `tree_0.png`, `tree_1.png` | 76x128 | big tree at (260, 34) |
-  | `post_0.png`, `post_1.png` | 60x150 | electric post at (360, 14) |
+  | `tree_0.png`, `tree_1.png` | 76x128 | big tree at (334, 34), shown at three UI units per art pixel |
+  | `post_0.png`, `post_1.png` | 60x150 | electric post at (390, 14), shown at three UI units per art pixel |
   | `bg_beach.png` | 480x270 | Setting `beach` |
   | `waves_0.png`, `waves_1.png` | 340x8 | wave line at (140, 128) |
   | 20 Choice pictures | 72x52 | `choice_low_shelf`, `choice_picture_bed`, `choice_bed_window`, `choice_books_top`, `choice_go_bag`, `choice_pack_later`, `choice_bag_hidden`, `choice_bag_toys`, `choice_table`, `choice_run_home`, `choice_glass_cabinet`, `choice_sofa`, `choice_open_field`, `choice_tree`, `choice_post`, `choice_building`, `choice_high_ground`, `choice_fish`, `choice_watch_waves`, `choice_wait_beach` |
@@ -29,7 +29,7 @@ Already done and committed, so use these as they are:
    |---|---|---|
    | `bedroom` | no (no `SceneShaker`) | none |
    | `home` | yes | wobblers: `Level/lamp` at (232, 0), 4 fps, and `Level/glass_cabinet` at (330, 64), 5 fps; both `randomStart` |
-   | `schoolyard` | yes | wobblers: `Level/tree` at (260, 34), 3 fps, and `Level/post` at (360, 14), 4 fps; both `randomStart` |
+   | `schoolyard` | yes | wobblers: `Level/tree` at (334, 34), 3 fps, and `Level/post` at (390, 14), 4 fps. Both use three UI units per art pixel and `randomStart` |
    | `beach` | no | `Level/waves` at (140, 128), always animating at 2.5 fps; not a wobbler |
 
    Set each group's `alignArtTop`, `goalPosition` and `guidanceOffsetX` so that the Goal banner, Bantay, the Hint button and the Choices panel cover none of: the low shelf and bookcase (bedroom); the lamp, table, glass cabinet and door (home); the tree, post and open field (schoolyard); the hill path and the fish (beach). Check this in the screenshots at 1920x1080 and 2400x1080.
@@ -68,8 +68,8 @@ Already done and committed, so use these as they are:
 ## Acceptance criteria
 
 - `BuildAllBatch` succeeds, and EditMode and PlayMode report zero failures, with every test listed above present.
-- Screenshots 10-32 look as they do on `main`. Screenshots 40-46 show the right Setting, and nothing covers the objects listed in behaviour 1 at either size.
-- No file under `Assets/Art`, `Assets/Audio`, `ArtSource` or `Assets/Resources/Scenarios` changed, apart from `.meta` files Unity creates.
+- Screenshots 10-32 keep the Easy layout, with tighter Level Completed lesson spacing. Shot 32 shows Bantay's "Normal is open! Let's play!" line. Screenshots 40-46 show the right Setting, and nothing covers the objects listed in behaviour 1 at either size.
+- Changes under `Assets/Art` and `ArtSource` are limited to the schoolyard background, its editable Aseprite file and its source script. Unity may update `.meta` files. Audio and Scenario files keep their existing contents.
 
 ## Tickets
 
