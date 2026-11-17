@@ -35,6 +35,22 @@ for _, set in ipairs({ LV.choicePictures2(), LV.choicePictures3() }) do
   end
 end
 
+-- Earthquake / Normal: bedroom, home (hanging lamp, glass cabinet), schoolyard (tree, post),
+-- beach (wave line), and one picture per Choice
+local NM = dofile(here .. "normal.lua")(L, CH, LV)
+L.save(NM.bedroom(), "Level/bg_bedroom", "Level/bg_bedroom")
+L.save(NM.home(), "Level/bg_home", "Level/bg_home")
+L.saveFrames(NM.lampFrames(), "Level/lamp", "Level/lamp", 160)
+L.saveFrames(NM.glassCabinetFrames(), "Level/glass_cabinet", "Level/glass_cabinet", 120)
+L.save(NM.schoolyard(), "Level/bg_schoolyard", "Level/bg_schoolyard")
+L.saveFrames(NM.treeFrames(), "Level/tree", "Level/tree", 200)
+L.saveFrames(NM.postFrames(), "Level/post", "Level/post", 160)
+L.save(NM.beach(), "Level/bg_beach", "Level/bg_beach")
+L.saveFrames(NM.waveFrames(), "Level/waves", "Level/waves", 400)
+for name, img in pairs(NM.choicePicturesNormal()) do
+  L.save(img, "Level/" .. name, "Level/" .. name)
+end
+
 -- How to Play Tutorial Pages: Tutorial/<name>_0.png and _1.png
 for _, page in ipairs(TU.pages) do
   L.saveFrames({ page.draw(0), page.draw(1) }, "Tutorial/" .. page.name, "Tutorial/" .. page.name, 400)
