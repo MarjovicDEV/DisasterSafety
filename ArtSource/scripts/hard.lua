@@ -118,7 +118,7 @@ return function(L, CH, LV, NM)
   -- mall_a: the food court inside a big General Santos mall (during) -----------------
   -- Left to right: a shop with a glass window (the glass display case is a sprite at
   -- x 66, y 112), the elevator, food court tables, food stalls, the exit.
-  -- The hanging shop sign is a sprite at x 330, y 0.
+  -- The hanging shop sign is a sprite placed at x 380, y 0 by the Level builder.
   local function mallFloor(img, top, W, Hh)
     for ty = top, Hh - 1, 14 do
       for tx = 0, W - 1, 14 do

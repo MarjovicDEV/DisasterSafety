@@ -28,6 +28,13 @@ namespace DisasterSafety.EditorTools
             "choice_table", "choice_run_home", "choice_glass_cabinet", "choice_sofa",
             "choice_open_field", "choice_tree", "choice_post", "choice_building",
             "choice_high_ground", "choice_fish", "choice_watch_waves", "choice_wait_beach",
+            "choice_meeting_place", "choice_own_way", "choice_meet_home", "choice_phone_numbers",
+            "choice_route_field", "choice_route_post", "choice_route_tree", "choice_route_later",
+            "choice_food_court_table", "choice_run_exit", "choice_elevator_during", "choice_shop_window",
+            "choice_mall_stairs", "choice_elevator_after", "choice_run_push", "choice_mall_wall",
+            "choice_call_adult", "choice_pull_up", "choice_leave_hurt", "choice_fix_pipe",
+            "choice_go_bag_out", "choice_back_for_toys", "choice_no_go_bag", "choice_no_note",
+            "choice_radio", "choice_go_home", "choice_rumor", "choice_phone_all_day",
         };
 
         static void BuildLevelScene()
@@ -63,6 +70,7 @@ namespace DisasterSafety.EditorTools
             {
                 BuildClassroom(world), BuildCorridor(world), BuildClassroomAfter(world),
                 BuildBedroom(world), BuildHome(world), BuildSchoolyard(world), BuildBeach(world),
+                BuildMallA(world), BuildMallB(world), BuildHomeAfter(world), BuildEvacuationArea(world),
             };
             for (var i = 1; i < c.settings.Length; i++)
                 c.settings[i].gameObject.SetActive(false);
@@ -183,6 +191,49 @@ namespace DisasterSafety.EditorTools
             setting.guidanceOffsetX = 56f;
             setting.compactChoicesOnWideScreens = true;
             BuildLevelAnimation(foreground, "Waves", Frames("Level/waves", 2), 140, 128, 2.5f, onlyWhileShaking: false);
+            return setting;
+        }
+
+        static LevelSetting BuildMallA(RectTransform world)
+        {
+            var setting = BuildSetting(world, ScenarioSettings.MallA, "Mall Food Court", out var shaking);
+            // Stand Bantay and the Hint in front of the food stalls, clear of the tables and the exit.
+            setting.guidanceOffsetX = -120f;
+            setting.compactChoicesOnWideScreens = true;
+            setting.shaker.wobblers = new[]
+            {
+                BuildLevelAnimation(shaking, "Hanging Sign", Frames("Level/mall_sign", 2), 380, 0, 4f, onlyWhileShaking: true),
+                BuildLevelAnimation(shaking, "Glass Display", Frames("Level/shop_display", 2), 66, 112, 5f, onlyWhileShaking: true),
+            };
+            return setting;
+        }
+
+        static LevelSetting BuildMallB(RectTransform world)
+        {
+            var setting = BuildSetting(world, ScenarioSettings.MallB, "Mall Outside", out _);
+            // Stand Bantay and the Hint on the pavement left of the stair, clear of the stair,
+            // the parking area and the waiting family; the bubble may hide the top of the doors.
+            setting.guidanceOffsetX = -960f;
+            setting.compactChoicesOnWideScreens = true;
+            return setting;
+        }
+
+        static LevelSetting BuildHomeAfter(RectTransform world)
+        {
+            var setting = BuildSetting(world, ScenarioSettings.HomeAfter, "Home After", out _);
+            // Bantay and the Hint stand in front of the sofa, as in the home. The Goal keeps the top
+            // centre: the still lamp may sit behind it, and two-line Goals stay clear of Bantay's bubble.
+            setting.guidanceOffsetX = -1230f;
+            setting.compactChoicesOnWideScreens = true;
+            return setting;
+        }
+
+        static LevelSetting BuildEvacuationArea(RectTransform world)
+        {
+            var setting = BuildSetting(world, ScenarioSettings.EvacuationArea, "Evacuation Area", out _);
+            // Stand Bantay and the Hint by the tent, clear of the families, the radio and the go bag.
+            setting.guidanceOffsetX = -40f;
+            setting.compactChoicesOnWideScreens = true;
             return setting;
         }
 

@@ -10,7 +10,7 @@ Already done, so use these as they are:
   | File | Size | Use |
   |---|---|---|
   | `bg_mall_a.png` | 480x270 | Setting `mall_a` (mall food court) |
-  | `mall_sign_0.png`, `mall_sign_1.png` | 60x50 | hanging shop sign at (330, 0) |
+  | `mall_sign_0.png`, `mall_sign_1.png` | 60x50 | hanging shop sign at (380, 0); the sprite sits right of where `hard.lua` drew it, to keep it clear of the Goal banner |
   | `shop_display_0.png`, `shop_display_1.png` | 40x64 | glass display case at (66, 112) |
   | `bg_mall_b.png` | 480x270 | Setting `mall_b` (outside the mall) |
   | `bg_home_after.png` | 480x270 | Setting `home_after` (the living room after the shaking; lamp and cabinet are drawn in) |
@@ -33,12 +33,12 @@ Already done, so use these as they are:
 
    | Setting | Shakes | Moving parts |
    |---|---|---|
-   | `mall_a` | yes | wobblers: `Level/mall_sign` at (330, 0), 4 fps, and `Level/shop_display` at (66, 112), 5 fps; both `randomStart` |
+   | `mall_a` | yes | wobblers: `Level/mall_sign` at (380, 0), 4 fps, and `Level/shop_display` at (66, 112), 5 fps; both `randomStart` |
    | `mall_b` | no (no `SceneShaker`) | none |
    | `home_after` | no | none |
    | `evacuation_area` | no | none |
 
-   Set each group's `alignArtTop`, `goalPosition` and `guidanceOffsetX` so that the Goal banner, Bantay, the Hint button and the Choices panel cover none of: the food court tables, the elevator, the shop window, the display case and the hanging sign (`mall_a`); the outdoor stair, the mall doors and the family in the parking area (`mall_b`); the crooked photo, the glass cabinet, the door and the go bag (`home_after`); the families on the mats, the radio and the tent (`evacuation_area`). Check this in the screenshots at 1920x1080 and 2400x1080.
+   Set each group's `alignArtTop`, `goalPosition` and `guidanceOffsetX` so that the Goal banner, Bantay, the Hint button and the Choices panel cover none of: the food court tables, the elevator, the shop window, the display case and the hanging sign (`mall_a`); the outdoor stair, the parking area and the waiting family (`mall_b`; Bantay's bubble may hide the top of the mall doors); the glass cabinet, the door, the go bag and the fallen books (`home_after`; the Goal may sit over the still lamp, and on wide screens Bantay's bubble may hide the crooked photo); the families on the mats, the radio and the go bag (`evacuation_area`; Bantay and the Hint stand by the tent). Check this in the screenshots at 1920x1080 and 2400x1080.
 2. **Phase** works as today: Hard 3 shakes; Hard 1, 2 and 4 to 7 start still.
 3. **Choice pictures**: all 28 new names are added to `ChoicePictureNames`.
 4. **Next and Open** follow the existing rules, with no new code: Next runs from Hard 1 to Hard 7, and Hard 7 hides Next.
@@ -80,7 +80,7 @@ Already done, so use these as they are:
 
 - `BuildAllBatch` succeeds, and EditMode and PlayMode report zero failures, with every test listed above present.
 - Screenshots 10-45 look as they do on main. Shot 46 shows Bantay's "Hard is open! Let's play!" line. Screenshots 50-58 show the right Setting, no Choice label or lesson is cut off, and nothing covers the objects listed in behaviour 1 at either size.
-- After the first commit on the `earthquake-hard` branch (the Hard design, art and Scenarios), no changes under `Assets/Art`, `ArtSource`, `Assets/Audio` or `Assets/Resources/Scenarios`, except new `.meta` files Unity creates for the new art and Scenario files.
+- After the first commit on the `earthquake-hard` branch (the Hard design, art and Scenarios), no PNG, `.aseprite`, audio or Scenario file changes, except new `.meta` files Unity creates. Comments and docs under `ArtSource` may change to match where the builder places sprites.
 
 ## Tickets
 

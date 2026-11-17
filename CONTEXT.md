@@ -31,7 +31,7 @@ The situation one Level presents: a picture, a goal, short instructions, an opti
 _Avoid_: Question, quiz, puzzle
 
 **Setting**:
-The place a Scenario happens, such as the classroom or the corridor. The Setting picks the scene art. Each Setting has a key: `classroom`, `corridor`, `classroom_after`, `bedroom`, `home`, `schoolyard`, or `beach`.
+The place a Scenario happens, such as the classroom or the corridor. The Setting picks the scene art. Each Setting has a key: `classroom`, `corridor`, `classroom_after`, `bedroom`, `home`, `schoolyard`, `beach`, `mall_a`, `mall_b`, `home_after`, or `evacuation_area`.
 _Avoid_: Location, map, background (the background is only the picture)
 
 **Phase**:

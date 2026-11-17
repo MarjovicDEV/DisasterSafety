@@ -70,6 +70,17 @@ namespace DisasterSafety.Tests
         }
 
         [Test]
+        public void HardLevels_AllExist()
+        {
+            var levels = Files().Select(Load).Select(s => s.level).ToList();
+            Assert.That(levels, Is.SupersetOf(new[]
+            {
+                "Earthquake/Hard/1", "Earthquake/Hard/2", "Earthquake/Hard/3", "Earthquake/Hard/4",
+                "Earthquake/Hard/5", "Earthquake/Hard/6", "Earthquake/Hard/7",
+            }));
+        }
+
+        [Test]
         public void EveryChoicePicture_HasArt()
         {
             foreach (var path in Files())

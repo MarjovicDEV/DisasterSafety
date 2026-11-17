@@ -107,6 +107,23 @@ namespace DisasterSafety.EditorTools
             c.cheerBantay.bubbleText.text = LevelController.OpenedLine(hardName, Episode.Earthquake, Difficulty.Hard, scenarios.Playable);
             Completed(c, normal, 3);
             Shot("46-level-completed-hard-open", c.dimmer, c.completedPanel, c.cheerBantay.bubble);
+            c.openedRibbon.SetActive(false);
+
+            var hardShots = new[] { "50-hard1", "51-hard2", "52-hard3", "53-hard4", "54-hard5", "55-hard6", "56-hard7" };
+            for (var i = 0; i < hardShots.Length; i++)
+            {
+                var hard = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Hard, i + 1));
+                c.bantay.bubbleText.text = hard.intro.text;
+                Shot(hardShots[i], c.choicesPanel, c.bantay.bubble);
+            }
+
+            // Hard 3 (the mall food court): an Unsafe Choice.
+            var mall = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Hard, 3));
+            var elevator = ChoiceIndex(mall, "elevator");
+            c.choiceCards[elevator].SetTried(true);
+            Feedback(c, mall.choices[elevator]);
+            Shot("57-hard3-feedback-unsafe", c.choicesPanel, c.dimmer, c.feedbackPanel);
+            c.choiceCards[elevator].SetTried(false);
         }
 
         static void Completed(LevelController c, Scenario scenario, int stars)
