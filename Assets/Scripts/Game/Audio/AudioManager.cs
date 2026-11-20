@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace DisasterSafety.Game
 {
@@ -23,11 +24,13 @@ namespace DisasterSafety.Game
         Opened
     }
 
-    /// <summary>Plays the menu music and UI sounds, following the Settings switches.</summary>
+    /// <summary>Plays the menu and Level music and the UI sounds, following the Settings switches.</summary>
     public sealed class AudioManager : MonoBehaviour
     {
         const float MusicVolume = 0.42f;
         const float SfxVolume = 0.8f;
+        /// <summary>The share of the music volume left while the ground shakes.</summary>
+        const float DuckedShare = 0.35f;
 
         static AudioManager instance;
 
@@ -36,6 +39,9 @@ namespace DisasterSafety.Game
         AudioSource effects;
         AudioSource pitched;
         Coroutine fade;
+        float duckUntil;
+        bool ducked;
+        bool swapping;
 
         public static void EnsureExists()
         {
@@ -46,6 +52,9 @@ namespace DisasterSafety.Game
             instance = go.AddComponent<AudioManager>();
             instance.Setup();
         }
+
+        /// <summary>The song playing now (or fading in), for tests.</summary>
+        public static AudioClip CurrentMusic => instance != null ? instance.music.clip : null;
 
         public static void Play(Sfx sfx, float volume = 1f) => Play(sfx, volume, 1f);
 
@@ -68,26 +77,73 @@ namespace DisasterSafety.Game
             pitched = gameObject.AddComponent<AudioSource>();
             pitched.playOnAwake = false;
 
-            if (library != null && library.menuMusic != null)
+            if (library != null)
             {
-                music.clip = library.menuMusic;
-                music.Play();
+                music.clip = library.MusicFor(SceneManager.GetActiveScene().name);
+                if (music.clip != null) music.Play();
             }
+            SceneManager.activeSceneChanged += OnSceneChanged;
             GameServices.Audio.Changed += ApplyPreferences;
             ApplyPreferences();
         }
 
+        /// <summary>Lowers the music for a while (the earthquake rumble), then brings it back.</summary>
+        public static void DuckMusic(float seconds)
+        {
+            EnsureExists();
+            instance.duckUntil = Time.unscaledTime + seconds;
+            instance.ApplyPreferences();
+        }
+
         void OnDestroy()
         {
+            SceneManager.activeSceneChanged -= OnSceneChanged;
             if (GameServices.Audio != null) GameServices.Audio.Changed -= ApplyPreferences;
             if (instance == this) instance = null;
         }
 
+        // The menu and the Level have their own songs: fade out, swap, fade back in.
+        void OnSceneChanged(Scene from, Scene to)
+        {
+            if (library == null) return;
+            var clip = library.MusicFor(to.name);
+            if (clip == null || clip == music.clip) return;
+            duckUntil = 0f;
+            if (fade != null) StopCoroutine(fade);
+            fade = StartCoroutine(SwapMusic(clip));
+        }
+
+        IEnumerator SwapMusic(AudioClip clip)
+        {
+            swapping = true;
+            yield return FadeMusic(0f, 0.4f);
+            music.clip = clip;
+            music.Play();
+            yield return FadeMusic(TargetVolume, 0.8f);
+            swapping = false;
+            fade = null;
+            ApplyPreferences();
+        }
+
+        float TargetVolume => !GameServices.Audio.MusicOn ? 0f
+            : Time.unscaledTime < duckUntil ? MusicVolume * DuckedShare : MusicVolume;
+
         void ApplyPreferences()
         {
-            var target = GameServices.Audio.MusicOn ? MusicVolume : 0f;
+            if (swapping) return; // the swap fades to the current target when it ends
             if (fade != null) StopCoroutine(fade);
-            fade = StartCoroutine(FadeMusic(target, 0.6f));
+            fade = StartCoroutine(FadeMusic(TargetVolume, 0.6f));
+        }
+
+        void Update()
+        {
+            // The duck ends on its own: fade back up once its time is over.
+            if (ducked && Time.unscaledTime >= duckUntil)
+            {
+                ducked = false;
+                ApplyPreferences();
+            }
+            else if (!ducked && Time.unscaledTime < duckUntil) ducked = true;
         }
 
         IEnumerator FadeMusic(float target, float seconds)

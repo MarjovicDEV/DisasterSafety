@@ -9,6 +9,8 @@ namespace DisasterSafety.Game
         public const string ResourcePath = "AudioLibrary";
 
         public AudioClip menuMusic;
+        /// <summary>The calmer loop for the Level scene.</summary>
+        public AudioClip levelMusic;
         public AudioClip click;
         public AudioClip back;
         public AudioClip open;
@@ -25,6 +27,10 @@ namespace DisasterSafety.Game
         public AudioClip star;
         public AudioClip complete;
         public AudioClip opened;
+
+        /// <summary>The music for a scene: the Level loop in the Level scene (when it exists), else the menu loop.</summary>
+        public AudioClip MusicFor(string sceneName) =>
+            sceneName == GameScenes.Level && levelMusic != null ? levelMusic : menuMusic;
 
         public AudioClip Get(Sfx sfx)
         {

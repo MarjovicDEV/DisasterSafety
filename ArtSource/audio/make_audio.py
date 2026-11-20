@@ -1,7 +1,8 @@
-"""Generate the menu music loop and UI sound effects for Disaster Safety.
+"""Generate the menu and Level music loops and UI sound effects for Disaster Safety.
 
 Run from the project root:
     python -I ArtSource/audio/make_audio.py D:/GameDEV/DisasterSafety
+Add --only-level-music to write just Assets/Audio/Music/bgm_level.wav.
 
 Writes 16-bit mono WAV files to Assets/Audio/. Uses only the standard library.
 Everything is synthesised, so there are no third-party licences to track.
@@ -127,6 +128,40 @@ def make_music():
     return mix(t_lead, t_bass, t_arp, hat[:total])
 
 
+def make_level_music():
+    """The Level loop: calm and focused, slower and softer than the menu song, so the
+    earthquake rumble and the Student's Choices stand out. No drums; soft triangle lead."""
+    bpm = 88
+    beat = 60.0 / bpm
+    # 8 bars of 4/4, chords: F C G Am | F C G G
+    lead = [
+        ("A4", 2), ("C5", 1), ("A4", 1),
+        ("G4", 3), ("E4", 1),
+        ("D5", 2), ("B4", 1), ("G4", 1),
+        ("C5", 3), ("R", 1),
+        ("A4", 1), ("C5", 1), ("F5", 2),
+        ("E5", 2), ("D5", 1), ("C5", 1),
+        ("B4", 2), ("D5", 2),
+        ("G4", 3), ("R", 1),
+    ]
+    roots = ["F2", "C3", "G2", "A2", "F2", "C3", "G2", "G2"]
+    bass = []
+    for r in roots:
+        bass += [(r, 2), (r, 2)]
+    chords = {
+        "F2": ["A3", "C4", "F4"], "C3": ["G3", "C4", "E4"], "G2": ["G3", "B3", "D4"], "A2": ["A3", "C4", "E4"],
+    }
+    arp = []
+    for r in roots:
+        tones = chords[r]
+        for k in range(8):
+            arp.append((tones[[0, 1, 2, 1][k % 4]], 0.5))
+    t_lead = render_voice(lead, beat, triangle, 0.24, staccato=0.95)
+    t_bass = render_voice(bass, beat, triangle, 0.30, staccato=0.92)
+    t_arp = render_voice(arp, beat, square, 0.045, duty=0.125, staccato=0.55)
+    return mix(t_lead, t_bass, t_arp)
+
+
 def sweep(f0, f1, dur, wave_fn=square, vol=0.5, duty=0.5, decay=None):
     n = int(dur * RATE)
     out = []
@@ -222,6 +257,12 @@ def make_rumble(dur=2.6):
 def main():
     root = sys.argv[1] if len(sys.argv) > 1 else "."
     out = os.path.join(root, "Assets", "Audio")
+    if "--only-level-music" in sys.argv[2:]:
+        # Writes just the Level loop, leaving every other audio file as it is.
+        write_wav(os.path.join(out, "Music", "bgm_level.wav"), make_level_music())
+        print("level music written to", out)
+        return
+    write_wav(os.path.join(out, "Music", "bgm_level.wav"), make_level_music())
     write_wav(os.path.join(out, "Music", "bgm_menu.wav"), make_music())
     for name, data in make_sfx().items():
         write_wav(os.path.join(out, "Sfx", name + ".wav"), data)

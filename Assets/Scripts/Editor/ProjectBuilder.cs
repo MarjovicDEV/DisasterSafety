@@ -96,6 +96,7 @@ namespace DisasterSafety.EditorTools
                 AssetDatabase.CreateAsset(lib, path);
             }
             lib.menuMusic = Clip("Music/bgm_menu");
+            lib.levelMusic = Clip("Music/bgm_level");
             lib.click = Clip("Sfx/sfx_click");
             lib.back = Clip("Sfx/sfx_back");
             lib.open = Clip("Sfx/sfx_open");

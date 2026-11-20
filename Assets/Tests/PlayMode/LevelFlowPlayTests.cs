@@ -488,6 +488,22 @@ namespace DisasterSafety.Tests
         }
 
         [UnityTest]
+        public IEnumerator Level_PlaysItsOwnMusic_AndTheMenuMusicComesBack()
+        {
+            var library = Resources.Load<AudioLibrary>(AudioLibrary.ResourcePath);
+            Assert.That(library.levelMusic, Is.Not.Null, "bgm_level is in the Audio Library");
+            Assert.That(library.levelMusic, Is.Not.SameAs(library.menuMusic));
+
+            yield return StartEasyOne();
+            yield return ReadyToChoose(Level);
+            yield return WaitFor(() => AudioManager.CurrentMusic == library.levelMusic, "the Level music");
+
+            GameScenes.ToMainMenu();
+            yield return WaitForScene(GameScenes.MainMenu);
+            yield return WaitFor(() => AudioManager.CurrentMusic == library.menuMusic, "the menu music");
+        }
+
+        [UnityTest]
         public IEnumerator EasyLevel1_NewFlow_Pause_FreezesTheStudent()
         {
             yield return StartEasyOne();

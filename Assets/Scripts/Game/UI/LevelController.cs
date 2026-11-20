@@ -145,6 +145,7 @@ namespace DisasterSafety.Game.UI
             {
                 ActiveSetting?.shaker?.StartShake();
                 AudioManager.Play(Sfx.Rumble, 0.9f);
+                AudioManager.DuckMusic(ActiveSetting?.shaker != null ? ActiveSetting.shaker.shakeSeconds : 2f);
                 yield return new WaitForSeconds(0.4f);
             }
             bantay.Say(scenario.intro.text, true, 5f);
@@ -177,6 +178,7 @@ namespace DisasterSafety.Game.UI
             {
                 shaker.StartShake();
                 AudioManager.Play(Sfx.Rumble, 0.9f);
+                AudioManager.DuckMusic(shaker.shakeSeconds);
                 student.Play(StudentPose.Surprised);
                 student.Say(UIStrings.ReactionWhoa, shaker.shakeSeconds);
                 yield return new WaitForSeconds(shaker.shakeSeconds);
