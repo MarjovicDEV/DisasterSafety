@@ -231,8 +231,18 @@ namespace DisasterSafety.Game.UI
 
             if (attempt.LastChoiceSafe)
             {
-                yield return student.WalkTo(spot.x);
-                if (spot.overlay != null) spot.overlay.SetActive(true);
+                if (spot.crouchFromX > 0f)
+                {
+                    // Walk up beside the desk, crouch, and shuffle in under the desk top.
+                    yield return student.WalkTo(spot.crouchFromX);
+                    if (spot.overlay != null) spot.overlay.SetActive(true);
+                    yield return student.CrouchTo(spot.x);
+                }
+                else
+                {
+                    yield return student.WalkTo(spot.x);
+                    if (spot.overlay != null) spot.overlay.SetActive(true);
+                }
                 student.Play(spot.endPose);
                 if (scenario.Shakes) setting.shaker?.Calm();
                 student.Say(UIStrings.ReactionSafe, ReactionSeconds + 1f);

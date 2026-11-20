@@ -70,7 +70,7 @@ Spots (the Student's centre x, art pixels):
 |---|---|
 | start | 126 |
 | door | 46 |
-| desk | 240 (ducking under the desk; draw `desk_front` over the Student) |
+| desk | walk to 184, then `crouch` and shuffle to 222 and `hold` (the reaching hand meets the left front leg at x 200-206); draw `desk_front` over the Student from the crouch on |
 | window | 372 |
 | cabinet | 440 |
 

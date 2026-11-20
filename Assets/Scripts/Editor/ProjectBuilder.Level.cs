@@ -304,7 +304,9 @@ namespace DisasterSafety.EditorTools
             {
                 // Unsafe Choices stop clear of the desk and its chair (x 198 to 302), the door and the window.
                 new ActionSpot { key = "door", x = 46f, stopAt = 0.4f, endPose = StudentPose.Idle },
-                new ActionSpot { key = "desk", x = 240f, stopAt = 1f, endPose = StudentPose.Duck, overlay = deskFront.gameObject },
+                // The Safe Choice walks up beside the desk (184), crouches and shuffles in, then holds the
+                // left front leg (x 200-206) with its reaching hand at 222.
+                new ActionSpot { key = "desk", x = 222f, stopAt = 1f, endPose = StudentPose.Hold, overlay = deskFront.gameObject, crouchFromX = 184f },
                 new ActionSpot { key = "window", x = 372f, stopAt = 0.8f, endPose = StudentPose.Idle },
                 new ActionSpot { key = "cabinet", x = 440f, stopAt = 0.75f, endPose = StudentPose.Idle },
             };
@@ -319,6 +321,8 @@ namespace DisasterSafety.EditorTools
             duck = Frames("Student/" + kind + "_duck", 2),
             wait = Frames("Student/" + kind + "_wait", 2),
             happy = Frames("Student/" + kind + "_happy", 2),
+            crouch = Frames("Student/" + kind + "_crouch", 2),
+            hold = Frames("Student/" + kind + "_hold", 2),
             portrait = S("Student/" + kind + "_portrait"),
         };
 

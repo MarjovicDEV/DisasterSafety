@@ -13,7 +13,11 @@ namespace DisasterSafety.Game.UI
         Walk,
         Duck,
         Wait,
-        Happy
+        Happy,
+        /// <summary>Knees bent and back hunched, shuffling in under the desk (side view).</summary>
+        Crouch,
+        /// <summary>Under the desk: one hand holds the desk leg, the other arm covers the head.</summary>
+        Hold
     }
 
     /// <summary>The pose frames of one Student (boy or girl).</summary>
@@ -26,6 +30,8 @@ namespace DisasterSafety.Game.UI
         public Sprite[] duck;
         public Sprite[] wait;
         public Sprite[] happy;
+        public Sprite[] crouch;
+        public Sprite[] hold;
         public Sprite portrait;
 
         public Sprite[] For(StudentPose pose)
@@ -37,6 +43,8 @@ namespace DisasterSafety.Game.UI
                 case StudentPose.Duck: return duck;
                 case StudentPose.Wait: return wait;
                 case StudentPose.Happy: return happy;
+                case StudentPose.Crouch: return crouch;
+                case StudentPose.Hold: return hold;
                 default: return idle;
             }
         }
@@ -51,9 +59,11 @@ namespace DisasterSafety.Game.UI
     {
         /// <summary>Art pixels per second while walking.</summary>
         public const float WalkSpeed = 80f;
+        /// <summary>Art pixels per second while shuffling in under the desk.</summary>
+        public const float CrouchSpeed = 30f;
 
         // Frame durations in seconds, in StudentPose order, from the .aseprite files.
-        static readonly float[] FrameSeconds = { 0.5f, 0.16f, 0.14f, 0.3f, 0.45f, 0.26f };
+        static readonly float[] FrameSeconds = { 0.5f, 0.16f, 0.14f, 0.3f, 0.45f, 0.26f, 0.18f, 0.3f };
 
         public StudentFrames boy;
         public StudentFrames girl;
@@ -139,6 +149,26 @@ namespace DisasterSafety.Game.UI
             }
             Face(false);
             Play(StudentPose.Idle);
+        }
+
+        /// <summary>Crouches and shuffles to the x at CrouchSpeed (under the desk), then stays crouched.</summary>
+        public IEnumerator CrouchTo(float artX)
+        {
+            walking = StartCoroutine(CrouchRoutine(artX));
+            yield return walking;
+            walking = null;
+        }
+
+        IEnumerator CrouchRoutine(float artX)
+        {
+            Face(artX < x);
+            Play(StudentPose.Crouch);
+            while (!Mathf.Approximately(x, artX))
+            {
+                PlaceAt(Mathf.MoveTowards(x, artX, CrouchSpeed * Time.deltaTime));
+                yield return null;
+            }
+            Face(false);
         }
 
         void Update()

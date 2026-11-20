@@ -413,11 +413,15 @@ namespace DisasterSafety.Tests
             Assert.That(c.actionBar.buttons[Desk].label.text, Is.EqualTo("Duck under the desk"));
             Assert.That(c.actionBar.buttons[Desk].icon.sprite.name, Is.EqualTo("icon_desk"));
 
-            // The desk: the Action Bar hides, the Student walks to the desk spot and ducks under it.
+            // The desk: the Action Bar hides, the Student walks up beside the desk, crouches and
+            // shuffles in under it, then holds the desk leg.
             Tap(c, Desk);
             Assert.That(c.actionBar.IsVisible, Is.False);
-            yield return WaitFor(() => student.Pose == StudentPose.Duck, "the Student to duck", 12f);
             var spot = c.ActiveSetting.SpotFor("desk");
+            yield return WaitFor(() => student.Pose == StudentPose.Crouch, "the Student to crouch", 12f);
+            Assert.That(student.X, Is.LessThan(spot.x));
+            Assert.That(spot.overlay.activeSelf, Is.True, "the front of the desk is drawn from the crouch on");
+            yield return WaitFor(() => student.Pose == StudentPose.Hold, "the Student to hold the desk", 12f);
             Assert.That(student.X, Is.EqualTo(spot.x));
             Assert.That(spot.overlay.activeSelf, Is.True, "the front of the desk is drawn over the Student");
             Assert.That(student.bubble.Line, Is.EqualTo("I'm safe!"));

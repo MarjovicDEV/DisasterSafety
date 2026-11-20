@@ -15,6 +15,8 @@ namespace DisasterSafety.Game.UI
         public StudentPose endPose = StudentPose.Idle;
         [Tooltip("Drawn over the Student at the end pose, e.g. the front of the desk.")]
         public GameObject overlay;
+        [Tooltip("When above 0, the Safe Choice walks only to this x, then crouches and shuffles to x (under the desk). The overlay shows from the crouch on.")]
+        public float crouchFromX;
     }
 
     /// <summary>Scene art and layout for one Scenario Setting.</summary>
