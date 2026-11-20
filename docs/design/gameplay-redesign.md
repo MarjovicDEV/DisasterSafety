@@ -67,6 +67,15 @@ The big Student, boy and girl:
 
 The scene: the classroom redrawn in v2 style, its ceiling fan and cabinet wobble as today, the Student's speech bubble, the Caption banner and the Action Bar with its slide-up.
 
+## Pilot result (2026-11-18, Unity Editor)
+
+The user played Easy 1 in the Unity Editor (not on the phone) and answered the checklist as a whole: "that's exactly the gameplay that I want".
+
+- **Gameplay: go on with the rollout.** The Student flow is the target for every Level.
+- **Duck, changed after the first play.** The first front-facing duck did not look real. The Student now walks to the desk, crouches and shuffles in under it (`crouch`, side view), then holds the desk leg with one hand and covers the head with the other arm (`hold`). This is the drill as taught. The design rule: actions are acted out realistically, step by step, not as a jump cut.
+- **Art: keep the bar.** The user is happy with the v2 art. Every new Level, scene, pose and prop must match it: the v2 outline and three-shade style, light from the left, the same palette and pixel scale.
+- **Music, changed after the first play.** One song played in the menus and in the Level, which the user did not like. The Level now has its own song, `bgm_level` (calm and focused: 88 BPM, soft triangle lead, no drums), and fades from the menu song when a Level opens and back when it closes. The music drops to about a third while the ground shakes, so the rumble stands out.
+
 ## Open questions
 
 - Scoring of a 2 or 3 step chain in Normal and Hard (Q15), after the pilot.
@@ -74,5 +83,5 @@ The scene: the classroom redrawn in v2 style, its ceiling fan and cabinet wobble
 
 ## Not verified
 
-- No phone test of the new flow yet; the pilot exists to do that.
+- No phone test of the new flow yet: the pilot was played in the Unity Editor only.
 - The 50-pixel Student's readability on a 6-inch phone is assumed from the 4-units-per-art-pixel scale and still needs checking on the device.

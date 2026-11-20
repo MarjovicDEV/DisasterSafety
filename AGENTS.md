@@ -11,9 +11,10 @@ Close the Unity Editor before any batch run, because a project open in the Edito
 "C:\Program Files\Unity\Hub\Editor\6000.6.8f1\Editor\Unity.exe" -batchmode -projectPath D:/GameDEV/DisasterSafety -runTests -testPlatform EditMode -testResults editmode.xml -logFile editmode.log
 "C:\Program Files\Unity\Hub\Editor\6000.6.8f1\Editor\Unity.exe" -batchmode -projectPath D:/GameDEV/DisasterSafety -runTests -testPlatform PlayMode -testResults playmode.xml -logFile playmode.log
 "C:\Program Files\Unity\Hub\Editor\6000.6.8f1\Editor\Unity.exe" -batchmode -projectPath D:/GameDEV/DisasterSafety -executeMethod DisasterSafety.EditorTools.MenuScreenshots.CaptureBatch -shotsDir D:/GameDEV/DisasterSafety/Screenshots -logFile shots.log
+"C:\Program Files\Unity\Hub\Editor\6000.6.8f1\Editor\Unity.exe" -batchmode -projectPath D:/GameDEV/DisasterSafety -buildTarget Android -executeMethod DisasterSafety.EditorTools.ProjectBuilder.BuildAndroidBatch -logFile android.log
 ```
 
-`-runTests` and `CaptureBatch` exit by themselves, so leave out `-quit`. Run the build before the tests and the screenshots whenever `ProjectBuilder*.cs` or the art changed. A change is done when the build succeeds and both test runs report zero failures. Then read the screenshots for the screens you touched.
+`-runTests`, `CaptureBatch` and `BuildAndroidBatch` exit by themselves, so leave out `-quit`. `BuildAndroidBatch` runs the full build, then writes the test APK to `Builds/DisasterSafety-pilot.apk` (ignored by git). Run the build before the tests and the screenshots whenever `ProjectBuilder*.cs` or the art changed. A change is done when the build succeeds and both test runs report zero failures. Then read the screenshots for the screens you touched.
 
 ## Code rules
 
@@ -31,7 +32,7 @@ Close the Unity Editor before any batch run, because a project open in the Edito
 
 ## Git
 
-Commit only when the user asks. Each commit message is one sentence, with no co-author or attribution lines.
+Commit only when the user asks. Each commit message is one simple sentence, written as a history entry that says what was done to the project. It does not mention the user and has no co-author or attribution lines.
 
 ## Where to look
 

@@ -73,6 +73,43 @@ namespace DisasterSafety.EditorTools
             }
         }
 
+        public const string ApkPath = "Builds/DisasterSafety-pilot.apk";
+
+        /// <summary>
+        /// Batch: BuildAll, then the Android test APK at <see cref="ApkPath"/> (landscape, the
+        /// existing bundle id, IL2CPP for ARM64, development build off). Run with -buildTarget Android.
+        /// </summary>
+        public static void BuildAndroidBatch()
+        {
+            try
+            {
+                BuildAll();
+                var android = UnityEditor.Build.NamedBuildTarget.Android;
+                if (string.IsNullOrEmpty(PlayerSettings.GetApplicationIdentifier(android)))
+                    PlayerSettings.SetApplicationIdentifier(android,
+                        PlayerSettings.GetApplicationIdentifier(UnityEditor.Build.NamedBuildTarget.Standalone));
+                PlayerSettings.SetScriptingBackend(android, ScriptingImplementation.IL2CPP);
+                PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
+                EditorUserBuildSettings.buildAppBundle = false;
+                Directory.CreateDirectory(Path.GetDirectoryName(ApkPath));
+                var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
+                {
+                    scenes = new[] { BootScenePath, MenuScenePath, LevelScenePath },
+                    locationPathName = ApkPath,
+                    target = BuildTarget.Android,
+                    options = BuildOptions.None,
+                });
+                var summary = report.summary;
+                Debug.Log($"Disaster Safety: Android build {summary.result}, {summary.totalSize} bytes, {ApkPath}");
+                EditorApplication.Exit(summary.result == UnityEditor.Build.Reporting.BuildResult.Succeeded ? 0 : 1);
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                EditorApplication.Exit(1);
+            }
+        }
+
         // Project settings --------------------------------------------------------
         static void ConfigurePlayer()
         {
