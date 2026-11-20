@@ -792,6 +792,109 @@ return function(L)
     return g
   end
 
+  -- Getting under the desk ------------------------------------------------------
+  local function ellipse(g, cx, cy, rx, ry, c)
+    for y = cy - ry, cy + ry do
+      for x = cx - rx, cx + rx do
+        local dx, dy = (x - cx) / rx, (y - cy) / ry
+        if dx * dx + dy * dy <= 1.0 then setc(g, x, y, c) end
+      end
+    end
+  end
+  -- Paste a limb layer: its outline only goes on the outside or as a 'v' fold over the shirt,
+  -- so the join with the body stays clean.
+  local function pasteLimb(g, layer)
+    for y = 0, layer.h - 1 do
+      for x = 0, layer.w - 1 do
+        local c = getc(layer, x, y)
+        if c ~= "." then
+          local was = getc(g, x, y)
+          if c ~= "o" or was == "." or was == "o" then setc(g, x, y, c)
+          elseif was == "w" or was == "W" or was == "v" then setc(g, x, y, "v") end
+        end
+      end
+    end
+  end
+  local function sideHead(kind)
+    local src = kind == "boy" and BOY_SIDE or GIRL_SIDE
+    local rows = {}
+    for i = 1, 19 do rows[i] = src[i] end
+    return fromRows(rows, kind .. " side head")
+  end
+
+  -- Crouch-shuffle (facing right): knees bent low, back hunched, one hand on the knee, so the
+  -- Student fits under the desk top while moving in. The head top is at row 18 (art y 198),
+  -- under the desk top (art y 194). On the second frame the body bobs down 1 pixel and the
+  -- near foot slides back 1 pixel.
+  function M.crouch(kind, f)
+    local girl = kind == "girl"
+    local d = f
+    local b = newGrid(FW, FH)
+    local leg = girl and "S" or "N"
+    rect(b, 3, 46, 6, 3, "B")                      -- far foot, on its toes behind
+    ellipse(b, 11, 36 + d, 7, 6, "w")              -- hunched back
+    rect(b, 4, 40 + d, 10, 5, "N")                 -- seat
+    rect(b, 9, 41 + d, 13, 4, leg)                 -- near thigh
+    rect(b, 18 - f, 44 + d, 4, 3 - d, leg)         -- near shin
+    if girl then
+      rect(b, 3, 39 + d, 12, 4, "N")               -- skirt over the thigh
+      rect(b, 18 - f, 45, 4, 1, "w")               -- sock
+      ellipse(b, 9, 33 + d, 4, 3, "H")             -- long hair down the back
+    else
+      rect(b, 4, 39 + d, 10, 1, "x")               -- belt
+    end
+    rect(b, 17 - f, 46, 9, 3, "B")                 -- near shoe
+    shadeLayer(b, "w", "W", "v")
+    shadeLayer(b, "N", "m", "n")
+    shadeLayer(b, "S", "t", "s")
+    shadeLayer(b, "H", "j", "h")
+    shadeLayer(b, "B", "b", nil)
+    outline(b)
+    local g = newGrid(FW, FH)
+    paste(g, b, 0, 0)
+    pasteLimb(g, arm({ 14, 37 + d, 19, 41 + d, 23, 43 + d }, { sleeveTo = 0.55 }))
+    paste(g, sideHead(kind), 4, 18 + d)
+    shade(g, 0)
+    return g
+  end
+
+  -- Duck, Cover, and Hold under the desk (front view, kneeling): one forearm over the head,
+  -- the other arm reaching out to the left to hold the desk leg (EQ-11, and the picture in
+  -- docs/design/first-playable-level.md). Built from the duck maps: the left forearm and
+  -- sleeve are taken off, the head top is filled with hair, and a reaching arm is added.
+  local HOLD_TOP_LEFT = {
+    "................",
+    "...............o",
+    "............oooo",
+    "..........oojjjH",
+    "........oojjHHHH",
+    ".......ojHHHHHHH",
+    ".......oHHHHHHHH",
+  }
+  function M.hold(kind, f)
+    local g = fromRows(mirror(kind == "boy" and BOY_DUCK or GIRL_DUCK, kind .. " hold"))
+    for i, r in ipairs(HOLD_TOP_LEFT) do
+      for x = 0, 15 do setc(g, x, i - 1, r:sub(x + 1, x + 1)) end
+    end
+    for y = 7, 10 do for x = 0, 6 do setc(g, x, y, ".") end end
+    for x = 2, 8 do setc(g, x, 11, "o") end
+    if kind == "girl" then clip(g, 20, 6) end
+    sym(g, 11, 10, "S"); sym(g, 12, 10, "S")
+    sym(g, 11, 9, "e"); sym(g, 12, 10, "e"); sym(g, 11, 11, "e")
+    local oy = g.h - FH
+    local reach = arm({ 6, 39 + oy, 3, 38 + oy, 1, 38 + oy }, { sleeveTo = 0.6 })
+    pasteLimb(g, reach)
+    shade(g, 16)
+    if f == 1 then g = squash(g, 14) end
+    local top = FH - g.h
+    g = padTop(g)
+    -- effort lines over the covered head; they flick outward on the hold frame
+    for _, p in ipairs({ { 22 + f, top - 3 - f }, { 21 + f, top - 4 - f }, { 18, top - 6 - f }, { 18, top - 5 - f } }) do
+      setc(g, p[1], p[2], "o")
+    end
+    return g
+  end
+
   -- All frames ------------------------------------------------------------------
   M.POSES = {
     { name = "idle", frames = 2, ms = 500 },
@@ -800,6 +903,8 @@ return function(L)
     { name = "duck", frames = 2, ms = 300 },
     { name = "wait", frames = 2, ms = 450 },
     { name = "happy", frames = 2, ms = 260 },
+    { name = "crouch", frames = 2, ms = 180 },
+    { name = "hold", frames = 2, ms = 300 },
   }
   function M.frames(kind, pose)
     local out = {}
