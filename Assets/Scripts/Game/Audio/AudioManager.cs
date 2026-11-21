@@ -21,7 +21,9 @@ namespace DisasterSafety.Game
         Unsafe,
         Star,
         Complete,
-        Opened
+        Opened,
+        /// <summary>The Student's short voice blip under a Reaction or an Act-out line.</summary>
+        Blip
     }
 
     /// <summary>Plays the menu and Level music and the UI sounds, following the Settings switches.</summary>
@@ -64,6 +66,22 @@ namespace DisasterSafety.Game
             EnsureExists();
             instance.PlayOneShot(sfx, volume, pitch);
         }
+
+        /// <summary>How many voice blips actually played (sound on and the clip present), for tests.</summary>
+        public static int BlipsPlayed { get; private set; }
+
+        /// <summary>The Student's voice blip, quiet under the Safe and Unsafe sounds, at the speaker's pitch.</summary>
+        public static void PlayBlip(float pitch)
+        {
+            EnsureExists();
+            if (!GameServices.Audio.SoundOn || instance.library == null || instance.library.Get(Sfx.Blip) == null) return;
+            BlipsPlayed++;
+            instance.PlayOneShot(Sfx.Blip, 0.45f, pitch);
+        }
+
+        /// <summary>The blip for a Student: the girl's is pitched a little higher.</summary>
+        public static void PlayBlip(DisasterSafety.Core.StudentKind kind) =>
+            PlayBlip(kind == DisasterSafety.Core.StudentKind.Girl ? 1.25f : 1f);
 
         void Setup()
         {

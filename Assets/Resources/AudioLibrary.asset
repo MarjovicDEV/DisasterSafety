@@ -30,3 +30,4 @@ MonoBehaviour:
   star: {fileID: 8300000, guid: 860ef8e36422c804ca86e5e8c195ed82, type: 3}
   complete: {fileID: 8300000, guid: 0f9975ee472911645a5717a2444dc353, type: 3}
   opened: {fileID: 8300000, guid: fbb4ef22a9da78f4a84ca89d1d0b0ed9, type: 3}
+  blip: {fileID: 8300000, guid: f056921414e21e24295c3312ad303f4c, type: 3}

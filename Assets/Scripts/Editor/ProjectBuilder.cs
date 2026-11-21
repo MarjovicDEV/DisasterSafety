@@ -150,6 +150,7 @@ namespace DisasterSafety.EditorTools
             lib.star = Clip("Sfx/sfx_star");
             lib.complete = Clip("Sfx/sfx_complete");
             lib.opened = Clip("Sfx/sfx_opened");
+            lib.blip = Clip("Sfx/sfx_blip");
             EditorUtility.SetDirty(lib);
         }
 

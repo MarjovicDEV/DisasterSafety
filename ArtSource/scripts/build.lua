@@ -130,13 +130,22 @@ end -- v1
 local ST = dofile(here .. "student.lua")(L)
 
 -- The Student, boy and girl: Student/<kind>_<pose>_<n>.png and Student/<kind>_portrait.png
+-- Optional: --script-param poses=carry,reach writes only those poses (and not the portrait), so
+-- new poses can be drawn without rewriting the committed ones.
+local posesOnly = {}
+for p in (app.params.poses or ""):gmatch("[^,%s]+") do posesOnly[p] = true end
+local allPoses = next(posesOnly) == nil
 if want("student") then
   for _, kind in ipairs({ "boy", "girl" }) do
     for _, pose in ipairs(ST.POSES) do
-      local name = "Student/" .. kind .. "_" .. pose.name
-      L.saveFrames(ST.frames(kind, pose.name), name, name, pose.ms)
+      if allPoses or posesOnly[pose.name] then
+        local name = "Student/" .. kind .. "_" .. pose.name
+        L.saveFrames(ST.frames(kind, pose.name), name, name, pose.ms)
+      end
     end
-    L.save(ST.portraitImage(kind), "Student/" .. kind .. "_portrait", "Student/" .. kind .. "_portrait")
+    if allPoses then
+      L.save(ST.portraitImage(kind), "Student/" .. kind .. "_portrait", "Student/" .. kind .. "_portrait")
+    end
   end
 end
 
@@ -158,6 +167,14 @@ if want("ui_v2") then
   L.save(UV.captionBanner(), "UI/caption_banner", "UI/caption_banner")
   L.save(UV.actionButton(), "UI/action_button", "UI/action_button")
   L.save(UV.speechBubble(), "UI/speech_bubble", "UI/speech_bubble")
+end
+
+-- Rollout icons (16x16), added slice by slice: UI/icon_<name>
+if want("icons_v2") then
+  local IC = dofile(here .. "icons_v2.lua")(L, ST)
+  for name, img in pairs(IC.icons()) do
+    L.save(img, "UI/icon_" .. name, "UI/icon_" .. name)
+  end
 end
 
 print("Built " .. #L.made .. " images")

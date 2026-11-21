@@ -63,7 +63,15 @@ namespace DisasterSafety.Game.UI
             if (body != null) body.rectTransform.localScale = new Vector3(left ? -1f : 1f, 1f, 1f);
         }
 
-        public void Say(string line, float seconds = 2f) => bubble.Say(line, seconds);
+        /// <summary>Shows the line in the speech bubble and plays the voice blip at this actor's pitch.</summary>
+        public void Say(string line, float seconds = 2f)
+        {
+            bubble.Say(line, seconds);
+            AudioManager.PlayBlip(BlipPitch);
+        }
+
+        /// <summary>The pitch of this actor's voice blip.</summary>
+        protected virtual float BlipPitch => 1f;
 
         /// <summary>
         /// Moves in a straight line to the point at the speed, facing the way it goes. startPose plays when

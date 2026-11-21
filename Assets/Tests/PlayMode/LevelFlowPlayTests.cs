@@ -488,6 +488,52 @@ namespace DisasterSafety.Tests
         }
 
         [UnityTest]
+        public IEnumerator Student_HasEveryRolloutPose_ForTheBoyAndTheGirl()
+        {
+            yield return StartEasyOne();
+            var student = Level().Student;
+            var poses = new[]
+            {
+                StudentPose.Carry, StudentPose.Reach, StudentPose.ReachUp, StudentPose.Push, StudentPose.Call,
+                StudentPose.Cover, StudentPose.Pack, StudentPose.Phone, StudentPose.Sit,
+            };
+            foreach (var frames in new[] { student.boy, student.girl })
+                foreach (var pose in poses)
+                {
+                    var sprites = frames.For(pose);
+                    Assert.That(sprites, Is.Not.Null.And.Not.Empty, pose + " has frames");
+                    Assert.That(sprites, Has.None.Null, pose + " has every frame");
+                    Assert.That(sprites.Length, Is.EqualTo(pose == StudentPose.Carry ? 4 : 2), pose + " frame count");
+                }
+        }
+
+        [UnityTest]
+        public IEnumerator Reaction_PlaysTheVoiceBlip_OnlyWhenSoundIsOn()
+        {
+            // GameServices exists once the game has started.
+            yield return StartEasyOne();
+            var student = Level().Student;
+            var soundWas = GameServices.Audio.SoundOn;
+            try
+            {
+                GameServices.Audio.SoundOn = true;
+                var before = AudioManager.BlipsPlayed;
+                student.Say(UIStrings.ReactionWhoa);
+                Assert.That(AudioManager.BlipsPlayed, Is.EqualTo(before + 1), "a Reaction plays one blip");
+
+                GameServices.Audio.SoundOn = false;
+                before = AudioManager.BlipsPlayed;
+                student.Say(UIStrings.ReactionWait);
+                Assert.That(AudioManager.BlipsPlayed, Is.EqualTo(before), "no blip when sound is off");
+                Assert.That(student.bubble.Line, Is.EqualTo(UIStrings.ReactionWait), "the line still shows");
+            }
+            finally
+            {
+                GameServices.Audio.SoundOn = soundWas;
+            }
+        }
+
+        [UnityTest]
         public IEnumerator Level_PlaysItsOwnMusic_AndTheMenuMusicComesBack()
         {
             var library = Resources.Load<AudioLibrary>(AudioLibrary.ResourcePath);

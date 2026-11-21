@@ -27,6 +27,8 @@ namespace DisasterSafety.Game
         public AudioClip star;
         public AudioClip complete;
         public AudioClip opened;
+        /// <summary>The Student's voice blip under a Reaction.</summary>
+        public AudioClip blip;
 
         /// <summary>The music for a scene: the Level loop in the Level scene (when it exists), else the menu loop.</summary>
         public AudioClip MusicFor(string sceneName) =>
@@ -52,6 +54,7 @@ namespace DisasterSafety.Game
                 case Sfx.Star: return star;
                 case Sfx.Complete: return complete;
                 case Sfx.Opened: return opened;
+                case Sfx.Blip: return blip;
                 default: return null;
             }
         }

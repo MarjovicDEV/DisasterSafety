@@ -895,6 +895,181 @@ return function(L)
     return g
   end
 
+  -- Rollout poses (docs/design/gameplay-redesign.md, "New poses") --------------------
+  -- Side poses reuse the walk's head, body and legs with the arm drawn as a limb; front poses
+  -- reuse the front maps. Limb points are given in the boy's 50-row frame (shoulder at 13, 22
+  -- in side view); `lift` moves a layer down by the girl's extra top rows.
+  local function lift(layer, dy)
+    if dy == 0 then return layer end
+    local g = newGrid(layer.w, layer.h)
+    paste(g, layer, 0, dy)
+    return g
+  end
+  -- Standing still in side view: both legs straight, the far one 2 pixels behind.
+  local STAND = {
+    boy = { down = 0, far = { 35, rep(12, 12) }, near = { 35, rep(14, 12) } },
+    girl = { down = 0, far = { 40, rep(12, 7) }, near = { 40, rep(14, 7) } },
+  }
+  -- The walk's frame f (or "stand") without its arm. Returns the grid and the body's top offset.
+  local function sideBase(kind, f)
+    local spec = f == "stand" and STAND[kind] or WALK[kind][f + 1]
+    local g = newGrid(FW, FH)
+    local oy = FH - heightOf(kind) + spec.down
+    paste(g, legSpan(kind, true, spec.far[1], spec.far[2]), 0, 0)
+    paste(g, legSpan(kind, false, spec.near[1], spec.near[2]), 0, 0)
+    paste(g, fromRows(kind == "boy" and BOY_SIDE or GIRL_SIDE, kind .. " side"), 0, oy)
+    return g, oy
+  end
+  -- A side pose: the walk frame's legs and body plus the given arms (each a list of points).
+  local function sidePose(kind, f, arms, sleeveTo)
+    local g, oy = sideBase(kind, f)
+    for _, pts in ipairs(arms) do
+      pasteLimb(g, lift(arm(pts, { sleeveTo = sleeveTo or 0.5 }), oy))
+    end
+    shade(g, 0)
+    return g, oy
+  end
+  -- Moves the whole frame up by n pixels (standing on tiptoe).
+  local function raise(g, n)
+    local r = newGrid(FW, FH)
+    paste(r, g, 0, -n)
+    return r
+  end
+
+  -- Carrying something in both arms in front of the chest, while walking (4 frames). The game
+  -- draws the carried prop over the hands at about (22, 27).
+  function M.carry(kind, f)
+    local bob = (f == 0 or f == 2) and 1 or 0
+    return (sidePose(kind, f, { { 13, 22, 16, 28 + bob, 23, 27 + bob } }, 0.45))
+  end
+
+  -- Reaching forward with one arm at shoulder height (a lift button, a hand to hold).
+  function M.reach(kind, f)
+    return (sidePose(kind, "stand", { { 13, 22, 19, 23, 25 + f, 23 - f } }, 0.4))
+  end
+
+  -- On tiptoe with both arms up high (hanging a picture, pinning a card). The second frame
+  -- stretches 1 pixel higher.
+  function M.reachup(kind, f)
+    -- the arms go up and forward, in front of the face rather than over it
+    local g = sidePose(kind, "stand", { { 12, 22, 22, 20, 28, 10 - f }, { 13, 23, 23, 21, 29, 11 - f } }, 0.35)
+    return raise(g, 1 + f)
+  end
+
+  -- Pushing with both hands, legs in a stride (a bed being moved).
+  function M.push(kind, f)
+    return (sidePose(kind, 0, { { 12, 22, 18, 26, 24 + f, 26 }, { 14, 22, 19, 25, 25 + f, 25 } }, 0.4))
+  end
+
+  -- Calling out with a hand at the mouth; two sound lines in front of the face pulse.
+  function M.call(kind, f)
+    -- the elbow sits below the chin, so only the cupped hand meets the face, beside the mouth
+    local g, oy = sidePose(kind, "stand", { { 13, 22, 20, 24, 25, 15 } }, 0.4)
+    local lines = f == 0 and { { 28, 12 }, { 28, 17 }, { 29, 14 }, { 29, 15 } } or { { 29, 11 }, { 29, 18 }, { 30, 14 }, { 30, 15 } }
+    for _, p in ipairs(lines) do setc(g, p[1], p[2] + oy, "o") end
+    return g
+  end
+
+  -- Duck and cover without a desk (facing right): kneeling low and curled up, the head tucked
+  -- down near the knees, both forearms over the head and neck. The second frame presses
+  -- down 1 pixel.
+  function M.cover(kind, f)
+    local girl = kind == "girl"
+    local d = f
+    local b = newGrid(FW, FH)
+    local leg = girl and "S" or "N"
+    rect(b, 2, 46, 7, 3, "B")                      -- far shoe, toes behind
+    ellipse(b, 11, 38 + d, 8, 6, "w")              -- curled back
+    rect(b, 3, 42 + d, 11, 4, "N")                 -- seat
+    rect(b, 10, 43 + d, 12, 3, leg)                -- knee folded under
+    if girl then
+      rect(b, 2, 41 + d, 13, 4, "N")               -- skirt
+      ellipse(b, 8, 36 + d, 4, 2, "H")             -- hair down the back
+    else
+      rect(b, 3, 41 + d, 11, 1, "x")               -- belt
+    end
+    rect(b, 16, 46, 9, 3, "B")                     -- near shoe
+    shadeLayer(b, "w", "W", "v")
+    shadeLayer(b, "N", "m", "n")
+    shadeLayer(b, "S", "t", "s")
+    shadeLayer(b, "H", "j", "h")
+    shadeLayer(b, "B", "b", nil)
+    outline(b)
+    local g = newGrid(FW, FH)
+    paste(g, b, 0, 0)
+    paste(g, sideHead(kind), 9, 25 + d)            -- head tucked forward and down
+    -- forearms over the back of the head and the neck, hands meeting on top
+    pasteLimb(g, arm({ 13, 34 + d, 16, 28 + d, 23, 26 + d }, { sleeveTo = 0.6 }))
+    pasteLimb(g, arm({ 15, 35 + d, 20, 31 + d, 26, 30 + d }, { sleeveTo = 0.6 }))
+    shade(g, 0)
+    -- effort lines over the curled back
+    for _, p in ipairs({ { 6 - d, 28 - d }, { 7 - d, 27 - d }, { 12, 22 - d }, { 12, 23 - d } }) do setc(g, p[1], p[2], "o") end
+    return g
+  end
+
+  -- Packing or writing at table height (front): both hands together in front of the waist,
+  -- dipping 1 pixel on the second frame.
+  function M.pack(kind, f)
+    local g = front(kind, true)
+    local la = fit(arm({ 6, 22, 5, 28, 11, 31 + f }, { sleeveTo = 0.6 }), kind)
+    paste(g, la, 0, 0); paste(g, flipX(la), 0, 0)
+    hairOnTop(g, kind)
+    -- eyes look down at the hands
+    clearFace(g)
+    sym(g, 11, 11, "e"); sym(g, 12, 11, "e"); sym(g, 11, 12, "e"); sym(g, 12, 12, "e")
+    sym(g, 14, 14, "q"); sym(g, 15, 14, "q")
+    return padTop(finish(g))
+  end
+
+  -- Holding a phone in front of the chest with both hands, thumb tapping (front). The phone is
+  -- part of the pose; its screen light moves on the second frame.
+  function M.phone(kind, f)
+    local g = front(kind, true)
+    local la = fit(arm({ 6, 22, 4, 28, 11, 29 }, { sleeveTo = 0.6 }), kind)
+    paste(g, la, 0, 0); paste(g, flipX(la), 0, 0)
+    hairOnTop(g, kind)
+    clearFace(g)
+    sym(g, 11, 11, "e"); sym(g, 12, 11, "e"); sym(g, 11, 12, "e"); sym(g, 12, 12, "e")
+    sym(g, 14, 14, "q"); sym(g, 15, 14, "q")
+    g = finish(g)
+    local top = kind == "boy" and 0 or -3
+    rect(g, 13, 24 + top, 6, 8, "o")               -- phone
+    rect(g, 14, 25 + top, 4, 5, "m")               -- screen
+    setc(g, 14 + f * 2, 26 + top, "k"); setc(g, 15 + f * 2, 26 + top, "k")
+    setc(g, 15, 28 + top, "w"); setc(g, 16, 28 + top, "w")
+    rect(g, 12, 29 + top, 2, 3, "S"); rect(g, 18, 29 + top, 2, 3, "S")   -- hands round the phone
+    return padTop(g)
+  end
+
+  -- Sitting cross-legged on the floor or a mat (front), hands on the knees. The second frame
+  -- breathes 1 pixel.
+  local BOY_SIT = {
+    "....oooomNNNNNNN",
+    "..oomNNNNNNNNNNN",
+    ".omNNNNNNNNNnNNN",
+    "obBBomNNNNNNNNNN",
+    "obBBBonnnnnnnnnn",
+    ".ooooooooooooooo",
+  }
+  local GIRL_SIT = {
+    "....oooomNNNnNNN",
+    "..oomNNNnNNNNnNN",
+    ".omNNNnNNNNnNNNN",
+    "obWBomNNNNNNNNNN",
+    "obBBBonnnnnnnnnn",
+    ".ooooooooooooooo",
+  }
+  function M.sit(kind, f)
+    local F = FRONT[kind]
+    local torso = {}
+    for i = 1, #F.torso - 1 do torso[i] = F.torso[i] end
+    local g = fromRows(mirror(cat(F.head, torso, kind == "boy" and BOY_SIT or GIRL_SIT), kind .. " sit"))
+    if kind == "girl" then clip(g, 21, 6) end
+    g = finish(g)
+    if f == 1 then g = squash(g, F.waist - 2) end
+    return padTop(g)
+  end
+
   -- All frames ------------------------------------------------------------------
   M.POSES = {
     { name = "idle", frames = 2, ms = 500 },
@@ -905,6 +1080,15 @@ return function(L)
     { name = "happy", frames = 2, ms = 260 },
     { name = "crouch", frames = 2, ms = 180 },
     { name = "hold", frames = 2, ms = 300 },
+    { name = "carry", frames = 4, ms = 140 },
+    { name = "reach", frames = 2, ms = 300 },
+    { name = "reachup", frames = 2, ms = 300 },
+    { name = "push", frames = 2, ms = 260 },
+    { name = "call", frames = 2, ms = 300 },
+    { name = "cover", frames = 2, ms = 300 },
+    { name = "pack", frames = 2, ms = 300 },
+    { name = "phone", frames = 2, ms = 350 },
+    { name = "sit", frames = 2, ms = 500 },
   }
   function M.frames(kind, pose)
     local out = {}

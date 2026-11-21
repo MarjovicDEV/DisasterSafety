@@ -335,6 +335,15 @@ namespace DisasterSafety.EditorTools
             happy = Frames("Student/" + kind + "_happy", 2),
             crouch = Frames("Student/" + kind + "_crouch", 2),
             hold = Frames("Student/" + kind + "_hold", 2),
+            carry = Frames("Student/" + kind + "_carry", 4),
+            reach = Frames("Student/" + kind + "_reach", 2),
+            reachUp = Frames("Student/" + kind + "_reachup", 2),
+            push = Frames("Student/" + kind + "_push", 2),
+            call = Frames("Student/" + kind + "_call", 2),
+            cover = Frames("Student/" + kind + "_cover", 2),
+            pack = Frames("Student/" + kind + "_pack", 2),
+            phone = Frames("Student/" + kind + "_phone", 2),
+            sit = Frames("Student/" + kind + "_sit", 2),
             portrait = S("Student/" + kind + "_portrait"),
         };
 

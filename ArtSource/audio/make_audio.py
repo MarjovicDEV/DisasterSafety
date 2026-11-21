@@ -3,6 +3,7 @@
 Run from the project root:
     python -I ArtSource/audio/make_audio.py D:/GameDEV/DisasterSafety
 Add --only-level-music to write just Assets/Audio/Music/bgm_level.wav.
+Add --only-blip to write just Assets/Audio/Sfx/sfx_blip.wav.
 
 Writes 16-bit mono WAV files to Assets/Audio/. Uses only the standard library.
 Everything is synthesised, so there are no third-party licences to track.
@@ -232,7 +233,14 @@ def make_sfx():
     s["sfx_opened"] = mix(
         seq(*[sweep(note_freq(n), note_freq(n), d, triangle, 0.3, decay=0.1 if n == "C6" else None) for n, d in opened]),
         seq(silence(0.05), *[sweep(note_freq(n) * 2, note_freq(n) * 2, d, triangle, 0.08, decay=0.08) for n, d in opened]))
+    s["sfx_blip"] = make_blip()
     return s
+
+
+def make_blip():
+    # The Student's voice blip under each Reaction: one soft, very short "bup" syllable. The
+    # game pitches it up a little for the girl. Never words.
+    return seq(sweep(520, 700, 0.045, triangle, 0.26), sweep(700, 600, 0.035, triangle, 0.2, decay=0.02))
 
 
 def make_rumble(dur=2.6):
@@ -261,6 +269,11 @@ def main():
         # Writes just the Level loop, leaving every other audio file as it is.
         write_wav(os.path.join(out, "Music", "bgm_level.wav"), make_level_music())
         print("level music written to", out)
+        return
+    if "--only-blip" in sys.argv[2:]:
+        # Writes just the Student's voice blip, leaving every other audio file as it is.
+        write_wav(os.path.join(out, "Sfx", "sfx_blip.wav"), make_blip())
+        print("blip written to", out)
         return
     write_wav(os.path.join(out, "Music", "bgm_level.wav"), make_level_music())
     write_wav(os.path.join(out, "Music", "bgm_menu.wav"), make_music())
