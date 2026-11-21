@@ -177,4 +177,17 @@ if want("icons_v2") then
   end
 end
 
+-- The Grown-ups (36x62): GrownUp/<who>_<pose>_<n>.png
+if want("grownups_v2") then
+  local GU = dofile(here .. "grownups_v2.lua")(L, ST)
+  for _, who in ipairs({ "teacher", "mom", "dad" }) do
+    for _, pose in ipairs(GU.CHARACTERS[who]) do
+      local ms = 300
+      for _, p in ipairs(GU.POSES) do if p.name == pose then ms = p.ms end end
+      local name = "GrownUp/" .. who .. "_" .. pose
+      L.saveFrames(GU.frames(who, pose), name, name, ms)
+    end
+  end
+end
+
 print("Built " .. #L.made .. " images")

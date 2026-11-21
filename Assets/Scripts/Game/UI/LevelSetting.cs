@@ -21,6 +21,8 @@ namespace DisasterSafety.Game.UI
         public float startX;
         public float startY;
         public StudentPose startPose = StudentPose.Idle;
+        [Tooltip("The Grown-ups of the Setting. They stand at their start place and pose, and return there on Try Again.")]
+        public GrownUpActor[] grownUps = new GrownUpActor[0];
         [Tooltip("The props the Act-outs move. They return to their start place on Try Again.")]
         public LevelProp[] props = new LevelProp[0];
         [Tooltip("One Act-out per Choice action key that the Setting's Scenarios use.")]

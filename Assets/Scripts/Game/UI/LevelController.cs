@@ -174,6 +174,8 @@ namespace DisasterSafety.Game.UI
             student.Play(ActiveSetting.startPose);
             foreach (var prop in ActiveSetting.props)
                 if (prop != null) prop.CaptureStart();
+            foreach (var grownUp in ActiveSetting.grownUps)
+                if (grownUp != null) grownUp.PlaceAtStart();
 
             var shaker = ActiveSetting.shaker;
             if (scenario.Shakes && shaker != null)
@@ -288,6 +290,15 @@ namespace DisasterSafety.Game.UI
                     step.target.SetActive(true);
                     shownOverlays.Add(step.target);
                     return true;
+                case ActOutStepKind.GrownUp:
+                    if (step.grownUp == null) { Debug.LogError("A GrownUp step in '" + setting.key + "' has no Grown-up."); return true; }
+                    if (step.grownUpAction == GrownUpAction.Turn) { step.grownUp.Face(step.faceLeft); return true; }
+                    if (step.grownUpAction == GrownUpAction.Pose)
+                    {
+                        step.grownUp.Play(step.grownUpPose);
+                        return step.seconds <= 0f;
+                    }
+                    return false;
                 case ActOutStepKind.PropShow:
                 case ActOutStepKind.PropHide:
                 case ActOutStepKind.PropPickUp:
@@ -330,6 +341,10 @@ namespace DisasterSafety.Game.UI
                     student.Say(step.line, seconds + 0.5f);
                     yield return new WaitForSeconds(seconds);
                     break;
+                case ActOutStepKind.GrownUp:
+                    if (step.grownUpAction == GrownUpAction.Walk) yield return step.grownUp.WalkTo(step.x, step.y);
+                    else yield return new WaitForSeconds(step.seconds);
+                    break;
                 case ActOutStepKind.PropSlide:
                     var prop = PropOf(step, setting);
                     if (prop != null) yield return prop.Slide(step.x * student.unitsPerPixel, step.seconds);
@@ -355,6 +370,9 @@ namespace DisasterSafety.Game.UI
             var resets = new System.Collections.Generic.List<Coroutine>();
             foreach (var prop in setting.props)
                 if (prop != null && !prop.AtStart) resets.Add(StartCoroutine(prop.ResetToStart()));
+
+            foreach (var grownUp in setting.grownUps)
+                if (grownUp != null && !grownUp.AtStart) resets.Add(StartCoroutine(grownUp.ReturnToStart()));
 
             yield return student.WalkTo(setting.startX, setting.startY, PoseActor.WalkSpeed);
             foreach (var reset in resets) yield return reset;

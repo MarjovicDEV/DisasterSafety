@@ -34,6 +34,19 @@ namespace DisasterSafety.Game.UI
         PropPlace,
         /// <summary>Slide the target prop by x art pixels over the seconds (furniture being pushed).</summary>
         PropSlide,
+        /// <summary>A Grown-up acts: see GrownUpAction.</summary>
+        GrownUp,
+    }
+
+    /// <summary>What a GrownUp step makes the Grown-up do.</summary>
+    public enum GrownUpAction
+    {
+        /// <summary>Walk to (x, y) and stand idle facing the front.</summary>
+        Walk,
+        /// <summary>Play a pose, and hold it for the seconds (0: carry on at once).</summary>
+        Pose,
+        /// <summary>Face left or right.</summary>
+        Turn,
     }
 
     /// <summary>One step of an Act-out. Which fields count depends on the kind.</summary>
@@ -55,6 +68,14 @@ namespace DisasterSafety.Game.UI
         [Tooltip("PropPlace: where the prop goes (its anchored position, UI units).")]
         public Vector2 place;
 
+        [Tooltip("GrownUp: who acts.")]
+        public GrownUpActor grownUp;
+        [Tooltip("GrownUp: what the Grown-up does. Walk uses x and y; Pose uses grownUpPose and seconds; Turn uses faceLeft.")]
+        public GrownUpAction grownUpAction;
+        public GrownUpPose grownUpPose;
+        [Tooltip("GrownUp, Turn: face left (true) or right.")]
+        public bool faceLeft;
+
         /// <summary>True for the steps that move the Student.</summary>
         public bool Moves => kind == ActOutStepKind.Walk || kind == ActOutStepKind.FastWalk
                              || kind == ActOutStepKind.Run || kind == ActOutStepKind.Crouch;
@@ -72,6 +93,9 @@ namespace DisasterSafety.Game.UI
         public static ActOutStep PropHide(GameObject prop) => new ActOutStep { kind = ActOutStepKind.PropHide, target = prop };
         public static ActOutStep PropPickUp(GameObject prop) => new ActOutStep { kind = ActOutStepKind.PropPickUp, target = prop };
         public static ActOutStep PropPlace(GameObject prop, Vector2 place) => new ActOutStep { kind = ActOutStepKind.PropPlace, target = prop, place = place };
+        public static ActOutStep GrownUpWalk(GrownUpActor who, float x, float y = 0f) => new ActOutStep { kind = ActOutStepKind.GrownUp, grownUp = who, grownUpAction = GrownUpAction.Walk, x = x, y = y };
+        public static ActOutStep GrownUpPoseStep(GrownUpActor who, GrownUpPose pose, float seconds = 0f) => new ActOutStep { kind = ActOutStepKind.GrownUp, grownUp = who, grownUpAction = GrownUpAction.Pose, grownUpPose = pose, seconds = seconds };
+        public static ActOutStep GrownUpTurn(GrownUpActor who, bool left) => new ActOutStep { kind = ActOutStepKind.GrownUp, grownUp = who, grownUpAction = GrownUpAction.Turn, faceLeft = left };
         public static ActOutStep PropSlide(GameObject prop, float artPixels, float seconds) => new ActOutStep { kind = ActOutStepKind.PropSlide, target = prop, x = artPixels, seconds = seconds };
     }
 
