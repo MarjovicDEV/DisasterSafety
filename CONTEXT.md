@@ -54,6 +54,10 @@ _Avoid_: Answer, option, Action (the game says Choice; "action" is only the anim
 The bar at the bottom of a Level that lists the Scenario's Choices as short commands, each with a small icon. In a "during" Scenario it slides up after the first shake.
 _Avoid_: Choice cards, menu, answer panel
 
+**Act-out**:
+The Student playing a Choice in the scene, step by step, the way the real drill is done. A Safe Choice's Act-out plays in full; an Unsafe Choice's Act-out starts, stops partway, and the Student says "Hmm, wait...". Nothing falls and nobody gets hurt.
+_Avoid_: Animation, cutscene, jump cut
+
 **Caption**:
 The banner at the top of a Level that tells the Scenario intro and the Goal, and shows the Hint when the Learner asks for it.
 _Avoid_: Narrator, subtitle, dialog
@@ -141,6 +145,10 @@ _Avoid_: Avatar, player, hero
 **Reaction**:
 A short line in the Student's speech bubble during a Level, such as "Whoa!", "Hmm, wait..." or "I'm safe!". Reactions never call a Choice wrong and never mention Stars.
 _Avoid_: Feedback (the explanation after a Choice), dialog
+
+**Grown-up**:
+An adult who appears and acts in a Level: the Teacher, Mom or Dad. A Grown-up is never the Learner's character, and, like a Reaction, never judges a Choice or mentions Stars.
+_Avoid_: NPC, adult character, parent (Mom and Dad are named)
 
 **Bantay** (retired):
 The former guide dog. Removed by docs/adr/0001-v2-art-and-no-bantay.md; the Caption, the Student and Reactions took over its jobs. Its sprites stay in the repo only until every Level uses the new flow.
