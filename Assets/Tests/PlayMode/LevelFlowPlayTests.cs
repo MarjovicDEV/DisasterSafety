@@ -417,13 +417,14 @@ namespace DisasterSafety.Tests
             // shuffles in under it, then holds the desk leg.
             Tap(c, Desk);
             Assert.That(c.actionBar.IsVisible, Is.False);
-            var spot = c.ActiveSetting.SpotFor("desk");
+            var desk = c.ActiveSetting.ActOutFor("desk");
+            var deskX = desk.EndX(c.ActiveSetting.startX);
             yield return WaitFor(() => student.Pose == StudentPose.Crouch, "the Student to crouch", 12f);
-            Assert.That(student.X, Is.LessThan(spot.x));
-            Assert.That(spot.overlay.activeSelf, Is.True, "the front of the desk is drawn from the crouch on");
+            Assert.That(student.X, Is.LessThan(deskX));
+            Assert.That(desk.FirstOverlay.activeSelf, Is.True, "the front of the desk is drawn from the crouch on");
             yield return WaitFor(() => student.Pose == StudentPose.Hold, "the Student to hold the desk", 12f);
-            Assert.That(student.X, Is.EqualTo(spot.x));
-            Assert.That(spot.overlay.activeSelf, Is.True, "the front of the desk is drawn over the Student");
+            Assert.That(student.X, Is.EqualTo(deskX));
+            Assert.That(desk.FirstOverlay.activeSelf, Is.True, "the front of the desk is drawn over the Student");
             Assert.That(student.bubble.Line, Is.EqualTo("I'm safe!"));
             Assert.That(c.ActiveSetting.shaker.IsShaking, Is.False, "the shaking calms");
             Assert.That(c.feedbackPanel.IsVisible, Is.False, "Feedback follows a second later");
@@ -452,10 +453,9 @@ namespace DisasterSafety.Tests
 
             Tap(c, Window);
             yield return WaitFor(() => student.Pose == StudentPose.Wait, "the Student to stop", 12f);
-            var spot = c.ActiveSetting.SpotFor("window");
-            var expected = Mathf.Lerp(c.ActiveSetting.startX, spot.x, spot.stopAt);
-            Assert.That(student.X, Is.EqualTo(expected).Within(0.01f));
-            Assert.That(student.X, Is.LessThan(spot.x), "the Student stops short of the window");
+            var window = c.ActiveSetting.ActOutFor("window");
+            Assert.That(student.X, Is.EqualTo(window.StopX(c.ActiveSetting.startX)).Within(0.01f));
+            Assert.That(student.X, Is.LessThan(372f), "the Student stops short of the window (x 372)");
             Assert.That(student.bubble.Line, Is.EqualTo("Hmm, wait..."));
 
             yield return FeedbackShown(c);

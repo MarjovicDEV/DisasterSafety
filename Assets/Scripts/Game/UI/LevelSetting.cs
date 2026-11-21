@@ -3,22 +3,6 @@ using UnityEngine;
 
 namespace DisasterSafety.Game.UI
 {
-    /// <summary>A place the Student walks to for a Choice (a door, the desk, the window, the cabinet).</summary>
-    [Serializable]
-    public sealed class ActionSpot
-    {
-        public string key;
-        [Tooltip("The Student's centre x in art pixels.")]
-        public float x;
-        [Tooltip("An Unsafe Choice walks this fraction of the way from the start spot, then stops.")]
-        [Range(0f, 1f)] public float stopAt = 0.6f;
-        public StudentPose endPose = StudentPose.Idle;
-        [Tooltip("Drawn over the Student at the end pose, e.g. the front of the desk.")]
-        public GameObject overlay;
-        [Tooltip("When above 0, the Safe Choice walks only to this x, then crouches and shuffles to x (under the desk). The overlay shows from the crouch on.")]
-        public float crouchFromX;
-    }
-
     /// <summary>Scene art and layout for one Scenario Setting.</summary>
     public sealed class LevelSetting : MonoBehaviour
     {
@@ -33,9 +17,15 @@ namespace DisasterSafety.Game.UI
 
         [Header("Student (the new flow)")]
         public StudentActor student;
+        [Tooltip("Where the Student starts: the centre x and the height above the floor line, in art pixels.")]
         public float startX;
-        public ActionSpot[] actionSpots;
+        public float startY;
+        public StudentPose startPose = StudentPose.Idle;
+        [Tooltip("The props the Act-outs move. They return to their start place on Try Again.")]
+        public LevelProp[] props = new LevelProp[0];
+        [Tooltip("One Act-out per Choice action key that the Setting's Scenarios use.")]
+        public ActOut[] actOuts = new ActOut[0];
 
-        public ActionSpot SpotFor(string action) => Array.Find(actionSpots ?? new ActionSpot[0], spot => spot.key == action);
+        public ActOut ActOutFor(string action) => Array.Find(actOuts ?? new ActOut[0], a => a.key == action);
     }
 }

@@ -156,6 +156,8 @@ namespace DisasterSafety.Game
         public const string ReactionWhoa = "Whoa!";
         public const string ReactionWait = "Hmm, wait...";
         public const string ReactionSafe = "I'm safe!";
+        /// <summary>The Safe Reaction in a "before" Level, where the Student gets ready rather than takes cover.</summary>
+        public const string ReactionReady = "All ready!";
         public static string BantayCheer(string name) =>
             string.IsNullOrEmpty(name) ? "Woof woof! Great job!" : "Woof woof! Great job, " + name + "!";
     }

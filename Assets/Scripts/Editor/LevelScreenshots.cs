@@ -152,8 +152,9 @@ namespace DisasterSafety.EditorTools
             var student = setting.student;
             student.SetKind(StudentKind.Boy);
             student.bubble.Hide();
-            foreach (var spot in setting.actionSpots)
-                if (spot.overlay != null) spot.overlay.SetActive(false);
+            foreach (var actOut in setting.actOuts)
+                foreach (var step in actOut.steps)
+                    if (step.kind == ActOutStepKind.Overlay && step.target != null) step.target.SetActive(false);
 
             void Stand(float x, StudentPose pose, bool faceLeft = false)
             {
@@ -173,15 +174,15 @@ namespace DisasterSafety.EditorTools
             student.bubble.Hide();
             shot("62-pilot-actionbar", new[] { c.actionBar.panel });
 
-            var desk = setting.SpotFor("desk");
-            Stand(desk.x, desk.endPose);
-            desk.overlay.SetActive(true);
+            var desk = setting.ActOutFor("desk");
+            Stand(desk.EndX(setting.startX), desk.EndPose);
+            desk.FirstOverlay.SetActive(true);
             student.bubble.Say(UIStrings.ReactionSafe);
             shot("63-pilot-duck", new ScreenPanel[0]);
-            desk.overlay.SetActive(false);
+            desk.FirstOverlay.SetActive(false);
 
-            var window = setting.SpotFor("window");
-            Stand(Mathf.Lerp(setting.startX, window.x, window.stopAt), StudentPose.Wait);
+            var window = setting.ActOutFor("window");
+            Stand(window.StopX(setting.startX), StudentPose.Wait);
             student.bubble.Say(UIStrings.ReactionWait);
             shot("64-pilot-wait", new ScreenPanel[0]);
             student.bubble.Hide();

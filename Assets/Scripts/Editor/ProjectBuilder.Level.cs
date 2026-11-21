@@ -300,15 +300,27 @@ namespace DisasterSafety.EditorTools
             deskFront.gameObject.SetActive(false);
 
             setting.startX = 126f;
-            setting.actionSpots = new[]
+            setting.actOuts = new[]
             {
-                // Unsafe Choices stop clear of the desk and its chair (x 198 to 302), the door and the window.
-                new ActionSpot { key = "door", x = 46f, stopAt = 0.4f, endPose = StudentPose.Idle },
+                // Unsafe Choices stop clear of the desk and its chair (x 198 to 302), the door and the window:
+                // short of the door (46), the window (372) and the cabinet (440).
+                new ActOut { key = "door", stopAfter = 0, steps = new[] { ActOutStep.Walk(94f) } },
                 // The Safe Choice walks up beside the desk (184), crouches and shuffles in, then holds the
-                // left front leg (x 200-206) with its reaching hand at 222.
-                new ActionSpot { key = "desk", x = 222f, stopAt = 1f, endPose = StudentPose.Hold, overlay = deskFront.gameObject, crouchFromX = 184f },
-                new ActionSpot { key = "window", x = 372f, stopAt = 0.8f, endPose = StudentPose.Idle },
-                new ActionSpot { key = "cabinet", x = 440f, stopAt = 0.75f, endPose = StudentPose.Idle },
+                // left front leg (x 200-206) with its reaching hand at 222, and the shaking calms.
+                new ActOut
+                {
+                    key = "desk",
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(184f),
+                        ActOutStep.Overlay(deskFront.gameObject),
+                        ActOutStep.Crouch(222f),
+                        ActOutStep.Pose(StudentPose.Hold),
+                        ActOutStep.Calm(),
+                    },
+                },
+                new ActOut { key = "window", stopAfter = 0, steps = new[] { ActOutStep.Walk(322.8f) } },
+                new ActOut { key = "cabinet", stopAfter = 0, steps = new[] { ActOutStep.Walk(361.5f) } },
             };
             return setting;
         }

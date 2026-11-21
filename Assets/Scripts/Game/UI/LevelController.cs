@@ -169,9 +169,11 @@ namespace DisasterSafety.Game.UI
 
             var student = Student;
             student.SetKind(GameServices.Progress.Student);
-            student.PlaceAt(ActiveSetting.startX);
+            student.PlaceAt(ActiveSetting.startX, ActiveSetting.startY);
             student.Face(false);
-            student.Play(StudentPose.Idle);
+            student.Play(ActiveSetting.startPose);
+            foreach (var prop in ActiveSetting.props)
+                if (prop != null) prop.CaptureStart();
 
             var shaker = ActiveSetting.shaker;
             if (scenario.Shakes && shaker != null)
@@ -182,7 +184,7 @@ namespace DisasterSafety.Game.UI
                 student.Play(StudentPose.Surprised);
                 student.Say(UIStrings.ReactionWhoa, shaker.shakeSeconds);
                 yield return new WaitForSeconds(shaker.shakeSeconds);
-                student.Play(StudentPose.Idle);
+                student.Play(ActiveSetting.startPose);
             }
             else
             {
@@ -228,50 +230,135 @@ namespace DisasterSafety.Game.UI
             var choice = scenario.choices[index];
             var setting = ActiveSetting;
             var student = setting.student;
-            var spot = setting.SpotFor(choice.action);
+            var actOut = setting.ActOutFor(choice.action);
+            var safe = attempt.LastChoiceSafe;
             actionBar.Hide();
+            if (!safe) actionBar.SetTried(index, true);
 
-            if (attempt.LastChoiceSafe)
+            // Safe: every step. Unsafe: the steps up to the stop, then "Hmm, wait...".
+            if (actOut == null) Debug.LogError("No Act-out '" + choice.action + "' in Setting '" + setting.key + "'.");
+            else
             {
-                if (spot.crouchFromX > 0f)
+                var last = actOut.LastStep(!safe);
+                for (var i = 0; i <= last; i++)
                 {
-                    // Walk up beside the desk, crouch, and shuffle in under the desk top.
-                    yield return student.WalkTo(spot.crouchFromX);
-                    if (spot.overlay != null) spot.overlay.SetActive(true);
-                    yield return student.CrouchTo(spot.x);
+                    var step = actOut.steps[i];
+                    if (!PlayInstantStep(step, setting)) yield return PlayTimedStep(step, setting);
                 }
-                else
-                {
-                    yield return student.WalkTo(spot.x);
-                    if (spot.overlay != null) spot.overlay.SetActive(true);
-                }
-                student.Play(spot.endPose);
+            }
+
+            if (safe)
+            {
                 if (scenario.Shakes) setting.shaker?.Calm();
-                student.Say(UIStrings.ReactionSafe, ReactionSeconds + 1f);
+                student.Say(scenario.phase == ScenarioPhases.Before ? UIStrings.ReactionReady : UIStrings.ReactionSafe, ReactionSeconds + 1f);
                 AudioManager.Play(Sfx.Safe);
                 Juice.Sparkles((RectTransform)student.transform, 14);
             }
             else
             {
-                actionBar.SetTried(index, true);
-                yield return student.WalkTo(Mathf.Lerp(setting.startX, spot.x, spot.stopAt));
                 student.Play(StudentPose.Wait);
                 student.Say(UIStrings.ReactionWait, ReactionSeconds + 1f);
                 AudioManager.Play(Sfx.Unsafe);
             }
 
             yield return new WaitForSeconds(ReactionSeconds);
-            if (!attempt.LastChoiceSafe && scenario.Shakes) setting.shaker?.Calm();
+            if (!safe && scenario.Shakes) setting.shaker?.Calm();
             FillFeedback(choice);
             dimmer.Show();
             feedbackPanel.Show();
         }
 
+        // Overlays an Act-out showed, so Try Again can hide them again.
+        readonly System.Collections.Generic.List<GameObject> shownOverlays = new System.Collections.Generic.List<GameObject>();
+
+        // The steps that take no time run in the same frame, so a pose, the calm and the Reaction land together.
+        bool PlayInstantStep(ActOutStep step, LevelSetting setting)
+        {
+            var student = setting.student;
+            switch (step.kind)
+            {
+                case ActOutStepKind.Pose:
+                    student.Play(step.pose);
+                    return step.seconds <= 0f;
+                case ActOutStepKind.Calm:
+                    if (scenario.Shakes) setting.shaker?.Calm();
+                    return true;
+                case ActOutStepKind.Overlay:
+                    if (step.target == null) { Debug.LogError("An Overlay step in '" + setting.key + "' has no target."); return true; }
+                    step.target.SetActive(true);
+                    shownOverlays.Add(step.target);
+                    return true;
+                case ActOutStepKind.PropShow:
+                case ActOutStepKind.PropHide:
+                case ActOutStepKind.PropPickUp:
+                case ActOutStepKind.PropPlace:
+                    var prop = PropOf(step, setting);
+                    if (prop == null) return true;
+                    if (step.kind == ActOutStepKind.PropShow) prop.Show();
+                    else if (step.kind == ActOutStepKind.PropHide) prop.Hide();
+                    else if (step.kind == ActOutStepKind.PropPickUp) prop.PickUp(student.transform);
+                    else prop.Place(step.place);
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        IEnumerator PlayTimedStep(ActOutStep step, LevelSetting setting)
+        {
+            var student = setting.student;
+            switch (step.kind)
+            {
+                case ActOutStepKind.Walk:
+                    yield return student.WalkTo(step.x, step.y, PoseActor.WalkSpeed);
+                    break;
+                case ActOutStepKind.FastWalk:
+                    yield return student.WalkTo(step.x, step.y, PoseActor.FastWalkSpeed);
+                    break;
+                case ActOutStepKind.Run:
+                    yield return student.WalkTo(step.x, step.y, PoseActor.RunSpeed);
+                    break;
+                case ActOutStepKind.Crouch:
+                    yield return student.CrouchTo(step.x);
+                    break;
+                case ActOutStepKind.Pose:
+                case ActOutStepKind.Wait:
+                    yield return new WaitForSeconds(step.seconds);
+                    break;
+                case ActOutStepKind.Say:
+                    var seconds = Mathf.Max(1f, step.seconds);
+                    student.Say(step.line, seconds + 0.5f);
+                    yield return new WaitForSeconds(seconds);
+                    break;
+                case ActOutStepKind.PropSlide:
+                    var prop = PropOf(step, setting);
+                    if (prop != null) yield return prop.Slide(step.x * student.unitsPerPixel, step.seconds);
+                    break;
+            }
+        }
+
+        static LevelProp PropOf(ActOutStep step, LevelSetting setting)
+        {
+            var prop = step.target != null ? step.target.GetComponent<LevelProp>() : null;
+            if (prop == null) Debug.LogError("A " + step.kind + " step in '" + setting.key + "' has no LevelProp target.");
+            return prop;
+        }
+
+        // Try Again: the Student walks back while the props and overlays return to how the Level started.
         IEnumerator ReturnToStart()
         {
+            var setting = ActiveSetting;
             var student = Student;
             student.bubble.Hide();
-            yield return student.WalkTo(ActiveSetting.startX);
+            foreach (var overlay in shownOverlays) if (overlay != null) overlay.SetActive(false);
+            shownOverlays.Clear();
+            var resets = new System.Collections.Generic.List<Coroutine>();
+            foreach (var prop in setting.props)
+                if (prop != null && !prop.AtStart) resets.Add(StartCoroutine(prop.ResetToStart()));
+
+            yield return student.WalkTo(setting.startX, setting.startY, PoseActor.WalkSpeed);
+            foreach (var reset in resets) yield return reset;
+            if (setting.startPose != StudentPose.Idle) student.Play(setting.startPose);
             actionBar.Show();
         }
 

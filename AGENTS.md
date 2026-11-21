@@ -1,17 +1,17 @@
 # Disaster Safety Game: agent rules
 
-An offline Android safety game for Grade 3-6 learners in the Philippines. It is built with Unity 6000.6.8f1, URP 2D, uGUI legacy `Text` and the Input System. Use the words in `CONTEXT.md` (Level, Scenario, Choice, Safe Choice, Feedback, Hint, Star, Setting, Phase, Bantay ...) in code, tests and docs.
+An offline Android safety game for Grade 3-6 learners in the Philippines. It is built with Unity 6000.6.9f1, URP 2D, uGUI legacy `Text` and the Input System. Use the words in `CONTEXT.md` (Level, Scenario, Choice, Safe Choice, Feedback, Hint, Star, Setting, Phase, Bantay ...) in code, tests and docs.
 
 ## Batch commands
 
 Close the Unity Editor before any batch run, because a project open in the Editor cannot be opened in batch mode. Run from any folder:
 
 ```
-"C:\Program Files\Unity\Hub\Editor\6000.6.8f1\Editor\Unity.exe" -batchmode -quit -projectPath D:/GameDEV/DisasterSafety -executeMethod DisasterSafety.EditorTools.ProjectBuilder.BuildAllBatch -logFile build.log
-"C:\Program Files\Unity\Hub\Editor\6000.6.8f1\Editor\Unity.exe" -batchmode -projectPath D:/GameDEV/DisasterSafety -runTests -testPlatform EditMode -testResults editmode.xml -logFile editmode.log
-"C:\Program Files\Unity\Hub\Editor\6000.6.8f1\Editor\Unity.exe" -batchmode -projectPath D:/GameDEV/DisasterSafety -runTests -testPlatform PlayMode -testResults playmode.xml -logFile playmode.log
-"C:\Program Files\Unity\Hub\Editor\6000.6.8f1\Editor\Unity.exe" -batchmode -projectPath D:/GameDEV/DisasterSafety -executeMethod DisasterSafety.EditorTools.MenuScreenshots.CaptureBatch -shotsDir D:/GameDEV/DisasterSafety/Screenshots -logFile shots.log
-"C:\Program Files\Unity\Hub\Editor\6000.6.8f1\Editor\Unity.exe" -batchmode -projectPath D:/GameDEV/DisasterSafety -buildTarget Android -executeMethod DisasterSafety.EditorTools.ProjectBuilder.BuildAndroidBatch -logFile android.log
+"C:\Program Files\Unity\Hub\Editor\6000.6.9f1\Editor\Unity.exe" -batchmode -quit -projectPath D:/GameDEV/DisasterSafety-redesign -executeMethod DisasterSafety.EditorTools.ProjectBuilder.BuildAllBatch -logFile build.log
+"C:\Program Files\Unity\Hub\Editor\6000.6.9f1\Editor\Unity.exe" -batchmode -projectPath D:/GameDEV/DisasterSafety-redesign -runTests -testPlatform EditMode -testResults editmode.xml -logFile editmode.log
+"C:\Program Files\Unity\Hub\Editor\6000.6.9f1\Editor\Unity.exe" -batchmode -projectPath D:/GameDEV/DisasterSafety-redesign -runTests -testPlatform PlayMode -testResults playmode.xml -logFile playmode.log
+"C:\Program Files\Unity\Hub\Editor\6000.6.9f1\Editor\Unity.exe" -batchmode -projectPath D:/GameDEV/DisasterSafety-redesign -executeMethod DisasterSafety.EditorTools.MenuScreenshots.CaptureBatch -shotsDir D:/GameDEV/DisasterSafety-redesign/Screenshots -logFile shots.log
+"C:\Program Files\Unity\Hub\Editor\6000.6.9f1\Editor\Unity.exe" -batchmode -projectPath D:/GameDEV/DisasterSafety-redesign -buildTarget Android -executeMethod DisasterSafety.EditorTools.ProjectBuilder.BuildAndroidBatch -logFile android.log
 ```
 
 `-runTests`, `CaptureBatch` and `BuildAndroidBatch` exit by themselves, so leave out `-quit`. `BuildAndroidBatch` runs the full build, then writes the test APK to `Builds/DisasterSafety-pilot.apk` (ignored by git). Run the build before the tests and the screenshots whenever `ProjectBuilder*.cs` or the art changed. A change is done when the build succeeds and both test runs report zero failures. Then read the screenshots for the screens you touched.

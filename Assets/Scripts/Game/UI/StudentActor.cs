@@ -51,14 +51,12 @@ namespace DisasterSafety.Game.UI
     }
 
     /// <summary>
-    /// The Learner's Student: plays a pose, faces left or right, walks to an x and shows a Reaction
-    /// in a speech bubble. The x is in art pixels (the centre of the feet), as in ArtSource/README.md.
+    /// The Learner's Student: plays a pose, faces left or right, walks to a point and shows a Reaction
+    /// in a speech bubble (see PoseActor). Positions are in art pixels, as in ArtSource/README.md.
     /// Everything follows Time.timeScale, so Pause freezes the Student.
     /// </summary>
-    public sealed class StudentActor : MonoBehaviour
+    public sealed class StudentActor : PoseActor
     {
-        /// <summary>Art pixels per second while walking.</summary>
-        public const float WalkSpeed = 80f;
         /// <summary>Art pixels per second while shuffling in under the desk.</summary>
         public const float CrouchSpeed = 30f;
 
@@ -67,26 +65,16 @@ namespace DisasterSafety.Game.UI
 
         public StudentFrames boy;
         public StudentFrames girl;
-        public Image body;
-        public SpeechBubble bubble;
-        [Tooltip("UI units per art pixel, and the y of the feet above the bottom of the parent, in UI units.")]
-        public float unitsPerPixel = 4f;
-        public float feetY = 160f;
 
         StudentKind kind = StudentKind.Boy;
         StudentPose pose = StudentPose.Idle;
-        float poseTime;
-        float x;
-        bool facingLeft;
-        Coroutine walking;
 
         public StudentKind Kind => kind;
         public StudentPose Pose => pose;
-        public float X => x;
-        public bool FacingLeft => facingLeft;
-        public bool IsWalking => walking != null;
         public StudentFrames Frames => kind == StudentKind.Girl ? girl : boy;
-        public Sprite CurrentSprite => body != null ? body.sprite : null;
+
+        protected override Sprite[] CurrentFrames => Frames?.For(pose);
+        protected override float CurrentFrameSeconds => FrameSeconds[(int)pose];
 
         /// <summary>The Student the Learner picked. None means the boy, until a pick exists.</summary>
         public void SetKind(StudentKind value)
@@ -103,20 +91,6 @@ namespace DisasterSafety.Game.UI
             Apply();
         }
 
-        /// <summary>Stands at the x (art pixels) without walking.</summary>
-        public void PlaceAt(float artX)
-        {
-            x = artX;
-            var rect = (RectTransform)transform;
-            rect.anchoredPosition = new Vector2(Mathf.Round(artX * unitsPerPixel), feetY);
-        }
-
-        public void Face(bool left)
-        {
-            facingLeft = left;
-            if (body != null) body.rectTransform.localScale = new Vector3(left ? -1f : 1f, 1f, 1f);
-        }
-
         /// <summary>Shows one frame of a pose, for the screenshot tool, which does not run Update.</summary>
         public void ShowFrame(StudentPose value, int frame)
         {
@@ -125,65 +99,22 @@ namespace DisasterSafety.Game.UI
             Apply();
         }
 
-        public void Say(string line, float seconds = 2f) => bubble.Say(line, seconds);
+        /// <summary>Turns, walks to the x at WalkSpeed on the current level, then stands idle facing the front.</summary>
+        public IEnumerator WalkTo(float artX) => WalkTo(artX, Y, WalkSpeed);
 
-        /// <summary>Turns, walks to the x at WalkSpeed, then stands idle facing the front.</summary>
-        public IEnumerator WalkTo(float artX)
-        {
-            walking = StartCoroutine(WalkRoutine(artX));
-            yield return walking;
-            walking = null;
-        }
-
-        IEnumerator WalkRoutine(float artX)
-        {
-            if (!Mathf.Approximately(artX, x))
-            {
-                Face(artX < x);
-                Play(StudentPose.Walk);
-                while (!Mathf.Approximately(x, artX))
-                {
-                    PlaceAt(Mathf.MoveTowards(x, artX, WalkSpeed * Time.deltaTime));
-                    yield return null;
-                }
-            }
-            Face(false);
-            Play(StudentPose.Idle);
-        }
+        /// <summary>
+        /// Turns, walks to the point at the speed (WalkSpeed, FastWalkSpeed or RunSpeed; a changing height is
+        /// a slope or stairs), then stands idle facing the front. Faster speeds play the walk frames faster.
+        /// </summary>
+        public IEnumerator WalkTo(float artX, float artY, float speed) =>
+            Move(artX, artY, speed, () => { Play(StudentPose.Walk); frameRate = speed / WalkSpeed; }, () => Play(StudentPose.Idle));
 
         /// <summary>Crouches and shuffles to the x at CrouchSpeed (under the desk), then stays crouched.</summary>
         public IEnumerator CrouchTo(float artX)
         {
-            walking = StartCoroutine(CrouchRoutine(artX));
-            yield return walking;
-            walking = null;
-        }
-
-        IEnumerator CrouchRoutine(float artX)
-        {
-            Face(artX < x);
             Play(StudentPose.Crouch);
-            while (!Mathf.Approximately(x, artX))
-            {
-                PlaceAt(Mathf.MoveTowards(x, artX, CrouchSpeed * Time.deltaTime));
-                yield return null;
-            }
+            yield return Move(artX, Y, CrouchSpeed, null, null);
             Face(false);
-        }
-
-        void Update()
-        {
-            poseTime += Time.deltaTime;
-            Apply();
-        }
-
-        void Apply()
-        {
-            if (body == null) return;
-            var frames = Frames?.For(pose);
-            if (frames == null || frames.Length == 0) return;
-            var index = Mathf.FloorToInt(poseTime / FrameSeconds[(int)pose]) % frames.Length;
-            if (body.sprite != frames[index]) body.sprite = frames[index];
         }
     }
 }
