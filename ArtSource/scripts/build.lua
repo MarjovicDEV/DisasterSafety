@@ -201,6 +201,18 @@ if want("corridor_v2") then
   L.saveFrames(CO.potFrames(), "Level/v2/corridor_pots", "Level/v2/corridor_pots", 160)
 end
 
+-- The v2 bedroom (Normal 1): Level/v2/bg_bedroom and its moving parts, bedroom_bed, bedroom_box,
+-- bedroom_box_placed, bedroom_picture and bedroom_books
+if want("bedroom_v2") then
+  local BR = dofile(here .. "bedroom_v2.lua")(L, ST)
+  L.save(BR.background(), "Level/v2/bg_bedroom", "Level/v2/bg_bedroom")
+  L.save(BR.bed(), "Level/v2/bedroom_bed", "Level/v2/bedroom_bed")
+  L.save(BR.box(), "Level/v2/bedroom_box", "Level/v2/bedroom_box")
+  L.save(BR.boxPlaced(), "Level/v2/bedroom_box_placed", "Level/v2/bedroom_box_placed")
+  L.save(BR.picture(), "Level/v2/bedroom_picture", "Level/v2/bedroom_picture")
+  L.save(BR.books(), "Level/v2/bedroom_books", "Level/v2/bedroom_books")
+end
+
 -- The Grown-ups (36x62): GrownUp/<who>_<pose>_<n>.png
 if want("grownups_v2") then
   local GU = dofile(here .. "grownups_v2.lua")(L, ST)

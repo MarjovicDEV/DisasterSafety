@@ -157,6 +157,58 @@ return function(L, ST)
     }, K)
     out.push = push
 
+    -- Normal 1, bedroom ----------------------------------------------------------------------
+    -- picture: a framed hill and sun hanging from a nail on its string
+    local pic = L.newImage(16, 16)
+    L.line(pic, 3, 5, 7, 1, M.NAVY[3]); L.line(pic, 12, 5, 8, 1, M.NAVY[3])
+    L.px(pic, 7, 0, M.NAVY[2]); L.px(pic, 8, 0, M.NAVY[2])
+    M.box(pic, 0, 4, 16, 12, M.WOOD)
+    L.rect(pic, 2, 6, 12, 8, O)
+    L.rect(pic, 3, 7, 10, 6, M.GLASS[1])
+    L.px(pic, 10, 8, M.SUN); L.px(pic, 11, 8, M.SUN)
+    L.poly(pic, { 3, 11, 6, 9, 9, 11, 12, 10, 12, 12, 3, 12 }, M.GREEN[2])
+    L.hline(pic, 3, 12, 12, M.GREEN[3])
+    out.picture = pic
+
+    -- Low shelf with an empty upper tier and a taped box on the lower tier.
+    local sh = L.newImage(16, 16)
+    M.box(sh, 0, 3, 16, 12, M.WOOD)
+    L.rect(sh, 2, 5, 12, 3, M.WOOD[3])
+    L.rect(sh, 2, 9, 12, 4, M.WOOD[3])
+    L.hline(sh, 2, 13, 8, M.WOOD[1])
+    L.rect(sh, 5, 9, 7, 4, M.POT[2])
+    L.vline(sh, 5, 9, 12, M.POT[1])
+    L.vline(sh, 11, 9, 12, M.POT[3])
+    L.vline(sh, 8, 9, 10, M.WHITE[1])
+    out.low_shelf = sh
+
+    -- Side-view bed with a raised headboard, pillow, blanket and two legs.
+    local bd = L.newImage(16, 16)
+    L.rect(bd, 1, 4, 2, 10, M.WOOD[2])
+    L.rect(bd, 13, 9, 2, 5, M.WOOD[2])
+    L.rect(bd, 3, 10, 10, 2, M.WOOD[2])
+    L.rect(bd, 3, 8, 10, 2, M.WHITE[2])
+    L.hline(bd, 3, 5, 7, M.WHITE[1])
+    L.rect(bd, 7, 7, 6, 3, M.NAVY[2])
+    L.hline(bd, 7, 12, 7, M.NAVY[1])
+    L.hline(bd, 8, 12, 9, M.NAVY[3])
+    L.vline(bd, 1, 4, 12, M.WOOD[1])
+    L.hline(bd, 3, 12, 11, M.WOOD[3])
+    L.vline(bd, 14, 10, 13, M.WOOD[3])
+    L.outline(bd, O)
+    out.bed = bd
+
+    -- books: a stack of three books, pages on the right
+    local bk = L.newImage(16, 16)
+    local function book(x, y, w, ramp)
+      M.box(bk, x, y, w, 4, ramp)
+      L.hline(bk, x + 2, x + w - 3, y + 2, M.WHITE[1])
+    end
+    book(0, 11, 16, M.NAVY)
+    book(2, 7, 13, M.RED)
+    book(1, 3, 14, M.GREEN)
+    out.books = bk
+
     return out
   end
 

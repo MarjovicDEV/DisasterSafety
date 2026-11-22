@@ -170,9 +170,13 @@ return function(L)
   local function arm(pts, opts)
     opts = opts or {}
     local g = newGrid(FW, FH)
-    chain(g, pts, 3, "S")
+    chain(g, pts, opts.width or 3, "S")
     local n = #pts
-    square(g, pts[n - 1], pts[n], 4, "S")
+    if opts.hand then
+      opts.hand(g, pts[n - 1], pts[n])
+    else
+      square(g, pts[n - 1], pts[n], 4, "S")
+    end
     local sx = pts[1] + (pts[3] - pts[1]) * (opts.sleeveTo or 0.5)
     local sy = pts[2] + (pts[4] - pts[2]) * (opts.sleeveTo or 0.5)
     chain(g, { pts[1], pts[2], sx, sy }, 4, "w")
@@ -719,7 +723,8 @@ return function(L)
     },
   }
   -- One leg: xs holds the left x of each row from y0 down; the shoe follows the last row.
-  local function legSpan(kind, far, y0, xs)
+  -- tiptoe: the heel lifts one row and the toes reach down to the floor in front.
+  local function legSpan(kind, far, y0, xs, tiptoe)
     local g = newGrid(FW, FH)
     local w = (kind == "boy") and 5 or 4
     local base = (kind == "boy") and "N" or "S"
@@ -730,7 +735,14 @@ return function(L)
     if kind == "girl" then
       for y = yEnd - 1, yEnd do for x = 0, FW - 1 do if getc(g, x, y) == "S" then setc(g, x, y, "w") end end end
     end
-    rect(g, xs[#xs] - 1, yEnd + 1, w + 3, 2, "B")
+    if tiptoe then
+      local toe = xs[#xs] + w - 1
+      rect(g, xs[#xs] - 1, yEnd, w, 1, "B")
+      rect(g, xs[#xs], yEnd + 1, w + 2, 1, "B")
+      rect(g, toe, yEnd + 2, 3, 1, "B")
+    else
+      rect(g, xs[#xs] - 1, yEnd + 1, w + 3, 2, "B")
+    end
     if kind == "boy" then
       if far then
         for y = 0, FH - 1 do for x = 0, FW - 1 do if getc(g, x, y) == "N" then setc(g, x, y, "n") end end end
@@ -929,18 +941,60 @@ return function(L)
     shade(g, 0)
     return g, oy
   end
-  -- Moves the whole frame up by n pixels (standing on tiptoe).
-  local function raise(g, n)
-    local r = newGrid(FW, FH)
-    paste(r, g, 0, -n)
-    return r
+
+  -- Action poses (carry, reach-up, push) -------------------------------------------------
+  -- Move the head and neck together, then ease the lean through the shirt to the hips.
+  local function leanBody(kind, g, oy, lean)
+    local src = kind == "boy" and BOY_SIDE or GIRL_SIDE
+    for i, row in ipairs(src) do
+      local y = i - 1
+      local dx = math.floor(lean * math.min(1, math.max(0, (35 - y) / 16)) + 0.5)
+      for x = 1, #row do
+        local c = row:sub(x, x)
+        if c ~= "." then setc(g, x - 1 + dx, y + oy, c) end
+      end
+    end
   end
 
-  -- Carrying something in both arms in front of the chest, while walking (4 frames). The game
-  -- draws the carried prop over the hands at about (22, 27).
+  -- The far arm sits in shadow: one tone darker than the near arm.
+  local FAR_TONE = { S = "s", t = "S", W = "w", w = "v" }
+  local function farArm(layer)
+    for y = 0, layer.h - 1 do
+      for x = 0, layer.w - 1 do
+        local c = FAR_TONE[getc(layer, x, y)]
+        if c then setc(layer, x, y, c) end
+      end
+    end
+    return layer
+  end
+  -- Frame-space arm points keep the two Students' grips on the same prop.
+  local function actPose(kind, spec, lean, far, near, options)
+    local g = newGrid(FW, FH)
+    local oy = FH - heightOf(kind) + spec.down
+    paste(g, legSpan(kind, true, spec.far[1], spec.far[2], options.farTiptoe), 0, 0)
+    paste(g, legSpan(kind, false, spec.near[1], spec.near[2], options.nearTiptoe), 0, 0)
+    pasteLimb(g, farArm(arm(far, options)))
+    leanBody(kind, g, oy, lean)
+    pasteLimb(g, arm(near, options))
+    shade(g, 0)
+    return g
+  end
+
+  local function palmUnderLoad(g, x, y)
+    rect(g, x - 2, y - 1, 4, 3, "S")
+    rect(g, x + 1, y - 2, 2, 2, "S")
+  end
+
+  -- The hips follow the walk; the shoulders sit behind them and the elbows stay under the load.
+  -- Grip (23, 30) in the right-facing frame, one row lower on the contact frames.
   function M.carry(kind, f)
-    local bob = (f == 0 or f == 2) and 1 or 0
-    return (sidePose(kind, f, { { 13, 22, 16, 28 + bob, 23, 27 + bob } }, 0.45))
+    local spec = WALK[kind][f + 1]
+    local b = spec.down
+    local shoulder = 22 + FH - heightOf(kind) + b
+    return actPose(kind, spec, -3,
+      { 15, shoulder, 15, 28 + b, 25, 28 + b },
+      { 11, shoulder, 12, 32 + b, 23, 31 + b },
+      { sleeveTo = 0.43, hand = palmUnderLoad })
   end
 
   -- Reaching forward with one arm at shoulder height (a lift button, a hand to hold).
@@ -948,17 +1002,48 @@ return function(L)
     return (sidePose(kind, "stand", { { 13, 22, 19, 23, 25 + f, 23 - f } }, 0.4))
   end
 
-  -- On tiptoe with both arms up high (hanging a picture, pinning a card). The second frame
-  -- stretches 1 pixel higher.
-  function M.reachup(kind, f)
-    -- the arms go up and forward, in front of the face rather than over it
-    local g = sidePose(kind, "stand", { { 12, 22, 22, 20, 28, 10 - f }, { 13, 23, 23, 21, 29, 11 - f } }, 0.35)
-    return raise(g, 1 + f)
+  local function reachingHand(g, x, y)
+    rect(g, x - 1, y - 1, 3, 3, "S")
+    rect(g, x, y - 3, 2, 2, "S")
+    setc(g, x - 2, y - 1, "S")
   end
 
-  -- Pushing with both hands, legs in a stride (a bed being moved).
+  -- Reach in front of the face on lifted heels. Only the forearms and hands stretch in frame 2.
+  local TIPTOE = {
+    boy = { down = 0, far = { 35, rep(10, 12) }, near = { 35, rep(15, 12) } },
+    girl = { down = 0, far = { 40, rep(10, 7) }, near = { 40, rep(15, 7) } },
+  }
+  function M.reachup(kind, f)
+    local shoulder = 22 + FH - heightOf(kind)
+    return actPose(kind, TIPTOE[kind], 0,
+      { 18, shoulder, 29, 19, 29, 5 - f },
+      { 15, shoulder + 1, 25, 22, 26, 8 - f },
+      { sleeveTo = 0.36, width = 2, hand = reachingHand, farTiptoe = true, nearTiptoe = true })
+  end
+
+  local function flatPalm(g, x, y)
+    rect(g, x, y - 3, 2, 6, "S")
+    setc(g, x - 1, y - 2, "t")
+  end
+
+  local BRACE = {
+    boy = {
+      down = 1, far = { 36, { 11, 10, 10, 9, 9, 8, 8, 7, 6, 6, 5 } },
+      near = { 36, { 16, 17, 18, 18, 19, 19, 18, 18, 17, 17, 17 } },
+    },
+    girl = {
+      down = 1, far = { 40, { 12, 11, 10, 9, 8, 7, 6 } },
+      near = { 40, { 16, 17, 18, 19, 19, 18, 18 } },
+    },
+  }
+  -- The back foot pushes off while the front leg takes the weight. The palms stay on the bed
+  -- as the shoulders move a pixel closer to it.
   function M.push(kind, f)
-    return (sidePose(kind, 0, { { 12, 22, 18, 26, 24 + f, 26 }, { 14, 22, 19, 25, 25 + f, 25 } }, 0.4))
+    local shoulder = 23 + FH - heightOf(kind)
+    return actPose(kind, BRACE[kind], 3 + f,
+      { 18 + f, shoulder - 1, 25, 23, 29, 23 },
+      { 15 + f, shoulder, 23, 27, 29, 25 },
+      { sleeveTo = 0.40, hand = flatPalm, farTiptoe = true })
   end
 
   -- Calling out with a hand at the mouth; two sound lines in front of the face pulse.
