@@ -31,6 +31,10 @@ The `icons=` filter writes only the named icons, so each slice adds its icons wi
 | `icon_stairs` | Run down the stairs | Easy 2 |
 | `icon_cover` | Duck and cover your head | Easy 2 |
 | `icon_plants` | Stand under the hanging plants | Easy 2 |
+| `icon_picture` | Hang a big picture over the bed | Normal 1 |
+| `icon_low_shelf` | Put heavy things on a low shelf | Normal 1 |
+| `icon_bed` | Move the bed under the window | Normal 1 |
+| `icon_books` | Put books on top of the tall cabinet | Normal 1 |
 
 Easy 2 reuses the pilot's `icon_window` for "Stand by the window".
 
@@ -95,6 +99,40 @@ Act-out points use the centre of each character's feet. `LevelSetting` stores he
 Easy 1 and 3 share the concrete floor drawn by `classroom_v2.lua`. The floor art begins at y 208, with window light at x 305–427, y 209–236. Easy 3 also keeps the light from the open door. The Student's floor line stays at y 230.
 
 In Easy 2, both Students use the redrawn `cover` pose. Each `boy_cover` and `girl_cover` source has two 32x50 frames at 300 ms. The Student kneels with shins folded, chin tucked and forearms over the head and neck. The upper body lowers one art pixel in the second frame, with the feet fixed.
+
+## Bedroom (`ArtSource/scripts/bedroom_v2.lua`, part `bedroom_v2`)
+
+Run: `aseprite.exe -b --script-param root=<project> --script-param only=bedroom_v2 --script ArtSource/scripts/build.lua`.
+It writes `Level/v2/bg_bedroom` (480x270) and five props, each its own sprite: `bedroom_bed` (112x31), `bedroom_box` and `bedroom_box_placed` (24x17), `bedroom_picture` (36x29) and `bedroom_books` (16x12). Use `only=icons_v2` and `icons=picture,low_shelf,bed,books` for the four Choice icons. Normal 1 is a "before" Level: nothing shakes and the Student starts standing calm.
+
+All values are art pixels from the top left; one art pixel is four UI units. The floor line (the Student's feet) is y 230 and the floor art is the continuous concrete of the Easy art follow-up, lit from the window. Every prop stands on the back of the floor (bottom row at y 212 or 213), like the furniture.
+
+| Part | Placement |
+|---|---|
+| Picture (leaning on the wall) | (10, 183) |
+| Window, curtains and sill | (48, 54), 72x92 glass and frame |
+| Bed (headboard on the right) | (104, 194); the headboard's right edge is x 215 |
+| Tall cabinet | (236, 116), 46x98 |
+| Books | (322, 201), just right of the start |
+| Box on the floor | (350, 196) |
+| Low shelf | (392, 166), 64x48; the lower left compartment is empty for the box |
+| Box placed in the shelf | (397, 193) |
+| Calendar, star poster, clock | (398, 80), (432, 86), clock centre (259, 64) |
+
+Act-out points use the centre of the Student's feet (`BuildBedroomV2` in `ProjectBuilder.Level.cs`). A held prop is a child of the Student's body, so it mirrors with the Student. Its `holdOffset` puts its centre on the carry pose's hands at about (23, 30) in the 32x50 frame. The reach-up hands are about (28, 3).
+
+| Choice (`action`) | Steps and points | Stop |
+|---|---|---|
+| Start | `idle` at 306, facing front | |
+| Safe: `low_shelf` | walk to 343, crouch and lift the box, carry it right to 384 (beside the shelf), the box shows in the shelf, crouch, stand | |
+| `picture` | walk to 34, face left, reach and pick up the picture, carry it right to 140, reach up; the picture is held against the wall over the bed at (134, 155) | reaching up at 140 |
+| `bed_window` | walk to 229, face left, push: the bed slides 8 to the left (toward the window) and the Student steps with it | pushing at 221, palms on the headboard |
+| `books_top` | walk to 316, crouch and pick up the books, carry them left to 272, reach up on tiptoe; the books are held up against the cabinet at (251, 172) | reaching up at 272 |
+| Try Again | The Student walks back to 306. The bed slides back; the box, the picture and the books fade back to their start; the placed box hides. | |
+
+Only the walk to the box passes a prop (the books beside the start). With three floor props and a bed to push on one floor line, one prop always sits between the start and something else, so the smallest prop takes that place.
+
+The Student's `carry`, `reachup` and `push` poses were redrawn for this slice (`student.lua`, "Action poses"): `carry` holds the load on level forearms and leans back; `reachup` raises both arms in front of the face on tiptoe; `push` leans forward with flat palms and the back foot pushing off. Frame counts stay 4, 2 and 2.
 
 ## Removed art (cleanup, 2026-11-22)
 

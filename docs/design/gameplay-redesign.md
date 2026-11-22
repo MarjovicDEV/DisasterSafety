@@ -254,6 +254,12 @@ For the boy and the girl, 32x50, in the v2 style, drawn by `student.lua` as new 
 - **Easy art follow-up:** The researcher asked to remove the block pattern from the floors in Easy 1 and 3 and improve the Student's Cover pose in Easy 2. Both classrooms now share a continuous concrete floor with window light. Both Students tuck their chins and cover the head and neck in the redrawn two-frame pose. The Scenario text, Act-out points and timing stay the same. The Unity build and all 174 EditMode and 35 PlayMode tests passed. All 24 changed screenshots were reviewed at both target sizes, and the other 75 matched byte for byte.
 - **Pending:** Researcher review of the revised Easy art and any remaining playthrough observations.
 
+### Earthquake Normal 1 art check
+
+- **Action poses:** The researcher asked to improve the Student's action art before gameplay. `carry` now holds the load on level forearms and leans back, `reachup` raises both arms in front of the face on tiptoe, and `push` leans forward with flat palms. The frame counts stay the same.
+- **Bedroom:** The researcher approved the bedroom after a final pass. The start spot is uncluttered, every prop stands on the back of the floor, no prop overlaps another, and the red ramp matches the shared palette. In the push stop, the Student steps with the sliding bed so the palms stay on the headboard. Placements and Act-out points are in `ArtSource/README-rollout.md` (Bedroom).
+- **Checks:** The build, all 175 EditMode and 41 PlayMode tests passed. The six new Normal 1 screenshots were reviewed at both target sizes, and the other 99 matched byte for byte.
+
 ## Open questions
 
 None. Q15 and the voice blip were settled in the rollout interview (R1, R2).

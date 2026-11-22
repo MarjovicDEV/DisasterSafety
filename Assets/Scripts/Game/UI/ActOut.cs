@@ -36,6 +36,12 @@ namespace DisasterSafety.Game.UI
         PropSlide,
         /// <summary>A Grown-up acts: see GrownUpAction.</summary>
         GrownUp,
+        /// <summary>Walk to x holding the prop in both arms, and keep facing that way.</summary>
+        Carry,
+        /// <summary>The Student turns to face left or right, without moving.</summary>
+        Face,
+        /// <summary>Push the target prop by x art pixels over the seconds; the Student moves with it in the push pose.</summary>
+        Push,
     }
 
     /// <summary>What a GrownUp step makes the Grown-up do.</summary>
@@ -80,7 +86,8 @@ namespace DisasterSafety.Game.UI
 
         /// <summary>True for the steps that move the Student.</summary>
         public bool Moves => kind == ActOutStepKind.Walk || kind == ActOutStepKind.FastWalk
-                             || kind == ActOutStepKind.Run || kind == ActOutStepKind.Crouch;
+                             || kind == ActOutStepKind.Run || kind == ActOutStepKind.Crouch
+                             || kind == ActOutStepKind.Carry;
 
         public static ActOutStep Walk(float x, float y = 0f) => new ActOutStep { kind = ActOutStepKind.Walk, x = x, y = y };
         public static ActOutStep WalkWith(GrownUpActor who, float x, float y, Vector2 destination) =>
@@ -102,6 +109,9 @@ namespace DisasterSafety.Game.UI
         public static ActOutStep GrownUpPoseStep(GrownUpActor who, GrownUpPose pose, float seconds = 0f) => new ActOutStep { kind = ActOutStepKind.GrownUp, grownUp = who, grownUpAction = GrownUpAction.Pose, grownUpPose = pose, seconds = seconds };
         public static ActOutStep GrownUpTurn(GrownUpActor who, bool left) => new ActOutStep { kind = ActOutStepKind.GrownUp, grownUp = who, grownUpAction = GrownUpAction.Turn, faceLeft = left };
         public static ActOutStep PropSlide(GameObject prop, float artPixels, float seconds) => new ActOutStep { kind = ActOutStepKind.PropSlide, target = prop, x = artPixels, seconds = seconds };
+        public static ActOutStep Carry(float x) => new ActOutStep { kind = ActOutStepKind.Carry, x = x };
+        public static ActOutStep Face(bool left) => new ActOutStep { kind = ActOutStepKind.Face, faceLeft = left };
+        public static ActOutStep Push(GameObject prop, float artPixels, float seconds) => new ActOutStep { kind = ActOutStepKind.Push, target = prop, x = artPixels, seconds = seconds };
     }
 
     /// <summary>
@@ -128,7 +138,10 @@ namespace DisasterSafety.Game.UI
         {
             var x = startX;
             for (var i = 0; i <= last && i < steps.Length; i++)
-                if (steps[i].Moves) x = steps[i].x;
+            {
+                if (steps[i].kind == ActOutStepKind.Push) x += steps[i].x;
+                else if (steps[i].Moves) x = steps[i].x;
+            }
             return x;
         }
 

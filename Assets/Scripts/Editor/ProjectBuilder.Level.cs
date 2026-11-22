@@ -73,6 +73,7 @@ namespace DisasterSafety.EditorTools
                 BuildBedroom(world), BuildHome(world), BuildSchoolyard(world), BuildBeach(world),
                 BuildMallA(world), BuildMallB(world), BuildHomeAfter(world), BuildEvacuationArea(world),
                 BuildClassroomV2(world), BuildCorridorV2(world), BuildClassroomAfterV2(world),
+                BuildBedroomV2(world),
             };
             for (var i = 1; i < c.settings.Length; i++)
                 c.settings[i].gameObject.SetActive(false);
@@ -432,6 +433,124 @@ namespace DisasterSafety.EditorTools
                         ActOutStep.Crouch(deskEdge),
                         ActOutStep.Pose(StudentPose.Idle, 0.16f),
                         ActOutStep.Run(110f),
+                    },
+                },
+            };
+            return setting;
+        }
+
+        // A prop the Act-outs move, drawn at its art place (top-left, art pixels). holdOffset is where
+        // its bottom-left corner sits in the Student's body while held, in UI units.
+        static LevelProp BuildProp(RectTransform parent, string key, string sprite, int artX, int artY,
+            Vector2 holdOffset, bool visible = true)
+        {
+            var r = ArtImage(parent, key, S(sprite), artX, artY);
+            var prop = r.gameObject.AddComponent<LevelProp>();
+            prop.key = key;
+            prop.image = r.GetComponent<Image>();
+            prop.holdOffset = holdOffset;
+            r.gameObject.SetActive(visible);
+            return prop;
+        }
+
+        // UI units (bottom-left of a prop in the Setting) for a top-left art place of a sprite h art pixels tall.
+        static Vector2 PropPlace(int artX, int artY, int artHeight) =>
+            new Vector2(artX * Px, 1080f - artY * Px - artHeight * Px);
+
+        // Normal 1's bedroom in the v2 art (phase before, nothing shakes). Left to right: the picture
+        // leaning under the window, the bed (slides toward the window), the tall cabinet, the start spot
+        // with the books beside it, the heavy box and the low shelf. Placements and Act-out points are in
+        // ArtSource/README-rollout.md (Bedroom) and ArtSource/scripts/bedroom_v2.lua (M.LAYOUT).
+        static LevelSetting BuildBedroomV2(RectTransform world)
+        {
+            var group = Stretch(Rect("Bedroom V2", world));
+            var setting = group.gameObject.AddComponent<LevelSetting>();
+            setting.key = ScenarioSettings.ActionArtKey(ScenarioSettings.Bedroom);
+            setting.artAnchorY = 0f;
+            ArtImage(group, "Bedroom V2", S("Level/v2/bg_bedroom"), 0, 0);
+
+            // Held props sit centred on the carry pose's hands, about (23, 30) in the 32x50 frame.
+            var picture = BuildProp(group, "picture", "Level/v2/bedroom_picture", 10, 183, new Vector2(20f, 22f));
+            var bed = BuildProp(group, "bed", "Level/v2/bedroom_bed", 104, 194, Vector2.zero);
+            var books = BuildProp(group, "books", "Level/v2/bedroom_books", 322, 201, new Vector2(60f, 56f));
+            var box = BuildProp(group, "box", "Level/v2/bedroom_box", 350, 196, new Vector2(44f, 46f));
+            var placed = BuildProp(group, "box_placed", "Level/v2/bedroom_box_placed", 397, 193, Vector2.zero, visible: false);
+            setting.props = new[] { picture, bed, books, box, placed };
+
+            setting.student = BuildStudent(group, withBubble: true);
+            setting.startX = 306f;
+            setting.startPose = StudentPose.Idle;
+
+            // The reach-up hands are about (28, 3) in the frame: art x 152 at x 140 facing right, and
+            // art x 259 at x 272 facing left, both at art y 183. The prop is held up just above them.
+            setting.actOuts = new[]
+            {
+                // Pick up the picture under the window, carry it to the bed and reach up toward the wall over it.
+                new ActOut
+                {
+                    key = "picture",
+                    stopAfter = 7,
+                    stopPose = StudentPose.ReachUp,
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(34f),
+                        ActOutStep.Face(left: true),
+                        ActOutStep.Pose(StudentPose.Reach, 0.3f),
+                        ActOutStep.PropPickUp(picture.gameObject),
+                        ActOutStep.Carry(140f),
+                        ActOutStep.Pose(StudentPose.ReachUp),
+                        ActOutStep.PropPlace(picture.gameObject, PropPlace(134, 155, 29)),
+                        ActOutStep.Wait(0.4f),
+                    },
+                },
+                // The Safe Choice: walk to the box, crouch and lift it, carry it to the low shelf, crouch and
+                // set it down; the box shows in the shelf's lower left compartment.
+                new ActOut
+                {
+                    key = "low_shelf",
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(343f),
+                        ActOutStep.Pose(StudentPose.Crouch, 0.35f),
+                        ActOutStep.PropPickUp(box.gameObject),
+                        ActOutStep.Carry(384f),
+                        ActOutStep.PropHide(box.gameObject),
+                        ActOutStep.PropShow(placed.gameObject),
+                        ActOutStep.Pose(StudentPose.Crouch, 0.35f),
+                        ActOutStep.Pose(StudentPose.Idle),
+                        ActOutStep.Calm(),
+                    },
+                },
+                // Walk to the bed's headboard (x 215), push, and the bed slides 8 pixels toward the window
+                // with the Student stepping after it, palms on the headboard (the stop is at x 221).
+                new ActOut
+                {
+                    key = "bed_window",
+                    stopAfter = 3,
+                    stopPose = StudentPose.Push,
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(229f),
+                        ActOutStep.Face(left: true),
+                        ActOutStep.Pose(StudentPose.Push, 0.3f),
+                        ActOutStep.Push(bed.gameObject, -8f, 0.8f),
+                    },
+                },
+                // Pick up the books beside the start, carry them to the tall cabinet and reach up on tiptoe.
+                new ActOut
+                {
+                    key = "books_top",
+                    stopAfter = 6,
+                    stopPose = StudentPose.ReachUp,
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(316f),
+                        ActOutStep.Pose(StudentPose.Crouch, 0.35f),
+                        ActOutStep.PropPickUp(books.gameObject),
+                        ActOutStep.Carry(272f),
+                        ActOutStep.Pose(StudentPose.ReachUp),
+                        ActOutStep.PropPlace(books.gameObject, PropPlace(251, 172, 12)),
+                        ActOutStep.Wait(0.4f),
                     },
                 },
             };

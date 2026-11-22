@@ -316,6 +316,9 @@ namespace DisasterSafety.Game.UI
                 case ActOutStepKind.Calm:
                     if (scenario.Shakes) setting.shaker?.Calm();
                     return true;
+                case ActOutStepKind.Face:
+                    student.Face(step.faceLeft);
+                    return true;
                 case ActOutStepKind.Overlay:
                     if (step.target == null) { Debug.LogError("An Overlay step in '" + setting.key + "' has no target."); return true; }
                     step.target.SetActive(true);
@@ -338,7 +341,7 @@ namespace DisasterSafety.Game.UI
                     if (prop == null) return true;
                     if (step.kind == ActOutStepKind.PropShow) prop.Show();
                     else if (step.kind == ActOutStepKind.PropHide) prop.Hide();
-                    else if (step.kind == ActOutStepKind.PropPickUp) prop.PickUp(student.transform);
+                    else if (step.kind == ActOutStepKind.PropPickUp) prop.PickUp(student.Hands);
                     else prop.Place(step.place);
                     return true;
                 default:
@@ -369,6 +372,24 @@ namespace DisasterSafety.Game.UI
                     break;
                 case ActOutStepKind.Crouch:
                     yield return student.CrouchTo(step.x, step.seconds);
+                    break;
+                case ActOutStepKind.Carry:
+                    yield return student.CarryTo(step.x);
+                    break;
+                case ActOutStepKind.Push:
+                    var pushed = PropOf(step, setting);
+                    if (pushed == null) break;
+                    // The Student keeps its palms on the prop and steps along with it.
+                    student.Play(StudentPose.Push);
+                    var slide = StartCoroutine(pushed.Slide(step.x * student.unitsPerPixel, step.seconds));
+                    var fromX = student.X;
+                    for (var t = 0f; t < step.seconds; t += Time.deltaTime)
+                    {
+                        student.PlaceAt(Mathf.Lerp(fromX, fromX + step.x, t / step.seconds));
+                        yield return null;
+                    }
+                    student.PlaceAt(fromX + step.x);
+                    yield return slide;
                     break;
                 case ActOutStepKind.Pose:
                 case ActOutStepKind.Wait:

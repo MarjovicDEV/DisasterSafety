@@ -110,7 +110,7 @@ namespace DisasterSafety.Tests
         public void OnlyTheMovedLevels_UseTheStudentFlow()
         {
             var levels = Files().Select(Load).Where(s => s.UsesActions).Select(s => s.level).OrderBy(l => l).ToList();
-            Assert.That(levels, Is.EqualTo(new[] { "Earthquake/Easy/1", "Earthquake/Easy/2", "Earthquake/Easy/3" }));
+            Assert.That(levels, Is.EqualTo(new[] { "Earthquake/Easy/1", "Earthquake/Easy/2", "Earthquake/Easy/3", "Earthquake/Normal/1" }));
             foreach (var path in Files())
             {
                 var s = Load(path);
@@ -170,6 +170,41 @@ namespace DisasterSafety.Tests
             Assert.That(s.choices[0].sources, Is.EqualTo(new[] { "EQ-19", "EQ-34", "EQ-35" }));
             Assert.That(s.choices[1].sources, Is.EqualTo(new[] { "EQ-34", "EQ-35", "EQ-37" }));
             Assert.That(s.choices[2].sources, Is.EqualTo(new[] { "EQ-20", "EQ-36" }));
+        }
+
+        [Test]
+        public void NormalLevel1_UsesTheStudentFlow_InTheBedroom_WithItsTextUnchanged()
+        {
+            var s = Load(Path.Combine(ScenarioFolder, "Earthquake/Normal/1.json"));
+            Assert.That(s.UsesActions, Is.True);
+            Assert.That(s.phase, Is.EqualTo(ScenarioPhases.Before));
+            Assert.That(s.setting, Is.EqualTo(ScenarioSettings.Bedroom));
+            Assert.That(ScenarioSettings.CanShake(s.setting), Is.False);
+            Assert.That(ScenarioSettings.ActionSpots(s.setting),
+                Is.EquivalentTo(new[] { "picture", "low_shelf", "bed_window", "books_top" }));
+            Assert.That(s.choices.Select(c => c.action), Is.EqualTo(new[] { "picture", "low_shelf", "bed_window", "books_top" }));
+            Assert.That(s.choices.Select(c => c.icon),
+                Is.EqualTo(new[] { "icon_picture", "icon_low_shelf", "icon_bed", "icon_books" }));
+            Assert.That(s.SafeChoice.id, Is.EqualTo("low_shelf"));
+            Assert.That(s.choices.Select(c => c.picture),
+                Is.EqualTo(new[] { "choice_picture_bed", "choice_low_shelf", "choice_bed_window", "choice_books_top" }));
+            // The rollout changes no Scenario text (docs/specs/earthquake-rollout.md, Data).
+            Assert.That(s.choices.Select(c => c.label), Is.EqualTo(new[]
+            {
+                "Hang a big picture over the bed", "Put heavy things on a low shelf",
+                "Move the bed under the window", "Put books on top of the tall cabinet",
+            }));
+            Assert.That(s.choices.Select(c => c.feedback), Is.EqualTo(new[]
+            {
+                "A heavy picture can fall on your bed. Hang it somewhere else.",
+                "Keep heavy things on low shelves, not high ones.",
+                "Window glass can break. Keep your bed away from windows.",
+                "Things up high can fall when it shakes. Keep them low.",
+            }));
+            Assert.That(s.choices[0].sources, Is.EqualTo(new[] { "EQ-62" }));
+            Assert.That(s.choices[1].sources, Is.EqualTo(new[] { "EQ-61" }));
+            Assert.That(s.choices[2].sources, Is.EqualTo(new[] { "EQ-62", "EQ-14" }));
+            Assert.That(s.choices[3].sources, Is.EqualTo(new[] { "EQ-61", "EQ-31" }));
         }
 
         [Test]

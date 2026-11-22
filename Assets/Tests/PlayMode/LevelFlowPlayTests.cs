@@ -272,7 +272,7 @@ namespace DisasterSafety.Tests
         [UnityTest]
         public IEnumerator NormalDifficulty_CompletingAllFiveLevels_OpensHard()
         {
-            var settings = new[] { "bedroom", "home", "home", "schoolyard", "beach" };
+            var settings = new[] { "bedroom_v2", "home", "home", "schoolyard", "beach" };
             var shakes = new[] { false, false, true, true, false };
 
             GameServices.Initialize(dir);
@@ -293,7 +293,17 @@ namespace DisasterSafety.Tests
                 Assert.That(shaking, Is.EqualTo(shakes[n - 1]), "shaking in Normal " + n);
 
                 Assert.That(GameServices.Scenarios.TryGet(level, out var scenario), Is.True);
-                c.choiceCards[scenario.SafeChoiceIndex].button.onClick.Invoke();
+                // Normal 1 is acted out by the Student in the bedroom; the other Normal Levels use the cards.
+                Assert.That(c.UsesStudentFlow, Is.EqualTo(n == 1), "the Student flow in Normal " + n);
+                if (c.UsesStudentFlow)
+                {
+                    Tap(c, scenario.SafeChoiceIndex);
+                    yield return FeedbackShown(c);
+                }
+                else
+                {
+                    c.choiceCards[scenario.SafeChoiceIndex].button.onClick.Invoke();
+                }
                 Assert.That(c.finishButton.gameObject.activeSelf, Is.True, "the Safe Choice of Normal " + n + " can Finish");
                 c.finishButton.onClick.Invoke();
                 Assert.That(c.completedPanel.IsVisible, Is.True, "Level Completed after Normal " + n);
@@ -682,6 +692,132 @@ namespace DisasterSafety.Tests
             Assert.That(c.actionBar.buttons[ClassroomStay].button.interactable, Is.False);
             Assert.That(c.actionBar.buttons[ClassroomPush].button.interactable, Is.False);
             Assert.That(c.actionBar.buttons[ClassroomWalk].button.interactable, Is.True);
+        }
+
+        static readonly LevelId NormalOne = new LevelId(Episode.Earthquake, Difficulty.Normal, 1);
+        const int BedroomPicture = 0, BedroomLowShelf = 1, BedroomBedWindow = 2, BedroomBooksTop = 3;
+
+        IEnumerator StartNormalOne()
+        {
+            GameServices.Initialize(dir);
+            GameServices.Progress.SetDisplayName("Ana");
+            GameServices.Progress.Open(Episode.Earthquake, Difficulty.Normal);
+            GameServices.SaveProgress();
+            GameScenes.PlayLevel(NormalOne);
+            yield return WaitFor(() => Level()?.Level.Equals(NormalOne) == true && Level().ActiveSetting != null,
+                "Normal 1 to start");
+            Assert.That(Level().UsesStudentFlow, Is.True, "Normal 1 shows the Action Bar");
+        }
+
+        static LevelProp PropIn(LevelController c, string key)
+        {
+            var prop = Array.Find(c.ActiveSetting.props, p => p != null && p.key == key);
+            Assert.That(prop, Is.Not.Null, "the bedroom has a prop '" + key + "'");
+            return prop;
+        }
+
+        static float AnchoredX(LevelProp prop) => ((RectTransform)prop.transform).anchoredPosition.x;
+
+        // The world x of a prop's centre: its pivot is its bottom-left corner, which mirrors with the Student.
+        static float CentreX(LevelProp prop)
+        {
+            var r = (RectTransform)prop.transform;
+            return r.TransformPoint(r.rect.center).x;
+        }
+
+        [UnityTest]
+        public IEnumerator NormalLevel1_SafeChoice_ActsOutAndCompletes()
+        {
+            yield return StartNormalOne();
+            var c = Level();
+            var student = c.Student;
+            Assert.That(c.ActiveSetting.key, Is.EqualTo("bedroom_v2"));
+            Assert.That(c.bantay.gameObject.activeInHierarchy, Is.False);
+            Assert.That(c.ActiveSetting.shaker == null || !c.ActiveSetting.shaker.IsShaking, Is.True, "nothing shakes before an earthquake");
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Idle));
+            Assert.That(student.X, Is.EqualTo(306f));
+            var box = PropIn(c, "box");
+            var placed = PropIn(c, "box_placed");
+            Assert.That(box.gameObject.activeSelf, Is.True);
+            Assert.That(placed.gameObject.activeSelf, Is.False, "the shelf starts empty");
+            yield return ReadyToChoose(Level);
+            Assert.That(c.actionBar.buttons[BedroomPicture].icon.sprite.name, Is.EqualTo("icon_picture"));
+            Assert.That(c.actionBar.buttons[BedroomLowShelf].icon.sprite.name, Is.EqualTo("icon_low_shelf"));
+            Assert.That(c.actionBar.buttons[BedroomBedWindow].icon.sprite.name, Is.EqualTo("icon_bed"));
+            Assert.That(c.actionBar.buttons[BedroomBooksTop].icon.sprite.name, Is.EqualTo("icon_books"));
+
+            Tap(c, BedroomLowShelf);
+            Assert.That(c.actionBar.IsVisible, Is.False);
+            yield return WaitFor(() => student.Pose == StudentPose.Carry && student.IsWalking, "the Student to carry the box");
+            Assert.That(box.transform.IsChildOf(student.transform), Is.True, "the box is in the Student's hands");
+            Assert.That(student.FacingLeft, Is.False);
+            Assert.That(CentreX(box), Is.GreaterThan(student.transform.position.x), "the box is held in front");
+
+            yield return WaitFor(() => student.bubble.Line == UIStrings.ReactionReady, "the Safe Reaction");
+            Assert.That(student.X, Is.EqualTo(384f), "the Student stands beside the low shelf");
+            Assert.That(placed.gameObject.activeSelf, Is.True, "the box shows on the low shelf");
+            Assert.That(box.gameObject.activeSelf, Is.False);
+
+            yield return FeedbackShown(c);
+            Assert.That(c.finishButton.gameObject.activeSelf, Is.True);
+            Assert.That(c.feedbackText.text, Is.EqualTo("Keep heavy things on low shelves, not high ones."));
+            c.finishButton.onClick.Invoke();
+            Assert.That(c.completedPanel.IsVisible, Is.True);
+            Assert.That(c.LastResult.Stars, Is.EqualTo(3));
+        }
+
+        [UnityTest]
+        public IEnumerator NormalLevel1_UnsafeChoice_StopsAndResets()
+        {
+            yield return StartNormalOne();
+            var c = Level();
+            var student = c.Student;
+            var bed = PropIn(c, "bed");
+            var props = new[] { bed, PropIn(c, "box"), PropIn(c, "picture"), PropIn(c, "books"), PropIn(c, "box_placed") };
+            var bedStartX = AnchoredX(bed);
+            yield return ReadyToChoose(Level);
+
+            Tap(c, BedroomBedWindow);
+            yield return WaitFor(() => student.Pose == StudentPose.Push, "the Student to push the bed");
+            Assert.That(student.X, Is.EqualTo(229f));
+            Assert.That(student.FacingLeft, Is.True, "the Student pushes the bed toward the window");
+            yield return WaitFor(() => student.bubble.Line == UIStrings.ReactionWait, "the stop");
+            Assert.That(AnchoredX(bed), Is.EqualTo(bedStartX - 8f * student.unitsPerPixel).Within(0.01f),
+                "the bed slid 8 art pixels toward the window");
+            Assert.That(student.X, Is.EqualTo(221f), "the Student steps with the bed, palms on the headboard");
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Push));
+            yield return FeedbackShown(c);
+            Assert.That(c.feedbackHeading.text, Is.EqualTo(UIStrings.UnsafeHeading));
+            c.tryAgainButton.onClick.Invoke();
+            yield return ActionBarShown(c);
+            Assert.That(AnchoredX(bed), Is.EqualTo(bedStartX), "Try Again slides the bed back");
+            Assert.That(student.X, Is.EqualTo(306f));
+            Assert.That(c.actionBar.buttons[BedroomBedWindow].button.interactable, Is.False);
+
+            Tap(c, BedroomBooksTop);
+            var books = PropIn(c, "books");
+            yield return WaitFor(() => student.Pose == StudentPose.Carry && student.IsWalking && student.FacingLeft,
+                "the Student to carry the books left to the cabinet");
+            Assert.That(CentreX(books), Is.LessThan(student.transform.position.x), "the books are held in front");
+            yield return WaitFor(() => student.Pose == StudentPose.ReachUp, "the Student to reach up at the cabinet");
+            Assert.That(student.X, Is.EqualTo(272f));
+            yield return FeedbackShown(c);
+            c.tryAgainButton.onClick.Invoke();
+            yield return ActionBarShown(c);
+
+            Tap(c, BedroomPicture);
+            yield return WaitFor(() => student.Pose == StudentPose.ReachUp, "the Student to reach up over the bed");
+            Assert.That(student.X, Is.EqualTo(140f));
+            Assert.That(PropIn(c, "picture").AtStart, Is.False);
+            yield return FeedbackShown(c);
+            c.tryAgainButton.onClick.Invoke();
+            yield return ActionBarShown(c);
+
+            foreach (var prop in props) Assert.That(prop.AtStart, Is.True, prop.key + " is back at its start");
+            Assert.That(student.X, Is.EqualTo(306f));
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Idle));
+            Assert.That(c.Attempt.Phase, Is.EqualTo(AttemptPhase.Choosing));
+            Assert.That(c.actionBar.buttons[BedroomLowShelf].button.interactable, Is.True);
         }
 
         [UnityTest]

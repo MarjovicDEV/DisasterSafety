@@ -146,6 +146,15 @@ namespace DisasterSafety.Game.UI
         public IEnumerator WalkTo(float artX, float artY, float speed) =>
             Move(artX, artY, speed, () => { Play(StudentPose.Walk); frameRate = speed / WalkSpeed; }, () => Play(StudentPose.Idle));
 
+        /// <summary>
+        /// Where a held prop goes: the body, which mirrors when the Student turns, so the prop stays in
+        /// front of the Student whichever way it faces.
+        /// </summary>
+        public Transform Hands => body != null ? body.transform : transform;
+
+        /// <summary>Walks to x in the carry pose, holding a prop in both arms, and keeps facing that way.</summary>
+        public IEnumerator CarryTo(float artX) => Move(artX, Y, WalkSpeed, () => Play(StudentPose.Carry), null);
+
         /// <summary>Crouches and shuffles to x, optionally looking that way before facing front.</summary>
         public IEnumerator CrouchTo(float artX, float lookSeconds = 0f)
         {

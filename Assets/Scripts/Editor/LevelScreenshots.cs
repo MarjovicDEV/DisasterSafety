@@ -122,6 +122,58 @@ namespace DisasterSafety.EditorTools
             CaptureStudentFlow(c, scenarios, Shot);
             CaptureCorridor(c, scenarios, Shot);
             CaptureClassroomAfter(c, scenarios, Shot);
+            CaptureBedroom(c, scenarios, Shot);
+        }
+
+        // Normal 1 in the bedroom (n1-*): the Action Bar, the box set down on the low shelf, and the stop
+        // after the bed has slid toward the window.
+        static void CaptureBedroom(LevelController c, ScenarioLibrary scenarios, Action<string, ScreenPanel[]> shot)
+        {
+            var s = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Normal, 1));
+            c.ShowSetting(ScenarioSettings.ActionArtKey(s.setting));
+            c.UseStudentLayout();
+            c.captionGoal.text = s.goal.text;
+            c.captionBody.text = s.intro.text;
+            c.FitCaption();
+            c.actionBar.Setup(s, _ => { });
+
+            var setting = c.ActiveSetting;
+            var student = setting.student;
+            LevelProp Prop(string key) => Array.Find(setting.props, p => p.key == key);
+            var box = Prop("box");
+            var placed = Prop("box_placed");
+            var bed = (RectTransform)Prop("bed").transform;
+            student.SetKind(StudentKind.Boy);
+            student.bubble.Hide();
+
+            void Stand(float x, StudentPose pose, bool faceLeft = false)
+            {
+                student.PlaceAt(x);
+                student.Face(faceLeft);
+                student.ShowFrame(pose, 0);
+            }
+
+            Stand(setting.startX, setting.startPose);
+            shot("n1-actionbar", new[] { c.actionBar.panel });
+
+            var shelf = setting.ActOutFor(s.SafeChoice.action);
+            box.gameObject.SetActive(false);
+            placed.gameObject.SetActive(true);
+            Stand(shelf.EndX(setting.startX), StudentPose.Idle);
+            student.bubble.Say(UIStrings.ReactionReady);
+            shot("n1-safe", Array.Empty<ScreenPanel>());
+            placed.gameObject.SetActive(false);
+            box.gameObject.SetActive(true);
+
+            var push = setting.ActOutFor("bed_window");
+            var slide = Array.Find(push.steps, step => step.kind == ActOutStepKind.Push);
+            var bedStart = bed.anchoredPosition;
+            bed.anchoredPosition = bedStart + new Vector2(slide.x * student.unitsPerPixel, 0f);
+            Stand(push.StopX(setting.startX), push.stopPose, faceLeft: true);
+            student.bubble.Say(UIStrings.ReactionWait);
+            shot("n1-stop", Array.Empty<ScreenPanel>());
+            bed.anchoredPosition = bedStart;
+            student.bubble.Hide();
         }
 
         // Easy 2 in the corridor (e2-*): the Action Bar, the last Safe step (cover at the inner wall) and

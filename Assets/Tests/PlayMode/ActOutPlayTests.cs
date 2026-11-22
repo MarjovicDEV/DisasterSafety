@@ -27,7 +27,7 @@ namespace DisasterSafety.Tests
             var s = new GameObject("Student", typeof(RectTransform));
             s.transform.SetParent(root.transform, false);
             student = s.AddComponent<StudentActor>();
-            var set = new StudentFrames { idle = frames, surprised = frames, walk = frames, duck = frames, wait = frames, happy = frames, crouch = frames, hold = frames };
+            var set = new StudentFrames { idle = frames, surprised = frames, walk = frames, duck = frames, wait = frames, happy = frames, crouch = frames, hold = frames, carry = frames };
             student.boy = set;
             student.girl = set;
             student.unitsPerPixel = 4f;
@@ -115,6 +115,51 @@ namespace DisasterSafety.Tests
             yield return note.ResetToStart(0.2f);
             Assert.That(note.gameObject.activeSelf, Is.False);
             Assert.That(note.AtStart, Is.True);
+        }
+
+        [UnityTest]
+        public IEnumerator Student_CarriesToAPoint_InTheCarryPose_AndKeepsFacingThatWay()
+        {
+            var carrying = student.StartCoroutine(student.CarryTo(60f));
+            yield return null;
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Carry));
+            Assert.That(student.IsWalking, Is.True);
+            yield return carrying;
+            Assert.That(student.X, Is.EqualTo(60f));
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Carry), "the Student still holds the load");
+            Assert.That(student.FacingLeft, Is.True, "the Student keeps facing the way it carried");
+        }
+
+        [UnityTest]
+        public IEnumerator Prop_HeldInTheStudentsHands_TurnsWithTheStudent()
+        {
+            var box = Prop("box", new Vector2(40f, 0f), visible: true);
+            box.holdOffset = new Vector2(90f, 80f);
+            box.PickUp(student.Hands);
+            student.Face(false);
+            var right = box.transform.position.x - student.transform.position.x;
+            student.Face(true);
+            var left = box.transform.position.x - student.transform.position.x;
+            Assert.That(right, Is.GreaterThan(0f), "facing right, the box is held in front, on the right");
+            Assert.That(left, Is.EqualTo(-right).Within(0.01f), "facing left, the box is held in front, on the left");
+            yield return box.ResetToStart(0.2f);
+            Assert.That(box.AtStart, Is.True);
+        }
+
+        [Test]
+        public void ActOut_CarryAndFaceSteps_MoveAndTurnTheStudent()
+        {
+            var actOut = new ActOut { steps = new[] { ActOutStep.Carry(80f), ActOutStep.Face(left: false) } };
+            Assert.That(actOut.steps[0].Moves, Is.True);
+            Assert.That(actOut.steps[1].Moves, Is.False);
+            Assert.That(actOut.EndX(100f), Is.EqualTo(80f));
+        }
+
+        [Test]
+        public void ActOut_PushStep_MovesTheStudentByItsDistance()
+        {
+            var actOut = new ActOut { stopAfter = 1, steps = new[] { ActOutStep.Walk(229f), ActOutStep.Push(null, -8f, 0.8f) } };
+            Assert.That(actOut.StopX(306f), Is.EqualTo(221f), "the Student steps after the pushed bed");
         }
 
         [Test]
