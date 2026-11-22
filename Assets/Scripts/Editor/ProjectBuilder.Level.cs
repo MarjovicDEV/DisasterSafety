@@ -353,7 +353,7 @@ namespace DisasterSafety.EditorTools
             setting.startX = 214f;
             setting.actOuts = new[]
             {
-                // Run-start toward the stairs and stop at the top step (the newel post is at x 404).
+                // Run-start toward the stairs and stop at the top step (the front of the first tread is at x 404).
                 new ActOut { key = "stairs", stopAfter = 0, steps = new[] { ActOutStep.Run(394f) } },
                 // Walk toward the hall window (its sill ends at x 180) and stop by it.
                 new ActOut { key = "window", stopAfter = 0, steps = new[] { ActOutStep.Walk(188f) } },

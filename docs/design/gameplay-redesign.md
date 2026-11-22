@@ -245,6 +245,14 @@ For the boy and the girl, 32x50, in the v2 style, drawn by `student.lua` as new 
 - **Props**, small sprites that show, hide or move with the Student's hands: box, books, picture, go bag (open and closed), water, can, flashlight, whistle, toy, snack, the park card, the house card, the note, the radio (2 frames) and fish (2-frame flop). Furniture that moves (the bed) is a prop too.
 - **Icons:** one 16x16 icon per Choice, about 35 new ones, reusing `icon_door`, `icon_window`, `icon_desk` and `icon_cabinet` where a Choice matches.
 
+## Rollout checks
+
+### Earthquake Easy Editor check
+
+- **Easy 2:** The researcher said the corridor floor looked like blocks and asked for more realistic stairs without the exposed bar. The revision uses a continuous concrete floor lit by the window, readable treads and risers, and a solid stairwell wall. The first tread at x 404 and the Act-out stop at x 394 stay in place. The build and all 174 EditMode and 35 PlayMode tests passed. The six updated Easy 2 screenshots were checked at both target sizes, and the other 93 matched byte for byte.
+- **Easy 2 follow-up:** The researcher asked to correct the angle of the stairs. The flight now descends more gently from the same approach. The backs of the treads recede toward the centre of the corridor. The build, all 174 EditMode and 35 PlayMode tests, and the screenshot comparison passed again. Only the six Easy 2 screenshots changed.
+- **Pending:** Researcher review of the revised Easy 2 art and observations for Easy 1 and Easy 3.
+
 ## Open questions
 
 None. Q15 and the voice blip were settled in the rollout interview (R1, R2).

@@ -81,14 +81,23 @@ return function(L, ST)
     L.hline(img, 0, W - 1, 164, R.wall[3])
     L.rect(img, 0, 203, W, 4, R.wood[3])
     L.hline(img, 0, W - 1, 207, O)
-    -- corridor floor: square tiles
+    -- A continuous concrete floor, with a contact shadow at the baseboard and sparse texture.
     L.rect(img, 0, 208, W, H - 208, R.floor[2])
-    for y = 208, H - 1, 16 do
-      L.hline(img, 0, W - 1, y, R.floor[1])
-      L.hline(img, 0, W - 1, y + 15, R.floor[3])
-      local row = (y - 208) // 16
-      for x = (row % 2) * 12, W, 24 do L.vline(img, x, y + 1, y + 14, R.floor[3]) end
-    end
+    L.hline(img, 0, W - 1, 208, R.floor[3])
+    L.poly(img, { 83, 209, 177, 209, 206, 232, 56, 232 }, R.floor[1])
+    for _, p in ipairs({
+      { 20, 241 }, { 43, 219 }, { 61, 258 }, { 78, 246 }, { 94, 265 },
+      { 112, 237 }, { 128, 257 }, { 146, 243 }, { 152, 219 }, { 166, 267 },
+      { 177, 250 }, { 193, 262 }, { 213, 241 }, { 235, 218 }, { 252, 254 },
+      { 269, 242 }, { 283, 266 }, { 301, 221 }, { 309, 251 }, { 336, 263 },
+      { 349, 238 }, { 370, 256 }, { 380, 221 }, { 395, 249 },
+    }) do L.px(img, p[1], p[2], R.floor[3]) end
+    for _, p in ipairs({
+      { 12, 252 }, { 34, 233 }, { 55, 267 }, { 101, 254 }, { 127, 244 },
+      { 167, 236 }, { 187, 252 }, { 216, 264 }, { 229, 224 }, { 246, 241 },
+      { 276, 255 }, { 296, 235 }, { 321, 263 }, { 326, 242 }, { 354, 249 },
+      { 374, 266 }, { 388, 235 },
+    }) do L.px(img, p[1], p[2], R.floor[1]) end
     -- ceiling lights
     for _, lx in ipairs({ 120, 300 }) do
       box(img, lx, 14, 40, 5, R.paper)
@@ -140,34 +149,38 @@ return function(L, ST)
     box(img, 372, 95, 20, 11, R.paper)
     for _, p in ipairs({ { 360, 75 }, { 381, 78 }, { 381, 95 } }) do L.px(img, p[1], p[2], rgb(206, 17, 38)) end
 
-    -- the stairs going down on the right: the floor ends at stairsX, the steps drop to the right
-    local sx = M.LAYOUT.stairsX
-    L.rect(img, sx, 208, W - sx, H - 208, R.step[3])
-    for i = 0, 6 do
-      local x = sx + i * 12
-      local y = Y + i * 7
-      L.rect(img, x, y, W - x, 7, R.step[2])          -- tread
-      L.hline(img, x, W - 1, y, R.step[1])            -- lit nose
-      L.hline(img, x, W - 1, y - 1, O)
-      L.vline(img, x - 1, y - 1, y + 6, O)
-      L.rect(img, x, y + 4, W - x, 3, R.step[3])      -- riser in shadow
+    -- Receding edges lean toward the centre of the corridor. The back of the
+    -- landing reaches the baseboard, and the front meets the play floor at (404, 230).
+    local frontX, frontY = M.LAYOUT.stairsX, Y
+    local backX, backY = frontX - 9, 208
+    local frontRun, frontDrop = 16, 6
+    local backRun, backDrop = 14, 5
+    local backEndY = backY + (W - 1 - backX) * backDrop // backRun
+
+    -- The cutaway face of the floor and the solid stairwell wall behind the treads.
+    L.poly(img, { backX, backY, W, backY, W, H, frontX, H, frontX, frontY }, R.step[3])
+    L.vline(img, frontX - 1, frontY, H - 1, R.floor[3])
+    local wallHeight = 22
+    L.poly(img, { backX, backY - wallHeight, W, backEndY - wallHeight + 1,
+                  W, backEndY + 2, backX, backY + 1 }, R.lower[3])
+    L.line(img, backX, backY - wallHeight, W - 1, backEndY - wallHeight, O)
+    L.line(img, backX, backY - wallHeight + 1, W - 1, backEndY - wallHeight + 1, R.lower[1])
+    L.vline(img, backX, backY - wallHeight, backY, O)
+
+    for step = (W - 1 - backX) // backRun, 0, -1 do
+      local bx, by = backX + step * backRun, backY + step * backDrop
+      local fx, fy = frontX + step * frontRun, frontY + step * frontDrop
+      local nextBackX, nextFrontX = bx + backRun, fx + frontRun
+
+      L.poly(img, { bx, by, nextBackX, by, nextFrontX, fy, fx, fy }, R.step[2])
+      L.poly(img, { nextBackX, by, nextFrontX, fy,
+                    nextFrontX, fy + frontDrop, nextBackX, by + backDrop }, R.step[3])
+      L.line(img, nextBackX - 1, by, nextFrontX - 1, fy, R.step[1])
+      L.line(img, nextBackX, by + backDrop, nextFrontX, fy + frontDrop, O)
+      L.hline(img, fx, nextFrontX, fy, O)
+      L.vline(img, nextFrontX, fy, fy + frontDrop, O)
     end
-    -- the floor edge above the stairwell, between the floor band and the top step
-    L.rect(img, sx, 208, W - sx, Y - 208 - 1, R.floor[2])
-    L.hline(img, sx, W - 1, 208, R.floor[1])
-    L.vline(img, sx - 1, 208, Y - 1, R.floor[3])
-    -- the handrail going down with the steps, and its posts
-    local function railY(x) return Y - 34 + (x - sx - 2) * 7 // 12 end
-    L.line(img, sx + 2, railY(sx + 2), W - 1, railY(W - 1), O, 3)
-    L.line(img, sx + 2, railY(sx + 2) - 1, W - 1, railY(W - 1) - 1, R.wood[1])
-    L.line(img, sx + 2, railY(sx + 2), W - 1, railY(W - 1), R.wood[2])
-    for i = 2, 6, 2 do
-      local px = sx + i * 12 + 4
-      local top = railY(px) + 2
-      L.rect(img, px, top, 2, 24, O)
-      L.vline(img, px, top + 1, top + 22, R.metal[2])
-    end
-    box(img, sx, Y - 38, 6, 38, R.wood)               -- the newel post at the top step
+
     -- the exit sign on the wall above the stairs
     box(img, 424, 110, 44, 15, R.leaf)
     L.text(img, 433, 113, "EXIT", ST.KEY.W, 1)

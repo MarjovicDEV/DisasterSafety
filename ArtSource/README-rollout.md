@@ -49,7 +49,8 @@ All values are art pixels; one art pixel is four UI units. The floor line (the S
 | Plain inner wall | (240, 15), 92x192; its shadow falls on x 332-335 |
 | Bulletin board | (346, 68), 52x44 |
 | Exit sign | (424, 110) |
-| Stairs | the floor ends and the top step starts at x 404; the steps drop 7 pixels every 12 pixels to the right; the newel post is at (404, 192) |
+| Floor | Continuous concrete from y 208. The window casts light on the left side of the walkway. |
+| Stairs | The first tread meets the walkway at (404, 230). The front edges descend 6 pixels every 16 pixels to the right. The back edges descend 5 pixels every 14 pixels, beginning at (395, 208), to align the flight with the corridor. A solid stairwell wall follows the flight. |
 
 Act-out points (the Student's centre x, `BuildCorridorV2` in `ProjectBuilder.Level.cs`):
 
