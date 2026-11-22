@@ -251,7 +251,8 @@ For the boy and the girl, 32x50, in the v2 style, drawn by `student.lua` as new 
 
 - **Easy 2:** The researcher said the corridor floor looked like blocks and asked for more realistic stairs without the exposed bar. The revision uses a continuous concrete floor lit by the window, readable treads and risers, and a solid stairwell wall. The first tread at x 404 and the Act-out stop at x 394 stay in place. The build and all 174 EditMode and 35 PlayMode tests passed. The six updated Easy 2 screenshots were checked at both target sizes, and the other 93 matched byte for byte.
 - **Easy 2 follow-up:** The researcher asked to correct the angle of the stairs. The flight now descends more gently from the same approach. The backs of the treads recede toward the centre of the corridor. The build, all 174 EditMode and 35 PlayMode tests, and the screenshot comparison passed again. Only the six Easy 2 screenshots changed.
-- **Pending:** Researcher review of the revised Easy 2 art and observations for Easy 1 and Easy 3.
+- **Easy art follow-up:** The researcher asked to remove the block pattern from the floors in Easy 1 and 3 and improve the Student's Cover pose in Easy 2. Both classrooms now share a continuous concrete floor with window light. Both Students tuck their chins and cover the head and neck in the redrawn two-frame pose. The Scenario text, Act-out points and timing stay the same. The Unity build and all 174 EditMode and 35 PlayMode tests passed. All 24 changed screenshots were reviewed at both target sizes, and the other 75 matched byte for byte.
+- **Pending:** Researcher review of the revised Easy art and any remaining playthrough observations.
 
 ## Open questions
 

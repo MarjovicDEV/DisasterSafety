@@ -99,7 +99,25 @@ return function(L, ST)
     box(img, x - 4, y + h - 2, w + 8, 6, R.wood)
   end
 
-  function M.background()
+  local function drawFloor(img, w, h)
+    local light, base, shadow = table.unpack(R.floor)
+    L.rect(img, 0, 208, w, h - 208, base)
+    L.hline(img, 0, w - 1, 208, shadow)
+    -- Jalousie light fans across the floor. The gap is the window's middle post.
+    L.poly(img, { 337, 209, 371, 209, 362, 236, 305, 236 }, light)
+    L.poly(img, { 375, 209, 410, 209, 427, 236, 369, 236 }, light)
+
+    -- Sparse flecks give the concrete texture without making a repeating grid.
+    for i = 1, 72 do
+      local x = (97 * i + 19 * i * i) % (w - 8) + 4
+      local y = (17 * i + 7 * i * i) % (h - 212) + 211
+      local pixel = img:getPixel(x, y)
+      L.px(img, x, y, pixel == light and base or (i % 3 == 0 and shadow or light))
+    end
+  end
+
+  M.FLOOR = R.floor
+  function M.background(withoutChair)
     local W, H = 480, 270
     local img = L.newImage(W, H)
     -- ceiling, wall, lower wall, baseboard, floor
@@ -112,12 +130,7 @@ return function(L, ST)
     L.hline(img, 0, W - 1, 164, R.wall[3])
     L.rect(img, 0, 203, W, 4, R.wood[3])
     L.hline(img, 0, W - 1, 207, O)
-    L.rect(img, 0, 208, W, H - 208, R.floor[2])
-    for y = 208, H - 1, 14 do L.hline(img, 0, W - 1, y + 13, R.floor[3]); L.hline(img, 0, W - 1, y, R.floor[1]) end
-    for row = 0, 5 do
-      local y = 208 + row * 14
-      for x = (row % 2) * 16, W, 32 do L.vline(img, x, y + 1, y + 12, R.floor[3]) end
-    end
+    drawFloor(img, W, H)
 
     -- door (left) with its frame and a small window
     box(img, 16, 106, 62, 98, R.wood)
@@ -182,7 +195,7 @@ return function(L, ST)
     L.circle(img, 345, 142, 2, R.leaf[1]); L.circle(img, 353, 140, 2, R.leaf[1])
 
     -- a chair tucked behind the desk, then the desk itself
-    chair(img, 280, 188)
+    if not withoutChair then chair(img, 280, 188) end
     deskBack(img, M.LAYOUT.deskFront[1], M.LAYOUT.deskFront[2])
     return img
   end

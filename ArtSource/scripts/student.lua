@@ -970,40 +970,40 @@ return function(L)
     return g
   end
 
-  -- Duck and cover without a desk (facing right): kneeling low and curled up, the head tucked
-  -- down near the knees, both forearms over the head and neck. The second frame presses
-  -- down 1 pixel.
+  -- Duck and cover without a desk. The Student folds the shins beneath the body,
+  -- tucks the chin, and shields the head and neck with overlapping forearms.
   function M.cover(kind, f)
     local girl = kind == "girl"
-    local d = f
-    local b = newGrid(FW, FH)
-    local leg = girl and "S" or "N"
-    rect(b, 2, 46, 7, 3, "B")                      -- far shoe, toes behind
-    ellipse(b, 11, 38 + d, 8, 6, "w")              -- curled back
-    rect(b, 3, 42 + d, 11, 4, "N")                 -- seat
-    rect(b, 10, 43 + d, 12, 3, leg)                -- knee folded under
-    if girl then
-      rect(b, 2, 41 + d, 13, 4, "N")               -- skirt
-      ellipse(b, 8, 36 + d, 4, 2, "H")             -- hair down the back
-    else
-      rect(b, 3, 41 + d, 11, 1, "x")               -- belt
-    end
-    rect(b, 16, 46, 9, 3, "B")                     -- near shoe
-    shadeLayer(b, "w", "W", "v")
-    shadeLayer(b, "N", "m", "n")
-    shadeLayer(b, "S", "t", "s")
-    shadeLayer(b, "H", "j", "h")
-    shadeLayer(b, "B", "b", nil)
-    outline(b)
     local g = newGrid(FW, FH)
-    paste(g, b, 0, 0)
-    paste(g, sideHead(kind), 9, 25 + d)            -- head tucked forward and down
-    -- forearms over the back of the head and the neck, hands meeting on top
-    pasteLimb(g, arm({ 13, 34 + d, 16, 28 + d, 23, 26 + d }, { sleeveTo = 0.6 }))
-    pasteLimb(g, arm({ 15, 35 + d, 20, 31 + d, 26, 30 + d }, { sleeveTo = 0.6 }))
-    shade(g, 0)
-    -- effort lines over the curled back
-    for _, p in ipairs({ { 6 - d, 28 - d }, { 7 - d, 27 - d }, { 12, 22 - d }, { 12, 23 - d } }) do setc(g, p[1], p[2], "o") end
+    local legs = newGrid(FW, FH)
+    ellipse(legs, 9, 42, 6, 4, "N")
+    chain(legs, { 10, 42, 21, 45, 20, 47, 8, 47 }, 4, girl and "S" or "N")
+    if girl then
+      rect(legs, 6, 41, 12, 4, "N")
+      rect(legs, 8, 46, 4, 3, "w")
+    end
+    rect(legs, 3, 46, 6, 3, "B")
+    rect(legs, 10, 47, 7, 2, "B")
+    shadeLayer(legs, "N", "m", "n")
+    shadeLayer(legs, "S", "t", "s")
+    shadeLayer(legs, "B", "b", nil)
+    paste(g, legs, 0, 0)
+
+    local upper = newGrid(FW, FH)
+    ellipse(upper, 12, 37, 8, 6, "w")
+    shadeLayer(upper, "w", "W", "v")
+    chain(upper, { 17, 34, 26, 35, 26, 30, 22, 28 }, 3, "s")
+    ellipse(upper, 22, 35, 6, 7, "H")
+    if girl then ellipse(upper, 15, 37, 4, 5, "H") end
+    ellipse(upper, 25, 39, 3, 3, "S")
+    shadeLayer(upper, "H", "j", "h")
+    pasteLimb(upper, arm({ 13, 35, 20, 39, 19, 34, 18, 30, 21, 28 }, { sleeveTo = 0.5 }))
+    setc(upper, 23, 29, "t") -- far hand at the crown
+    setc(upper, 24, 29, "S")
+    setc(upper, 26, 39, "e") -- closed eye under the forearm
+    setc(upper, 27, 40, "s")
+    paste(g, upper, 0, f)
+    outline(g)
     return g
   end
 

@@ -90,6 +90,12 @@ Act-out points use the centre of each character's feet. `LevelSetting` stores he
 | `push` | Crouch-shuffle to (182, 230), stand briefly, then run-start and stop at (110, 230) behind the Teacher. | Wave at (77, 230) |
 | Try Again | From the door, walk back to (182, 230) before crouching. From the peek point, shuffle directly back to (222, 230). Resume Hold at (222, 230). | Resume the start position and Wave. |
 
+## Easy art follow-up
+
+Easy 1 and 3 share the concrete floor drawn by `classroom_v2.lua`. The floor art begins at y 208, with window light at x 305–427, y 209–236. Easy 3 also keeps the light from the open door. The Student's floor line stays at y 230.
+
+In Easy 2, both Students use the redrawn `cover` pose. Each `boy_cover` and `girl_cover` source has two 32x50 frames at 300 ms. The Student kneels with shins folded, chin tucked and forearms over the head and neck. The upper body lowers one art pixel in the second frame, with the feet fixed.
+
 ## Removed art (cleanup, 2026-11-22)
 
 No screen showed these, and no ticket plans them (see `.scratch/cleanup/inventory.md`):

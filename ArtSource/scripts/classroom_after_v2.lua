@@ -6,21 +6,10 @@ return function(L, ST, CR, IC)
   local O = ST.KEY.o
   local wood, navy, leaf, glass, paper = IC.WOOD, IC.NAVY, IC.GREEN, IC.GLASS, IC.WHITE
 
-  local function shiftChairs(img)
-    -- The floor pattern repeats every 32 pixels. Sample the empty strip to the right
-    -- to clear the original chair without covering the last two columns of the desk top.
-    for y = 188, 229 do
-      local left = y < 195 and 282 or 280
-      for x = left, 303 do
-        img:drawPixel(x, y, img:getPixel(x + 32, y))
-      end
-    end
-  end
-
   local function drawChairs(img)
     -- An upright chair slid back. The second has tipped over, clear of the route.
     local x, y = 302, 187
-    local floorShadow = img:getPixel(1, 221)
+    local floorShadow = CR.FLOOR[3]
     L.ellipse(img, x + 12, y + 42, 17, 2, floorShadow)
     IC.box(img, x, y, 5, 42, navy)
     IC.box(img, x, y + 4, 22, 5, navy)
@@ -46,12 +35,10 @@ return function(L, ST, CR, IC)
   end
 
   local function doorLight(img)
-    -- Brighten the floor in the doorway without interrupting the existing floor joints.
-    local floorLight = img:getPixel(1, 208)
-    local floorBase = img:getPixel(1, 209)
-    local floorDark = img:getPixel(1, 221)
+    -- Daylight from the open door brightens the concrete and its flecks.
+    local light, base, shadow = table.unpack(CR.FLOOR)
     local wallBase = img:getPixel(1, 32)
-    local ramp = { [floorLight] = wallBase, [floorBase] = floorLight, [floorDark] = floorBase }
+    local ramp = { [light] = wallBase, [base] = light, [shadow] = base }
     for y = 207, 238 do
       local depth = y - 207
       local startX = 25 + depth // 3
@@ -101,8 +88,7 @@ return function(L, ST, CR, IC)
   end
 
   function M.background()
-    local img = CR.background()
-    shiftChairs(img)
+    local img = CR.background(true)
     doorLight(img)
     openDoor(img)
     drawChairs(img)
