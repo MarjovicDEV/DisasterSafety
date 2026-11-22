@@ -30,8 +30,6 @@ namespace DisasterSafety.Core
             Data.displayName = normalized;
         }
 
-        public void ClearDisplayName() => Data.displayName = string.Empty;
-
         /// <summary>The Student the Learner picked; None until they pick one, and for any text we do not know.</summary>
         public StudentKind Student
         {

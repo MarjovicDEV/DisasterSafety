@@ -231,11 +231,6 @@ return function(L)
     L.line(check, 6, 12, 13, 3, P.white, 3)
     I.check = finishIcon(check, false)
 
-    local cross = L.newImage(16, 16)
-    L.line(cross, 3, 3, 12, 12, P.white, 3)
-    L.line(cross, 12, 3, 3, 12, P.white, 3)
-    I.cross = finishIcon(cross, false)
-
     local hat = L.newImage(18, 12)
     L.ellipse(hat, 8.5, 8, 7, 6, P.yellow)
     L.rect(hat, 0, 8, 18, 3, P.yellow2)
@@ -250,13 +245,6 @@ return function(L)
     L.rect(home, 3, 8, 10, 6, P.white)
     L.rect(home, 7, 10, 3, 4, P.brown3)
     I.home = finishIcon(home, false)
-
-    local pencil = L.newImage(16, 16)
-    L.line(pencil, 3, 12, 11, 4, P.yellow, 3)
-    L.line(pencil, 11, 4, 12, 3, P.red3, 3)
-    L.px(pencil, 2, 14, P.ink2); L.px(pencil, 3, 13, P.skin1)
-    L.outline(pencil, P.ink, true)
-    I.pencil = pencil
 
     -- Level screen icons ------------------------------------------------
     local pause = L.newImage(16, 16)

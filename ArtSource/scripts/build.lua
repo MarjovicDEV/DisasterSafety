@@ -95,7 +95,10 @@ L.saveFrames({ CH.bantay("idle"), CH.bantay("wag"), CH.bantay("blink"), CH.banta
 -- UI kit
 for name, set in pairs(UI.BUTTONS) do
   L.save(UI.button(set, false), "UI/button_" .. name, "UI/button_" .. name)
-  L.save(UI.button(set, true), "UI/button_" .. name .. "_pressed", "UI/button_" .. name .. "_pressed")
+  -- Gray is only the disabled and Tried look, so it has no pressed state.
+  if name ~= "gray" then
+    L.save(UI.button(set, true), "UI/button_" .. name .. "_pressed", "UI/button_" .. name .. "_pressed")
+  end
 end
 L.save(UI.panel(), "UI/panel", "UI/panel")
 L.save(UI.bubble(), "UI/bubble", "UI/bubble")

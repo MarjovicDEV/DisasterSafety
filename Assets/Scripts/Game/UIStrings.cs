@@ -63,8 +63,6 @@ namespace DisasterSafety.Game
         public const string StudentGirl = "Girl";
 
         public const string EpisodeTitle = "Choose a Topic";
-        public const string DifficultyTitle = "Choose a Level";
-        public const string ComingSoon = "Coming soon!";
 
         public static string Levels(int count) => count + " levels";
 
@@ -96,7 +94,6 @@ namespace DisasterSafety.Game
         public const string BantayHello = "Hi! I am Bantay. Tap PLAY to start!";
         public static string BantayWelcomeBack(string name) => "Welcome back, " + name + "!";
         public static string BantayNiceToMeet(string name) => "Nice to meet you, " + name + "!";
-        public const string BantayAskName = "Let me know your name!";
         public const string BantayPickEpisode = "Start with Earthquake!";
         public const string BantayPickDifficulty = "Easy is a good start!";
         public const string BantayLevelSoon = "This level is coming soon!";

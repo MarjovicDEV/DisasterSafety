@@ -29,7 +29,6 @@ namespace DisasterSafety.EditorTools
         const float Px = 4f; // UI units per art pixel
 
         static readonly Color Ink = new Color32(0x2b, 0x21, 0x35, 0xff);
-        static readonly Color Paper = new Color32(0xff, 0xf3, 0xd6, 0xff);
         static readonly Color ErrorRed = new Color32(0xc8, 0x2a, 0x34, 0xff);
         static readonly Color HintGray = new Color32(0x8a, 0x84, 0x78, 0xff);
 

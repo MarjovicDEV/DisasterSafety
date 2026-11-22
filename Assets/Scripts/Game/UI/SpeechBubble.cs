@@ -13,7 +13,6 @@ namespace DisasterSafety.Game.UI
 
         float hideAfter = -1f;
 
-        public bool IsShowing => gameObject.activeSelf;
         public string Line => text != null ? text.text : string.Empty;
 
         /// <summary>Shows the line; a negative <paramref name="seconds"/> keeps it until Hide.</summary>

@@ -60,3 +60,11 @@ Act-out points (the Student's centre x, `BuildCorridorV2` in `ProjectBuilder.Lev
 | `stairs` | run-start to 394, stop | 394, the right foot on the top step |
 | `window` | walk to 188, stop | 188, just right of the sill |
 | `plants` | walk to 82, stop | 82, just short of the spot under the pots |
+
+## Removed art (cleanup, 2026-11-22)
+
+No screen showed these, and no ticket plans them (see `.scratch/cleanup/inventory.md`):
+
+- `Icons/icon_cross` and `Icons/icon_pencil`: the PNGs and their sources. `ui.lua` no longer draws them.
+- `UI/button_gray_pressed`: the PNG and its source. Gray is only the disabled and Tried look, so `build.lua` saves no pressed state for it. `button_gray` stays.
+- The third-party `Assets/8K Skybox Pack Free` and `Assets/Clean Vector Icons` packs, which the game never used.
