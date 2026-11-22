@@ -69,22 +69,6 @@ namespace DisasterSafety.EditorTools
             Feedback(c, corridor.SafeChoice);
             Shot("21-level2-feedback-safe", c.choicesPanel, c.dimmer, c.feedbackPanel);
 
-            var classroomAfter = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Easy, 3));
-            c.bantay.bubbleText.text = classroomAfter.intro.text;
-            Shot("30-level3", c.choicesPanel, c.bantay.bubble);
-
-            var stay = ChoiceIndex(classroomAfter, "stay");
-            c.choiceCards[stay].SetTried(true);
-            Feedback(c, classroomAfter.choices[stay]);
-            Shot("31-level3-feedback-unsafe", c.choicesPanel, c.dimmer, c.feedbackPanel);
-
-            var openedName = UIStrings.DifficultyName(Difficulty.Normal);
-            c.openedText.text = UIStrings.Opened(openedName);
-            c.openedRibbon.SetActive(true);
-            c.cheerBantay.bubbleText.text = LevelController.OpenedLine(openedName, Episode.Earthquake, Difficulty.Normal, scenarios.Playable);
-            Completed(c, classroomAfter, 3);
-            Shot("32-level-completed-normal-open", c.dimmer, c.completedPanel, c.cheerBantay.bubble);
-
             var normalShots = new[] { "40-normal1", "41-normal2", "42-normal3", "43-normal4", "44-normal5" };
             Scenario normal = null;
             for (var i = 0; i < normalShots.Length; i++)
@@ -137,6 +121,7 @@ namespace DisasterSafety.EditorTools
 
             CaptureStudentFlow(c, scenarios, Shot);
             CaptureCorridor(c, scenarios, Shot);
+            CaptureClassroomAfter(c, scenarios, Shot);
         }
 
         // Easy 2 in the corridor (e2-*): the Action Bar, the last Safe step (cover at the inner wall) and
@@ -176,6 +161,55 @@ namespace DisasterSafety.EditorTools
             student.bubble.Say(UIStrings.ReactionWait);
             shot("e2-stop", new ScreenPanel[0]);
             student.bubble.Hide();
+        }
+
+        // Easy 3 in the classroom after the shaking: the Action Bar, the exit and the stop behind the Teacher.
+        static void CaptureClassroomAfter(LevelController c, ScenarioLibrary scenarios, Action<string, ScreenPanel[]> shot)
+        {
+            var s = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Easy, 3));
+            c.ShowSetting(ScenarioSettings.ActionArtKey(s.setting));
+            c.UseStudentLayout();
+            c.captionGoal.text = s.goal.text;
+            c.captionBody.text = s.intro.text;
+            c.FitCaption();
+            c.actionBar.Setup(s, _ => { });
+
+            var setting = c.ActiveSetting;
+            var student = setting.student;
+            var teacher = setting.grownUps[0];
+            student.SetKind(StudentKind.Boy);
+            student.PlaceAt(setting.startX, setting.startY);
+            student.ShowFrame(setting.startPose, 0);
+            student.bubble.Hide();
+            teacher.PlaceAtStart();
+            shot("e3-actionbar", new[] { c.actionBar.panel });
+
+            var walk = setting.ActOutFor(s.SafeChoice.action);
+            var exit = Array.Find(walk.steps, step => step.kind == ActOutStepKind.Walk && step.grownUp == teacher);
+            teacher.PlaceAt(exit.grownUpDestination.x, exit.grownUpDestination.y);
+            teacher.Play(GrownUpPose.Idle);
+            student.PlaceAt(exit.x, exit.y);
+            student.ShowFrame(walk.EndPose, 0);
+            student.bubble.Say(UIStrings.ReactionSafe);
+            shot("e3-safe", Array.Empty<ScreenPanel>());
+
+            teacher.PlaceAtStart();
+            var push = setting.ActOutFor("push");
+            student.PlaceAt(push.StopX(setting.startX), setting.startY);
+            student.ShowFrame(push.stopPose, 0);
+            student.bubble.Say(UIStrings.ReactionWait);
+            shot("e3-stop", Array.Empty<ScreenPanel>());
+            student.bubble.Hide();
+
+            var openedName = UIStrings.DifficultyName(Difficulty.Normal);
+            c.openedText.text = UIStrings.Opened(openedName);
+            c.openedRibbon.SetActive(true);
+            Completed(c, s, 3);
+            c.completedStudent.SetKind(StudentKind.Boy);
+            c.completedStudent.ShowFrame(StudentPose.Happy, 0);
+            c.completedBubble.Say(LevelController.OpenedLine(openedName, Episode.Earthquake, Difficulty.Normal, scenarios.Playable), -1f);
+            shot("32-level-completed-normal-open", new[] { c.dimmer, c.completedPanel });
+            c.completedBubble.Hide();
         }
 
         // Easy 1 in the Student flow (60-65, and the Feedback layout). Poses and spots come from the Setting group.

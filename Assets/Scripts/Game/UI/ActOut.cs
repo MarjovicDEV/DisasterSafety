@@ -12,7 +12,7 @@ namespace DisasterSafety.Game.UI
         FastWalk,
         /// <summary>Start to run to (x, y). Only Unsafe Act-outs run, and they stop soon after.</summary>
         Run,
-        /// <summary>Crouch and shuffle to x, such as in under a desk or table.</summary>
+        /// <summary>Crouch and shuffle to x, optionally looking in the direction of travel for the seconds.</summary>
         Crouch,
         /// <summary>Play a pose and hold it for the seconds.</summary>
         Pose,
@@ -59,7 +59,7 @@ namespace DisasterSafety.Game.UI
         [Tooltip("Walk, FastWalk, Run: the height of the feet above the floor line, in art pixels.")]
         public float y;
         public StudentPose pose;
-        [Tooltip("Pose, Say, Wait, PropSlide: seconds.")]
+        [Tooltip("Crouch, Pose, Say, Wait, PropSlide: seconds.")]
         public float seconds;
         [Tooltip("Say: the line, from UIStrings.")]
         public string line;
@@ -68,8 +68,10 @@ namespace DisasterSafety.Game.UI
         [Tooltip("PropPlace: where the prop goes (its anchored position, UI units).")]
         public Vector2 place;
 
-        [Tooltip("GrownUp: who acts.")]
+        [Tooltip("GrownUp: who acts. Walk: who walks alongside the Student, if anyone.")]
         public GrownUpActor grownUp;
+        [Tooltip("Walk with a Grown-up: their x and height above the floor line, in art pixels.")]
+        public Vector2 grownUpDestination;
         [Tooltip("GrownUp: what the Grown-up does. Walk uses x and y; Pose uses grownUpPose and seconds; Turn uses faceLeft.")]
         public GrownUpAction grownUpAction;
         public GrownUpPose grownUpPose;
@@ -81,9 +83,12 @@ namespace DisasterSafety.Game.UI
                              || kind == ActOutStepKind.Run || kind == ActOutStepKind.Crouch;
 
         public static ActOutStep Walk(float x, float y = 0f) => new ActOutStep { kind = ActOutStepKind.Walk, x = x, y = y };
+        public static ActOutStep WalkWith(GrownUpActor who, float x, float y, Vector2 destination) =>
+            new ActOutStep { kind = ActOutStepKind.Walk, x = x, y = y, grownUp = who, grownUpDestination = destination };
         public static ActOutStep FastWalk(float x, float y = 0f) => new ActOutStep { kind = ActOutStepKind.FastWalk, x = x, y = y };
         public static ActOutStep Run(float x, float y = 0f) => new ActOutStep { kind = ActOutStepKind.Run, x = x, y = y };
-        public static ActOutStep Crouch(float x) => new ActOutStep { kind = ActOutStepKind.Crouch, x = x };
+        public static ActOutStep Crouch(float x, float lookSeconds = 0f) =>
+            new ActOutStep { kind = ActOutStepKind.Crouch, x = x, seconds = lookSeconds };
         public static ActOutStep Pose(StudentPose pose, float seconds = 0f) => new ActOutStep { kind = ActOutStepKind.Pose, pose = pose, seconds = seconds };
         public static ActOutStep Say(string line, float seconds = 1f) => new ActOutStep { kind = ActOutStepKind.Say, line = line, seconds = seconds };
         public static ActOutStep Wait(float seconds) => new ActOutStep { kind = ActOutStepKind.Wait, seconds = seconds };
@@ -111,6 +116,8 @@ namespace DisasterSafety.Game.UI
         public ActOutStep[] steps = new ActOutStep[0];
         [Tooltip("An Unsafe Choice plays the steps up to and including this index, then stops. Below 0: every step.")]
         public int stopAfter = -1;
+        [Tooltip("The pose for the Unsafe Reaction. Use a low pose if the Student is still under cover.")]
+        public StudentPose stopPose = StudentPose.Wait;
 
         /// <summary>The index of the last step a Safe (false) or Unsafe (true) Choice plays.</summary>
         public int LastStep(bool stops) =>

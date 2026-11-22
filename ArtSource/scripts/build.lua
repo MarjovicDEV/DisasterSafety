@@ -161,6 +161,14 @@ if want("classroom_v2") then
   L.saveFrames(CR.cabinetFrames(), "Level/v2/cabinet", "Level/v2/cabinet", 120)
 end
 
+-- The v2 classroom after the shaking (Easy 3): its own background and desk-front overlay.
+if want("classroom_after_v2") then
+  local IC = dofile(here .. "icons_v2.lua")(L, ST)
+  local CA = dofile(here .. "classroom_after_v2.lua")(L, ST, CR, IC)
+  L.save(CA.background(), "Level/v2/bg_classroom_after", "Level/v2/bg_classroom_after")
+  L.save(CA.deskFront(), "Level/v2/classroom_after_desk_front", "Level/v2/classroom_after_desk_front")
+end
+
 -- v2 UI: the 4 Choice icons and the Caption, Action Bar button and speech bubble 9-slices
 if want("ui_v2") then
   local UV = dofile(here .. "ui_v2.lua")(L, ST, CR)

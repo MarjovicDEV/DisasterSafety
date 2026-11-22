@@ -90,6 +90,73 @@ return function(L, ST)
     L.outline(p, O)
     out.plants = p
 
+    -- Easy 3, classroom after the shaking --------------------------------------------------
+    -- stay: the Student stays low behind the top and the front legs of the desk.
+    local stay = L.newImage(16, 16)
+    L.map(stay, 0, 0, {
+      "................",
+      "................",
+      ".oooooooooooooo.",
+      ".oAAAAAAAAAAAao.",
+      ".oaaaaaaaaaaaao.",
+      ".oooooooooooooo.",
+      "..oAo..oooo.oao.",
+      "..oAo.oHHHHooao.",
+      "..oAo.oHjSSooao.",
+      "..oAo.oHtSsooao.",
+      "..oAo.oWwvo.oao.",
+      "..oAooWWwvo.oao.",
+      "..oAoomNnoo.oao.",
+      "..oAoooooo..oao.",
+      "..ooo.......ooo.",
+      "................",
+    }, setmetatable({ A = M.WOOD[1], a = M.WOOD[2] }, { __index = K }))
+    out.stay = stay
+
+    -- walk with the Teacher: the taller figure leads, the Student keeps a step back.
+    local walk = L.newImage(16, 16)
+    L.map(walk, 0, 0, {
+      "..........ooo...",
+      ".........oHHHo..",
+      ".........oHjSSo.",
+      ".........oHtSso.",
+      "...ooo...oomno..",
+      "..oHHHo..omNno..",
+      "..oHtSsoomprno..",
+      "..oWtsoo.omNnSo.",
+      "..oWwvo..omNnno.",
+      "..oWvwSo.omNno..",
+      "..omNNno.omNno..",
+      "..omNno..oSoo...",
+      "...oSoo..oSoSo..",
+      "..oSoSo.oBooSo..",
+      "..oooBo.oo.oBBo.",
+      "....ooo....oooo.",
+    }, K)
+    out.teacher_walk = walk
+
+    -- push: the Student leans forward with both arms out behind the taller figure.
+    local push = L.newImage(16, 16)
+    L.map(push, 0, 0, {
+      "...........ooo..",
+      "..........oHHHo.",
+      "..........oHjSSo",
+      "..........oHtSso",
+      "....ooo...oomno.",
+      "...oHHHo..omNno.",
+      "...oHtSsoomprno.",
+      "....oWwwooNNno..",
+      "...oWwwwtSmNno..",
+      "...oWvvooomNno..",
+      "..omNno..omNno..",
+      "..omNno...oSoo..",
+      ".omNoNno..oSoSo.",
+      ".oBo.oNo.oBooSo.",
+      ".oo..oBBo.ooBBo.",
+      "......ooo...ooo.",
+    }, K)
+    out.push = push
+
     return out
   end
 

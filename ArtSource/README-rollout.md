@@ -62,6 +62,34 @@ Act-out points (the Student's centre x, `BuildCorridorV2` in `ProjectBuilder.Lev
 | `window` | walk to 188, stop | 188, just right of the sill |
 | `plants` | walk to 82, stop | 82, just short of the spot under the pots |
 
+## Classroom after (`ArtSource/scripts/classroom_after_v2.lua`, part `classroom_after_v2`)
+
+Run: `aseprite.exe -b --script-param root=<project> --script-param only=classroom_after_v2 --script ArtSource/scripts/build.lua`.
+It writes `Level/v2/bg_classroom_after` (480x270) and `Level/v2/classroom_after_desk_front` (84x42). The separate desk front draws over the Student. Use `only=icons_v2` and `icons=stay,teacher_walk,push` for the three 16x16 Choice icons.
+
+All coordinates are art pixels measured from the top left. The floor line is y 230. One art pixel is four UI units. The bulletin board, flag, blackboard, clock, window, plant, desk, fan and tall cabinet keep their pilot placements. The room is still during this Phase.
+
+| Part | Placement or bounds |
+|---|---|
+| Open door and EXIT sign | Door frame (16, 106), 62x98; opening x 26–70; door leaf x 7–26, y 104–215; EXIT sign (24, 92) |
+| Threshold and daylight | Sill x 19–76, y 203–210; floor light x 25–113, y 208–238 |
+| Desk front | (198, 188), 84x42; left front leg x 200–206 |
+| Student Reaction bubble | 44 pixels to the right of its usual centred position, clear of the Teacher |
+| Upright chair | (302, 187), 24x42 |
+| Tipped chair | 54x24 layer at (340, 212) |
+| Floor papers | (122, 216), (154, 230), (325, 224), (398, 232) |
+| Still fan and tall cabinet | (204, 0) and (424, 100) |
+
+Act-out points use the centre of each character's feet. `LevelSetting` stores height above y 230, so a 21-pixel rise places the Student's feet at y 209.
+
+| Choice (`action`) | Student steps and points | Teacher steps and points |
+|---|---|---|
+| Start | Hold at (222, 230) under the desk | Wave at (77, 230) by the door |
+| Safe: `walk` | Crouch-shuffle to (182, 230), stand briefly, walk to (113, 230), then follow the Teacher to (51, 209) and play Happy | Wave until the Student approaches, then turn left and lead to (36, 195) |
+| `stay` | Hold for 0.45 s, shift to (220, 230), and peek left for 0.3 s. The Unsafe Reaction plays while the Student is still low under the desk. | Wave at (77, 230) |
+| `push` | Crouch-shuffle to (182, 230), stand briefly, then run-start and stop at (110, 230) behind the Teacher. | Wave at (77, 230) |
+| Try Again | From the door, walk back to (182, 230) before crouching. From the peek point, shuffle directly back to (222, 230). Resume Hold at (222, 230). | Resume the start position and Wave. |
+
 ## Removed art (cleanup, 2026-11-22)
 
 No screen showed these, and no ticket plans them (see `.scratch/cleanup/inventory.md`):

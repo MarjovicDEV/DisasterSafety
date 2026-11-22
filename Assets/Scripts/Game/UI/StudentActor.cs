@@ -146,11 +146,12 @@ namespace DisasterSafety.Game.UI
         public IEnumerator WalkTo(float artX, float artY, float speed) =>
             Move(artX, artY, speed, () => { Play(StudentPose.Walk); frameRate = speed / WalkSpeed; }, () => Play(StudentPose.Idle));
 
-        /// <summary>Crouches and shuffles to the x at CrouchSpeed (under the desk), then stays crouched.</summary>
-        public IEnumerator CrouchTo(float artX)
+        /// <summary>Crouches and shuffles to x, optionally looking that way before facing front.</summary>
+        public IEnumerator CrouchTo(float artX, float lookSeconds = 0f)
         {
             Play(StudentPose.Crouch);
             yield return Move(artX, Y, CrouchSpeed, null, null);
+            if (lookSeconds > 0f) yield return new WaitForSeconds(lookSeconds);
             Face(false);
         }
     }

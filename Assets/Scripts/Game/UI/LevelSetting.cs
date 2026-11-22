@@ -21,6 +21,8 @@ namespace DisasterSafety.Game.UI
         public float startX;
         public float startY;
         public StudentPose startPose = StudentPose.Idle;
+        [Tooltip("The x to the left of a low start spot where the Student crouches on Try Again. A negative value keeps the full return upright.")]
+        public float startCrouchFromX = -1f;
         [Tooltip("The Grown-ups of the Setting. They stand at their start place and pose, and return there on Try Again.")]
         public GrownUpActor[] grownUps = new GrownUpActor[0];
         [Tooltip("The props the Act-outs move. They return to their start place on Try Again.")]

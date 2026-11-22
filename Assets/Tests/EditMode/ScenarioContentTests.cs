@@ -110,7 +110,7 @@ namespace DisasterSafety.Tests
         public void OnlyTheMovedLevels_UseTheStudentFlow()
         {
             var levels = Files().Select(Load).Where(s => s.UsesActions).Select(s => s.level).OrderBy(l => l).ToList();
-            Assert.That(levels, Is.EqualTo(new[] { "Earthquake/Easy/1", "Earthquake/Easy/2" }));
+            Assert.That(levels, Is.EqualTo(new[] { "Earthquake/Easy/1", "Earthquake/Easy/2", "Earthquake/Easy/3" }));
             foreach (var path in Files())
             {
                 var s = Load(path);
@@ -142,6 +142,34 @@ namespace DisasterSafety.Tests
                 "Duck down low. Cover your head with your arms or a book.",
                 "Hanging pots can swing and fall. Stay away from them.",
             }));
+        }
+
+        [Test]
+        public void EasyLevel3_UsesTheStudentFlow_InTheClassroomAfter_WithItsTextUnchanged()
+        {
+            var s = Load(Path.Combine(ScenarioFolder, "Earthquake/Easy/3.json"));
+            Assert.That(s.UsesActions, Is.True);
+            Assert.That(s.phase, Is.EqualTo(ScenarioPhases.After));
+            Assert.That(s.setting, Is.EqualTo(ScenarioSettings.ClassroomAfter));
+            Assert.That(ScenarioSettings.ActionSpots(s.setting), Is.EquivalentTo(new[] { "stay", "walk", "push" }));
+            Assert.That(s.choices.Select(c => c.action), Is.EqualTo(new[] { "stay", "walk", "push" }));
+            Assert.That(s.choices.Select(c => c.icon), Is.EqualTo(new[] { "icon_stay", "icon_teacher_walk", "icon_push" }));
+            Assert.That(s.SafeChoice.id, Is.EqualTo("walk"));
+            Assert.That(s.choices.Select(c => c.picture), Is.EqualTo(new[] { "choice_stay", "choice_walk", "choice_push" }));
+            Assert.That(s.choices.Select(c => c.label), Is.EqualTo(new[]
+            {
+                "Stay under the desk", "Walk out with your teacher", "Run and push to the door",
+            }));
+            Assert.That(s.choices.Select(c => c.heading ?? ""), Is.EqualTo(new[] { "Time to go", "", "" }));
+            Assert.That(s.choices.Select(c => c.feedback), Is.EqualTo(new[]
+            {
+                "The shaking stopped. Now leave the classroom with your teacher.",
+                "Walk out with your class. Follow your teacher to the evacuation area.",
+                "Walk. Do not run. Do not push.",
+            }));
+            Assert.That(s.choices[0].sources, Is.EqualTo(new[] { "EQ-19", "EQ-34", "EQ-35" }));
+            Assert.That(s.choices[1].sources, Is.EqualTo(new[] { "EQ-34", "EQ-35", "EQ-37" }));
+            Assert.That(s.choices[2].sources, Is.EqualTo(new[] { "EQ-20", "EQ-36" }));
         }
 
         [Test]

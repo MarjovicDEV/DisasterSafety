@@ -198,7 +198,7 @@ namespace DisasterSafety.Tests
         public IEnumerator EasyDifficulty_CompletingAllThreeLevels_OpensNormal()
         {
             var second = new LevelId(Episode.Earthquake, Difficulty.Easy, 2);
-            var third = new LevelId(Episode.Earthquake, Difficulty.Easy, 3);
+            var third = Third;
 
             GameServices.Initialize(dir);
             GameServices.Progress.SetDisplayName("Ana");
@@ -235,19 +235,10 @@ namespace DisasterSafety.Tests
 
             yield return WaitFor(() => Level()?.Level.Equals(third) == true && Level().ActiveSetting != null, "Level 3 to load");
             c = Level();
-            Assert.That(c.ActiveSetting.key, Is.EqualTo("classroom_after"));
-            Assert.That(c.ActiveSetting.shaker == null || !c.ActiveSetting.shaker.IsShaking, Is.True);
-            Assert.That(c.bantay.bubbleText.text, Is.EqualTo("The shaking stopped. Your teacher is at the door."));
-
-            var teacher = c.ActiveSetting.GetComponentInChildren<SpriteAnimator>();
-            Assert.That(teacher, Is.Not.Null, "the teacher waves in the still classroom");
-            var teacherImage = teacher.GetComponent<Image>();
-            var firstFrame = teacherImage.sprite;
-            yield return WaitFor(() => teacherImage.sprite != firstFrame, "the teacher to wave");
+            Assert.That(c.ActiveSetting.key, Is.EqualTo("classroom_after_v2"));
             yield return ReadyToChoose(Level);
 
-            const int Walk = 1;
-            c.choiceCards[Walk].button.onClick.Invoke();
+            yield return ChooseAndWait(c, ClassroomWalk);
             c.finishButton.onClick.Invoke();
             Assert.That(c.completedPanel.IsVisible, Is.True);
             Assert.That(c.LastResult.Opened, Does.Contain("Earthquake/Normal"));
@@ -258,13 +249,10 @@ namespace DisasterSafety.Tests
             Assert.That(saved.IsCompleted(third), Is.True);
             Assert.That(saved.IsOpen(Episode.Earthquake, Difficulty.Normal), Is.True);
 
-            Assert.That(c.cheerBantay.bubbleText.text, Is.EqualTo("You did it, Ana!"));
+            Assert.That(c.completedBubble.Line, Is.EqualTo("You did it, Ana!"));
             const string openedLine = "Normal is open! Let's play!";
-            yield return WaitFor(() => c.cheerBantay.bubble.IsVisible && c.cheerBantay.bubbleText.text == openedLine,
-                "Bantay to announce that Normal is open", 5f);
-
-            c.cheerBantay.OnPointerClick(null);
-            Assert.That(c.cheerBantay.bubbleText.text, Is.EqualTo("Woof woof! Great job, Ana!"));
+            yield return WaitFor(() => c.completedBubble.gameObject.activeInHierarchy && c.completedBubble.Line == openedLine,
+                "the Student to announce that Normal is open", 5f);
 
             var completed = c;
             c.replayButton.onClick.Invoke();
@@ -272,13 +260,13 @@ namespace DisasterSafety.Tests
             yield return ReadyToChoose(Level);
             c = Level();
             Assert.That(c.Level, Is.EqualTo(third));
-            c.choiceCards[Walk].button.onClick.Invoke();
+            yield return ChooseAndWait(c, ClassroomWalk);
             c.finishButton.onClick.Invoke();
             Assert.That(c.completedPanel.IsVisible, Is.True);
             Assert.That(c.LastResult.Opened, Is.Empty);
             Assert.That(c.openedRibbon.activeSelf, Is.False);
             yield return Wait(LevelController.OpenedLineDelay + 0.2f);
-            Assert.That(c.cheerBantay.bubbleText.text, Is.EqualTo("You did it, Ana!"));
+            Assert.That(c.completedBubble.Line, Is.EqualTo("You did it, Ana!"));
         }
 
         [UnityTest]
@@ -574,6 +562,126 @@ namespace DisasterSafety.Tests
             Assert.That(window - 16f, Is.GreaterThanOrEqualTo(170f));
             var plants = setting.ActOutFor("plants").StopX(setting.startX);
             Assert.That(plants - 16f, Is.GreaterThan(63f));
+        }
+
+        static readonly LevelId Third = new LevelId(Episode.Earthquake, Difficulty.Easy, 3);
+        const int ClassroomStay = 0, ClassroomWalk = 1, ClassroomPush = 2;
+
+        IEnumerator StartEasyThree()
+        {
+            GameServices.Initialize(dir);
+            GameServices.Progress.SetDisplayName("Ana");
+            GameServices.SaveProgress();
+            GameScenes.PlayLevel(Third);
+            yield return WaitFor(() => Level()?.Level.Equals(Third) == true && Level().ActiveSetting != null,
+                "Easy 3 to start");
+            Assert.That(Level().UsesStudentFlow, Is.True, "Easy 3 shows the Action Bar");
+        }
+
+        [UnityTest]
+        public IEnumerator EasyLevel3_SafeChoice_ActsOutAndCompletes()
+        {
+            yield return StartEasyThree();
+            var c = Level();
+            var student = c.Student;
+            Assert.That(c.ActiveSetting.key, Is.EqualTo("classroom_after_v2"));
+            Assert.That(c.bantay.gameObject.activeInHierarchy, Is.False);
+            Assert.That(c.ActiveSetting.shaker == null || !c.ActiveSetting.shaker.IsShaking, Is.True);
+            Assert.That(c.captionBody.text, Is.EqualTo("The shaking stopped. Your teacher is at the door."));
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Hold));
+            Assert.That(student.X, Is.EqualTo(222f));
+            Assert.That(c.ActiveSetting.grownUps, Has.Length.EqualTo(1));
+            var teacher = c.ActiveSetting.grownUps[0];
+            Assert.That(teacher.kind, Is.EqualTo(GrownUpKind.Teacher));
+            Assert.That(teacher.Pose, Is.EqualTo(GrownUpPose.Wave));
+            Assert.That(teacher.X, Is.EqualTo(77f));
+            var firstFrame = teacher.CurrentSprite;
+            Assert.That(firstFrame, Is.Not.Null);
+            yield return WaitFor(() => teacher.CurrentSprite != firstFrame, "the Teacher to wave");
+            yield return ReadyToChoose(Level);
+            Assert.That(c.actionBar.buttons[ClassroomStay].icon.sprite.name, Is.EqualTo("icon_stay"));
+            Assert.That(c.actionBar.buttons[ClassroomWalk].icon.sprite.name, Is.EqualTo("icon_teacher_walk"));
+            Assert.That(c.actionBar.buttons[ClassroomPush].icon.sprite.name, Is.EqualTo("icon_push"));
+
+            Tap(c, ClassroomWalk);
+            Assert.That(c.actionBar.IsVisible, Is.False);
+            yield return WaitFor(() => student.Pose == StudentPose.Crouch && student.IsWalking,
+                "the Student to shuffle out from under the desk");
+            Assert.That(teacher.AtStart, Is.True);
+            yield return WaitFor(() => student.Pose == StudentPose.Idle && student.X == 182f,
+                "the Student to stand beside the desk");
+            yield return WaitFor(() => student.X < 182f && student.IsWalking && student.Pose == StudentPose.Walk,
+                "the Student to walk to the Teacher");
+            Assert.That(teacher.AtStart, Is.True);
+            yield return WaitFor(() => student.IsWalking && teacher.IsWalking,
+                "the Student and the Teacher to walk out together");
+            Assert.That(student.FacingLeft, Is.True);
+            Assert.That(teacher.FacingLeft, Is.True);
+            Assert.That(student.X - teacher.X, Is.GreaterThan(14f), "the Teacher leads through the door");
+
+            yield return WaitFor(() => student.bubble.Line == "I'm safe!", "the Safe Reaction");
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Happy));
+            Assert.That(student.X, Is.EqualTo(51f));
+            Assert.That(student.Y, Is.EqualTo(21f));
+            Assert.That(teacher.X, Is.EqualTo(36f));
+            Assert.That(teacher.Y, Is.EqualTo(35f));
+
+            yield return FeedbackShown(c);
+            Assert.That(c.finishButton.gameObject.activeSelf, Is.True);
+            Assert.That(c.feedbackText.text, Is.EqualTo("Walk out with your class. Follow your teacher to the evacuation area."));
+            c.finishButton.onClick.Invoke();
+            Assert.That(c.completedPanel.IsVisible, Is.True);
+            Assert.That(c.LastResult.Stars, Is.EqualTo(3));
+        }
+
+        [UnityTest]
+        public IEnumerator EasyLevel3_UnsafeChoice_StopsAndResets()
+        {
+            yield return StartEasyThree();
+            var c = Level();
+            var student = c.Student;
+            var teacher = c.ActiveSetting.grownUps[0];
+            yield return ReadyToChoose(Level);
+
+            Tap(c, ClassroomStay);
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Hold));
+            yield return WaitFor(() => student.bubble.Line == "Hmm, wait...", "the stop under the desk");
+            Assert.That(student.X, Is.EqualTo(220f), "the Student only peeks out");
+            Assert.That(teacher.AtStart, Is.True);
+            yield return FeedbackShown(c);
+            Assert.That(c.feedbackHeading.text, Is.EqualTo("Time to go"));
+            c.tryAgainButton.onClick.Invoke();
+            yield return ActionBarShown(c);
+            Assert.That(student.X, Is.EqualTo(222f));
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Hold));
+            Assert.That(c.actionBar.buttons[ClassroomStay].button.interactable, Is.False);
+
+            Tap(c, ClassroomPush);
+            yield return WaitFor(() => student.Pose == StudentPose.Crouch && student.IsWalking,
+                "the Student to shuffle out from under the desk");
+            yield return WaitFor(() => student.IsWalking && student.Pose == StudentPose.Walk,
+                "the Student to start running toward the door");
+            yield return WaitFor(() => student.Pose == StudentPose.Wait, "the Student to stop behind the Teacher");
+            Assert.That(student.X, Is.EqualTo(110f));
+            Assert.That(student.X - 16f, Is.GreaterThanOrEqualTo(teacher.X + 18f - 1f),
+                "the Student stops with room between the two figures");
+            Assert.That(teacher.AtStart, Is.True, "the Student does not push or move the Teacher");
+            Assert.That(student.bubble.Line, Is.EqualTo("Hmm, wait..."));
+
+            yield return FeedbackShown(c);
+            Assert.That(c.tryAgainButton.gameObject.activeSelf, Is.True);
+            c.tryAgainButton.onClick.Invoke();
+            yield return WaitFor(() => student.Pose == StudentPose.Crouch && student.IsWalking,
+                "the Student to crouch before shuffling back under the desk");
+            yield return ActionBarShown(c);
+            Assert.That(student.X, Is.EqualTo(222f));
+            Assert.That(student.Y, Is.Zero);
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Hold));
+            Assert.That(teacher.AtStart, Is.True);
+            Assert.That(c.Attempt.Phase, Is.EqualTo(AttemptPhase.Choosing));
+            Assert.That(c.actionBar.buttons[ClassroomStay].button.interactable, Is.False);
+            Assert.That(c.actionBar.buttons[ClassroomPush].button.interactable, Is.False);
+            Assert.That(c.actionBar.buttons[ClassroomWalk].button.interactable, Is.True);
         }
 
         [UnityTest]

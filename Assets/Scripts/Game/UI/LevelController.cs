@@ -289,7 +289,7 @@ namespace DisasterSafety.Game.UI
             }
             else
             {
-                student.Play(StudentPose.Wait);
+                student.Play(actOut?.stopPose ?? StudentPose.Wait);
                 student.Say(UIStrings.ReactionWait, ReactionSeconds + 1f);
                 AudioManager.Play(Sfx.Unsafe);
             }
@@ -352,7 +352,14 @@ namespace DisasterSafety.Game.UI
             switch (step.kind)
             {
                 case ActOutStepKind.Walk:
+                    Coroutine grownUpWalk = null;
+                    if (step.grownUp != null)
+                    {
+                        var destination = step.grownUpDestination;
+                        grownUpWalk = StartCoroutine(step.grownUp.WalkTo(destination.x, destination.y));
+                    }
                     yield return student.WalkTo(step.x, step.y, PoseActor.WalkSpeed);
+                    if (grownUpWalk != null) yield return grownUpWalk;
                     break;
                 case ActOutStepKind.FastWalk:
                     yield return student.WalkTo(step.x, step.y, PoseActor.FastWalkSpeed);
@@ -361,7 +368,7 @@ namespace DisasterSafety.Game.UI
                     yield return student.WalkTo(step.x, step.y, PoseActor.RunSpeed);
                     break;
                 case ActOutStepKind.Crouch:
-                    yield return student.CrouchTo(step.x);
+                    yield return student.CrouchTo(step.x, step.seconds);
                     break;
                 case ActOutStepKind.Pose:
                 case ActOutStepKind.Wait:
@@ -405,7 +412,18 @@ namespace DisasterSafety.Game.UI
             foreach (var grownUp in setting.grownUps)
                 if (grownUp != null && !grownUp.AtStart) resets.Add(StartCoroutine(grownUp.ReturnToStart()));
 
-            yield return student.WalkTo(setting.startX, setting.startY, PoseActor.WalkSpeed);
+            if (setting.startCrouchFromX >= 0f)
+            {
+                // A Student already under the desk only needs the short shuffle back to the leg.
+                if (student.X < setting.startCrouchFromX)
+                    yield return student.WalkTo(setting.startCrouchFromX, setting.startY, PoseActor.WalkSpeed);
+                yield return student.CrouchTo(setting.startX);
+            }
+            else
+            {
+                yield return student.WalkTo(setting.startX, setting.startY, PoseActor.WalkSpeed);
+            }
+
             foreach (var reset in resets) yield return reset;
             if (setting.startPose != StudentPose.Idle) student.Play(setting.startPose);
             actionBar.Show();

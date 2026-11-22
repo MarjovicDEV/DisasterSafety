@@ -72,7 +72,7 @@ namespace DisasterSafety.EditorTools
                 BuildClassroom(world), BuildCorridor(world), BuildClassroomAfter(world),
                 BuildBedroom(world), BuildHome(world), BuildSchoolyard(world), BuildBeach(world),
                 BuildMallA(world), BuildMallB(world), BuildHomeAfter(world), BuildEvacuationArea(world),
-                BuildClassroomV2(world), BuildCorridorV2(world),
+                BuildClassroomV2(world), BuildCorridorV2(world), BuildClassroomAfterV2(world),
             };
             for (var i = 1; i < c.settings.Length; i++)
                 c.settings[i].gameObject.SetActive(false);
@@ -374,6 +374,92 @@ namespace DisasterSafety.EditorTools
                 new ActOut { key = "plants", stopAfter = 0, steps = new[] { ActOutStep.Walk(82f) } },
             };
             return setting;
+        }
+
+        static LevelSetting BuildClassroomAfterV2(RectTransform world)
+        {
+            var group = Stretch(Rect("Classroom After V2", world));
+            var setting = group.gameObject.AddComponent<LevelSetting>();
+            setting.key = ScenarioSettings.ActionArtKey(ScenarioSettings.ClassroomAfter);
+            setting.artAnchorY = 0f;
+            ArtImage(group, "Classroom After V2", S("Level/v2/bg_classroom_after"), 0, 0);
+
+            var teacher = BuildTeacher(group, 77f);
+            setting.grownUps = new[] { teacher };
+            setting.student = BuildStudent(group, withBubble: true);
+            // Keep the Student's Reaction clear of the Teacher while they stand near the doorway.
+            var reaction = (RectTransform)setting.student.bubble.transform;
+            reaction.anchoredPosition += new Vector2(44f * Px, 0f);
+            ArtImage(group, "Desk Front", S("Level/v2/classroom_after_desk_front"), 198, 188);
+
+            // Continue the Hold from Easy 1. Walk back to the same desk edge before crouching on Try Again.
+            const float deskEdge = 182f;
+            setting.startX = 222f;
+            setting.startPose = StudentPose.Hold;
+            setting.startCrouchFromX = deskEdge;
+            setting.actOuts = new[]
+            {
+                new ActOut
+                {
+                    key = "stay",
+                    stopAfter = 1,
+                    stopPose = StudentPose.Hold,
+                    steps = new[]
+                    {
+                        ActOutStep.Pose(StudentPose.Hold, 0.45f),
+                        ActOutStep.Crouch(220f, lookSeconds: 0.3f),
+                    },
+                },
+                new ActOut
+                {
+                    key = "walk",
+                    steps = new[]
+                    {
+                        ActOutStep.Crouch(deskEdge),
+                        ActOutStep.Pose(StudentPose.Idle, 0.16f),
+                        ActOutStep.Walk(113f),
+                        ActOutStep.GrownUpTurn(teacher, left: true),
+                        ActOutStep.WalkWith(teacher, 51f, 21f, new Vector2(36f, 35f)),
+                        ActOutStep.Pose(StudentPose.Happy),
+                    },
+                },
+                new ActOut
+                {
+                    key = "push",
+                    stopAfter = 2,
+                    steps = new[]
+                    {
+                        ActOutStep.Crouch(deskEdge),
+                        ActOutStep.Pose(StudentPose.Idle, 0.16f),
+                        ActOutStep.Run(110f),
+                    },
+                },
+            };
+            return setting;
+        }
+
+        static GrownUpActor BuildTeacher(RectTransform parent, float startX)
+        {
+            var r = Rect("Teacher", parent);
+            r.anchorMin = r.anchorMax = Vector2.zero;
+            r.pivot = new Vector2(0.5f, 0f);
+            r.sizeDelta = new Vector2(36f * Px, 62f * Px);
+
+            var teacher = r.gameObject.AddComponent<GrownUpActor>();
+            teacher.kind = GrownUpKind.Teacher;
+            teacher.unitsPerPixel = Px;
+            teacher.feetY = 1080f - 230f * Px;
+            teacher.startX = startX;
+            teacher.startPose = GrownUpPose.Wave;
+            teacher.frames = new GrownUpFrames
+            {
+                idle = Frames("GrownUp/teacher_idle", 2),
+                wave = Frames("GrownUp/teacher_wave", 2),
+                walk = Frames("GrownUp/teacher_walk", 4),
+            };
+            teacher.body = Img(Stretch(Rect("Body", r)), teacher.frames.wave[0], Color.white);
+            teacher.PlaceAtStart();
+            return teacher;
         }
 
         static StudentFrames StudentSet(string kind) => new StudentFrames

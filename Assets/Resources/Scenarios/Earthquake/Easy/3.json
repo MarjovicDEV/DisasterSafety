@@ -14,6 +14,8 @@
             "id": "stay",
             "label": "Stay under the desk",
             "picture": "choice_stay",
+            "icon": "icon_stay",
+            "action": "stay",
             "safe": false,
             "heading": "Time to go",
             "feedback": "The shaking stopped. Now leave the classroom with your teacher.",
@@ -23,6 +25,8 @@
             "id": "walk",
             "label": "Walk out with your teacher",
             "picture": "choice_walk",
+            "icon": "icon_teacher_walk",
+            "action": "walk",
             "safe": true,
             "feedback": "Walk out with your class. Follow your teacher to the evacuation area.",
             "sources": ["EQ-34", "EQ-35", "EQ-37"]
@@ -31,6 +35,8 @@
             "id": "push",
             "label": "Run and push to the door",
             "picture": "choice_push",
+            "icon": "icon_push",
+            "action": "push",
             "safe": false,
             "feedback": "Walk. Do not run. Do not push.",
             "sources": ["EQ-20", "EQ-36"]

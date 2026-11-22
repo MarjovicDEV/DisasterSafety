@@ -38,6 +38,7 @@ namespace DisasterSafety.Core
             {
                 case Classroom: return ClassroomSpots;
                 case Corridor: return CorridorSpots;
+                case ClassroomAfter: return ClassroomAfterSpots;
                 default: return System.Array.Empty<string>();
             }
         }
@@ -46,6 +47,7 @@ namespace DisasterSafety.Core
 
         static readonly string[] ClassroomSpots = { "door", "desk", "window", "cabinet" };
         static readonly string[] CorridorSpots = { "stairs", "window", "cover", "plants" };
+        static readonly string[] ClassroomAfterSpots = { "stay", "walk", "push" };
 
         public static bool CanShake(string key) =>
             key == Classroom || key == Corridor || key == Home || key == Schoolyard || key == MallA;
