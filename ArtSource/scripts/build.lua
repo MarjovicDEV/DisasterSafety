@@ -170,11 +170,24 @@ if want("ui_v2") then
 end
 
 -- Rollout icons (16x16), added slice by slice: UI/icon_<name>
+-- Optional: --script-param icons=stairs,cover writes only those icons, so a slice adds its own
+-- icons without rewriting the ones earlier slices committed.
 if want("icons_v2") then
   local IC = dofile(here .. "icons_v2.lua")(L, ST)
+  local iconsOnly = {}
+  for n in (app.params.icons or ""):gmatch("[^,%s]+") do iconsOnly[n] = true end
   for name, img in pairs(IC.icons()) do
-    L.save(img, "UI/icon_" .. name, "UI/icon_" .. name)
+    if next(iconsOnly) == nil or iconsOnly[name] then
+      L.save(img, "UI/icon_" .. name, "UI/icon_" .. name)
+    end
   end
+end
+
+-- The v2 corridor (Easy 2): Level/v2/bg_corridor and the hanging pots, corridor_pots_0/1
+if want("corridor_v2") then
+  local CO = dofile(here .. "corridor_v2.lua")(L, ST)
+  L.save(CO.background(), "Level/v2/bg_corridor", "Level/v2/bg_corridor")
+  L.saveFrames(CO.potFrames(), "Level/v2/corridor_pots", "Level/v2/corridor_pots", 160)
 end
 
 -- The Grown-ups (36x62): GrownUp/<who>_<pose>_<n>.png

@@ -11,6 +11,12 @@ namespace DisasterSafety.Game.UI
         public ActionButton[] buttons;
         [Tooltip("Choice icons; matched to a Choice by sprite name.")]
         public Sprite[] icons;
+        [Tooltip("The smaller pixel font every label uses when one label would need more than two lines.")]
+        public Font smallFont;
+        [Tooltip("The width a label has inside its button, in UI units.")]
+        public float labelWidth = 314f;
+
+        Font normalFont;
 
         public bool IsVisible => panel.IsVisible;
 
@@ -26,6 +32,21 @@ namespace DisasterSafety.Game.UI
                 buttons[i].button.onClick.RemoveAllListeners();
                 buttons[i].button.onClick.AddListener(() => onChoose(n));
             }
+            FitLabels(scenario);
+        }
+
+        // A label longer than two lines would spill out of its button: then every label uses the
+        // smaller font, so the bar stays even.
+        void FitLabels(Scenario scenario)
+        {
+            if (buttons.Length == 0 || buttons[0].label == null) return;
+            if (normalFont == null) normalFont = buttons[0].label.font;
+            var tooLong = false;
+            for (var i = 0; i < buttons.Length && i < scenario.choices.Length; i++)
+                if (PixelText.Lines(normalFont, scenario.choices[i].label, labelWidth) > 2) tooLong = true;
+            var font = tooLong && smallFont != null ? smallFont : normalFont;
+            foreach (var b in buttons)
+                if (b.label != null) b.label.font = font;
         }
 
         public void SetTried(int index, bool tried) => buttons[index].SetTried(tried);

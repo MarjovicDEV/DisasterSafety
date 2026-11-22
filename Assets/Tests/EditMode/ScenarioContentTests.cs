@@ -107,16 +107,41 @@ namespace DisasterSafety.Tests
         }
 
         [Test]
-        public void OnlyEarthquakeEasy1_UsesTheNewFlow()
+        public void OnlyTheMovedLevels_UseTheStudentFlow()
         {
-            var levels = Files().Select(Load).Where(s => s.UsesActions).Select(s => s.level).ToList();
-            Assert.That(levels, Is.EqualTo(new[] { "Earthquake/Easy/1" }));
+            var levels = Files().Select(Load).Where(s => s.UsesActions).Select(s => s.level).OrderBy(l => l).ToList();
+            Assert.That(levels, Is.EqualTo(new[] { "Earthquake/Easy/1", "Earthquake/Easy/2" }));
             foreach (var path in Files())
             {
                 var s = Load(path);
                 if (s.UsesActions) continue;
                 Assert.That(s.ChoicesWithAction, Is.EqualTo(0), path + " must use the old flow, with no action on any Choice");
             }
+        }
+
+        [Test]
+        public void EasyLevel2_UsesTheStudentFlow_InTheCorridor_WithItsTextUnchanged()
+        {
+            var s = Load(Path.Combine(ScenarioFolder, "Earthquake/Easy/2.json"));
+            Assert.That(s.UsesActions, Is.True);
+            Assert.That(s.setting, Is.EqualTo(ScenarioSettings.Corridor));
+            Assert.That(ScenarioSettings.ActionSpots(ScenarioSettings.Corridor),
+                Is.EquivalentTo(new[] { "stairs", "window", "cover", "plants" }));
+            Assert.That(s.choices.Select(c => c.action), Is.EqualTo(new[] { "stairs", "window", "cover", "plants" }));
+            Assert.That(s.choices.Select(c => c.icon),
+                Is.EqualTo(new[] { "icon_stairs", "icon_window", "icon_cover", "icon_plants" }));
+            // The rollout changes no Scenario text (docs/specs/earthquake-rollout.md, Data).
+            Assert.That(s.choices.Select(c => c.label), Is.EqualTo(new[]
+            {
+                "Run down the stairs", "Stand by the window", "Duck and cover your head", "Stand under the hanging plants",
+            }));
+            Assert.That(s.choices.Select(c => c.feedback), Is.EqualTo(new[]
+            {
+                "Stay where you are while it shakes. Walk out when it stops.",
+                "Window glass can break. Stay away from windows.",
+                "Duck down low. Cover your head with your arms or a book.",
+                "Hanging pots can swing and fall. Stay away from them.",
+            }));
         }
 
         [Test]

@@ -136,6 +136,46 @@ namespace DisasterSafety.EditorTools
             c.openedRibbon.SetActive(false);
 
             CaptureStudentFlow(c, scenarios, Shot);
+            CaptureCorridor(c, scenarios, Shot);
+        }
+
+        // Easy 2 in the corridor (e2-*): the Action Bar, the last Safe step (cover at the inner wall) and
+        // an Unsafe stop (the top of the stairs). The girl acts here, so both Students are seen in the shots.
+        static void CaptureCorridor(LevelController c, ScenarioLibrary scenarios, Action<string, ScreenPanel[]> shot)
+        {
+            var s = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Easy, 2));
+            c.ShowSetting(ScenarioSettings.ActionArtKey(s.setting));
+            c.UseStudentLayout();
+            c.captionGoal.text = s.goal.text;
+            c.captionBody.text = s.intro.text;
+            c.FitCaption();
+            c.actionBar.Setup(s, _ => { });
+
+            var setting = c.ActiveSetting;
+            var student = setting.student;
+            student.SetKind(StudentKind.Girl);
+            student.bubble.Hide();
+
+            void Stand(float x, StudentPose pose, bool faceLeft = false)
+            {
+                student.PlaceAt(x);
+                student.Face(faceLeft);
+                student.ShowFrame(pose, 0);
+            }
+
+            Stand(setting.startX, StudentPose.Idle);
+            shot("e2-actionbar", new[] { c.actionBar.panel });
+
+            var cover = setting.ActOutFor("cover");
+            Stand(cover.EndX(setting.startX), cover.EndPose);
+            student.bubble.Say(UIStrings.ReactionSafe);
+            shot("e2-safe", new ScreenPanel[0]);
+
+            var stairs = setting.ActOutFor("stairs");
+            Stand(stairs.StopX(setting.startX), StudentPose.Wait);
+            student.bubble.Say(UIStrings.ReactionWait);
+            shot("e2-stop", new ScreenPanel[0]);
+            student.bubble.Hide();
         }
 
         // Easy 1 in the Student flow (60-65, and the Feedback layout). Poses and spots come from the Setting group.

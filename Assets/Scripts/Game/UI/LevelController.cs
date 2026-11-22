@@ -165,6 +165,7 @@ namespace DisasterSafety.Game.UI
             levelLabel.text = UIStrings.LevelLabel(level);
             captionGoal.text = scenario.goal.text;
             captionBody.text = scenario.intro.text;
+            FitCaption();
             actionBar.Setup(scenario, ChooseAction);
 
             var student = Student;
@@ -194,6 +195,36 @@ namespace DisasterSafety.Game.UI
             }
             attempt.StartChoosing();
             actionBar.Show();
+        }
+
+        // The Caption's built width (960) and the room its text has on each side.
+        float captionBaseWidth = -1f, captionBaseHeight, captionBodyBaseHeight;
+        const float CaptionTextMargin = 80f, CaptionMaxWidth = 1400f, CaptionExtraLine = 48f;
+
+        /// <summary>
+        /// Widens the Caption when the Goal would not fit on one line, and makes it taller (moving the Hint down)
+        /// when the intro needs two lines, so no text runs into the next or out of the banner. Call it after
+        /// setting the Goal and the intro, and after UseStudentLayout.
+        /// </summary>
+        public void FitCaption()
+        {
+            var body = captionBody.rectTransform;
+            if (captionBaseWidth < 0f)
+            {
+                captionBaseWidth = caption.sizeDelta.x;
+                captionBaseHeight = caption.sizeDelta.y;
+                captionBodyBaseHeight = body.sizeDelta.y;
+            }
+            var goalWidth = PixelText.Width(captionGoal.font, captionGoal.text) + 16f;
+            var width = Mathf.Clamp(Mathf.Ceil((goalWidth + CaptionTextMargin) / 8f) * 8f, captionBaseWidth, CaptionMaxWidth);
+            var textWidth = width - CaptionTextMargin;
+            var extra = PixelText.Lines(captionBody.font, captionBody.text, textWidth) > 1 ? CaptionExtraLine : 0f;
+
+            caption.sizeDelta = new Vector2(width, captionBaseHeight + extra);
+            var goal = captionGoal.rectTransform;
+            goal.sizeDelta = new Vector2(textWidth, goal.sizeDelta.y);
+            body.sizeDelta = new Vector2(textWidth, captionBodyBaseHeight + extra);
+            ((RectTransform)hintButton.transform).anchoredPosition = studentHintPosition - new Vector2(0f, extra);
         }
 
         /// <summary>Hides the Choice cards, the Goal banner and Bantay, and lays out the Caption, the Feedback and Level Completed for the Student.</summary>
@@ -449,7 +480,11 @@ namespace DisasterSafety.Game.UI
             attempt.UseHint();
             AudioManager.Play(Sfx.Sparkle, 0.6f);
             Juice.Sparkles((RectTransform)hintButton.transform, 10);
-            if (studentFlow) captionBody.text = UIStrings.HintLine(scenario.hint.text);
+            if (studentFlow)
+            {
+                captionBody.text = UIStrings.HintLine(scenario.hint.text);
+                FitCaption();
+            }
             else bantay.Say(UIStrings.HintLine(scenario.hint.text), true, 7f);
         }
 

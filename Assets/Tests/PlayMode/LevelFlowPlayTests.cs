@@ -216,15 +216,19 @@ namespace DisasterSafety.Tests
             yield return WaitFor(() => Level()?.Level.Equals(second) == true, "Level 2 to load");
             yield return ReadyToChoose(Level);
             c = Level();
-            Assert.That(c.ActiveSetting.key, Is.EqualTo("corridor"));
+            Assert.That(c.ActiveSetting.key, Is.EqualTo("corridor_v2"));
             Assert.That(c.ActiveSetting.shaker.IsShaking, Is.True);
 
+            // Easy 2 is acted out by the Student in the corridor.
+            Assert.That(c.UsesStudentFlow, Is.True);
             const int Stairs = 0, Cover = 2;
-            c.choiceCards[Stairs].button.onClick.Invoke();
+            Tap(c, Stairs);
+            yield return FeedbackShown(c);
             Assert.That(c.feedbackHeading.text, Is.EqualTo("Not safe yet"));
             c.tryAgainButton.onClick.Invoke();
-            yield return ReadyToChoose(Level);
-            c.choiceCards[Cover].button.onClick.Invoke();
+            yield return ActionBarShown(c);
+            Tap(c, Cover);
+            yield return FeedbackShown(c);
             c.finishButton.onClick.Invoke();
             Assert.That(c.nextButton.gameObject.activeSelf, Is.True, "Level 2 leads to Level 3");
             c.nextButton.onClick.Invoke();
@@ -471,6 +475,105 @@ namespace DisasterSafety.Tests
             Assert.That(c.Attempt.Phase, Is.EqualTo(AttemptPhase.Choosing));
             Assert.That(c.actionBar.buttons[Window].button.interactable, Is.False, "the window is marked tried");
             Assert.That(c.actionBar.buttons[Desk].button.interactable, Is.True);
+        }
+
+        static readonly LevelId Second = new LevelId(Episode.Earthquake, Difficulty.Easy, 2);
+        const int CorridorStairs = 0, CorridorWindow = 1, CorridorCover = 2, CorridorPlants = 3;
+
+        IEnumerator StartEasyTwo()
+        {
+            GameServices.Initialize(dir);
+            GameServices.Progress.SetDisplayName("Ana");
+            GameServices.SaveProgress();
+            GameScenes.PlayLevel(Second);
+            yield return WaitFor(() => Level() != null && Level().ActiveSetting != null && Level().Student != null
+                                       && Level().Attempt != null && Level().captionGoal.text.Length > 0, "Easy 2 to start");
+        }
+
+        [UnityTest]
+        public IEnumerator EasyLevel2_SafeChoice_ActsOutAndCompletes()
+        {
+            yield return StartEasyTwo();
+            var c = Level();
+            var student = c.Student;
+            var setting = c.ActiveSetting;
+            Assert.That(c.UsesStudentFlow, Is.True);
+            Assert.That(setting.key, Is.EqualTo("corridor_v2"));
+            Assert.That(c.captionGoal.text, Is.EqualTo("Keep your head safe when the ground shakes."));
+            Assert.That(setting.shaker.IsShaking, Is.True);
+            Assert.That(student.X, Is.EqualTo(setting.startX));
+
+            yield return ReadyToChoose(Level);
+            Assert.That(c.actionBar.buttons[CorridorCover].label.text, Is.EqualTo("Duck and cover your head"));
+            Assert.That(c.actionBar.buttons[CorridorStairs].icon.sprite.name, Is.EqualTo("icon_stairs"));
+            Assert.That(c.actionBar.buttons[CorridorWindow].icon.sprite.name, Is.EqualTo("icon_window"));
+            Assert.That(c.actionBar.buttons[CorridorCover].icon.sprite.name, Is.EqualTo("icon_cover"));
+            Assert.That(c.actionBar.buttons[CorridorPlants].icon.sprite.name, Is.EqualTo("icon_plants"));
+            // The long Goal and labels still fit: the Goal on one line, each label in two.
+            Assert.That(PixelText.Lines(c.captionGoal.font, c.captionGoal.text, c.captionGoal.rectTransform.sizeDelta.x), Is.EqualTo(1));
+            foreach (var b in c.actionBar.buttons)
+                Assert.That(PixelText.Lines(b.label.font, b.label.text, c.actionBar.labelWidth), Is.LessThanOrEqualTo(2), b.label.text);
+
+            // Walk to the inner wall, crouch, then cover the head and hold until the shaking calms.
+            Tap(c, CorridorCover);
+            Assert.That(c.actionBar.IsVisible, Is.False);
+            yield return WaitFor(() => student.IsWalking, "the Student to walk", 4f);
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Walk));
+            yield return WaitFor(() => student.Pose == StudentPose.Crouch, "the Student to crouch", 12f);
+            Assert.That(student.X, Is.GreaterThanOrEqualTo(269.99f), "the crouch starts at the inner wall");
+            yield return WaitFor(() => student.Pose == StudentPose.Cover, "the Student to cover the head", 12f);
+            Assert.That(student.X, Is.EqualTo(286f).Within(0.01f));
+            Assert.That(setting.shaker.IsShaking, Is.True, "the Student holds the cover while it still shakes");
+            yield return WaitFor(() => !setting.shaker.IsShaking, "the shaking to calm", 6f);
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Cover));
+            Assert.That(student.bubble.Line, Is.EqualTo("I'm safe!"));
+
+            yield return FeedbackShown(c);
+            Assert.That(c.feedbackHeading.text, Is.EqualTo(UIStrings.SafeHeading));
+            Assert.That(c.finishButton.gameObject.activeSelf, Is.True);
+            c.finishButton.onClick.Invoke();
+            yield return Wait(0.5f);
+            Assert.That(c.completedPanel.IsVisible, Is.True);
+            Assert.That(c.LastResult.Stars, Is.EqualTo(3));
+        }
+
+        [UnityTest]
+        public IEnumerator EasyLevel2_UnsafeChoice_StopsAndResets()
+        {
+            yield return StartEasyTwo();
+            var c = Level();
+            var student = c.Student;
+            var setting = c.ActiveSetting;
+            yield return ReadyToChoose(Level);
+
+            // Run-start toward the stairs, stop at the top step, then "Hmm, wait...".
+            Tap(c, CorridorStairs);
+            yield return WaitFor(() => student.IsWalking, "the Student to run", 4f);
+            yield return WaitFor(() => student.Pose == StudentPose.Wait, "the Student to stop", 12f);
+            Assert.That(student.X, Is.EqualTo(setting.ActOutFor("stairs").StopX(setting.startX)).Within(0.01f));
+            Assert.That(student.X + 16f, Is.LessThanOrEqualTo(410f), "the Student stops on the top step (x 404), not down the stairs");
+            Assert.That(student.bubble.Line, Is.EqualTo("Hmm, wait..."));
+
+            yield return FeedbackShown(c);
+            Assert.That(c.feedbackHeading.text, Is.EqualTo("Not safe yet"));
+            Assert.That(c.tryAgainButton.gameObject.activeSelf, Is.True);
+            Assert.That(c.Attempt.UnsafeChoices, Is.EqualTo(1));
+
+            c.tryAgainButton.onClick.Invoke();
+            yield return ActionBarShown(c);
+            Assert.That(student.X, Is.EqualTo(setting.startX));
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Idle));
+            Assert.That(c.Attempt.Phase, Is.EqualTo(AttemptPhase.Choosing));
+            Assert.That(c.actionBar.buttons[CorridorStairs].button.interactable, Is.False, "the stairs are marked tried");
+            Assert.That(c.actionBar.buttons[CorridorCover].button.interactable, Is.True);
+
+            // The other Unsafe Choices stop short of their danger: the window (sill ends at x 180)
+            // and the spot under the pots (the right pot ends at x 63).
+            var window = setting.ActOutFor("window").StopX(setting.startX);
+            Assert.That(window, Is.LessThan(setting.startX));
+            Assert.That(window - 16f, Is.GreaterThanOrEqualTo(170f));
+            var plants = setting.ActOutFor("plants").StopX(setting.startX);
+            Assert.That(plants - 16f, Is.GreaterThan(63f));
         }
 
         [UnityTest]

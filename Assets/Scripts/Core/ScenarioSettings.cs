@@ -31,13 +31,21 @@ namespace DisasterSafety.Core
         /// <summary>The art group the Student's flow uses for a Setting, e.g. "classroom" becomes "classroom_v2".</summary>
         public static string ActionArtKey(string setting) => setting + "_v2";
 
-        /// <summary>The action spots a Scenario with actions may name in a Setting. Only the classroom has them so far.</summary>
-        public static IReadOnlyList<string> ActionSpots(string setting) =>
-            setting == Classroom ? ClassroomSpots : System.Array.Empty<string>();
+        /// <summary>The action keys (one Act-out each) a Scenario with actions may name in a Setting.</summary>
+        public static IReadOnlyList<string> ActionSpots(string setting)
+        {
+            switch (setting)
+            {
+                case Classroom: return ClassroomSpots;
+                case Corridor: return CorridorSpots;
+                default: return System.Array.Empty<string>();
+            }
+        }
 
         public static bool HasActionSpot(string setting, string action) => ActionSpots(setting).Contains(action);
 
         static readonly string[] ClassroomSpots = { "door", "desk", "window", "cabinet" };
+        static readonly string[] CorridorSpots = { "stairs", "window", "cover", "plants" };
 
         public static bool CanShake(string key) =>
             key == Classroom || key == Corridor || key == Home || key == Schoolyard || key == MallA;

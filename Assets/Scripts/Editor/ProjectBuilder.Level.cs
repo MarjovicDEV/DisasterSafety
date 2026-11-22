@@ -1,3 +1,4 @@
+using System.Linq;
 using DisasterSafety.Core;
 using DisasterSafety.Game;
 using DisasterSafety.Game.UI;
@@ -71,7 +72,7 @@ namespace DisasterSafety.EditorTools
                 BuildClassroom(world), BuildCorridor(world), BuildClassroomAfter(world),
                 BuildBedroom(world), BuildHome(world), BuildSchoolyard(world), BuildBeach(world),
                 BuildMallA(world), BuildMallB(world), BuildHomeAfter(world), BuildEvacuationArea(world),
-                BuildClassroomV2(world),
+                BuildClassroomV2(world), BuildCorridorV2(world),
             };
             for (var i = 1; i < c.settings.Length; i++)
                 c.settings[i].gameObject.SetActive(false);
@@ -325,6 +326,56 @@ namespace DisasterSafety.EditorTools
             return setting;
         }
 
+        // Easy 2's corridor in the v2 art: hanging pots (left), the hall window, the start spot by the
+        // Grade 4 door, the plain inner wall (x 240-331) and the stairs going down (top step at x 404).
+        // Placements and Act-out points are in ArtSource/README-rollout.md (corridor).
+        static LevelSetting BuildCorridorV2(RectTransform world)
+        {
+            var group = Stretch(Rect("Corridor V2", world));
+            var setting = group.gameObject.AddComponent<LevelSetting>();
+            setting.key = ScenarioSettings.ActionArtKey(ScenarioSettings.Corridor);
+            // As in the classroom: on wide screens crop the ceiling, not the floor.
+            setting.artAnchorY = 0f;
+
+            var background = S("Level/v2/bg_corridor");
+            ArtImage(group, "Backing", background, 0, 0);
+            var shaking = Stretch(Rect("Shaking", group));
+            ArtImage(shaking, "Corridor V2", background, 0, 0);
+            setting.shaker = shaking.gameObject.AddComponent<SceneShaker>();
+            setting.shaker.target = shaking;
+            setting.shaker.shakeSeconds = 2.5f;
+            setting.shaker.wobblers = new[]
+            {
+                BuildLevelAnimation(shaking, "Hanging Pots", Frames("Level/v2/corridor_pots", 2), 6, 15, 4f, onlyWhileShaking: true),
+            };
+
+            setting.student = BuildStudent(shaking, withBubble: true);
+            setting.startX = 214f;
+            setting.actOuts = new[]
+            {
+                // Run-start toward the stairs and stop at the top step (the newel post is at x 404).
+                new ActOut { key = "stairs", stopAfter = 0, steps = new[] { ActOutStep.Run(394f) } },
+                // Walk toward the hall window (its sill ends at x 180) and stop by it.
+                new ActOut { key = "window", stopAfter = 0, steps = new[] { ActOutStep.Walk(188f) } },
+                // The Safe Choice: walk to the inner wall, away from the glass and the pots, crouch low,
+                // then kneel and cover the head and neck with both arms, and hold until the shaking calms.
+                new ActOut
+                {
+                    key = "cover",
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(270f),
+                        ActOutStep.Crouch(286f),
+                        ActOutStep.Pose(StudentPose.Cover, 1.5f),
+                        ActOutStep.Calm(),
+                    },
+                },
+                // Walk toward the spot under the pots (x 38) and stop just before it (the right pot ends at x 63).
+                new ActOut { key = "plants", stopAfter = 0, steps = new[] { ActOutStep.Walk(82f) } },
+            };
+            return setting;
+        }
+
         static StudentFrames StudentSet(string kind) => new StudentFrames
         {
             idle = Frames("Student/" + kind + "_idle", 2),
@@ -498,7 +549,15 @@ namespace DisasterSafety.EditorTools
                 bar.buttons[i] = action;
             }
 
-            bar.icons = new[] { S("UI/icon_door"), S("UI/icon_desk"), S("UI/icon_window"), S("UI/icon_cabinet") };
+            // Every 16x16 Choice icon under Assets/Art/UI (the pilot's and each rollout slice's), matched by name.
+            bar.icons = System.IO.Directory.GetFiles("Assets/Art/UI", "icon_*.png")
+                .Select(path => S("UI/" + System.IO.Path.GetFileNameWithoutExtension(path)))
+                .Where(sprite => sprite != null)
+                .OrderBy(sprite => sprite.name, System.StringComparer.Ordinal)
+                .ToArray();
+            bar.smallFont = f3;
+            // 430 wide, less the padding (20 + 16), the icon (64) and the spacing (16)
+            bar.labelWidth = 430f - 20f - 16f - 16f * Px - 16f;
             c.actionBar = bar;
             holder.gameObject.SetActive(false);
         }

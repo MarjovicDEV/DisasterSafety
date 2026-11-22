@@ -14,6 +14,8 @@
             "id": "stairs",
             "label": "Run down the stairs",
             "picture": "choice_stairs",
+            "icon": "icon_stairs",
+            "action": "stairs",
             "safe": false,
             "heading": "Not safe yet",
             "feedback": "Stay where you are while it shakes. Walk out when it stops.",
@@ -23,6 +25,8 @@
             "id": "window",
             "label": "Stand by the window",
             "picture": "choice_hall_window",
+            "icon": "icon_window",
+            "action": "window",
             "safe": false,
             "feedback": "Window glass can break. Stay away from windows.",
             "sources": ["EQ-14", "EQ-21", "EQ-24"]
@@ -31,6 +35,8 @@
             "id": "cover",
             "label": "Duck and cover your head",
             "picture": "choice_cover",
+            "icon": "icon_cover",
+            "action": "cover",
             "safe": true,
             "feedback": "Duck down low. Cover your head with your arms or a book.",
             "sources": ["EQ-47", "EQ-48", "EQ-49"]
@@ -39,6 +45,8 @@
             "id": "plants",
             "label": "Stand under the hanging plants",
             "picture": "choice_plants",
+            "icon": "icon_plants",
+            "action": "plants",
             "safe": false,
             "feedback": "Hanging pots can swing and fall. Stay away from them.",
             "sources": ["EQ-30", "EQ-31"]

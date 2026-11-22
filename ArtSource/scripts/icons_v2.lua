@@ -15,6 +15,7 @@ return function(L, ST)
   M.GLASS = { rgb(196, 232, 248), rgb(150, 204, 232), rgb(108, 164, 204) }
   M.GREEN = { rgb(120, 196, 104), rgb(84, 160, 80), rgb(56, 118, 62) }
   M.RED = { rgb(240, 130, 126), rgb(214, 64, 64), rgb(128, 40, 52) }
+  M.POT = { rgb(232, 140, 96), rgb(200, 104, 70), rgb(156, 72, 52) }   -- the v2 plant pots
   M.NAVY = { K.m, K.N, K.n }
   M.WHITE = { K.W, K.w, K.v }
   M.SKIN = { K.t, K.S, K.s }
@@ -41,6 +42,54 @@ return function(L, ST)
   -- The icons by name (without the icon_ prefix). Each slice adds its own.
   function M.icons()
     local out = {}
+
+    -- Easy 2, corridor ----------------------------------------------------------------------
+    -- stairs: steps going down to the right, with a handrail
+    local s = L.newImage(16, 16)
+    -- four steps, each 4 wide and 3 lower than the last: a lit tread, the base, a shaded drop
+    for i = 0, 3 do
+      local x, top = i * 4, 5 + i * 3
+      L.rect(s, x, top, 4, 16 - top, M.WHITE[2])
+      L.hline(s, x, x + 3, top, M.WHITE[1])
+      L.vline(s, x + 3, top + 1, 15, M.WHITE[3])
+    end
+    L.line(s, 1, 2, 14, 10, M.WOOD[2])             -- the handrail going down with the steps
+    L.line(s, 1, 1, 14, 9, M.WOOD[1])
+    L.vline(s, 1, 2, 4, M.WOOD[3])                 -- its post at the top step
+    L.outline(s, O)
+    out.stairs = s
+
+    -- cover: a Student kneeling low and facing right, one arm over the head and neck
+    -- (drawn after the Student's own cover pose, with the Student palette)
+    local c = L.newImage(16, 16)
+    L.map(c, 0, 3, {
+      "..........ooo...",
+      "........ootSSo..",
+      "......oootSSSso.",
+      ".....oWWoHHHHSo.",
+      "....oWWwwoHHjSso",
+      "...oWWwwvoHtSSo.",
+      "...oWwwwvohSSso.",
+      "..oWwwwwvvooooo.",
+      "..oxxxxxxxo.....",
+      "..omNNNNNNno....",
+      ".obbBo.obbBo....",
+      ".ooooo.ooooo....",
+    }, K)
+    out.cover = c
+
+    -- plants: a pot hanging on its chains
+    local p = L.newImage(16, 16)
+    L.vline(p, 8, 0, 4, M.NAVY[3])
+    L.line(p, 3, 8, 8, 4, M.NAVY[3]); L.line(p, 13, 8, 8, 4, M.NAVY[3])
+    L.circle(p, 5, 7, 2, M.GREEN[2]); L.circle(p, 11, 7, 2, M.GREEN[2]); L.circle(p, 8, 6, 2, M.GREEN[1])
+    M.box(p, 2, 9, 12, 3, M.POT)
+    L.poly(p, { 3, 12, 12, 12, 11, 15, 4, 15 }, M.POT[2])
+    L.vline(p, 4, 12, 14, M.POT[1]); L.vline(p, 11, 12, 14, M.POT[3])
+    L.rect(p, 1, 9, 1, 4, M.GREEN[3])
+    L.outline(p, O)
+    out.plants = p
+
     return out
   end
 
