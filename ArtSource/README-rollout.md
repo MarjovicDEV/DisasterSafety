@@ -35,6 +35,18 @@ The `icons=` filter writes only the named icons, so each slice adds its icons wi
 | `icon_low_shelf` | Put heavy things on a low shelf | Normal 1 |
 | `icon_bed` | Move the bed under the window | Normal 1 |
 | `icon_books` | Put books on top of the tall cabinet | Normal 1 |
+| `icon_pack_later` | Pack it later, when it shakes | Normal 2 |
+| `icon_bag_hidden` | Hide it under the boxes | Normal 2 |
+| `icon_go_bag` | Pack water, food, a flashlight and a whistle | Normal 2 |
+| `icon_snack_toy` | Pack only snacks and toys | Normal 2 |
+| `icon_door` (pilot) | Run out the door | Normal 3 |
+| `icon_glass_cabinet` | Stand by the glass cabinet | Normal 3 |
+| `icon_sofa` | Lie down beside the sofa | Normal 3 |
+| `icon_strong_table` | Duck under the strong table | Normal 3 |
+| `icon_own_way` | Each of us finds our own way | Hard 1 |
+| `icon_meet_park` | Agree on a meeting place | Hard 1 |
+| `icon_meet_house` | Plan to meet back at home | Hard 1 |
+| `icon_phone_numbers` | Keep numbers only in the phone | Hard 1 |
 
 Easy 2 reuses the pilot's `icon_window` for "Stand by the window".
 
@@ -133,6 +145,47 @@ Act-out points use the centre of the Student's feet (`BuildBedroomV2` in `Projec
 Only the walk to the box passes a prop (the books beside the start). With three floor props and a bed to push on one floor line, one prop always sits between the start and something else, so the smallest prop takes that place.
 
 The Student's `carry`, `reachup` and `push` poses were redrawn for this slice (`student.lua`, "Action poses"): `carry` holds the load on level forearms and leans back; `reachup` raises both arms in front of the face on tiptoe; `push` leans forward with flat palms and the back foot pushing off. Frame counts stay 4, 2 and 2.
+
+## Home (`ArtSource/scripts/home_v2.lua`, part `home_v2`)
+
+Run `aseprite.exe -b --script-param root=<project> --script-param only=home_v2 --script ArtSource/scripts/build.lua` to make the 480x270 room, the 96x42 table-front overlay, ten props, and both 36x65 lamp frames (160 ms per frame). Use `only=home_reachup` for the two Hard 1 Reach Up frames per Student and the editable sources. The `icons_v2` part takes the icon names from the table above without the `icon_` prefix.
+
+All positions are top-left art pixels. One art pixel is four UI units. The concrete floor begins at y 208. The Student and Mom stand on y 230. Each Setting sprite uses the classroom palette.
+
+| Part | Placement |
+|---|---|
+| Door, TV and meeting board | (18, 107), (87, 92) and (85, 149). |
+| Window and hanging lamp | (300, 68) and (384, 14). The lamp sways only in Normal 3 while the room shakes. |
+| Table front, sofa, glass cabinet and boxes | (174, 188), (308, 157), (382, 105) and (426, 156). |
+| Normal 2 bag | Open at (302, 191), closed at (303, 191), under the boxes at (437, 191). |
+| Normal 2 supplies | Water (345, 195), can (357, 202), flashlight (370, 206), and whistle (386, 207). |
+| Normal 2 snack and toy | Snack (401, 201), toy (327, 203). |
+| Go bag by the door | Closed at (73, 191). Hard 6 starts with the bag in this spot. |
+| Hard 1 cards | Park (213, 176) and house (232, 176) on the table. The card reaches the board at (109, 172). |
+
+Normal 2 starts with the open go bag, four supplies, the snack, the toy, and Mom. The closed bag appears after packing. Normal 3 starts with the Student alone. Hard 1 starts with both cards and Mom. Props stand at the back of the floor, with their bottom row at y 212 or 213, or rest on the table. Normal 2 and Hard 1 start calm. Normal 3 begins with a shake, and the Student plays Surprised before the Action Bar appears.
+
+The following x values mark the centre of the Student's feet at y 230. Walks and carries use the same floor line. In Normal 2 and Hard 1, the Reaction bubble sits 31 art pixels higher to clear the boxes and the meeting board. Normal 3 places the Reaction below Hint.
+
+| Level and Choice | Act-out points |
+|---|---|
+| Normal 2 start | Student x 281, Mom x 254. Both are Idle. |
+| `go_bag` | Pack the four supplies at x 308, close the bag, and carry it left to x 108. Crouch to set it by the door. Mom plays Happy. |
+| `later` | Walk left toward the TV and stop at x 130. |
+| `hidden` | Pick up the open bag from x 308, carry it to x 425, and crouch at the gap under the boxes. |
+| `toys` | Pick up the toy from x 324, carry it left to x 308, and stop in Pack over the bag. |
+| Normal 3 start | Student x 294. No Grown-up or loose props. |
+| `table` | Walk left to x 282, show the table front, crouch-shuffle to x 240, face left, and Hold the right front leg until the room calms. |
+| `run` | Run left to x 91 and stop inside while the room still shakes. |
+| `glass` | Walk to x 387 and stop beside the cabinet. |
+| `sofa` | Walk to x 307 and stop in Crouch beside the sofa. |
+| Hard 1 start | Student x 154, Mom x 266. Both are Idle. |
+| `meeting_place` | Pick up the park card from x 207, carry it left to x 136, reach up and pin it. Mom plays Happy. |
+| `own_way` | Walk left toward the door and stop at x 91. |
+| `meet_home` | Pick up the house card from x 226, carry it left to x 136, and stop in Reach Up at the board. |
+| `phone_numbers` | Play Phone at x 154 and stop there. |
+
+The Normal 2 door and TV routes pass Mom and the table. The boxes route passes the toy, water, can, flashlight, whistle, and snack. The toy approach passes the open bag. The Normal 3 door route passes in front of the table, and the approach to the glass cabinet passes in front of the sofa. The Hard 1 house card route passes the park card in both directions. Try Again restores only the selected Level's props, Grown-ups, and start pose.
 
 ## Removed art (cleanup, 2026-11-22)
 

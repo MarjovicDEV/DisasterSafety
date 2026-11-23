@@ -1021,6 +1021,27 @@ return function(L)
       { sleeveTo = 0.36, width = 2, hand = reachingHand, farTiptoe = true, nearTiptoe = true })
   end
 
+  -- The Home card is pinned with the near hand. The far arm stays bent below the card.
+  local function pinchingHand(g, x, y)
+    rect(g, x - 1, y - 1, 3, 3, "S")
+    if y <= 7 then
+      rect(g, x, y - 2, 2, 1, "S")
+      setc(g, x + 2, y, "S")
+    end
+  end
+
+  function M.homeReachUpFrames(kind)
+    local shoulder = 22 + FH - heightOf(kind)
+    local frames = {}
+    for f = 0, 1 do
+      frames[#frames + 1] = toImage(actPose(kind, TIPTOE[kind], 0,
+        { 18, shoulder, 22, shoulder + 5, 24, shoulder + 2 },
+        { 16, shoulder, 22, 17, 28, 6 - f },
+        { sleeveTo = 0.42, width = 3, hand = pinchingHand, farTiptoe = true, nearTiptoe = true }))
+    end
+    return frames
+  end
+
   local function flatPalm(g, x, y)
     rect(g, x, y - 3, 2, 6, "S")
     setc(g, x - 1, y - 2, "t")

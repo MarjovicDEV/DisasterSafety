@@ -213,6 +213,34 @@ if want("bedroom_v2") then
   L.save(BR.books(), "Level/v2/bedroom_books", "Level/v2/bedroom_books")
 end
 
+-- The shared v2 living room, its Act-out props and its swaying lamp.
+if want("home_v2") then
+  local HM = dofile(here .. "home_v2.lua")(L, ST)
+  local function homeSprite(draw, name)
+    local path = "Level/v2/" .. name
+    L.save(draw(), path, path)
+  end
+  homeSprite(HM.background, "bg_home")
+  homeSprite(HM.tableFront, "table_front")
+  for _, prop in ipairs({
+    { HM.bagOpen, "bag_open" }, { HM.bagClosed, "bag_closed" },
+    { HM.water, "water" }, { HM.can, "can" }, { HM.flashlight, "flashlight" },
+    { HM.whistle, "whistle" }, { HM.snack, "snack" }, { HM.toy, "toy" },
+    { HM.parkCard, "park_card" }, { HM.houseCard, "house_card" },
+  }) do
+    homeSprite(prop[1], "home_" .. prop[2])
+  end
+  L.saveFrames(HM.lampFrames(), "Level/v2/home_lamp", "Level/v2/home_lamp", 160)
+end
+
+-- The Home-specific reach-up frames let the Student pinch a card at the board.
+if want("home_reachup") then
+  for _, kind in ipairs({ "boy", "girl" }) do
+    local path = "Student/" .. kind .. "_home_reachup"
+    L.saveFrames(ST.homeReachUpFrames(kind), path, path, 300)
+  end
+end
+
 -- The Grown-ups (36x62): GrownUp/<who>_<pose>_<n>.png
 if want("grownups_v2") then
   local GU = dofile(here .. "grownups_v2.lua")(L, ST)

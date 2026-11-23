@@ -16,6 +16,8 @@ return function(L, ST)
   M.GREEN = { rgb(120, 196, 104), rgb(84, 160, 80), rgb(56, 118, 62) }
   M.RED = { rgb(240, 130, 126), rgb(214, 64, 64), rgb(128, 40, 52) }
   M.POT = { rgb(232, 140, 96), rgb(200, 104, 70), rgb(156, 72, 52) }   -- the v2 plant pots
+  M.METAL = { rgb(214, 218, 228), rgb(170, 176, 192), rgb(124, 128, 146) }
+  M.SAGE = { rgb(156, 204, 176), rgb(124, 180, 150), rgb(96, 152, 126) }
   M.NAVY = { K.m, K.N, K.n }
   M.WHITE = { K.W, K.w, K.v }
   M.SKIN = { K.t, K.S, K.s }
@@ -208,6 +210,140 @@ return function(L, ST)
     book(2, 7, 13, M.RED)
     book(1, 3, 14, M.GREEN)
     out.books = bk
+
+    -- Normal 2, living room: a clock, storage boxes, the go bag, and snacks with a toy.
+    local later = L.newImage(16, 16)
+    L.circle(later, 8, 8, 7, O)
+    L.circle(later, 8, 8, 6, M.METAL[3])
+    L.circle(later, 8, 8, 5, M.WHITE[2])
+    L.line(later, 5, 5, 7, 4, M.WHITE[1])
+    L.vline(later, 8, 4, 8, O)
+    L.hline(later, 8, 11, 8, O)
+    L.px(later, 8, 12, M.METAL[3])
+    out.pack_later = later
+
+    local hidden = L.newImage(16, 16)
+    M.box(hidden, 1, 2, 14, 7, M.WOOD)
+    L.vline(hidden, 7, 3, 6, M.WHITE[2])
+    L.rect(hidden, 1, 8, 2, 6, M.WOOD[3])
+    L.rect(hidden, 13, 8, 2, 6, M.WOOD[3])
+    M.box(hidden, 5, 10, 6, 5, M.RED)
+    L.px(hidden, 8, 12, M.WHITE[1])
+    out.bag_hidden = hidden
+
+    local bag = L.newImage(16, 16)
+    L.rect(bag, 6, 1, 5, 1, M.RED[2])
+    L.px(bag, 6, 2, M.RED[2]); L.px(bag, 10, 2, M.RED[3])
+    L.poly(bag, { 4, 3, 11, 3, 13, 6, 13, 13, 11, 14, 4, 14, 2, 13, 2, 6 }, M.RED[2])
+    L.line(bag, 2, 6, 4, 3, M.RED[1])
+    L.vline(bag, 2, 7, 12, M.RED[1])
+    L.vline(bag, 13, 6, 12, M.RED[3])
+    L.hline(bag, 4, 11, 14, M.RED[3])
+    L.rect(bag, 5, 7, 6, 4, M.RED[3])
+    L.hline(bag, 5, 10, 7, M.RED[1])
+    L.px(bag, 9, 8, M.WHITE[1])
+    L.outline(bag, O)
+    out.go_bag = bag
+
+    local toys = L.newImage(16, 16)
+    M.box(toys, 1, 2, 6, 12, M.POT)
+    L.hline(toys, 2, 5, 7, M.SUN)
+    L.poly(toys, { 6, 9, 8, 9, 10, 6, 13, 6, 15, 9, 15, 12, 6, 12 }, M.RED[2])
+    L.hline(toys, 10, 12, 7, M.GLASS[1])
+    L.hline(toys, 7, 14, 10, M.RED[1])
+    L.circle(toys, 8, 12, 1, O); L.circle(toys, 13, 12, 1, O)
+    L.outline(toys, O)
+    out.snack_toy = toys
+
+    -- Normal 3 reuses the pilot door. Glass panes distinguish this cabinet from the pilot bookcase.
+    local glassCabinet = L.newImage(16, 16)
+    M.box(glassCabinet, 2, 0, 12, 16, M.WOOD)
+    L.rect(glassCabinet, 4, 2, 8, 10, M.GLASS[2])
+    L.hline(glassCabinet, 4, 11, 7, M.GLASS[3])
+    L.line(glassCabinet, 4, 6, 7, 2, M.WHITE[1])
+    L.line(glassCabinet, 8, 10, 11, 6, M.WHITE[1])
+    L.vline(glassCabinet, 8, 2, 11, M.WOOD[3])
+    L.px(glassCabinet, 7, 7, O)
+    L.px(glassCabinet, 9, 7, O)
+    L.hline(glassCabinet, 6, 9, 13, M.WOOD[3])
+    out.glass_cabinet = glassCabinet
+
+    local sofa = L.newImage(16, 16)
+    M.box(sofa, 2, 3, 12, 8, M.SAGE)
+    L.vline(sofa, 8, 5, 8, M.SAGE[3])
+    M.box(sofa, 1, 8, 14, 5, M.SAGE)
+    M.box(sofa, 0, 7, 4, 6, M.SAGE)
+    M.box(sofa, 12, 7, 4, 6, M.SAGE)
+    L.rect(sofa, 2, 13, 2, 2, O); L.rect(sofa, 12, 13, 2, 2, O)
+    out.sofa = sofa
+
+    local tbl = L.newImage(16, 16)
+    L.map(tbl, 0, 0, {
+      "................",
+      "................",
+      "...oooooooooo...",
+      "..oAAAAAAAAAAo..",
+      ".oooooooooooooo.",
+      ".oaaaaaaaaaaaao.",
+      ".oooooooooooooo.",
+      "..oAo..ooo.oao..",
+      "..oAo.oHHHooao..",
+      "..oAo.oHtSooao..",
+      "..oAooWWwvooao..",
+      "..oAooWWvvooao..",
+      "..oAoomNnnooao..",
+      "..oooooooooooo..",
+      "................",
+      "................",
+    }, setmetatable({ A = M.WOOD[1], a = M.WOOD[2] }, { __index = K }))
+    out.strong_table = tbl
+
+    -- Hard 1, living room: separate paths, a park pin, a house, and a phone.
+    local paths = L.newImage(16, 16)
+    -- A common path ends at the fork. The two arrows point away from each other.
+    L.rect(paths, 7, 8, 3, 7, M.NAVY[3])
+    L.poly(paths, { 1, 2, 7, 2, 6, 4, 9, 8, 7, 10, 4, 6, 2, 7 }, M.NAVY[2])
+    L.poly(paths, { 14, 2, 14, 7, 12, 6, 9, 10, 7, 8, 10, 4, 9, 2 }, M.RED[2])
+    L.line(paths, 2, 3, 5, 3, M.NAVY[1])
+    L.line(paths, 2, 4, 7, 9, M.NAVY[1])
+    L.line(paths, 10, 3, 13, 3, M.RED[1])
+    L.line(paths, 8, 8, 13, 3, M.RED[1])
+    L.outline(paths, O)
+    out.own_way = paths
+
+    local meet = L.newImage(16, 16)
+    M.box(meet, 0, 3, 16, 13, M.WOOD)
+    L.rect(meet, 2, 5, 12, 9, M.GLASS[1])
+    L.hline(meet, 2, 13, 13, M.GREEN[2])
+    L.vline(meet, 5, 10, 13, M.WOOD[3])
+    L.circle(meet, 5, 9, 2, M.GREEN[3])
+    L.px(meet, 4, 8, M.GREEN[1])
+    L.vline(meet, 11, 4, 10, O)
+    L.circle(meet, 11, 4, 3, O)
+    L.circle(meet, 11, 4, 2, M.RED[2])
+    L.px(meet, 10, 3, M.RED[1])
+    out.meet_park = meet
+
+    local house = L.newImage(16, 16)
+    M.box(house, 3, 7, 10, 8, M.WOOD)
+    L.poly(house, { 0, 8, 7, 1, 9, 1, 15, 8, 15, 9, 0, 9 }, O)
+    L.poly(house, { 2, 7, 7, 2, 9, 2, 13, 7, 13, 8, 2, 8 }, M.RED[2])
+    L.line(house, 3, 7, 7, 3, M.RED[1])
+    L.hline(house, 3, 12, 8, M.RED[3])
+    L.rect(house, 7, 10, 3, 4, M.WOOD[3])
+    L.px(house, 6, 11, M.GLASS[1])
+    out.meet_house = house
+
+    local phone = L.newImage(16, 16)
+    M.box(phone, 3, 0, 10, 16, M.NAVY)
+    M.round(phone, 3, 0, 10, 16)
+    L.rect(phone, 5, 3, 6, 9, M.GLASS[2])
+    L.hline(phone, 5, 10, 3, M.GLASS[1])
+    L.vline(phone, 10, 4, 11, M.GLASS[3])
+    L.hline(phone, 6, 8, 6, M.WHITE[1])
+    L.hline(phone, 6, 9, 8, M.WHITE[2])
+    L.hline(phone, 7, 8, 13, M.METAL[1])
+    out.phone_numbers = phone
 
     return out
   end
