@@ -41,6 +41,97 @@ return function(L, ST)
     end
   end
 
+  local function schoolyardIcons(out)
+    -- The direct Choices show the landmark at full size.
+    local tree = L.newImage(16, 16)
+    L.rect(tree, 6, 7, 4, 7, M.WOOD[2])
+    L.vline(tree, 6, 9, 13, M.WOOD[1])
+    L.vline(tree, 9, 9, 13, M.WOOD[3])
+    L.poly(tree, { 1, 6, 3, 3, 6, 3, 8, 1, 11, 2, 13, 4, 14, 7, 13, 9,
+      10, 9, 8, 10, 5, 9, 2, 9 }, M.GREEN[3])
+    L.poly(tree, { 2, 6, 5, 4, 7, 4, 8, 2, 11, 3, 13, 5, 13, 7, 10, 8, 5, 7 }, M.GREEN[2])
+    L.hline(tree, 4, 7, 5, M.GREEN[1])
+    L.hline(tree, 8, 10, 3, M.GREEN[1])
+    L.outline(tree, O)
+    out.tree = tree
+
+    local field = L.newImage(16, 16)
+    L.poly(field, { 1, 7, 5, 5, 10, 5, 14, 7, 14, 12, 11, 14, 4, 14, 1, 12 }, M.GREEN[3])
+    L.poly(field, { 2, 7, 5, 6, 10, 6, 13, 7, 13, 11, 10, 13, 4, 13, 2, 11 }, M.GREEN[2])
+    L.hline(field, 5, 10, 6, M.GREEN[1])
+    L.hline(field, 3, 6, 9, M.GREEN[1])
+    L.px(field, 10, 10, M.GREEN[1])
+    L.outline(field, O)
+    L.px(field, 3, 2, M.SUN)
+    L.hline(field, 2, 4, 3, M.SUN)
+    out.field = field
+
+    local building = L.newImage(16, 16)
+    M.box(building, 2, 6, 12, 9, M.WHITE)
+    L.poly(building, { 0, 7, 5, 2, 10, 2, 15, 7, 15, 8, 0, 8 }, O)
+    L.poly(building, { 2, 6, 5, 3, 10, 3, 13, 6, 13, 7, 2, 7 }, M.RED[2])
+    L.line(building, 3, 6, 5, 4, M.RED[1])
+    L.hline(building, 5, 13, 7, M.RED[3])
+    L.rect(building, 6, 9, 4, 6, O)
+    L.rect(building, 7, 10, 2, 5, M.WOOD[3])
+    L.px(building, 7, 10, M.WOOD[1])
+    L.rect(building, 3, 10, 2, 2, M.GLASS[2])
+    L.rect(building, 11, 10, 2, 2, M.GLASS[3])
+    out.building = building
+
+    local post = L.newImage(16, 16)
+    M.box(post, 5, 1, 5, 14, M.METAL)
+    L.line(post, 8, 4, 14, 6, O)
+    L.line(post, 8, 7, 15, 9, O)
+    M.box(post, 2, 4, 11, 4, M.METAL)
+    L.px(post, 3, 3, M.GLASS[2])
+    L.px(post, 11, 3, M.GLASS[2])
+    out.post = post
+
+    -- The route Choices pair an arrow in the foreground with a smaller landmark.
+    local function route(ramp)
+      local img = L.newImage(16, 16)
+      L.poly(img, { 1, 14, 3, 10, 4, 8, 6, 6, 4, 6, 8, 3,
+        9, 7, 7, 7, 5, 11, 5, 14 }, ramp[2])
+      L.line(img, 2, 13, 5, 8, ramp[1])
+      L.outline(img, O)
+      return img
+    end
+
+    local routePost = route(M.METAL)
+    M.box(routePost, 11, 2, 4, 10, M.METAL)
+    L.hline(routePost, 10, 15, 4, O)
+    L.px(routePost, 15, 6, O)
+    out.route_post = routePost
+
+    local routeTree = route(M.WOOD)
+    L.vline(routeTree, 12, 6, 11, O)
+    L.line(routeTree, 12, 8, 12, 10, M.WOOD[1])
+    L.poly(routeTree, { 9, 4, 12, 1, 14, 2, 15, 5, 14, 7, 10, 7, 9, 6 }, O)
+    L.poly(routeTree, { 10, 4, 12, 2, 14, 3, 14, 5, 13, 6, 10, 6 }, M.GREEN[2])
+    L.px(routeTree, 11, 4, M.GREEN[1])
+    out.route_tree = routeTree
+
+    local routeField = route(M.GREEN)
+    L.vline(routeField, 12, 6, 11, O)
+    M.box(routeField, 9, 2, 7, 6, M.GREEN)
+    L.hline(routeField, 11, 13, 4, M.WHITE[1])
+    L.hline(routeField, 11, 12, 5, M.WHITE[1])
+    out.route_field = routeField
+
+    local later = L.newImage(16, 16)
+    L.circle(later, 9, 6, 5, O)
+    L.circle(later, 9, 6, 4, M.WHITE[2])
+    L.circle(later, 8, 5, 2, M.WHITE[1])
+    L.vline(later, 9, 3, 6, M.NAVY[3])
+    L.hline(later, 9, 11, 6, M.NAVY[3])
+    L.poly(later, { 1, 12, 5, 9, 5, 11, 12, 11, 14, 9, 14, 12,
+      12, 14, 5, 14, 5, 15 }, M.WOOD[2])
+    L.hline(later, 5, 11, 12, M.WOOD[1])
+    L.outline(later, O)
+    out.route_later = later
+  end
+
   -- The icons by name (without the icon_ prefix). Each slice adds its own.
   function M.icons()
     local out = {}
@@ -344,6 +435,8 @@ return function(L, ST)
     L.hline(phone, 6, 9, 8, M.WHITE[2])
     L.hline(phone, 7, 8, 13, M.METAL[1])
     out.phone_numbers = phone
+
+    schoolyardIcons(out)
 
     return out
   end
