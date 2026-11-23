@@ -272,7 +272,7 @@ namespace DisasterSafety.Tests
         [UnityTest]
         public IEnumerator NormalDifficulty_CompletingAllFiveLevels_OpensHard()
         {
-            var settings = new[] { "bedroom_v2", "home_v2", "home_v2", "schoolyard", "beach" };
+            var settings = new[] { "bedroom_v2", "home_v2", "home_v2", "schoolyard_v2", "beach" };
             var shakes = new[] { false, false, true, true, false };
 
             GameServices.Initialize(dir);
@@ -293,7 +293,7 @@ namespace DisasterSafety.Tests
                 Assert.That(shaking, Is.EqualTo(shakes[n - 1]), "shaking in Normal " + n);
 
                 Assert.That(GameServices.Scenarios.TryGet(level, out var scenario), Is.True);
-                Assert.That(c.UsesStudentFlow, Is.EqualTo(n <= 3), "the Student flow in Normal " + n);
+                Assert.That(c.UsesStudentFlow, Is.EqualTo(n <= 4), "the Student flow in Normal " + n);
                 if (c.UsesStudentFlow)
                 {
                     Tap(c, scenario.SafeChoiceIndex);
@@ -329,7 +329,7 @@ namespace DisasterSafety.Tests
         [UnityTest]
         public IEnumerator HardDifficulty_CompletingAllSevenLevels_CompletesTheEpisode()
         {
-            var settings = new[] { "home_v2", "schoolyard", "mall_a", "mall_b", "home_after", "home_after", "evacuation_area" };
+            var settings = new[] { "home_v2", "schoolyard_v2", "mall_a", "mall_b", "home_after", "home_after", "evacuation_area" };
             var shakes = new[] { false, false, true, false, false, false, false };
 
             GameServices.Initialize(dir);
@@ -350,7 +350,7 @@ namespace DisasterSafety.Tests
                 Assert.That(shaking, Is.EqualTo(shakes[n - 1]), "shaking in Hard " + n);
 
                 Assert.That(GameServices.Scenarios.TryGet(level, out var scenario), Is.True);
-                Assert.That(c.UsesStudentFlow, Is.EqualTo(n == 1), "the Student flow in Hard " + n);
+                Assert.That(c.UsesStudentFlow, Is.EqualTo(n <= 2), "the Student flow in Hard " + n);
                 if (c.UsesStudentFlow)
                 {
                     Tap(c, scenario.SafeChoiceIndex);
@@ -721,7 +721,7 @@ namespace DisasterSafety.Tests
         static readonly LevelId NormalThree = new LevelId(Episode.Earthquake, Difficulty.Normal, 3);
         static readonly LevelId HardOne = new LevelId(Episode.Earthquake, Difficulty.Hard, 1);
 
-        IEnumerator StartHome(LevelId level)
+        IEnumerator StartRolloutLevel(LevelId level)
         {
             GameServices.Initialize(dir);
             GameServices.Progress.SetDisplayName("Ana");
@@ -735,7 +735,7 @@ namespace DisasterSafety.Tests
         [UnityTest]
         public IEnumerator HomeNormal2_StartsWithItsOwnCast()
         {
-            yield return StartHome(NormalTwo);
+            yield return StartRolloutLevel(NormalTwo);
             var c = Level();
             Assert.That(c.ActiveSetting.key, Is.EqualTo("home_v2"));
             Assert.That(c.UsesStudentFlow, Is.True);
@@ -757,7 +757,7 @@ namespace DisasterSafety.Tests
         [UnityTest]
         public IEnumerator NormalLevel2_SafeChoice_ActsOutAndCompletes()
         {
-            yield return StartHome(NormalTwo);
+            yield return StartRolloutLevel(NormalTwo);
             var c = Level();
             yield return ReadyToChoose(Level);
             Assert.That(c.ActiveSetting.ActOutFor("go_bag"), Is.Not.Null, "the Safe Choice has an Act-out");
@@ -788,7 +788,7 @@ namespace DisasterSafety.Tests
             AssertPropCentre(closed, 83f, 202.5f);
             Assert.That(PropIn(c, "toy").gameObject.activeSelf, Is.True);
             Assert.That(PropIn(c, "snack").gameObject.activeSelf, Is.True);
-            FinishHome(c);
+            FinishWithThreeStars(c);
         }
 
         static void AssertPropCentre(LevelProp prop, float artX, float artY)
@@ -801,7 +801,7 @@ namespace DisasterSafety.Tests
             Assert.That(fromBottomLeft.y, Is.EqualTo((270f - artY) * 4f).Within(0.02f));
         }
 
-        static void FinishHome(LevelController c)
+        static void FinishWithThreeStars(LevelController c)
         {
             Assert.That(c.finishButton.gameObject.activeSelf, Is.True);
             c.finishButton.onClick.Invoke();
@@ -812,7 +812,7 @@ namespace DisasterSafety.Tests
         [UnityTest]
         public IEnumerator NormalLevel2_UnsafeChoice_StopsAndResets()
         {
-            yield return StartHome(NormalTwo);
+            yield return StartRolloutLevel(NormalTwo);
             var c = Level();
             yield return ReadyToChoose(Level);
             Assert.That(c.ActiveSetting.ActOutFor("hidden"), Is.Not.Null, "the boxes Choice has an Act-out");
@@ -855,7 +855,7 @@ namespace DisasterSafety.Tests
         [UnityTest]
         public IEnumerator NormalLevel3_SafeChoice_ActsOutAndCompletes()
         {
-            yield return StartHome(NormalThree);
+            yield return StartRolloutLevel(NormalThree);
             var c = Level();
             Assert.That(c.UsesStudentFlow, Is.True, "Normal 3 shows the Action Bar");
             Assert.That(c.ActiveSetting.key, Is.EqualTo("home_v2"));
@@ -882,13 +882,13 @@ namespace DisasterSafety.Tests
             yield return WaitFor(() => !shaker.IsShaking, "the shaking to calm under the table");
             Assert.That(shaker.wobblers[0].enabled, Is.False);
             yield return FeedbackShown(c);
-            FinishHome(c);
+            FinishWithThreeStars(c);
         }
 
         [UnityTest]
         public IEnumerator NormalLevel3_UnsafeChoice_StopsAndResets()
         {
-            yield return StartHome(NormalThree);
+            yield return StartRolloutLevel(NormalThree);
             var c = Level();
             yield return ReadyToChoose(Level);
             Assert.That(c.ActiveSetting.ActOutFor("run"), Is.Not.Null, "the door Choice has an Act-out");
@@ -910,7 +910,7 @@ namespace DisasterSafety.Tests
         [UnityTest]
         public IEnumerator HardLevel1_SafeChoice_ActsOutAndCompletes()
         {
-            yield return StartHome(HardOne);
+            yield return StartRolloutLevel(HardOne);
             var c = Level();
             Assert.That(c.UsesStudentFlow, Is.True, "Hard 1 shows the Action Bar");
             Assert.That(c.ActiveSetting.key, Is.EqualTo("home_v2"));
@@ -937,13 +937,13 @@ namespace DisasterSafety.Tests
             AssertPropCentre(park, 117f, 178.5f);
             Assert.That(mom.Pose, Is.EqualTo(GrownUpPose.Happy));
             Assert.That(PropIn(c, "house_card").AtStart, Is.True);
-            FinishHome(c);
+            FinishWithThreeStars(c);
         }
 
         [UnityTest]
         public IEnumerator HardLevel1_UnsafeChoice_StopsAndResets()
         {
-            yield return StartHome(HardOne);
+            yield return StartRolloutLevel(HardOne);
             var c = Level();
             yield return ReadyToChoose(Level);
             Assert.That(c.ActiveSetting.ActOutFor("meet_home"), Is.Not.Null, "the house Choice has an Act-out");
@@ -972,7 +972,7 @@ namespace DisasterSafety.Tests
         {
             foreach (var level in new[] { NormalTwo, NormalThree, HardOne })
             {
-                yield return StartHome(level);
+                yield return StartRolloutLevel(level);
                 var c = Level();
                 Assert.That(c.UsesStudentFlow, Is.True, level.Key);
                 var setting = c.ActiveSetting;
@@ -1010,6 +1010,260 @@ namespace DisasterSafety.Tests
                     }
                 }
             }
+        }
+
+        static readonly LevelId NormalFour = new LevelId(Episode.Earthquake, Difficulty.Normal, 4);
+        static readonly LevelId HardTwo = new LevelId(Episode.Earthquake, Difficulty.Hard, 2);
+
+        [UnityTest]
+        public IEnumerator Schoolyard_LevelsSelectTheirOwnCastAndStart()
+        {
+            yield return StartRolloutLevel(NormalFour);
+            var c = Level();
+            Assert.That(c.UsesStudentFlow, Is.True);
+            Assert.That(c.ActiveSetting.key, Is.EqualTo("schoolyard_v2"));
+            Assert.That(c.Student.X, Is.EqualTo(302f), "Normal 4 starts at the recess spot");
+            Assert.That(c.Student.Y, Is.Zero);
+            Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Surprised));
+            Assert.That(c.actionBar.IsVisible, Is.False);
+            Assert.That(c.ActiveSetting.GetComponentsInChildren<GrownUpActor>(), Is.Empty);
+            Assert.That(c.ActiveSetting.shaker.IsShaking, Is.True);
+            Assert.That(c.bantay.gameObject.activeInHierarchy, Is.False);
+            yield return ActionBarShown(c);
+            Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Idle));
+
+            yield return StartRolloutLevel(HardTwo);
+            c = Level();
+            Assert.That(c.UsesStudentFlow, Is.True);
+            Assert.That(c.ActiveSetting.key, Is.EqualTo("schoolyard_v2"));
+            Assert.That(c.Student.X, Is.EqualTo(306f));
+            Assert.That(c.Student.Y, Is.Zero);
+            Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Idle));
+            Assert.That(c.ActiveSetting.shaker.IsShaking, Is.False);
+            foreach (var wobbler in c.ActiveSetting.shaker.wobblers)
+                Assert.That(wobbler.enabled, Is.False, "the schoolyard stays still in Hard 2");
+            var grownUps = c.ActiveSetting.GetComponentsInChildren<GrownUpActor>();
+            Assert.That(grownUps, Has.Length.EqualTo(1));
+            Assert.That(grownUps[0].kind, Is.EqualTo(GrownUpKind.Teacher));
+            Assert.That(grownUps[0].X, Is.EqualTo(217f), "the Teacher stands in the doorway");
+            Assert.That(grownUps[0].Y, Is.Zero);
+            Assert.That(grownUps[0].Pose, Is.EqualTo(GrownUpPose.Wave));
+            Assert.That(c.bantay.gameObject.activeInHierarchy, Is.False);
+        }
+
+        [UnityTest]
+        public IEnumerator NormalLevel4_SafeChoice_ActsOutAndCompletes()
+        {
+            yield return StartRolloutLevel(NormalFour);
+            var c = Level();
+            yield return ActionBarShown(c);
+            Assert.That(c.ActiveSetting.ActOutFor("field"), Is.Not.Null, "the field Choice has an Act-out");
+            var student = c.Student;
+            var shaker = c.ActiveSetting.shaker;
+            Assert.That(shaker.wobblers, Has.Length.EqualTo(2));
+            foreach (var wobbler in shaker.wobblers)
+            {
+                Assert.That(wobbler.enabled, Is.True);
+                var image = wobbler.GetComponent<Image>();
+                yield return WaitFor(() => image.sprite == wobbler.frames[1], wobbler.name + " to sway");
+            }
+
+            Tap(c, 1);
+            yield return WaitFor(() => student.IsWalking && student.FacingLeft, "the walk into the field");
+            yield return WaitFor(() => student.Pose == StudentPose.Crouch, "the crouch in the field");
+            Assert.That(student.X, Is.EqualTo(86f));
+            yield return WaitFor(() => student.Pose == StudentPose.Cover, "the Student to cover");
+            Assert.That(student.FacingLeft, Is.True);
+            Assert.That(shaker.IsShaking, Is.True, "the Student covers while the ground still shakes");
+            yield return WaitFor(() => !shaker.IsShaking, "the schoolyard to calm");
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Cover));
+            Assert.That(student.X, Is.EqualTo(86f));
+            Assert.That(student.Y, Is.Zero);
+            foreach (var wobbler in shaker.wobblers)
+            {
+                Assert.That(wobbler.enabled, Is.False);
+                Assert.That(wobbler.GetComponent<Image>().sprite, Is.EqualTo(wobbler.frames[0]));
+            }
+
+            yield return FeedbackShown(c);
+            FinishWithThreeStars(c);
+        }
+
+        [UnityTest]
+        public IEnumerator NormalLevel4_UnsafeChoice_StopsAndResets()
+        {
+            yield return StartRolloutLevel(NormalFour);
+            var c = Level();
+            yield return ActionBarShown(c);
+            Assert.That(c.ActiveSetting.ActOutFor("building"), Is.Not.Null, "the building Choice has an Act-out");
+            Assert.That(c.ActiveSetting.ActOutFor("tree"), Is.Not.Null, "the tree Choice has an Act-out");
+            Assert.That(GameServices.Scenarios.TryGet(NormalFour, out var scenario), Is.True);
+            var student = c.Student;
+            var shaker = c.ActiveSetting.shaker;
+
+            Tap(c, 2);
+            yield return WaitFor(() => student.IsWalking && student.FacingLeft, "the run toward the door");
+            yield return WaitFor(() => student.bubble.gameObject.activeSelf && student.bubble.Line == UIStrings.ReactionWait, "the building stop");
+            Assert.That(student.X, Is.EqualTo(260f), "the Student stops outside the doorway");
+            Assert.That(student.Y, Is.Zero);
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Wait));
+            Assert.That(shaker.IsShaking, Is.True);
+
+            yield return FeedbackShown(c);
+            Assert.That(c.feedbackHeading.text, Is.EqualTo(scenario.choices[2].heading));
+            c.tryAgainButton.onClick.Invoke();
+            yield return ActionBarShown(c);
+            AssertSchoolyardReset(c, 302f, 2);
+            Assert.That(shaker.IsShaking, Is.True);
+
+            Tap(c, 0);
+            yield return WaitFor(() => student.bubble.gameObject.activeSelf && student.bubble.Line == UIStrings.ReactionWait, "the tree stop");
+            Assert.That(student.X, Is.EqualTo(320f), "the Student stops at the edge of the shade");
+            Assert.That(student.Y, Is.EqualTo(31f));
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Wait));
+            Assert.That(shaker.IsShaking, Is.True);
+
+            yield return FeedbackShown(c);
+            Assert.That(c.feedbackHeading.text, Is.EqualTo(UIStrings.UnsafeHeading));
+            c.tryAgainButton.onClick.Invoke();
+            yield return ActionBarShown(c);
+            AssertSchoolyardReset(c, 302f, 0);
+            Assert.That(shaker.IsShaking, Is.True);
+        }
+
+        static void AssertSchoolyardReset(LevelController c, float startX, int tried)
+        {
+            Assert.That(c.Student.X, Is.EqualTo(startX));
+            Assert.That(c.Student.Y, Is.Zero);
+            Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Idle));
+            Assert.That(c.actionBar.buttons[tried].button.interactable, Is.False);
+        }
+
+        [UnityTest]
+        public IEnumerator HardLevel2_SafeChoice_ActsOutAndCompletes()
+        {
+            yield return StartRolloutLevel(HardTwo);
+            var c = Level();
+            yield return ActionBarShown(c);
+            Assert.That(c.ActiveSetting.ActOutFor("route_field"), Is.Not.Null, "the field route has an Act-out");
+            var student = c.Student;
+            var teacher = c.ActiveSetting.ActiveGrownUps[0];
+
+            Tap(c, 2);
+            yield return WaitFor(() => student.IsWalking && teacher.IsWalking, "the Student and Teacher to walk together");
+            Assert.That(student.FacingLeft, Is.True);
+            Assert.That(teacher.FacingLeft, Is.True);
+            yield return WaitFor(() => student.Y > 0f && teacher.Y > 5f && student.IsWalking && teacher.IsWalking,
+                "the Student and Teacher to turn into the field path");
+
+            yield return FeedbackShown(c);
+            Assert.That(student.X, Is.EqualTo(133f));
+            Assert.That(student.Y, Is.EqualTo(32f));
+            Assert.That(teacher.X, Is.EqualTo(101f));
+            Assert.That(teacher.Y, Is.EqualTo(47f));
+            Assert.That(teacher.Pose, Is.EqualTo(GrownUpPose.Wave));
+            Assert.That(c.ActiveSetting.shaker.IsShaking, Is.False);
+            FinishWithThreeStars(c);
+        }
+
+        [UnityTest]
+        public IEnumerator HardLevel2_UnsafeChoice_StopsAndResets()
+        {
+            yield return StartRolloutLevel(HardTwo);
+            var c = Level();
+            yield return ActionBarShown(c);
+            Assert.That(c.ActiveSetting.ActOutFor("route_post"), Is.Not.Null, "the post route has an Act-out");
+            Assert.That(c.ActiveSetting.ActOutFor("route_later"), Is.Not.Null, "the later Choice has an Act-out");
+            Assert.That(GameServices.Scenarios.TryGet(HardTwo, out var scenario), Is.True);
+            var student = c.Student;
+            var teacher = c.ActiveSetting.ActiveGrownUps[0];
+
+            Tap(c, 0);
+            yield return WaitFor(() => student.IsWalking && student.Y < 0f, "the Student to follow the foreground path");
+            yield return WaitFor(() => student.bubble.gameObject.activeSelf && student.bubble.Line == UIStrings.ReactionWait, "the post route stop");
+            Assert.That(student.X, Is.EqualTo(414f));
+            Assert.That(student.Y, Is.EqualTo(5f));
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Wait));
+            yield return FeedbackShown(c);
+            Assert.That(c.feedbackHeading.text, Is.EqualTo(UIStrings.UnsafeHeading));
+            c.tryAgainButton.onClick.Invoke();
+            yield return ActionBarShown(c);
+            AssertSchoolyardReset(c, 306f, 0);
+            Assert.That(teacher.AtStart, Is.True);
+            Assert.That(teacher.Pose, Is.EqualTo(GrownUpPose.Wave));
+
+            Tap(c, 3);
+            yield return WaitFor(() => student.IsWalking && student.FacingLeft, "the return toward the school");
+            yield return WaitFor(() => student.bubble.gameObject.activeSelf && student.bubble.Line == UIStrings.ReactionWait, "the door route stop");
+            Assert.That(student.X, Is.EqualTo(260f), "the Student stops outside the doorway");
+            Assert.That(student.Y, Is.Zero);
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Wait));
+            yield return FeedbackShown(c);
+            Assert.That(c.feedbackHeading.text, Is.EqualTo(scenario.choices[3].heading));
+            c.tryAgainButton.onClick.Invoke();
+            yield return ActionBarShown(c);
+            AssertSchoolyardReset(c, 306f, 3);
+            Assert.That(teacher.AtStart, Is.True);
+            Assert.That(teacher.Pose, Is.EqualTo(GrownUpPose.Wave));
+            Assert.That(c.ActiveSetting.shaker.IsShaking, Is.False);
+        }
+
+        [UnityTest]
+        public IEnumerator SchoolyardActOuts_AreComplete()
+        {
+            foreach (var level in new[] { NormalFour, HardTwo })
+            {
+                yield return StartRolloutLevel(level);
+                var setting = Level().ActiveSetting;
+                Assert.That(GameServices.Scenarios.TryGet(level, out var scenario), Is.True);
+                foreach (var choice in scenario.choices)
+                {
+                    var act = setting.ActOutFor(choice.action);
+                    Assert.That(act, Is.Not.Null, choice.id);
+                    Assert.That(act.steps, Is.Not.Empty, choice.id);
+                    if (!choice.safe)
+                        Assert.That(act.stopAfter, Is.InRange(0, act.steps.Length - 1), choice.id);
+                    foreach (var step in act.steps)
+                        if (step.grownUp != null)
+                            Assert.That(setting.ActiveGrownUps, Does.Contain(step.grownUp), choice.id);
+                }
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator SchoolyardReactions_LeaveTheSignAndTeacherVisible()
+        {
+            yield return StartRolloutLevel(NormalFour);
+            var c = Level();
+            yield return ActionBarShown(c);
+            Tap(c, 1);
+            yield return WaitFor(() => c.Student.bubble.Line == UIStrings.ReactionSafe, "the Normal 4 Safe Reaction");
+            var sign = new Rect(15f * 4f, (270f - 176f) * 4f, 68f * 4f, 34f * 4f);
+            var reaction = (RectTransform)c.Student.bubble.transform;
+            Assert.That(SchoolyardArtBounds(c.ActiveSetting, reaction).Overlaps(sign),
+                Is.False, "the Normal 4 Reaction leaves the Evacuation Area sign visible");
+
+            yield return StartRolloutLevel(HardTwo);
+            c = Level();
+            yield return ActionBarShown(c);
+            Tap(c, 2);
+            yield return WaitFor(() => c.Student.bubble.Line == UIStrings.ReactionReady, "the Hard 2 Safe Reaction");
+            reaction = (RectTransform)c.Student.bubble.transform;
+            var teacher = (RectTransform)c.ActiveSetting.ActiveGrownUps[0].transform;
+            var bounds = SchoolyardArtBounds(c.ActiveSetting, reaction);
+            Assert.That(bounds.Overlaps(sign), Is.False, "the Hard 2 Reaction leaves the sign visible");
+            Assert.That(bounds.Overlaps(SchoolyardArtBounds(c.ActiveSetting, teacher)),
+                Is.False, "the Hard 2 Reaction leaves the Teacher visible");
+        }
+
+        static Rect SchoolyardArtBounds(LevelSetting setting, RectTransform element)
+        {
+            var yard = (RectTransform)setting.transform;
+            var corners = new Vector3[4];
+            element.GetWorldCorners(corners);
+            var min = (Vector2)yard.InverseTransformPoint(corners[0]) - yard.rect.min;
+            var max = (Vector2)yard.InverseTransformPoint(corners[2]) - yard.rect.min;
+            return Rect.MinMaxRect(min.x, min.y, max.x, max.y);
         }
 
         static LevelProp PropIn(LevelController c, string key)

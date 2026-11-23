@@ -41,6 +41,7 @@ namespace DisasterSafety.Core
                 case ClassroomAfter: return ClassroomAfterSpots;
                 case Bedroom: return BedroomSpots;
                 case Home: return HomeSpots;
+                case Schoolyard: return SchoolyardSpots;
                 default: return System.Array.Empty<string>();
             }
         }
@@ -57,6 +58,12 @@ namespace DisasterSafety.Core
             "later", "hidden", "go_bag", "toys",
             "run", "glass", "sofa", "table",
             "own_way", "meeting_place", "meet_home", "phone_numbers",
+        };
+
+        static readonly string[] SchoolyardSpots =
+        {
+            "tree", "field", "building", "post",
+            "route_post", "route_tree", "route_field", "route_later",
         };
 
         public static bool CanShake(string key) =>

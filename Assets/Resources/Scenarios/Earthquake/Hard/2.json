@@ -31,6 +31,8 @@
             "id": "route_post",
             "label": "Take the path by the post",
             "picture": "choice_route_post",
+            "icon": "icon_route_post",
+            "action": "route_post",
             "safe": false,
             "feedback": "Posts can fall when it shakes. Pick a route away from them.",
             "sources": [
@@ -42,6 +44,8 @@
             "id": "route_tree",
             "label": "Walk the path under the tree",
             "picture": "choice_route_tree",
+            "icon": "icon_route_tree",
+            "action": "route_tree",
             "safe": false,
             "feedback": "Trees can fall too. Choose a route in the open.",
             "sources": [
@@ -53,6 +57,8 @@
             "id": "route_field",
             "label": "Take the route across the field",
             "picture": "choice_route_field",
+            "icon": "icon_route_field",
+            "action": "route_field",
             "safe": true,
             "feedback": "This route goes to the evacuation area. Nothing can fall on it.",
             "sources": [
@@ -64,6 +70,8 @@
             "id": "route_later",
             "label": "Find the way when it happens",
             "picture": "choice_route_later",
+            "icon": "icon_route_later",
+            "action": "route_later",
             "safe": false,
             "heading": "Not ready yet",
             "feedback": "Learn the route now, in drills. Then you will know it.",

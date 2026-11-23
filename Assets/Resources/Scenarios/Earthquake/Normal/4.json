@@ -31,6 +31,8 @@
             "id": "tree",
             "label": "Hide under the big tree",
             "picture": "choice_tree",
+            "icon": "icon_tree",
+            "action": "tree",
             "safe": false,
             "feedback": "Stay away from trees when the ground shakes.",
             "sources": [
@@ -41,6 +43,8 @@
             "id": "field",
             "label": "Go to the open field",
             "picture": "choice_open_field",
+            "icon": "icon_field",
+            "action": "field",
             "safe": true,
             "feedback": "Move to an open area. Stay away from trees, posts and buildings.",
             "sources": [
@@ -52,6 +56,8 @@
             "id": "building",
             "label": "Run back into the building",
             "picture": "choice_building",
+            "icon": "icon_building",
+            "action": "building",
             "safe": false,
             "heading": "Not safe yet",
             "feedback": "Stay away from buildings while it shakes. Go to an open area.",
@@ -64,6 +70,8 @@
             "id": "post",
             "label": "Stand by the electric post",
             "picture": "choice_post",
+            "icon": "icon_post",
+            "action": "post",
             "safe": false,
             "feedback": "Stay away from posts and power lines.",
             "sources": [

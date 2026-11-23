@@ -73,7 +73,7 @@ namespace DisasterSafety.EditorTools
                 BuildBedroom(world), BuildHome(world), BuildSchoolyard(world), BuildBeach(world),
                 BuildMallA(world), BuildMallB(world), BuildHomeAfter(world), BuildEvacuationArea(world),
                 BuildClassroomV2(world), BuildCorridorV2(world), BuildClassroomAfterV2(world),
-                BuildBedroomV2(world), BuildHomeV2(world),
+                BuildBedroomV2(world), BuildHomeV2(world), BuildSchoolyardV2(world),
             };
             for (var i = 1; i < c.settings.Length; i++)
                 c.settings[i].gameObject.SetActive(false);
@@ -787,6 +787,109 @@ namespace DisasterSafety.EditorTools
             mom.body = Img(Stretch(Rect("Body", r)), mom.frames.idle[0], Color.white);
             mom.PlaceAtStart();
             return mom;
+        }
+
+        static LevelSetting BuildSchoolyardV2(RectTransform world)
+        {
+            var group = Stretch(Rect("Schoolyard V2", world));
+            var setting = group.gameObject.AddComponent<LevelSetting>();
+            setting.key = ScenarioSettings.ActionArtKey(ScenarioSettings.Schoolyard);
+            setting.artAnchorY = 0f;
+            var background = S("Level/v2/bg_schoolyard");
+            ArtImage(group, "Backing", background, 0, 0);
+            var shaking = Stretch(Rect("Shaking", group));
+            ArtImage(shaking, "Schoolyard", background, 0, 0);
+            setting.shaker = shaking.gameObject.AddComponent<SceneShaker>();
+            setting.shaker.target = shaking;
+            setting.shaker.shakeSeconds = 2.5f;
+            const float swayFramesPerSecond = 1000f / 160f;
+            setting.shaker.wobblers = new[]
+            {
+                BuildLevelAnimation(shaking, "Tree Canopy", Frames("Level/v2/schoolyard_canopy", 2),
+                    300, 83, swayFramesPerSecond, onlyWhileShaking: true),
+                BuildLevelAnimation(shaking, "Electric Post", Frames("Level/v2/schoolyard_post", 2),
+                    418, 95, swayFramesPerSecond, onlyWhileShaking: true),
+            };
+
+            const float floorY = 230f;
+            var recess = Stretch(Rect("Normal 4 Cast", shaking));
+            var drill = Stretch(Rect("Hard 2 Cast", shaking));
+            var teacher = BuildTeacher(drill, 217f);
+            setting.student = BuildStudent(shaking, withBubble: true);
+            // Keep Reactions clear of the sign and Teacher, including at the post end of the yard.
+            ((RectTransform)setting.student.bubble.transform).sizeDelta = new Vector2(268f, 104f);
+            setting.levelStarts = new[]
+            {
+                new LevelStart
+                {
+                    level = "Earthquake/Normal/4", x = 302f, cast = recess.gameObject,
+                    reactionPosition = new Vector2(124f, 8f),
+                },
+                new LevelStart
+                {
+                    level = "Earthquake/Hard/2", x = 306f, cast = drill.gameObject,
+                    reactionPosition = new Vector2(96f, 8f),
+                    grownUps = new[] { teacher },
+                },
+            };
+
+            // The bend follows the foreground in front of the tree's shade.
+            var postPath = new[]
+            {
+                ActOutStep.Walk(336f, floorY - 244f),
+                ActOutStep.Walk(393f, floorY - 244f),
+                ActOutStep.Walk(414f, floorY - 225f),
+            };
+            setting.actOuts = new[]
+            {
+                new ActOut
+                {
+                    key = "tree", stopAfter = 0, steps = new[] { ActOutStep.Walk(320f, floorY - 199f) },
+                },
+                new ActOut
+                {
+                    key = "field",
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(86f),
+                        ActOutStep.Face(left: true),
+                        ActOutStep.Pose(StudentPose.Crouch, 0.28f),
+                        ActOutStep.Pose(StudentPose.Cover, 1f),
+                        ActOutStep.Calm(),
+                    },
+                },
+                new ActOut
+                {
+                    key = "building", stopAfter = 0, steps = new[] { ActOutStep.Run(260f) },
+                },
+                new ActOut
+                {
+                    key = "post", stopAfter = postPath.Length - 1, steps = postPath,
+                },
+                new ActOut
+                {
+                    key = "route_post", stopAfter = postPath.Length - 1, steps = postPath,
+                },
+                new ActOut
+                {
+                    key = "route_tree", stopAfter = 0, steps = new[] { ActOutStep.Walk(323f, floorY - 215f) },
+                },
+                new ActOut
+                {
+                    key = "route_field",
+                    steps = new[]
+                    {
+                        ActOutStep.WalkWith(teacher, 170f, 0f, new Vector2(142f, floorY - 225f)),
+                        ActOutStep.WalkWith(teacher, 133f, floorY - 198f, new Vector2(101f, floorY - 183f)),
+                        ActOutStep.GrownUpPoseStep(teacher, GrownUpPose.Wave),
+                    },
+                },
+                new ActOut
+                {
+                    key = "route_later", stopAfter = 0, steps = new[] { ActOutStep.Walk(260f) },
+                },
+            };
+            return setting;
         }
 
         static GrownUpActor BuildTeacher(RectTransform parent, float startX)
