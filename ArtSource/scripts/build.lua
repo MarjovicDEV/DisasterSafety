@@ -233,6 +233,15 @@ if want("home_v2") then
   L.saveFrames(HM.lampFrames(), "Level/v2/home_lamp", "Level/v2/home_lamp", 160)
 end
 
+-- The shared v2 schoolyard and its shaking-only canopy and post.
+if want("schoolyard_v2") then
+  local SY = dofile(here .. "schoolyard_v2.lua")(L, ST)
+  local base = "Level/v2/"
+  L.save(SY.background(), base .. "bg_schoolyard", base .. "bg_schoolyard")
+  L.saveFrames(SY.canopyFrames(), base .. "schoolyard_canopy", base .. "schoolyard_canopy", SY.LAYOUT.swayMs)
+  L.saveFrames(SY.postFrames(), base .. "schoolyard_post", base .. "schoolyard_post", SY.LAYOUT.swayMs)
+end
+
 -- The Home-specific reach-up frames let the Student pinch a card at the board.
 if want("home_reachup") then
   for _, kind in ipairs({ "boy", "girl" }) do
