@@ -33,20 +33,23 @@ return function(L, ST)
     cabinet = { 382, 105 }, boxes = { 426, 156 },
     bagOpen = { 302, 191 }, bagClosed = { 303, 191 },
     bagDoor = { 73, 191 }, bagHidden = { 437, 191 },
-    toy = { 327, 203 }, water = { 345, 195 }, can = { 357, 202 },
-    flashlight = { 370, 206 }, whistle = { 386, 207 }, snack = { 401, 201 },
+    toy = { 325, 203 }, water = { 341, 195 }, can = { 350, 202 },
+    flashlight = { 360, 206 }, whistle = { 373, 207 }, snack = { 346, 170 },
     parkCard = { 213, 176 }, houseCard = { 232, 176 }, cardOnBoard = { 109, 172 },
-    normal2 = { start = 281, mom = 254, pack = 308, drop = 108, tv = 130,
-      toy = 324, boxes = 425 },
+    normal2 = { start = 281, mom = 158, pack = 308, drop = 108, tv = 190,
+      toy = 322, boxes = 425 },
     normal3 = { start = 294, tableEdge = 282, hold = 240, run = 91, glass = 387, sofa = 307 },
-    hard1 = { start = 154, mom = 266, park = 207, house = 226, board = 136, door = 91 },
+    hard1 = { start = 154, mom = 290, park = 207, house = 226, board = 136, door = 91 },
   }
   local A = M.LAYOUT
 
   -- Act-out points are the centre of the Student's feet at y 230.
-  -- Normal 2: pack at 308. Carry left to 108, and place the closed bag at (73, 191)
-  -- for Hard 6. Carry right to 425 for the boxes. Pick up the toy at 324 and turn
-  -- left to return to 308. The walk toward the TV stops at 130.
+  -- Normal 2: Mom stands in the clear gap between the board and the table. The
+  -- supplies end before the glass cabinet, and the snack rests on the sofa seat.
+  -- Pack at 308. Carry left to 108, and place the closed bag at (73, 191)
+  -- for Hard 6. Carry right to 425 for the boxes. Pick up the toy at 322 and turn
+  -- left to return to 308. The walk toward the TV stops at 190, before Mom.
+  -- Hard 1: Mom stands in the clear gap between the table and the sofa.
   -- Normal 3: approach at 282, crouch left to 240 and hold the right front leg.
   -- The run stops at 91, the cabinet walk at 387 and the sofa crouch at 307.
   -- Hard 1: pick up at 207 (park) or 226 (house), then reach left at 136.
@@ -107,13 +110,7 @@ return function(L, ST)
     local title = "Meet here"
     L.F.draw(title, x + (58 - L.F.width(title)) // 2, y + 8, 1,
       function(px, py) L.px(img, px, py, O) end)
-    -- A small pinned note leaves the right side clear for the park or house card.
-    L.rect(img, x + 8, y + 21, 14, 12, R.paper[2])
-    L.hline(img, x + 9, x + 20, y + 22, R.paper[1])
-    L.hline(img, x + 9, x + 20, y + 32, R.paper[3])
-    L.hline(img, x + 11, x + 18, y + 26, R.metal[3])
-    L.hline(img, x + 11, x + 16, y + 29, R.metal[3])
-    L.circle(img, x + 15, y + 21, 1, R.red[2])
+    -- The board starts empty, so the Hard 1 card is the only thing pinned on it.
   end
 
   local function window(img, x, y)

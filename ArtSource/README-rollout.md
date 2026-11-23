@@ -154,38 +154,38 @@ All positions are top-left art pixels. One art pixel is four UI units. The concr
 
 | Part | Placement |
 |---|---|
-| Door, TV and meeting board | (18, 107), (87, 92) and (85, 149). |
+| Door, TV and meeting board | (18, 107), (87, 92) and (85, 149). The board starts empty, so the Hard 1 card is the only one pinned on it. |
 | Window and hanging lamp | (300, 68) and (384, 14). The lamp sways only in Normal 3 while the room shakes. |
 | Table front, sofa, glass cabinet and boxes | (174, 188), (308, 157), (382, 105) and (426, 156). |
 | Normal 2 bag | Open at (302, 191), closed at (303, 191), under the boxes at (437, 191). |
-| Normal 2 supplies | Water (345, 195), can (357, 202), flashlight (370, 206), and whistle (386, 207). |
-| Normal 2 snack and toy | Snack (401, 201), toy (327, 203). |
+| Normal 2 supplies | Water (341, 195), can (350, 202), flashlight (360, 206), and whistle (373, 207). The row ends before the glass cabinet. |
+| Normal 2 snack and toy | Snack (346, 170) on the sofa seat, toy (325, 203) on the floor. |
 | Go bag by the door | Closed at (73, 191). Hard 6 starts with the bag in this spot. |
 | Hard 1 cards | Park (213, 176) and house (232, 176) on the table. The card reaches the board at (109, 172). |
 
-Normal 2 starts with the open go bag, four supplies, the snack, the toy, and Mom. The closed bag appears after packing. Normal 3 starts with the Student alone. Hard 1 starts with both cards and Mom. Props stand at the back of the floor, with their bottom row at y 212 or 213, or rest on the table. Normal 2 and Hard 1 start calm. Normal 3 begins with a shake, and the Student plays Surprised before the Action Bar appears.
+Normal 2 starts with the open go bag, four supplies, the snack, the toy, and Mom. The closed bag appears after packing. Normal 3 starts with the Student alone. Hard 1 starts with both cards and Mom. Props stand at the back of the floor, with their bottom row at y 212 or 213, rest on the table, or, for the snack, rest on the sofa seat. Normal 2 and Hard 1 start calm. Normal 3 begins with a shake, and the Student plays Surprised before the Action Bar appears.
 
 The following x values mark the centre of the Student's feet at y 230. Walks and carries use the same floor line. In Normal 2 and Hard 1, the Reaction bubble sits 31 art pixels higher to clear the boxes and the meeting board. Normal 3 places the Reaction below Hint.
 
 | Level and Choice | Act-out points |
 |---|---|
-| Normal 2 start | Student x 281, Mom x 254. Both are Idle. |
+| Normal 2 start | Student x 281, Mom x 158 in the clear gap between the board and the table. Both are Idle. |
 | `go_bag` | Pack the four supplies at x 308, close the bag, and carry it left to x 108. Crouch to set it by the door. Mom plays Happy. |
-| `later` | Walk left toward the TV and stop at x 130. |
+| `later` | Turn away from the bag, walk left toward the TV, and stop at x 190, before Mom. |
 | `hidden` | Pick up the open bag from x 308, carry it to x 425, and crouch at the gap under the boxes. |
-| `toys` | Pick up the toy from x 324, carry it left to x 308, and stop in Pack over the bag. |
+| `toys` | Pick up the toy from x 322, carry it left to x 308, and stop in Pack over the bag. |
 | Normal 3 start | Student x 294. No Grown-up or loose props. |
 | `table` | Walk left to x 282, show the table front, crouch-shuffle to x 240, face left, and Hold the right front leg until the room calms. |
 | `run` | Run left to x 91 and stop inside while the room still shakes. |
 | `glass` | Walk to x 387 and stop beside the cabinet. |
 | `sofa` | Walk to x 307 and stop in Crouch beside the sofa. |
-| Hard 1 start | Student x 154, Mom x 266. Both are Idle. |
+| Hard 1 start | Student x 154, Mom x 290 in the clear gap between the table and the sofa. Both are Idle. |
 | `meeting_place` | Pick up the park card from x 207, carry it left to x 136, reach up and pin it. Mom plays Happy. |
 | `own_way` | Walk left toward the door and stop at x 91. |
 | `meet_home` | Pick up the house card from x 226, carry it left to x 136, and stop in Reach Up at the board. |
 | `phone_numbers` | Play Phone at x 154 and stop there. |
 
-The Normal 2 door and TV routes pass Mom and the table. The boxes route passes the toy, water, can, flashlight, whistle, and snack. The toy approach passes the open bag. The Normal 3 door route passes in front of the table, and the approach to the glass cabinet passes in front of the sofa. The Hard 1 house card route passes the park card in both directions. Try Again restores only the selected Level's props, Grown-ups, and start pose.
+No Grown-up stands in front of furniture at a start, and no prop overlaps furniture. The Normal 2 door route passes Mom and the table; the bag must reach the door, and Mom must stand left of the start to leave the boxes route clear. The TV route stops before Mom. The boxes route passes the toy, water, can, flashlight, and whistle. The toy approach passes the open bag. The Normal 3 door route passes in front of the table, because the run must show the Student reaching the door, and the approach to the glass cabinet passes in front of the sofa. The Hard 1 house card route passes the park card in both directions. Try Again restores only the selected Level's props, Grown-ups, and start pose.
 
 ## Removed art (cleanup, 2026-11-22)
 

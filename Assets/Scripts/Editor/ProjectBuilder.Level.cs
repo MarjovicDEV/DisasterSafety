@@ -578,18 +578,18 @@ namespace DisasterSafety.EditorTools
             };
 
             var packing = Stretch(Rect("Normal 2 Cast", shaking));
-            var mom = BuildMom(packing, 254f);
+            var mom = BuildMom(packing, 158f);
             var openBag = BuildHomeProp(packing, "bag_open", 302, 191, 22, 23);
             var closedBag = BuildHomeProp(packing, "bag_closed", 303, 191, 20, 23, visible: false);
-            var toy = BuildHomeProp(packing, "toy", 327, 203, 15, 11);
-            var water = BuildHomeProp(packing, "water", 345, 195, 8, 19);
-            var can = BuildHomeProp(packing, "can", 357, 202, 9, 12);
-            var flashlight = BuildHomeProp(packing, "flashlight", 370, 206, 12, 8);
-            var whistle = BuildHomeProp(packing, "whistle", 386, 207, 11, 7);
-            var snack = BuildHomeProp(packing, "snack", 401, 201, 9, 13);
+            var toy = BuildHomeProp(packing, "toy", 325, 203, 15, 11);
+            var water = BuildHomeProp(packing, "water", 341, 195, 8, 19);
+            var can = BuildHomeProp(packing, "can", 350, 202, 9, 12);
+            var flashlight = BuildHomeProp(packing, "flashlight", 360, 206, 12, 8);
+            var whistle = BuildHomeProp(packing, "whistle", 373, 207, 11, 7);
+            var snack = BuildHomeProp(packing, "snack", 346, 170, 9, 13);
 
             var meeting = Stretch(Rect("Hard 1 Cast", shaking));
-            var meetingMom = BuildMom(meeting, 266f);
+            var meetingMom = BuildMom(meeting, 290f);
             var park = BuildHomeProp(meeting, "park_card", 213, 176, 16, 13);
             var house = BuildHomeProp(meeting, "house_card", 232, 176, 16, 13);
 
@@ -623,7 +623,7 @@ namespace DisasterSafety.EditorTools
                 new ActOut
                 {
                     key = "later", stopAfter = 0,
-                    steps = new[] { ActOutStep.Walk(130f) },
+                    steps = new[] { ActOutStep.Walk(190f) },
                 },
                 new ActOut
                 {
@@ -669,7 +669,7 @@ namespace DisasterSafety.EditorTools
                     key = "toys", stopAfter = 5, stopPose = StudentPose.Pack,
                     steps = new[]
                     {
-                        ActOutStep.Walk(324f),
+                        ActOutStep.Walk(322f),
                         ActOutStep.Pose(StudentPose.Crouch, 0.22f),
                         ActOutStep.PropPickUp(toy.gameObject),
                         ActOutStep.Carry(308f),

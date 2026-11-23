@@ -751,7 +751,7 @@ namespace DisasterSafety.Tests
             var grownUps = c.ActiveSetting.GetComponentsInChildren<GrownUpActor>();
             Assert.That(grownUps.Length, Is.EqualTo(1));
             Assert.That(grownUps[0].kind, Is.EqualTo(GrownUpKind.Mom));
-            Assert.That(grownUps[0].X, Is.EqualTo(254f));
+            Assert.That(grownUps[0].X, Is.EqualTo(158f));
         }
 
         [UnityTest]
@@ -922,7 +922,7 @@ namespace DisasterSafety.Tests
             var park = PropIn(c, "park_card");
             var mom = c.ActiveSetting.ActiveGrownUps[0];
             Assert.That(mom.kind, Is.EqualTo(GrownUpKind.Mom));
-            Assert.That(mom.X, Is.EqualTo(266f));
+            Assert.That(mom.X, Is.EqualTo(290f));
 
             yield return ReadyToChoose(Level);
             Assert.That(c.ActiveSetting.ActOutFor("meeting_place"), Is.Not.Null);
