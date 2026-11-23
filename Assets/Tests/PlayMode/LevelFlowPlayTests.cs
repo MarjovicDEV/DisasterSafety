@@ -272,7 +272,7 @@ namespace DisasterSafety.Tests
         [UnityTest]
         public IEnumerator NormalDifficulty_CompletingAllFiveLevels_OpensHard()
         {
-            var settings = new[] { "bedroom_v2", "home", "home", "schoolyard", "beach" };
+            var settings = new[] { "bedroom_v2", "home_v2", "home_v2", "schoolyard", "beach" };
             var shakes = new[] { false, false, true, true, false };
 
             GameServices.Initialize(dir);
@@ -293,8 +293,7 @@ namespace DisasterSafety.Tests
                 Assert.That(shaking, Is.EqualTo(shakes[n - 1]), "shaking in Normal " + n);
 
                 Assert.That(GameServices.Scenarios.TryGet(level, out var scenario), Is.True);
-                // Normal 1 is acted out by the Student in the bedroom; the other Normal Levels use the cards.
-                Assert.That(c.UsesStudentFlow, Is.EqualTo(n == 1), "the Student flow in Normal " + n);
+                Assert.That(c.UsesStudentFlow, Is.EqualTo(n <= 3), "the Student flow in Normal " + n);
                 if (c.UsesStudentFlow)
                 {
                     Tap(c, scenario.SafeChoiceIndex);
@@ -330,7 +329,7 @@ namespace DisasterSafety.Tests
         [UnityTest]
         public IEnumerator HardDifficulty_CompletingAllSevenLevels_CompletesTheEpisode()
         {
-            var settings = new[] { "home", "schoolyard", "mall_a", "mall_b", "home_after", "home_after", "evacuation_area" };
+            var settings = new[] { "home_v2", "schoolyard", "mall_a", "mall_b", "home_after", "home_after", "evacuation_area" };
             var shakes = new[] { false, false, true, false, false, false, false };
 
             GameServices.Initialize(dir);
@@ -351,7 +350,16 @@ namespace DisasterSafety.Tests
                 Assert.That(shaking, Is.EqualTo(shakes[n - 1]), "shaking in Hard " + n);
 
                 Assert.That(GameServices.Scenarios.TryGet(level, out var scenario), Is.True);
-                c.choiceCards[scenario.SafeChoiceIndex].button.onClick.Invoke();
+                Assert.That(c.UsesStudentFlow, Is.EqualTo(n == 1), "the Student flow in Hard " + n);
+                if (c.UsesStudentFlow)
+                {
+                    Tap(c, scenario.SafeChoiceIndex);
+                    yield return FeedbackShown(c);
+                }
+                else
+                {
+                    c.choiceCards[scenario.SafeChoiceIndex].button.onClick.Invoke();
+                }
                 Assert.That(c.finishButton.gameObject.activeSelf, Is.True, "the Safe Choice of Hard " + n + " can Finish");
                 c.finishButton.onClick.Invoke();
                 Assert.That(c.completedPanel.IsVisible, Is.True, "Level Completed after Hard " + n);
@@ -709,10 +717,305 @@ namespace DisasterSafety.Tests
             Assert.That(Level().UsesStudentFlow, Is.True, "Normal 1 shows the Action Bar");
         }
 
+        static readonly LevelId NormalTwo = new LevelId(Episode.Earthquake, Difficulty.Normal, 2);
+        static readonly LevelId NormalThree = new LevelId(Episode.Earthquake, Difficulty.Normal, 3);
+        static readonly LevelId HardOne = new LevelId(Episode.Earthquake, Difficulty.Hard, 1);
+
+        IEnumerator StartHome(LevelId level)
+        {
+            GameServices.Initialize(dir);
+            GameServices.Progress.SetDisplayName("Ana");
+            GameServices.Progress.Open(Episode.Earthquake, level.Difficulty);
+            GameServices.SaveProgress();
+            GameScenes.PlayLevel(level);
+            yield return WaitFor(() => Level()?.Level.Equals(level) == true && Level().ActiveSetting != null,
+                level.Key + " to start");
+        }
+
+        [UnityTest]
+        public IEnumerator HomeNormal2_StartsWithItsOwnCast()
+        {
+            yield return StartHome(NormalTwo);
+            var c = Level();
+            Assert.That(c.ActiveSetting.key, Is.EqualTo("home_v2"));
+            Assert.That(c.UsesStudentFlow, Is.True);
+            Assert.That(c.Student.X, Is.EqualTo(281f));
+            Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Idle));
+            Assert.That(c.ActiveSetting.shaker.IsShaking, Is.False);
+            Assert.That(c.bantay.gameObject.activeInHierarchy, Is.False);
+            var props = c.ActiveSetting.GetComponentsInChildren<LevelProp>();
+            Assert.That(Array.ConvertAll(props, p => p.key), Is.EquivalentTo(new[]
+            {
+                "bag_open", "water", "can", "flashlight", "whistle", "snack", "toy",
+            }));
+            var grownUps = c.ActiveSetting.GetComponentsInChildren<GrownUpActor>();
+            Assert.That(grownUps.Length, Is.EqualTo(1));
+            Assert.That(grownUps[0].kind, Is.EqualTo(GrownUpKind.Mom));
+            Assert.That(grownUps[0].X, Is.EqualTo(254f));
+        }
+
+        [UnityTest]
+        public IEnumerator NormalLevel2_SafeChoice_ActsOutAndCompletes()
+        {
+            yield return StartHome(NormalTwo);
+            var c = Level();
+            yield return ReadyToChoose(Level);
+            Assert.That(c.ActiveSetting.ActOutFor("go_bag"), Is.Not.Null, "the Safe Choice has an Act-out");
+            var student = c.Student;
+            var closed = PropIn(c, "bag_closed");
+            var open = PropIn(c, "bag_open");
+            var mom = c.ActiveSetting.ActiveGrownUps[0];
+            Tap(c, 2);
+
+            foreach (var key in new[] { "water", "can", "flashlight", "whistle" })
+            {
+                var item = PropIn(c, key);
+                Assert.That(item.gameObject.activeSelf, Is.True, key + " is still unpacked");
+                yield return WaitFor(() => !item.gameObject.activeSelf, key + " to go into the bag");
+                Assert.That(student.Pose, Is.EqualTo(StudentPose.Pack));
+            }
+
+            yield return WaitFor(() => closed.transform.IsChildOf(student.transform) && student.IsWalking,
+                "the Student to carry the closed bag");
+            Assert.That(open.gameObject.activeSelf, Is.False);
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Carry));
+            Assert.That(student.FacingLeft, Is.True);
+            Assert.That(CentreX(closed), Is.LessThan(student.transform.position.x));
+
+            yield return FeedbackShown(c);
+            Assert.That(mom.Pose, Is.EqualTo(GrownUpPose.Happy));
+            Assert.That(closed.gameObject.activeInHierarchy, Is.True);
+            AssertPropCentre(closed, 83f, 202.5f);
+            Assert.That(PropIn(c, "toy").gameObject.activeSelf, Is.True);
+            Assert.That(PropIn(c, "snack").gameObject.activeSelf, Is.True);
+            FinishHome(c);
+        }
+
+        static void AssertPropCentre(LevelProp prop, float artX, float artY)
+        {
+            var rect = (RectTransform)prop.transform;
+            var settingPoint = rect.parent.InverseTransformPoint(rect.TransformPoint(rect.rect.center));
+            var parent = (RectTransform)rect.parent;
+            var fromBottomLeft = (Vector2)settingPoint - parent.rect.min;
+            Assert.That(fromBottomLeft.x, Is.EqualTo(artX * 4f).Within(0.02f));
+            Assert.That(fromBottomLeft.y, Is.EqualTo((270f - artY) * 4f).Within(0.02f));
+        }
+
+        static void FinishHome(LevelController c)
+        {
+            Assert.That(c.finishButton.gameObject.activeSelf, Is.True);
+            c.finishButton.onClick.Invoke();
+            Assert.That(c.completedPanel.IsVisible, Is.True);
+            Assert.That(c.LastResult.Stars, Is.EqualTo(3));
+        }
+
+        [UnityTest]
+        public IEnumerator NormalLevel2_UnsafeChoice_StopsAndResets()
+        {
+            yield return StartHome(NormalTwo);
+            var c = Level();
+            yield return ReadyToChoose(Level);
+            Assert.That(c.ActiveSetting.ActOutFor("hidden"), Is.Not.Null, "the boxes Choice has an Act-out");
+            var student = c.Student;
+            var open = PropIn(c, "bag_open");
+            var toy = PropIn(c, "toy");
+            var mom = c.ActiveSetting.ActiveGrownUps[0];
+            var props = c.ActiveSetting.ActiveProps;
+
+            Tap(c, 1);
+            yield return WaitFor(() => open.transform.IsChildOf(student.transform) && student.IsWalking,
+                "the Student to carry the bag toward the boxes");
+            yield return WaitFor(() => student.bubble.Line == UIStrings.ReactionWait, "the boxes stop");
+            Assert.That(student.X, Is.EqualTo(425f));
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Crouch));
+            AssertPropCentre(open, 448f, 202.5f);
+            yield return FeedbackShown(c);
+            Assert.That(c.feedbackHeading.text, Is.EqualTo(UIStrings.UnsafeHeading));
+            c.tryAgainButton.onClick.Invoke();
+            yield return ActionBarShown(c);
+            foreach (var prop in props) Assert.That(prop.AtStart, Is.True, prop.key);
+            Assert.That(mom.AtStart, Is.True);
+            Assert.That(student.X, Is.EqualTo(281f));
+            Assert.That(c.actionBar.buttons[1].button.interactable, Is.False);
+
+            Tap(c, 3);
+            yield return WaitFor(() => student.Pose == StudentPose.Pack && toy.transform.IsChildOf(student.transform),
+                "the Student to start packing the toy");
+            yield return FeedbackShown(c);
+            Assert.That(c.feedbackHeading.text, Is.EqualTo("Not ready yet"));
+            c.tryAgainButton.onClick.Invoke();
+            yield return ActionBarShown(c);
+            foreach (var prop in props) Assert.That(prop.AtStart, Is.True, prop.key);
+            Assert.That(mom.AtStart, Is.True);
+            Assert.That(student.X, Is.EqualTo(281f));
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Idle));
+            Assert.That(c.actionBar.buttons[3].button.interactable, Is.False);
+        }
+
+        [UnityTest]
+        public IEnumerator NormalLevel3_SafeChoice_ActsOutAndCompletes()
+        {
+            yield return StartHome(NormalThree);
+            var c = Level();
+            Assert.That(c.UsesStudentFlow, Is.True, "Normal 3 shows the Action Bar");
+            Assert.That(c.ActiveSetting.key, Is.EqualTo("home_v2"));
+            Assert.That(c.ActiveSetting.GetComponentsInChildren<LevelProp>(), Is.Empty);
+            Assert.That(c.ActiveSetting.GetComponentsInChildren<GrownUpActor>(), Is.Empty);
+            Assert.That(c.Student.X, Is.EqualTo(294f));
+            Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Surprised));
+            var reaction = (RectTransform)c.Student.bubble.transform;
+            Assert.That(reaction.anchoredPosition.y, Is.EqualTo(8f), "the Normal 3 Reaction stays below Hint");
+            var shaker = c.ActiveSetting.shaker;
+            Assert.That(shaker.IsShaking, Is.True);
+            Assert.That(shaker.wobblers[0].enabled, Is.True);
+            yield return ReadyToChoose(Level);
+            var table = c.ActiveSetting.ActOutFor("table");
+            Assert.That(table, Is.Not.Null);
+            var overlay = table.FirstOverlay;
+            Assert.That(overlay.activeSelf, Is.False);
+            Tap(c, 3);
+            yield return WaitFor(() => c.Student.Pose == StudentPose.Crouch && overlay.activeSelf, "the front of the table");
+            yield return WaitFor(() => c.Student.Pose == StudentPose.Hold, "the Student to hold the table leg");
+            Assert.That(c.Student.X, Is.EqualTo(240f));
+            Assert.That(c.Student.FacingLeft, Is.True);
+            Assert.That(overlay.activeSelf, Is.True);
+            yield return WaitFor(() => !shaker.IsShaking, "the shaking to calm under the table");
+            Assert.That(shaker.wobblers[0].enabled, Is.False);
+            yield return FeedbackShown(c);
+            FinishHome(c);
+        }
+
+        [UnityTest]
+        public IEnumerator NormalLevel3_UnsafeChoice_StopsAndResets()
+        {
+            yield return StartHome(NormalThree);
+            var c = Level();
+            yield return ReadyToChoose(Level);
+            Assert.That(c.ActiveSetting.ActOutFor("run"), Is.Not.Null, "the door Choice has an Act-out");
+            Tap(c, 0);
+            yield return WaitFor(() => c.Student.IsWalking && c.Student.FacingLeft, "the Student to run toward the door");
+            yield return WaitFor(() => c.Student.bubble.Line == UIStrings.ReactionWait, "the run to stop");
+            Assert.That(c.Student.X, Is.EqualTo(91f), "the Student stops inside the living room");
+            Assert.That(c.ActiveSetting.shaker.IsShaking, Is.True);
+            yield return FeedbackShown(c);
+            Assert.That(c.feedbackHeading.text, Is.EqualTo("Not safe yet"));
+            c.tryAgainButton.onClick.Invoke();
+            yield return ActionBarShown(c);
+            Assert.That(c.Student.X, Is.EqualTo(294f));
+            Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Idle));
+            Assert.That(c.ActiveSetting.shaker.IsShaking, Is.True);
+            Assert.That(c.actionBar.buttons[0].button.interactable, Is.False);
+        }
+
+        [UnityTest]
+        public IEnumerator HardLevel1_SafeChoice_ActsOutAndCompletes()
+        {
+            yield return StartHome(HardOne);
+            var c = Level();
+            Assert.That(c.UsesStudentFlow, Is.True, "Hard 1 shows the Action Bar");
+            Assert.That(c.ActiveSetting.key, Is.EqualTo("home_v2"));
+            Assert.That(c.Student.X, Is.EqualTo(154f));
+            Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Idle));
+            Assert.That(c.ActiveSetting.shaker.IsShaking, Is.False);
+            var props = c.ActiveSetting.GetComponentsInChildren<LevelProp>();
+            Assert.That(Array.ConvertAll(props, p => p.key), Is.EquivalentTo(new[] { "park_card", "house_card" }));
+            var park = PropIn(c, "park_card");
+            var mom = c.ActiveSetting.ActiveGrownUps[0];
+            Assert.That(mom.kind, Is.EqualTo(GrownUpKind.Mom));
+            Assert.That(mom.X, Is.EqualTo(266f));
+
+            yield return ReadyToChoose(Level);
+            Assert.That(c.ActiveSetting.ActOutFor("meeting_place"), Is.Not.Null);
+            Tap(c, 1);
+            yield return WaitFor(() => park.transform.IsChildOf(c.Student.transform) && c.Student.IsWalking,
+                "the Student to carry the park card");
+            yield return WaitFor(() => c.Student.Pose == StudentPose.ReachUp, "the reach toward the board");
+            Assert.That(c.Student.X, Is.EqualTo(136f));
+            Assert.That(c.Student.FacingLeft, Is.True);
+            Assert.That(c.Student.body.sprite.name, Does.Contain("_home_reachup_"));
+            yield return FeedbackShown(c);
+            AssertPropCentre(park, 117f, 178.5f);
+            Assert.That(mom.Pose, Is.EqualTo(GrownUpPose.Happy));
+            Assert.That(PropIn(c, "house_card").AtStart, Is.True);
+            FinishHome(c);
+        }
+
+        [UnityTest]
+        public IEnumerator HardLevel1_UnsafeChoice_StopsAndResets()
+        {
+            yield return StartHome(HardOne);
+            var c = Level();
+            yield return ReadyToChoose(Level);
+            Assert.That(c.ActiveSetting.ActOutFor("meet_home"), Is.Not.Null, "the house Choice has an Act-out");
+            var house = PropIn(c, "house_card");
+            var park = PropIn(c, "park_card");
+            var mom = c.ActiveSetting.ActiveGrownUps[0];
+            Tap(c, 2);
+            yield return WaitFor(() => c.Student.bubble.Line == UIStrings.ReactionWait, "the reach-up stop");
+            Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.ReachUp));
+            Assert.That(c.Student.X, Is.EqualTo(136f));
+            Assert.That(house.AtStart, Is.False);
+            AssertPropCentre(house, 117f, 178.5f);
+            yield return FeedbackShown(c);
+            Assert.That(c.feedbackHeading.text, Is.EqualTo(UIStrings.UnsafeHeading));
+            c.tryAgainButton.onClick.Invoke();
+            yield return ActionBarShown(c);
+            Assert.That(house.AtStart, Is.True);
+            Assert.That(park.AtStart, Is.True);
+            Assert.That(mom.AtStart, Is.True);
+            Assert.That(c.Student.X, Is.EqualTo(154f));
+            Assert.That(c.actionBar.buttons[2].button.interactable, Is.False);
+        }
+
+        [UnityTest]
+        public IEnumerator HomeActOuts_AreComplete()
+        {
+            foreach (var level in new[] { NormalTwo, NormalThree, HardOne })
+            {
+                yield return StartHome(level);
+                var c = Level();
+                Assert.That(c.UsesStudentFlow, Is.True, level.Key);
+                var setting = c.ActiveSetting;
+                Assert.That(GameServices.Scenarios.TryGet(level, out var scenario), Is.True);
+
+                foreach (var choice in scenario.choices)
+                {
+                    var act = setting.ActOutFor(choice.action);
+                    Assert.That(act, Is.Not.Null, choice.id);
+                    Assert.That(act.steps, Is.Not.Empty, choice.id);
+                    if (!choice.safe)
+                        Assert.That(act.stopAfter, Is.InRange(0, act.steps.Length - 1), choice.id);
+
+                    foreach (var step in act.steps)
+                    {
+                        switch (step.kind)
+                        {
+                            case ActOutStepKind.PropShow:
+                            case ActOutStepKind.PropHide:
+                            case ActOutStepKind.PropPickUp:
+                            case ActOutStepKind.PropPlace:
+                            case ActOutStepKind.PropSlide:
+                            case ActOutStepKind.Push:
+                                Assert.That(step.target, Is.Not.Null, choice.id);
+                                Assert.That(setting.ActiveProps, Does.Contain(step.target.GetComponent<LevelProp>()), choice.id);
+                                break;
+                            case ActOutStepKind.GrownUp:
+                                Assert.That(setting.ActiveGrownUps, Does.Contain(step.grownUp), choice.id);
+                                break;
+                            case ActOutStepKind.Overlay:
+                                Assert.That(step.target, Is.Not.Null, choice.id);
+                                Assert.That(step.target.transform.IsChildOf(setting.transform), Is.True, choice.id);
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
         static LevelProp PropIn(LevelController c, string key)
         {
-            var prop = Array.Find(c.ActiveSetting.props, p => p != null && p.key == key);
-            Assert.That(prop, Is.Not.Null, "the bedroom has a prop '" + key + "'");
+            var prop = Array.Find(c.ActiveSetting.ActiveProps, p => p != null && p.key == key);
+            Assert.That(prop, Is.Not.Null, "the Setting has a prop '" + key + "'");
             return prop;
         }
 

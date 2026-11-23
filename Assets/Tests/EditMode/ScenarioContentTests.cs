@@ -110,7 +110,11 @@ namespace DisasterSafety.Tests
         public void OnlyTheMovedLevels_UseTheStudentFlow()
         {
             var levels = Files().Select(Load).Where(s => s.UsesActions).Select(s => s.level).OrderBy(l => l).ToList();
-            Assert.That(levels, Is.EqualTo(new[] { "Earthquake/Easy/1", "Earthquake/Easy/2", "Earthquake/Easy/3", "Earthquake/Normal/1" }));
+            Assert.That(levels, Is.EqualTo(new[]
+            {
+                "Earthquake/Easy/1", "Earthquake/Easy/2", "Earthquake/Easy/3", "Earthquake/Hard/1",
+                "Earthquake/Normal/1", "Earthquake/Normal/2", "Earthquake/Normal/3",
+            }));
             foreach (var path in Files())
             {
                 var s = Load(path);
@@ -205,6 +209,132 @@ namespace DisasterSafety.Tests
             Assert.That(s.choices[1].sources, Is.EqualTo(new[] { "EQ-61" }));
             Assert.That(s.choices[2].sources, Is.EqualTo(new[] { "EQ-62", "EQ-14" }));
             Assert.That(s.choices[3].sources, Is.EqualTo(new[] { "EQ-61", "EQ-31" }));
+        }
+
+        [Test]
+        public void NormalLevel2_UsesTheStudentFlow_InTheHome_WithItsTextUnchanged()
+        {
+            var s = Load(Path.Combine(ScenarioFolder, "Earthquake/Normal/2.json"));
+            Assert.That(s.UsesActions, Is.True);
+            Assert.That(s.setting, Is.EqualTo(ScenarioSettings.Home));
+            Assert.That(s.phase, Is.EqualTo(ScenarioPhases.Before));
+            Assert.That(s.Shakes, Is.False);
+            Assert.That(ScenarioSettings.ActionSpots(s.setting), Is.EqualTo(new[]
+            {
+                "later", "hidden", "go_bag", "toys",
+                "run", "glass", "sofa", "table",
+                "own_way", "meeting_place", "meet_home", "phone_numbers",
+            }));
+            Assert.That(s.choices.Select(c => c.id), Is.EqualTo(new[] { "later", "hidden", "go_bag", "toys" }));
+            Assert.That(s.choices.Select(c => c.action), Is.EqualTo(s.choices.Select(c => c.id)));
+            Assert.That(s.choices.Select(c => c.icon),
+                Is.EqualTo(new[] { "icon_pack_later", "icon_bag_hidden", "icon_go_bag", "icon_snack_toy" }));
+            Assert.That(s.SafeChoice.id, Is.EqualTo("go_bag"));
+            Assert.That(s.choices.Select(c => c.picture),
+                Is.EqualTo(new[] { "choice_pack_later", "choice_bag_hidden", "choice_go_bag", "choice_bag_toys" }));
+            Assert.That(s.goal.text, Is.EqualTo("Get your go bag ready."));
+            Assert.That(s.intro.text, Is.EqualTo("Your family is packing a go bag. Let's help!"));
+            Assert.That(s.hint.text, Is.EqualTo("Think of what you need for 3 days."));
+            Assert.That(s.lesson.text, Is.EqualTo("Pack a go bag before an earthquake. It should last 3 days and be easy to reach."));
+            Assert.That(s.choices.Select(c => c.label), Is.EqualTo(new[]
+            {
+                "Pack it later, when it shakes",
+                "Hide it under the boxes",
+                "Pack water, food, a flashlight and a whistle",
+                "Pack only snacks and toys",
+            }));
+            Assert.That(s.choices.Select(c => c.heading ?? ""), Is.EqualTo(new[] { "Not ready yet", "", "", "Not ready yet" }));
+            Assert.That(s.choices.Select(c => c.feedback), Is.EqualTo(new[]
+            {
+                "Get it ready now. Keep it where you can grab it.",
+                "Keep your go bag in a place that is easy to find.",
+                "These help your family for 3 days. Keep the bag easy to reach.",
+                "A go bag needs water, food and a light for 3 days.",
+            }));
+            Assert.That(s.choices[0].sources, Is.EqualTo(new[] { "EQ-52", "EQ-68" }));
+            Assert.That(s.choices[1].sources, Is.EqualTo(new[] { "EQ-68" }));
+            Assert.That(s.choices[2].sources, Is.EqualTo(new[] { "EQ-68", "EQ-69" }));
+            Assert.That(s.choices[3].sources, Is.EqualTo(new[] { "EQ-68", "EQ-69" }));
+        }
+
+        [Test]
+        public void NormalLevel3_UsesTheStudentFlow_InTheHome_WithItsTextUnchanged()
+        {
+            var s = Load(Path.Combine(ScenarioFolder, "Earthquake/Normal/3.json"));
+            Assert.That(s.UsesActions, Is.True);
+            Assert.That(s.setting, Is.EqualTo(ScenarioSettings.Home));
+            Assert.That(s.phase, Is.EqualTo(ScenarioPhases.During));
+            Assert.That(s.Shakes, Is.True);
+            Assert.That(s.choices.Select(c => c.id), Is.EqualTo(new[] { "run", "glass", "sofa", "table" }));
+            Assert.That(s.choices.Select(c => c.action), Is.EqualTo(s.choices.Select(c => c.id)));
+            Assert.That(s.choices.Select(c => c.icon),
+                Is.EqualTo(new[] { "icon_door", "icon_glass_cabinet", "icon_sofa", "icon_strong_table" }));
+            Assert.That(s.SafeChoice.id, Is.EqualTo("table"));
+            Assert.That(s.choices.Select(c => c.picture),
+                Is.EqualTo(new[] { "choice_run_home", "choice_glass_cabinet", "choice_sofa", "choice_table" }));
+            Assert.That(s.goal.text, Is.EqualTo("Stay safe when the ground shakes at home."));
+            Assert.That(s.intro.text, Is.EqualTo("You are in the living room. The ground is shaking!"));
+            Assert.That(s.hint.text, Is.EqualTo("Is there something strong to hide under?"));
+            Assert.That(s.lesson.text, Is.EqualTo("At home, Duck, Cover, and Hold under a strong table. Stay away from glass."));
+            Assert.That(s.choices.Select(c => c.label), Is.EqualTo(new[]
+            {
+                "Run out the door",
+                "Stand by the glass cabinet",
+                "Lie down beside the sofa",
+                "Duck under the strong table",
+            }));
+            Assert.That(s.choices.Select(c => c.heading ?? ""), Is.EqualTo(new[] { "Not safe yet", "", "", "" }));
+            Assert.That(s.choices.Select(c => c.feedback), Is.EqualTo(new[]
+            {
+                "Do not run while it shakes. Stay inside and take cover.",
+                "Glass and shelves can fall and break. Stay away from them.",
+                "Lying beside furniture is not the safe way. Get under a strong table.",
+                "Duck, Cover, and Hold under the table. Stay until the shaking stops.",
+            }));
+            Assert.That(s.choices[0].sources, Is.EqualTo(new[] { "EQ-77", "EQ-78", "EQ-74" }));
+            Assert.That(s.choices[1].sources, Is.EqualTo(new[] { "EQ-76" }));
+            Assert.That(s.choices[2].sources, Is.EqualTo(new[] { "EQ-79", "EQ-75" }));
+            Assert.That(s.choices[3].sources, Is.EqualTo(new[] { "EQ-74", "EQ-75", "EQ-13" }));
+        }
+
+        [Test]
+        public void HardLevel1_UsesTheStudentFlow_InTheHome_WithItsTextUnchanged()
+        {
+            var s = Load(Path.Combine(ScenarioFolder, "Earthquake/Hard/1.json"));
+            Assert.That(s.UsesActions, Is.True);
+            Assert.That(s.setting, Is.EqualTo(ScenarioSettings.Home));
+            Assert.That(s.phase, Is.EqualTo(ScenarioPhases.Before));
+            Assert.That(s.Shakes, Is.False);
+            Assert.That(s.choices.Select(c => c.id), Is.EqualTo(new[] { "own_way", "meeting_place", "meet_home", "phone_numbers" }));
+            Assert.That(s.choices.Select(c => c.action), Is.EqualTo(s.choices.Select(c => c.id)));
+            Assert.That(s.choices.Select(c => c.icon),
+                Is.EqualTo(new[] { "icon_own_way", "icon_meet_park", "icon_meet_house", "icon_phone_numbers" }));
+            Assert.That(s.SafeChoice.id, Is.EqualTo("meeting_place"));
+            Assert.That(s.choices.Select(c => c.picture),
+                Is.EqualTo(new[] { "choice_own_way", "choice_meeting_place", "choice_meet_home", "choice_phone_numbers" }));
+            Assert.That(s.goal.text, Is.EqualTo("Make a family plan for earthquakes."));
+            Assert.That(s.intro.text, Is.EqualTo("Your family is making an earthquake plan. Join in!"));
+            Assert.That(s.hint.text, Is.EqualTo("Where will your family meet after it shakes?"));
+            Assert.That(s.lesson.text, Is.EqualTo("Plan with your family. Agree on a meeting place and know a family number."));
+            Assert.That(s.choices.Select(c => c.label), Is.EqualTo(new[]
+            {
+                "Each of us finds our own way",
+                "Agree on a meeting place",
+                "Plan to meet back at home",
+                "Keep numbers only in the phone",
+            }));
+            Assert.That(s.choices.Select(c => c.heading ?? ""), Is.EqualTo(new[] { "Not ready yet", "", "", "Not ready yet" }));
+            Assert.That(s.choices.Select(c => c.feedback), Is.EqualTo(new[]
+            {
+                "Agree on one place to meet. Then you can find each other.",
+                "Good plan. Also remember one family phone number.",
+                "Your house may be damaged. Meet at an open place.",
+                "Phones can be lost. Remember or write down a family number.",
+            }));
+            Assert.That(s.choices[0].sources, Is.EqualTo(new[] { "EQ-64", "EQ-65" }));
+            Assert.That(s.choices[1].sources, Is.EqualTo(new[] { "EQ-64", "EQ-67" }));
+            Assert.That(s.choices[2].sources, Is.EqualTo(new[] { "EQ-94", "EQ-55" }));
+            Assert.That(s.choices[3].sources, Is.EqualTo(new[] { "EQ-67" }));
         }
 
         [Test]

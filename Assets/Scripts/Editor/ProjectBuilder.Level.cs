@@ -73,7 +73,7 @@ namespace DisasterSafety.EditorTools
                 BuildBedroom(world), BuildHome(world), BuildSchoolyard(world), BuildBeach(world),
                 BuildMallA(world), BuildMallB(world), BuildHomeAfter(world), BuildEvacuationArea(world),
                 BuildClassroomV2(world), BuildCorridorV2(world), BuildClassroomAfterV2(world),
-                BuildBedroomV2(world),
+                BuildBedroomV2(world), BuildHomeV2(world),
             };
             for (var i = 1; i < c.settings.Length; i++)
                 c.settings[i].gameObject.SetActive(false);
@@ -555,6 +555,238 @@ namespace DisasterSafety.EditorTools
                 },
             };
             return setting;
+        }
+
+        static LevelSetting BuildHomeV2(RectTransform world)
+        {
+            var group = Stretch(Rect("Home V2", world));
+            var setting = group.gameObject.AddComponent<LevelSetting>();
+            setting.key = ScenarioSettings.ActionArtKey(ScenarioSettings.Home);
+            setting.artAnchorY = 0f;
+
+            var background = S("Level/v2/bg_home");
+            ArtImage(group, "Backing", background, 0, 0);
+            var shaking = Stretch(Rect("Shaking", group));
+            ArtImage(shaking, "Living Room", background, 0, 0);
+            setting.shaker = shaking.gameObject.AddComponent<SceneShaker>();
+            setting.shaker.target = shaking;
+            setting.shaker.shakeSeconds = 2.5f;
+            setting.shaker.wobblers = new[]
+            {
+                BuildLevelAnimation(shaking, "Hanging Lamp", Frames("Level/v2/home_lamp", 2),
+                    384, 14, 6.25f, onlyWhileShaking: true),
+            };
+
+            var packing = Stretch(Rect("Normal 2 Cast", shaking));
+            var mom = BuildMom(packing, 254f);
+            var openBag = BuildHomeProp(packing, "bag_open", 302, 191, 22, 23);
+            var closedBag = BuildHomeProp(packing, "bag_closed", 303, 191, 20, 23, visible: false);
+            var toy = BuildHomeProp(packing, "toy", 327, 203, 15, 11);
+            var water = BuildHomeProp(packing, "water", 345, 195, 8, 19);
+            var can = BuildHomeProp(packing, "can", 357, 202, 9, 12);
+            var flashlight = BuildHomeProp(packing, "flashlight", 370, 206, 12, 8);
+            var whistle = BuildHomeProp(packing, "whistle", 386, 207, 11, 7);
+            var snack = BuildHomeProp(packing, "snack", 401, 201, 9, 13);
+
+            var meeting = Stretch(Rect("Hard 1 Cast", shaking));
+            var meetingMom = BuildMom(meeting, 266f);
+            var park = BuildHomeProp(meeting, "park_card", 213, 176, 16, 13);
+            var house = BuildHomeProp(meeting, "house_card", 232, 176, 16, 13);
+
+            setting.student = BuildStudent(shaking, withBubble: true);
+            setting.student.boy.reachUp = Frames("Student/boy_home_reachup", 2);
+            setting.student.girl.reachUp = Frames("Student/girl_home_reachup", 2);
+            var tableFront = ArtImage(shaking, "Table Front", S("Level/v2/table_front"), 174, 188).gameObject;
+            tableFront.SetActive(false);
+
+            // Leave the board and boxes visible without raising the table Reaction into Hint.
+            var raisedReaction = new Vector2(0f, 132f);
+            setting.levelStarts = new[]
+            {
+                new LevelStart
+                {
+                    level = "Earthquake/Normal/2", x = 281f, cast = packing.gameObject,
+                    reactionPosition = raisedReaction,
+                    props = new[] { openBag, closedBag, toy, water, can, flashlight, whistle, snack },
+                    grownUps = new[] { mom },
+                },
+                new LevelStart { level = "Earthquake/Normal/3", x = 294f },
+                new LevelStart
+                {
+                    level = "Earthquake/Hard/1", x = 154f, cast = meeting.gameObject,
+                    reactionPosition = raisedReaction,
+                    props = new[] { park, house }, grownUps = new[] { meetingMom },
+                },
+            };
+            setting.actOuts = new[]
+            {
+                new ActOut
+                {
+                    key = "later", stopAfter = 0,
+                    steps = new[] { ActOutStep.Walk(130f) },
+                },
+                new ActOut
+                {
+                    key = "hidden", stopAfter = 5, stopPose = StudentPose.Crouch,
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(308f),
+                        ActOutStep.PropPickUp(openBag.gameObject),
+                        ActOutStep.Carry(425f),
+                        ActOutStep.Pose(StudentPose.Crouch),
+                        ActOutStep.PropPlace(openBag.gameObject, PropPlace(437, 191, 23)),
+                        ActOutStep.Wait(0.36f),
+                    },
+                },
+                new ActOut
+                {
+                    key = "go_bag",
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(308f),
+                        ActOutStep.Pose(StudentPose.Pack, 0.28f),
+                        ActOutStep.PropHide(water.gameObject),
+                        ActOutStep.Pose(StudentPose.Pack, 0.28f),
+                        ActOutStep.PropHide(can.gameObject),
+                        ActOutStep.Pose(StudentPose.Pack, 0.28f),
+                        ActOutStep.PropHide(flashlight.gameObject),
+                        ActOutStep.Pose(StudentPose.Pack, 0.28f),
+                        ActOutStep.PropHide(whistle.gameObject),
+                        ActOutStep.PropHide(openBag.gameObject),
+                        ActOutStep.PropShow(closedBag.gameObject),
+                        ActOutStep.Wait(0.22f),
+                        ActOutStep.PropPickUp(closedBag.gameObject),
+                        ActOutStep.Carry(108f),
+                        ActOutStep.Pose(StudentPose.Crouch),
+                        ActOutStep.PropPlace(closedBag.gameObject, PropPlace(73, 191, 23)),
+                        ActOutStep.Wait(0.22f),
+                        ActOutStep.Pose(StudentPose.Idle),
+                        ActOutStep.GrownUpPoseStep(mom, GrownUpPose.Happy),
+                    },
+                },
+                new ActOut
+                {
+                    key = "toys", stopAfter = 5, stopPose = StudentPose.Pack,
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(324f),
+                        ActOutStep.Pose(StudentPose.Crouch, 0.22f),
+                        ActOutStep.PropPickUp(toy.gameObject),
+                        ActOutStep.Carry(308f),
+                        ActOutStep.Pose(StudentPose.Pack),
+                        ActOutStep.Wait(0.36f),
+                    },
+                },
+
+                new ActOut
+                {
+                    key = "run", stopAfter = 0,
+                    steps = new[] { ActOutStep.Run(91f) },
+                },
+                new ActOut
+                {
+                    key = "glass", stopAfter = 0,
+                    steps = new[] { ActOutStep.Walk(387f) },
+                },
+                new ActOut
+                {
+                    key = "sofa", stopAfter = 3, stopPose = StudentPose.Crouch,
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(307f),
+                        ActOutStep.Face(left: false),
+                        ActOutStep.Pose(StudentPose.Crouch),
+                        ActOutStep.Wait(0.30f),
+                    },
+                },
+                new ActOut
+                {
+                    key = "table",
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(282f),
+                        ActOutStep.Overlay(tableFront),
+                        ActOutStep.Crouch(240f),
+                        ActOutStep.Face(left: true),
+                        ActOutStep.Pose(StudentPose.Hold, 0.65f),
+                        ActOutStep.Calm(),
+                    },
+                },
+
+                new ActOut
+                {
+                    key = "own_way", stopAfter = 0,
+                    steps = new[] { ActOutStep.Walk(91f) },
+                },
+                new ActOut
+                {
+                    key = "meeting_place",
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(207f),
+                        ActOutStep.Pose(StudentPose.Reach, 0.22f),
+                        ActOutStep.PropPickUp(park.gameObject),
+                        ActOutStep.Carry(136f),
+                        ActOutStep.Pose(StudentPose.ReachUp),
+                        ActOutStep.PropPlace(park.gameObject, PropPlace(109, 172, 13)),
+                        ActOutStep.Wait(0.4f),
+                        ActOutStep.GrownUpPoseStep(meetingMom, GrownUpPose.Happy),
+                    },
+                },
+                new ActOut
+                {
+                    key = "meet_home", stopAfter = 6, stopPose = StudentPose.ReachUp,
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(226f),
+                        ActOutStep.Pose(StudentPose.Reach, 0.22f),
+                        ActOutStep.PropPickUp(house.gameObject),
+                        ActOutStep.Carry(136f),
+                        ActOutStep.Pose(StudentPose.ReachUp),
+                        ActOutStep.PropPlace(house.gameObject, PropPlace(109, 172, 13)),
+                        ActOutStep.Wait(0.4f),
+                    },
+                },
+                new ActOut
+                {
+                    key = "phone_numbers", stopAfter = 1, stopPose = StudentPose.Phone,
+                    steps = new[] { ActOutStep.Pose(StudentPose.Phone), ActOutStep.Wait(0.45f) },
+                },
+            };
+            return setting;
+        }
+
+        // Centres a held prop on the Carry pose's hands at (23, 30) in the 32x50 frame.
+        static LevelProp BuildHomeProp(RectTransform parent, string key, int x, int y, int width, int height,
+            bool visible = true)
+        {
+            var grip = new Vector2(23f - width / 2f, 20f - height / 2f) * Px;
+            return BuildProp(parent, key, "Level/v2/home_" + key, x, y, grip, visible);
+        }
+
+        static GrownUpActor BuildMom(RectTransform parent, float startX)
+        {
+            var r = Rect("Mom", parent);
+            r.anchorMin = r.anchorMax = Vector2.zero;
+            r.pivot = new Vector2(0.5f, 0f);
+            r.sizeDelta = new Vector2(36f * Px, 62f * Px);
+
+            var mom = r.gameObject.AddComponent<GrownUpActor>();
+            mom.kind = GrownUpKind.Mom;
+            mom.unitsPerPixel = Px;
+            mom.feetY = 1080f - 230f * Px;
+            mom.startX = startX;
+            mom.frames = new GrownUpFrames
+            {
+                idle = Frames("GrownUp/mom_idle", 2),
+                happy = Frames("GrownUp/mom_happy", 2),
+                walk = Frames("GrownUp/mom_walk", 4),
+                sit = Frames("GrownUp/mom_sit", 2),
+                hurtSit = Frames("GrownUp/mom_hurtsit", 2),
+            };
+            mom.body = Img(Stretch(Rect("Body", r)), mom.frames.idle[0], Color.white);
+            mom.PlaceAtStart();
+            return mom;
         }
 
         static GrownUpActor BuildTeacher(RectTransform parent, float startX)

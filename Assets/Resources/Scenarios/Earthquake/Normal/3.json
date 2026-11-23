@@ -31,6 +31,8 @@
             "id": "run",
             "label": "Run out the door",
             "picture": "choice_run_home",
+            "icon": "icon_door",
+            "action": "run",
             "safe": false,
             "heading": "Not safe yet",
             "feedback": "Do not run while it shakes. Stay inside and take cover.",
@@ -44,6 +46,8 @@
             "id": "glass",
             "label": "Stand by the glass cabinet",
             "picture": "choice_glass_cabinet",
+            "icon": "icon_glass_cabinet",
+            "action": "glass",
             "safe": false,
             "feedback": "Glass and shelves can fall and break. Stay away from them.",
             "sources": [
@@ -54,6 +58,8 @@
             "id": "sofa",
             "label": "Lie down beside the sofa",
             "picture": "choice_sofa",
+            "icon": "icon_sofa",
+            "action": "sofa",
             "safe": false,
             "feedback": "Lying beside furniture is not the safe way. Get under a strong table.",
             "sources": [
@@ -65,6 +71,8 @@
             "id": "table",
             "label": "Duck under the strong table",
             "picture": "choice_table",
+            "icon": "icon_strong_table",
+            "action": "table",
             "safe": true,
             "feedback": "Duck, Cover, and Hold under the table. Stay until the shaking stops.",
             "sources": [

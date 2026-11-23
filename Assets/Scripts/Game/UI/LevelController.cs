@@ -168,15 +168,8 @@ namespace DisasterSafety.Game.UI
             FitCaption();
             actionBar.Setup(scenario, ChooseAction);
 
+            ActiveSetting.PrepareStudentStart(level.Key, GameServices.Progress.Student);
             var student = Student;
-            student.SetKind(GameServices.Progress.Student);
-            student.PlaceAt(ActiveSetting.startX, ActiveSetting.startY);
-            student.Face(false);
-            student.Play(ActiveSetting.startPose);
-            foreach (var prop in ActiveSetting.props)
-                if (prop != null) prop.CaptureStart();
-            foreach (var grownUp in ActiveSetting.grownUps)
-                if (grownUp != null) grownUp.PlaceAtStart();
 
             var shaker = ActiveSetting.shaker;
             if (scenario.Shakes && shaker != null)
@@ -187,7 +180,7 @@ namespace DisasterSafety.Game.UI
                 student.Play(StudentPose.Surprised);
                 student.Say(UIStrings.ReactionWhoa, shaker.shakeSeconds);
                 yield return new WaitForSeconds(shaker.shakeSeconds);
-                student.Play(ActiveSetting.startPose);
+                student.Play(ActiveSetting.StartPose);
             }
             else
             {
@@ -427,10 +420,10 @@ namespace DisasterSafety.Game.UI
             foreach (var overlay in shownOverlays) if (overlay != null) overlay.SetActive(false);
             shownOverlays.Clear();
             var resets = new System.Collections.Generic.List<Coroutine>();
-            foreach (var prop in setting.props)
+            foreach (var prop in setting.ActiveProps)
                 if (prop != null && !prop.AtStart) resets.Add(StartCoroutine(prop.ResetToStart()));
 
-            foreach (var grownUp in setting.grownUps)
+            foreach (var grownUp in setting.ActiveGrownUps)
                 if (grownUp != null && !grownUp.AtStart) resets.Add(StartCoroutine(grownUp.ReturnToStart()));
 
             if (setting.startCrouchFromX >= 0f)
@@ -438,15 +431,15 @@ namespace DisasterSafety.Game.UI
                 // A Student already under the desk only needs the short shuffle back to the leg.
                 if (student.X < setting.startCrouchFromX)
                     yield return student.WalkTo(setting.startCrouchFromX, setting.startY, PoseActor.WalkSpeed);
-                yield return student.CrouchTo(setting.startX);
+                yield return student.CrouchTo(setting.StartX);
             }
             else
             {
-                yield return student.WalkTo(setting.startX, setting.startY, PoseActor.WalkSpeed);
+                yield return student.WalkTo(setting.StartX, setting.startY, PoseActor.WalkSpeed);
             }
 
             foreach (var reset in resets) yield return reset;
-            if (setting.startPose != StudentPose.Idle) student.Play(setting.startPose);
+            if (setting.StartPose != StudentPose.Idle) student.Play(setting.StartPose);
             actionBar.Show();
         }
 
