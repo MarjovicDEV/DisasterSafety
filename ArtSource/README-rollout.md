@@ -203,7 +203,7 @@ The 480 × 270 schoolyard is shared by Normal 4 (during) and Hard 2 (before). Th
 | Art or cast | Placement |
 |---|---|
 | Standing line and horizon | y 230 and y 132 |
-| Building, roof, and doorway | (148, 111), (140, 88), and (191, 140) |
+| Building, roof, and doorway | (148, 120), (140, 98), and (191, 140). The roof stays below the Hint button at 1920x1080. |
 | Evacuation Area sign | (15, 142). The sign uses two lines of the shared pixel font. |
 | Tree trunk and shade | Trunk at (330, 127). Shade centred at (356, 194). |
 | Tree canopy | (300, 83), 119 × 75 pixels. Two frames, 160 ms each. |
@@ -216,10 +216,10 @@ The canopy and electric post sway only while Normal 4 shakes. Hard 2 uses their 
 | Level and Choice | Act-out points |
 |---|---|
 | Normal 4 · `tree` | Walk to (320, 199) and stop at the edge of the shade. |
-| Normal 4 · `field` | Walk to (86, 230), face left, crouch, and Cover for one second as the yard shakes. Then calm the shaking. |
+| Normal 4 · `field` | Walk to (110, 230) on open grass clear of the sign, face left, crouch, and Cover for one second as the yard shakes. Then calm the shaking. |
 | Normal 4 · `building` | Run toward the door and stop at (260, 230), outside the door frame. |
-| Normal 4 · `post` | Walk via (336, 244) and (393, 244), then stop at (414, 225). |
-| Hard 2 · `route_post` | Follow the same foreground path and stop at (414, 225). |
+| Normal 4 · `post` | Walk via (336, 244), then stop at (393, 244), short of the pole and its lines. |
+| Hard 2 · `route_post` | Follow the same foreground path and stop at (393, 244), short of the pole. |
 | Hard 2 · `route_tree` | Walk to (323, 215) and stop before the shade. |
 | Hard 2 · `route_field` | The Student goes via (170, 230) to (133, 198), and the Teacher goes via (142, 225) to (101, 183) and waves. |
 | Hard 2 · `route_later` | Turn toward the school and stop at (260, 230). |

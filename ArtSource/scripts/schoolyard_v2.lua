@@ -23,23 +23,24 @@ return function(L, ST)
   -- Positions are in art pixels from the top left. Character points are at the feet.
   M.LAYOUT = {
     floorY = 230, horizonY = 132,
-    building = { 148, 111 }, roof = { 140, 88 }, door = { 191, 140 },
+    building = { 148, 120 }, roof = { 140, 98 }, door = { 191, 140 },
     sign = { 15, 142 }, trunk = { 330, 127 }, shade = { 356, 194 },
     canopy = { 300, 83 }, post = { 418, 95 }, swayMs = 160,
-    normal4 = { start = { 302, 230 }, field = { 86, 230 },
+    normal4 = { start = { 302, 230 }, field = { 110, 230 },
       tree = { 320, 199 }, building = { 260, 230 },
-      postBend = { 336, 244 }, postApproach = { 393, 244 }, post = { 414, 225 } },
+      postBend = { 336, 244 }, post = { 393, 244 } },
     hard2 = { start = { 306, 230 }, teacher = { 217, 230 }, later = { 260, 230 },
       fieldBend = { 170, 230 }, teacherBend = { 142, 225 },
       field = { 133, 198 }, teacherField = { 101, 183 },
       tree = { 323, 215 },
-      postBend = { 336, 244 }, postApproach = { 393, 244 }, post = { 414, 225 } },
+      postBend = { 336, 244 }, post = { 393, 244 } },
   }
   local A = M.LAYOUT
 
   -- Normal 4 crosses the forecourt to the open field. The tree walk ends at the
   -- front-left edge of the shade, and the building run stops outside the doorway.
-  -- The post route bends through the foreground, clear of the trunk and shade.
+  -- The post route bends through the foreground, clear of the trunk and shade, and
+  -- stops short of the pole and its lines. The field spot is on open grass, clear of the sign.
   -- In Hard 2 the Teacher stays ahead on the field path and stops to the right of
   -- the sign. The tree route ends before the shade, and the late route faces the door.
 
@@ -143,13 +144,14 @@ return function(L, ST)
 
   local function building(img)
     local x, y = table.unpack(A.building)
-    box(img, x, y, 132, 113, R.wall)
+    -- The roof stays below the Hint button. The wall ends at y 223, as before.
+    box(img, x, y, 132, 104, R.wall)
     L.rect(img, x + 1, y + 8, 130, 5, R.wall[3])
-    L.rect(img, x + 1, y + 74, 130, 36, R.lower[2])
-    L.hline(img, x + 1, x + 130, y + 74, R.lower[1])
-    L.hline(img, x + 2, x + 129, y + 110, R.lower[3])
-    window(img, x + 8, y + 32, 27)
-    window(img, x + 100, y + 32, 24)
+    L.rect(img, x + 1, y + 65, 130, 36, R.lower[2])
+    L.hline(img, x + 1, x + 130, y + 65, R.lower[1])
+    L.hline(img, x + 2, x + 129, y + 101, R.lower[3])
+    window(img, x + 8, y + 23, 27)
+    window(img, x + 100, y + 23, 24)
 
     local rx, ry = table.unpack(A.roof)
     L.poly(img, { rx, y, rx + 21, ry, rx + 120, ry, rx + 145, y,

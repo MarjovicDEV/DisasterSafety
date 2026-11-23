@@ -1071,13 +1071,13 @@ namespace DisasterSafety.Tests
             Tap(c, 1);
             yield return WaitFor(() => student.IsWalking && student.FacingLeft, "the walk into the field");
             yield return WaitFor(() => student.Pose == StudentPose.Crouch, "the crouch in the field");
-            Assert.That(student.X, Is.EqualTo(86f));
+            Assert.That(student.X, Is.EqualTo(110f));
             yield return WaitFor(() => student.Pose == StudentPose.Cover, "the Student to cover");
             Assert.That(student.FacingLeft, Is.True);
             Assert.That(shaker.IsShaking, Is.True, "the Student covers while the ground still shakes");
             yield return WaitFor(() => !shaker.IsShaking, "the schoolyard to calm");
             Assert.That(student.Pose, Is.EqualTo(StudentPose.Cover));
-            Assert.That(student.X, Is.EqualTo(86f));
+            Assert.That(student.X, Is.EqualTo(110f));
             Assert.That(student.Y, Is.Zero);
             foreach (var wobbler in shaker.wobblers)
             {
@@ -1181,8 +1181,9 @@ namespace DisasterSafety.Tests
             Tap(c, 0);
             yield return WaitFor(() => student.IsWalking && student.Y < 0f, "the Student to follow the foreground path");
             yield return WaitFor(() => student.bubble.gameObject.activeSelf && student.bubble.Line == UIStrings.ReactionWait, "the post route stop");
-            Assert.That(student.X, Is.EqualTo(414f));
-            Assert.That(student.Y, Is.EqualTo(5f));
+            // The post route stops short of the pole and its lines.
+            Assert.That(student.X, Is.EqualTo(393f));
+            Assert.That(student.Y, Is.EqualTo(-14f));
             Assert.That(student.Pose, Is.EqualTo(StudentPose.Wait));
             yield return FeedbackShown(c);
             Assert.That(c.feedbackHeading.text, Is.EqualTo(UIStrings.UnsafeHeading));

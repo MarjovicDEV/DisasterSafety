@@ -833,12 +833,12 @@ namespace DisasterSafety.EditorTools
                 },
             };
 
-            // The bend follows the foreground in front of the tree's shade.
+            // A walk's y is art pixels above the floor line, so floorY - row puts the feet on art row `row`.
+            // The bend follows the foreground in front of the tree's shade and stops short of the pole and its lines.
             var postPath = new[]
             {
                 ActOutStep.Walk(336f, floorY - 244f),
                 ActOutStep.Walk(393f, floorY - 244f),
-                ActOutStep.Walk(414f, floorY - 225f),
             };
             setting.actOuts = new[]
             {
@@ -851,7 +851,7 @@ namespace DisasterSafety.EditorTools
                     key = "field",
                     steps = new[]
                     {
-                        ActOutStep.Walk(86f),
+                        ActOutStep.Walk(110f),
                         ActOutStep.Face(left: true),
                         ActOutStep.Pose(StudentPose.Crouch, 0.28f),
                         ActOutStep.Pose(StudentPose.Cover, 1f),
