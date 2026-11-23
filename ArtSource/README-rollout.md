@@ -47,6 +47,14 @@ The `icons=` filter writes only the named icons, so each slice adds its icons wi
 | `icon_meet_park` | Agree on a meeting place | Hard 1 |
 | `icon_meet_house` | Plan to meet back at home | Hard 1 |
 | `icon_phone_numbers` | Keep numbers only in the phone | Hard 1 |
+| `icon_tree` | Hide under the big tree | Normal 4 |
+| `icon_field` | Go to the open field | Normal 4 |
+| `icon_building` | Run back into the building | Normal 4 |
+| `icon_post` | Stand by the electric post | Normal 4 |
+| `icon_route_post` | Take the path by the post | Hard 2 |
+| `icon_route_tree` | Walk the path under the tree | Hard 2 |
+| `icon_route_field` | Take the route across the field | Hard 2 |
+| `icon_route_later` | Find the way when it happens | Hard 2 |
 
 Easy 2 reuses the pilot's `icon_window` for "Stand by the window".
 
@@ -186,6 +194,37 @@ The following x values mark the centre of the Student's feet at y 230. Walks and
 | `phone_numbers` | Play Phone at x 154 and stop there. |
 
 No Grown-up stands in front of furniture at a start, and no prop overlaps furniture. The Normal 2 door route passes Mom and the table; the bag must reach the door, and Mom must stand left of the start to leave the boxes route clear. The TV route stops before Mom. The boxes route passes the toy, water, can, flashlight, and whistle. The toy approach passes the open bag. The Normal 3 door route passes in front of the table, because the run must show the Student reaching the door, and the approach to the glass cabinet passes in front of the sofa. The Hard 1 house card route passes the park card in both directions. Try Again restores only the selected Level's props, Grown-ups, and start pose.
+
+## Schoolyard (`ArtSource/scripts/schoolyard_v2.lua`, part `schoolyard_v2`)
+
+Render with `aseprite.exe -b --script-param root=<project> --script-param only=schoolyard_v2 --script ArtSource/scripts/build.lua`.
+The 480 × 270 schoolyard is shared by Normal 4 (during) and Hard 2 (before). The scene uses the v2 scale of four UI units per art pixel. Positions below are measured from the top left. Character positions mark the centre of the feet.
+
+| Art or cast | Placement |
+|---|---|
+| Standing line and horizon | y 230 and y 132 |
+| Building, roof, and doorway | (148, 111), (140, 88), and (191, 140) |
+| Evacuation Area sign | (15, 142). The sign uses two lines of the shared pixel font. |
+| Tree trunk and shade | Trunk at (330, 127). Shade centred at (356, 194). |
+| Tree canopy | (300, 83), 119 × 75 pixels. Two frames, 160 ms each. |
+| Electric post and lines | (418, 95), 62 × 107 pixels. Two frames, 160 ms each. |
+| Normal 4 cast and Reaction | The Student starts alone at (302, 230) and plays Surprised during the opening shake. The Reaction sits 31 art pixels to the right and 2 above the top of the Student frame. |
+| Hard 2 cast and Reaction | The Student starts Idle at (306, 230). The Teacher waves inside the doorway at (217, 230). The Reaction sits 24 art pixels to the right and 2 above the top of the Student frame. |
+
+The canopy and electric post sway only while Normal 4 shakes. Hard 2 uses their rest frames. Each Level has its own `LevelStart`. There are no movable props.
+
+| Level and Choice | Act-out points |
+|---|---|
+| Normal 4 · `tree` | Walk to (320, 199) and stop at the edge of the shade. |
+| Normal 4 · `field` | Walk to (86, 230), face left, crouch, and Cover for one second as the yard shakes. Then calm the shaking. |
+| Normal 4 · `building` | Run toward the door and stop at (260, 230), outside the door frame. |
+| Normal 4 · `post` | Walk via (336, 244) and (393, 244), then stop at (414, 225). |
+| Hard 2 · `route_post` | Follow the same foreground path and stop at (414, 225). |
+| Hard 2 · `route_tree` | Walk to (323, 215) and stop before the shade. |
+| Hard 2 · `route_field` | The Student goes via (170, 230) to (133, 198), and the Teacher goes via (142, 225) to (101, 183) and waves. |
+| Hard 2 · `route_later` | Turn toward the school and stop at (260, 230). |
+
+The field walks cross in front of the school because the open field lies to the left of the building and both starts lie to its right. The Teacher moves ahead on the Hard 2 field path, leaving the doorway clear before the Student passes. The post path crosses the tree's x range in the foreground, clear of the canopy, trunk, and shade. The two tree approaches stop at or before the edge of the shade. Try Again after a post Choice takes the direct return to the start and passes in front of the tree trunk.
 
 ## Removed art (cleanup, 2026-11-22)
 
