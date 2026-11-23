@@ -124,17 +124,19 @@ namespace DisasterSafety.EditorTools
             CaptureClassroomAfter(c, scenarios, Shot);
             CaptureBedroom(c, scenarios, Shot);
             CaptureHome(c, scenarios, Shot);
+            CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Normal, 4, "n4", "building", StudentKind.Boy);
+            CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 2, "h2", "route_post", StudentKind.Girl);
         }
 
         static void CaptureHome(LevelController c, ScenarioLibrary scenarios, Action<string, ScreenPanel[]> shot)
         {
-            CaptureHomeLevel(c, scenarios, shot, Difficulty.Normal, 2, "n2", "hidden", StudentKind.Boy);
-            CaptureHomeLevel(c, scenarios, shot, Difficulty.Normal, 3, "n3", "run", StudentKind.Girl);
-            CaptureHomeLevel(c, scenarios, shot, Difficulty.Hard, 1, "h1", "meet_home", StudentKind.Boy);
+            CaptureSharedSettingLevel(c, scenarios, shot, Difficulty.Normal, 2, "n2", "hidden", StudentKind.Boy);
+            CaptureSharedSettingLevel(c, scenarios, shot, Difficulty.Normal, 3, "n3", "run", StudentKind.Girl);
+            CaptureSharedSettingLevel(c, scenarios, shot, Difficulty.Hard, 1, "h1", "meet_home", StudentKind.Boy);
         }
 
         // Capture the cast at the start and the last visible state of the chosen Act-outs.
-        static void CaptureHomeLevel(LevelController c, ScenarioLibrary scenarios, Action<string, ScreenPanel[]> shot,
+        static void CaptureSharedSettingLevel(LevelController c, ScenarioLibrary scenarios, Action<string, ScreenPanel[]> shot,
             Difficulty difficulty, int number, string prefix, string stopKey, StudentKind kind)
         {
             var s = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, difficulty, number));
@@ -149,19 +151,23 @@ namespace DisasterSafety.EditorTools
             setting.PrepareStudentStart(s.level, kind);
             var student = setting.student;
             student.bubble.Hide();
-            var lamp = setting.shaker.wobblers[0];
-            var lampImage = lamp.GetComponent<UnityEngine.UI.Image>();
+            void SetWobblers(bool shaking)
+            {
+                foreach (var wobbler in setting.shaker.wobblers)
+                    wobbler.GetComponent<UnityEngine.UI.Image>().sprite = wobbler.frames[shaking ? 1 : 0];
+            }
             var props = setting.ActiveProps;
             var places = Array.ConvertAll(props, p => ((RectTransform)p.transform).anchoredPosition);
             var visibility = Array.ConvertAll(props, p => p.gameObject.activeSelf);
 
-            lampImage.sprite = lamp.frames[s.Shakes ? 1 : 0];
+            SetWobblers(s.Shakes);
             shot(prefix + "-actionbar", new[] { c.actionBar.panel });
 
             void Outcome(string suffix, ActOut act, bool safe)
             {
                 var facingLeft = false;
                 var x = setting.StartX;
+                var y = setting.startY;
                 var last = act.LastStep(!safe);
                 for (var i = 0; i <= last; i++)
                 {
@@ -170,6 +176,7 @@ namespace DisasterSafety.EditorTools
                     {
                         facingLeft = step.kind == ActOutStepKind.Carry && step.x < x;
                         x = step.x;
+                        y = step.y;
                     }
                     switch (step.kind)
                     {
@@ -188,17 +195,22 @@ namespace DisasterSafety.EditorTools
                         case ActOutStepKind.PropPlace:
                             step.target.GetComponent<LevelProp>().Place(step.place);
                             break;
+                        case ActOutStepKind.Walk when step.grownUp != null:
+                            step.grownUp.PlaceAt(step.grownUpDestination.x, step.grownUpDestination.y);
+                            step.grownUp.Face(false);
+                            step.grownUp.Play(GrownUpPose.Idle);
+                            break;
                         case ActOutStepKind.GrownUp when step.grownUpAction == GrownUpAction.Pose:
                             step.grownUp.Play(step.grownUpPose);
                             break;
                     }
                 }
 
-                student.PlaceAt(x);
+                student.PlaceAt(x, y);
                 student.Face(facingLeft);
                 student.ShowFrame(safe ? act.EndPose : act.stopPose, 0);
                 student.bubble.Say(safe ? s.Shakes ? UIStrings.ReactionSafe : UIStrings.ReactionReady : UIStrings.ReactionWait);
-                lampImage.sprite = lamp.frames[!safe && s.Shakes ? 1 : 0];
+                SetWobblers(!safe && s.Shakes);
                 shot(prefix + suffix, Array.Empty<ScreenPanel>());
 
                 if (act.FirstOverlay != null) act.FirstOverlay.SetActive(false);
@@ -213,7 +225,7 @@ namespace DisasterSafety.EditorTools
 
             Outcome("-safe", setting.ActOutFor(s.SafeChoice.action), true);
             Outcome("-stop", setting.ActOutFor(stopKey), false);
-            lampImage.sprite = lamp.frames[0];
+            SetWobblers(false);
         }
 
         // Normal 1 in the bedroom (n1-*): the Action Bar, the box set down on the low shelf, and the stop
