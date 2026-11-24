@@ -242,6 +242,14 @@ if want("schoolyard_v2") then
   L.saveFrames(SY.postFrames(), base .. "schoolyard_post", base .. "schoolyard_post", SY.LAYOUT.swayMs)
 end
 
+-- The v2 beach, with a separate water line animation.
+if want("beach_v2") then
+  local BE = dofile(here .. "beach_v2.lua")(L, ST)
+  local base = "Level/v2/"
+  L.save(BE.background(), base .. "bg_beach", base .. "bg_beach")
+  L.saveFrames(BE.waterFrames(), base .. "beach_water", base .. "beach_water", BE.LAYOUT.waterMs)
+end
+
 -- The Home-specific reach-up frames let the Student pinch a card at the board.
 if want("home_reachup") then
   for _, kind in ipairs({ "boy", "girl" }) do

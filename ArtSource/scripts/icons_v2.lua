@@ -132,6 +132,51 @@ return function(L, ST)
     out.route_later = later
   end
 
+  local function beachIcons(out)
+    local fish = L.newImage(16, 16)
+    L.poly(fish, { 3, 8, 1, 5, 4, 6, 6, 7, 8, 4, 10, 5, 12, 5,
+      14, 7, 14, 9, 12, 11, 9, 11, 5, 9, 1, 11 }, M.GLASS[3])
+    L.poly(fish, { 5, 8, 8, 6, 12, 6, 13, 8, 12, 10, 8, 10 }, M.GLASS[2])
+    L.line(fish, 7, 8, 10, 6, M.GLASS[1])
+    L.px(fish, 12, 7, O)
+    L.outline(fish, O)
+    out.fish = fish
+
+    local watch = L.newImage(16, 16)
+    L.poly(watch, { 2, 5, 5, 2, 10, 2, 13, 5, 10, 8, 5, 8 }, M.WHITE[3])
+    L.poly(watch, { 3, 5, 5, 3, 10, 3, 12, 5, 10, 7, 5, 7 }, M.WHITE[1])
+    L.circle(watch, 7, 5, 2, M.NAVY[2])
+    L.px(watch, 7, 5, M.GLASS[1])
+    L.poly(watch, { 1, 12, 4, 10, 6, 10, 8, 12, 10, 12, 12, 10, 14, 10,
+      14, 13, 12, 14, 9, 14, 6, 12, 4, 12, 1, 14 }, M.GLASS[3])
+    L.line(watch, 1, 12, 4, 10, M.GLASS[1])
+    L.line(watch, 10, 12, 13, 10, M.GLASS[2])
+    L.outline(watch, O)
+    out.watch_waves = watch
+
+    local high = L.newImage(16, 16)
+    L.poly(high, { 1, 13, 4, 12, 7, 8, 10, 8, 12, 6, 14, 6, 14, 14, 1, 14 }, M.GREEN[3])
+    L.poly(high, { 3, 13, 6, 11, 8, 9, 11, 9, 13, 7, 14, 7, 14, 12, 11, 12, 8, 13 }, M.GREEN[2])
+    L.line(high, 4, 12, 7, 9, M.GREEN[1])
+    L.poly(high, { 2, 7, 7, 2, 5, 2, 5, 1, 10, 1, 10, 6, 9, 6, 9, 3, 4, 8 }, M.WHITE[2])
+    L.line(high, 3, 7, 8, 2, M.WHITE[1])
+    L.outline(high, O)
+    out.high_ground = high
+
+    local wait = L.newImage(16, 16)
+    L.poly(wait, { 3, 10, 12, 10, 14, 14, 1, 14 }, M.SAGE[3])
+    L.hline(wait, 3, 12, 11, M.SAGE[1])
+    L.hline(wait, 3, 12, 12, M.SAGE[2])
+    L.hline(wait, 2, 13, 13, M.SAGE[1])
+    L.circle(wait, 7, 5, 4, M.WHITE[3])
+    L.circle(wait, 7, 5, 3, M.WHITE[1])
+    L.line(wait, 7, 3, 7, 5, M.NAVY[3])
+    L.line(wait, 7, 5, 9, 6, M.NAVY[3])
+    L.px(wait, 5, 3, M.GLASS[1])
+    L.outline(wait, O)
+    out.wait_beach = wait
+  end
+
   -- The icons by name (without the icon_ prefix). Each slice adds its own.
   function M.icons()
     local out = {}
@@ -437,6 +482,7 @@ return function(L, ST)
     out.phone_numbers = phone
 
     schoolyardIcons(out)
+    beachIcons(out)
 
     return out
   end
