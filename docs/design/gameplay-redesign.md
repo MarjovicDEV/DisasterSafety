@@ -260,6 +260,12 @@ For the boy and the girl, 32x50, in the v2 style, drawn by `student.lua` as new 
 - **Bedroom:** The researcher approved the bedroom after a final pass. The start spot is uncluttered, every prop stands on the back of the floor, no prop overlaps another, and the red ramp matches the shared palette. In the push stop, the Student steps with the sliding bed so the palms stay on the headboard. Placements and Act-out points are in `ArtSource/README-rollout.md` (Bedroom).
 - **Checks:** The build, all 175 EditMode and 41 PlayMode tests passed. The six new Normal 1 screenshots were reviewed at both target sizes, and the other 99 matched byte for byte.
 
+### Earthquake Hard Editor check
+
+- **Scope:** The researcher played Earthquake Hard 1 to Hard 7 in the Unity Editor on 2026-11-24, after the menus moved to the Student (ticket 13). The checklist covered the Student, Grown-ups and props being easy to see; each Act-out reading as the real drill or action; each Unsafe Act-out stopping before anything happens and differing from the Safe one; the Caption and the Hint; Try Again returning cleanly, including the retraced mall stairs in Hard 4; and Level Completed showing the Student and the right line.
+- **Result:** The researcher approved all seven Hard Levels with no changes requested, so no fixes were made.
+- **Checks before the play-through:** A new EditMode test confirms that all 15 Earthquake Levels use the Student flow and that each Setting has a v2 `LevelSetting` in the Level scene. The build, all 189 EditMode and 82 PlayMode tests passed, and all 180 screenshots matched the previous run byte for byte. Two Reactions overlap scenery slightly and were left as they are: at the Hard 4 stop it touches the top of the mall exit door frame, and at the Hard 6 stop it covers part of the "Meet here" board.
+
 ## Open questions
 
 None. Q15 and the voice blip were settled in the rollout interview (R1, R2).
