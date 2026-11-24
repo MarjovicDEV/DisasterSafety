@@ -250,6 +250,17 @@ if want("beach_v2") then
   L.saveFrames(BE.waterFrames(), base .. "beach_water", base .. "beach_water", BE.LAYOUT.waterMs)
 end
 
+-- The two v2 mall Settings, with a table overlay and a shaking-only sign.
+if want("mall_v2") then
+  local MA = dofile(here .. "mall_v2.lua")(L, ST)
+  local base = "Level/v2/"
+  L.save(MA.backgroundA(), base .. "bg_mall_a", base .. "bg_mall_a")
+  L.save(MA.backgroundB(), base .. "bg_mall_b", base .. "bg_mall_b")
+  L.save(MA.foodtableFront(), base .. "foodtable_front", base .. "foodtable_front")
+  L.saveFrames(MA.mallSignFrames(), base .. "mall_foodcourt_sign", base .. "mall_foodcourt_sign",
+    MA.LAYOUT.mall_a.swayMs)
+end
+
 -- The Home-specific reach-up frames let the Student pinch a card at the board.
 if want("home_reachup") then
   for _, kind in ipairs({ "boy", "girl" }) do

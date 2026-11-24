@@ -178,6 +178,55 @@ return function(L, ST)
   end
 
   -- The icons by name (without the icon_ prefix). Each slice adds its own.
+  local function mallIcons(out)
+    local elevator = L.newImage(16, 16)
+    M.box(elevator, 1, 3, 12, 13, M.METAL)
+    L.rect(elevator, 3, 5, 8, 9, M.METAL[2])
+    L.vline(elevator, 3, 5, 13, M.METAL[1])
+    L.vline(elevator, 9, 5, 13, M.METAL[3])
+    L.vline(elevator, 7, 5, 13, O)
+    L.poly(elevator, { 4, 2, 6, 0, 8, 2 }, M.NAVY[2])
+    L.rect(elevator, 13, 8, 3, 5, O)
+    L.px(elevator, 14, 9, M.GREEN[1])
+    out.elevator = elevator
+
+    local shop = L.newImage(16, 16)
+    M.box(shop, 0, 3, 16, 12, M.METAL)
+    L.rect(shop, 2, 5, 12, 8, M.GLASS[2])
+    L.rect(shop, 3, 8, 3, 4, M.RED[2])
+    L.rect(shop, 7, 9, 3, 3, M.WOOD[2])
+    L.rect(shop, 11, 7, 2, 5, M.GREEN[3])
+    L.hline(shop, 2, 13, 12, M.GLASS[3])
+    L.line(shop, 3, 8, 6, 5, M.GLASS[1])
+    L.line(shop, 9, 9, 12, 6, M.GLASS[1])
+    M.box(shop, 1, 1, 14, 4, M.SAGE)
+    out.shop_window = shop
+
+    local rush = L.newImage(16, 16)
+    L.circle(rush, 4, 4, 2, K.S)
+    L.poly(rush, { 3, 6, 6, 6, 8, 7, 10, 7, 10, 9, 7, 9, 5, 8,
+      6, 10, 9, 14, 7, 14, 4, 11, 2, 14, 0, 14, 2, 10 }, M.RED[2])
+    L.line(rush, 4, 7, 3, 10, M.RED[1])
+    L.outline(rush, O)
+    L.circle(rush, 13, 4, 2, O)
+    L.px(rush, 13, 4, K.t)
+    L.rect(rush, 11, 7, 5, 5, O)
+    L.rect(rush, 12, 8, 3, 3, M.SAGE[2])
+    L.vline(rush, 12, 11, 14, O)
+    L.vline(rush, 14, 11, 14, O)
+    out.run_push = rush
+
+    local wall = L.newImage(16, 16)
+    L.poly(wall, { 2, 3, 10, 1, 14, 3, 14, 13, 10, 15, 2, 13 }, O)
+    L.poly(wall, { 3, 4, 10, 2, 10, 14, 3, 12 }, M.WOOD[1])
+    L.poly(wall, { 11, 3, 13, 4, 13, 12, 11, 13 }, M.WOOD[3])
+    L.rect(wall, 4, 5, 6, 5, O)
+    L.rect(wall, 5, 6, 4, 3, M.GLASS[2])
+    L.hline(wall, 5, 8, 6, M.GLASS[1])
+    L.line(wall, 3, 11, 9, 13, M.WOOD[2])
+    out.mall_wall = wall
+  end
+
   function M.icons()
     local out = {}
 
@@ -483,6 +532,8 @@ return function(L, ST)
 
     schoolyardIcons(out)
     beachIcons(out)
+
+    mallIcons(out)
 
     return out
   end
