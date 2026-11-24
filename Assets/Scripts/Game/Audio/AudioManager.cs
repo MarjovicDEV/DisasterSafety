@@ -143,7 +143,8 @@ namespace DisasterSafety.Game
             ApplyPreferences();
         }
 
-        float TargetVolume => !GameServices.Audio.MusicOn ? 0f
+        // A missing preference (GameServices reset while a music swap is still fading) counts as music off.
+        float TargetVolume => GameServices.Audio == null || !GameServices.Audio.MusicOn ? 0f
             : Time.unscaledTime < duckUntil ? MusicVolume * DuckedShare : MusicVolume;
 
         void ApplyPreferences()
