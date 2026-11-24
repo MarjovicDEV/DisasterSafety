@@ -285,7 +285,7 @@ namespace DisasterSafety.Game.UI
                 }
             }
 
-            setting.PositionReaction();
+            setting.PositionReaction(actOut);
             if (safe)
             {
                 if (scenario.Shakes) setting.shaker?.Calm();

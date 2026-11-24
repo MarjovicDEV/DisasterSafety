@@ -133,6 +133,10 @@ namespace DisasterSafety.Game.UI
         public int stopAfter = -1;
         [Tooltip("The pose for the Unsafe Reaction. Use a low pose if the Student is still under cover.")]
         public StudentPose stopPose = StudentPose.Wait;
+        [Tooltip("Place the Reaction at reactionPosition for this Act-out instead of the Level's place, so it leaves the thing the Choice is about in view.")]
+        public bool placeReaction;
+        [Tooltip("With placeReaction: the Reaction's anchored position in the Student, UI units.")]
+        public Vector2 reactionPosition;
 
         /// <summary>The index of the last step a Safe (false) or Unsafe (true) Choice plays.</summary>
         public int LastStep(bool stops) =>

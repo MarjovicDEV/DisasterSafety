@@ -229,7 +229,7 @@ namespace DisasterSafety.EditorTools
                 student.PlaceAt(x, y);
                 student.Face(facingLeft);
                 student.ShowFrame(safe ? act.EndPose : act.stopPose, 0);
-                setting.PositionReaction();
+                setting.PositionReaction(act);
                 var safeLine = s.phase == ScenarioPhases.Before ? UIStrings.ReactionReady : UIStrings.ReactionSafe;
                 student.bubble.Say(safe ? safeLine : UIStrings.ReactionWait);
                 SetWobblers(!safe && s.Shakes);

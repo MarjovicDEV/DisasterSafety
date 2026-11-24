@@ -76,12 +76,15 @@ namespace DisasterSafety.Game.UI
                 if (grownUp != null) grownUp.PlaceAtStart();
         }
 
-        /// <summary>Places the Reaction for the selected Level at the Student's current position.</summary>
-        public void PositionReaction()
+        /// <summary>
+        /// Places the Reaction for the selected Level at the Student's current position. An Act-out with its
+        /// own Reaction place (placeReaction) uses that place instead of the Level's.
+        /// </summary>
+        public void PositionReaction(ActOut actOut = null)
         {
             if (selectedStart == null) return;
             var bubble = (RectTransform)student.bubble.transform;
-            var position = selectedStart.reactionPosition;
+            var position = actOut != null && actOut.placeReaction ? actOut.reactionPosition : selectedStart.reactionPosition;
             var right = student.X * student.unitsPerPixel + position.x + bubble.rect.width * 0.5f;
             if (selectedStart.mirrorReactionAtRightEdge && right > ((RectTransform)transform).rect.width)
                 position.x = -position.x;
