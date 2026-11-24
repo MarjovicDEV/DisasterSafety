@@ -304,6 +304,67 @@ return function(L, ST)
     out.toy_car = toy
   end
 
+  -- Hard 7, evacuation area: going home, the radio, a rumor and the phone all day.
+  local function evacuationIcons(out)
+    -- go_home: a small house on the right with an arrow pointing toward it.
+    local home = L.newImage(16, 16)
+    M.box(home, 8, 8, 7, 7, M.WOOD)
+    L.poly(home, { 6, 9, 11, 3, 12, 3, 15, 7, 15, 9 }, O)
+    L.poly(home, { 8, 8, 11, 4, 12, 4, 14, 7, 14, 8 }, M.RED[2])
+    L.line(home, 9, 7, 11, 5, M.RED[1])
+    L.rect(home, 11, 11, 2, 3, M.WOOD[3])
+    L.hline(home, 0, 5, 11, M.NAVY[2])
+    L.hline(home, 0, 5, 12, M.NAVY[2])
+    L.poly(home, { 4, 8, 7, 11, 7, 12, 4, 15 }, M.NAVY[2])
+    L.hline(home, 1, 4, 11, M.NAVY[1])
+    L.outline(home, O)
+    out.go_home = home
+
+    -- radio: the red radio with a speaker grille and a dial, and sound arcs above it.
+    local radio = L.newImage(16, 16)
+    M.box(radio, 0, 7, 16, 9, M.RED)
+    L.rect(radio, 2, 9, 6, 5, M.METAL[3])
+    L.hline(radio, 2, 7, 10, M.METAL[1])
+    L.hline(radio, 2, 7, 12, M.METAL[1])
+    L.rect(radio, 10, 9, 3, 3, M.METAL[2])
+    L.px(radio, 10, 9, M.METAL[1])
+    L.line(radio, 4, 6, 2, 1, O)
+    L.px(radio, 9, 4, M.SUN); L.px(radio, 10, 3, M.SUN); L.px(radio, 11, 3, M.SUN); L.px(radio, 12, 4, M.SUN)
+    L.px(radio, 8, 2, M.SUN); L.px(radio, 9, 1, M.SUN); L.hline(radio, 10, 11, 0, M.SUN)
+    L.px(radio, 12, 1, M.SUN); L.px(radio, 13, 2, M.SUN)
+    out.radio = radio
+
+    -- rumor: two speech bubbles, the front one with a question mark.
+    local rumor = L.newImage(16, 16)
+    M.box(rumor, 0, 0, 10, 8, M.WHITE)
+    M.round(rumor, 0, 0, 10, 8)
+    L.px(rumor, 2, 8, O); L.px(rumor, 3, 8, O); L.px(rumor, 2, 9, O)
+    L.hline(rumor, 2, 6, 3, M.WHITE[3])
+    L.hline(rumor, 2, 5, 5, M.WHITE[3])
+    M.box(rumor, 5, 5, 11, 9, M.SAGE)
+    M.round(rumor, 5, 5, 11, 9)
+    L.px(rumor, 12, 14, O); L.px(rumor, 13, 14, O); L.px(rumor, 13, 15, O)
+    L.hline(rumor, 9, 11, 7, O)
+    L.px(rumor, 12, 8, O)
+    L.px(rumor, 11, 9, O)
+    L.px(rumor, 10, 10, O)
+    L.px(rumor, 10, 12, O)
+    out.rumor = rumor
+
+    -- phone_all_day: a phone with a small clock at its corner.
+    local phone = L.newImage(16, 16)
+    M.box(phone, 1, 0, 9, 16, M.NAVY)
+    M.round(phone, 1, 0, 9, 16)
+    L.rect(phone, 3, 3, 5, 9, M.GLASS[2])
+    L.hline(phone, 3, 7, 3, M.GLASS[1])
+    L.hline(phone, 4, 6, 13, M.METAL[1])
+    L.circle(phone, 11, 11, 4, O)
+    L.circle(phone, 11, 11, 3, M.WHITE[1])
+    L.vline(phone, 11, 9, 11, O)
+    L.hline(phone, 11, 13, 11, O)
+    out.phone_all_day = phone
+  end
+
   function M.icons()
     local out = {}
 
@@ -612,6 +673,7 @@ return function(L, ST)
 
     mallIcons(out)
     homeAfterIcons(out)
+    evacuationIcons(out)
 
     return out
   end
