@@ -1,6 +1,10 @@
+using System;
+using System.IO;
 using System.Linq;
 using DisasterSafety.Core;
 using NUnit.Framework;
+using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
 
 namespace DisasterSafety.Tests
 {
@@ -244,6 +248,46 @@ namespace DisasterSafety.Tests
             Assert.That(ContinueRule.CanContinue(p, content), Is.False);
             LevelCompletion.Record(p, new LevelId(Episode.Earthquake, Difficulty.Easy, 1), 3);
             Assert.That(ContinueRule.CanContinue(p, content), Is.True);
+        }
+
+        // The final check of the Earthquake rollout (ticket 14): every Earthquake Level uses the Student
+        // flow, and its Setting has a v2 LevelSetting in the Level scene that ProjectBuilder builds.
+        static readonly string[] EarthquakeLevels =
+        {
+            "Earthquake/Easy/1", "Earthquake/Easy/2", "Earthquake/Easy/3",
+            "Earthquake/Normal/1", "Earthquake/Normal/2", "Earthquake/Normal/3", "Earthquake/Normal/4", "Earthquake/Normal/5",
+            "Earthquake/Hard/1", "Earthquake/Hard/2", "Earthquake/Hard/3", "Earthquake/Hard/4",
+            "Earthquake/Hard/5", "Earthquake/Hard/6", "Earthquake/Hard/7",
+        };
+
+        [Test]
+        public void EveryEarthquakeLevel_UsesTheStudentFlow_WithAV2Setting()
+        {
+            // LevelSetting lives in DisasterSafety.Game, which this test assembly does not reference.
+            var settingType = Type.GetType("DisasterSafety.Game.UI.LevelSetting, DisasterSafety.Game");
+            Assert.That(settingType, Is.Not.Null);
+            var scene = EditorSceneManager.OpenScene("Assets/Scenes/Level.unity", OpenSceneMode.Additive);
+            try
+            {
+                var keys = scene.GetRootGameObjects()
+                    .SelectMany(root => root.GetComponentsInChildren(settingType, true))
+                    .Select(setting => (string)settingType.GetField("key").GetValue(setting))
+                    .ToArray();
+                foreach (var level in EarthquakeLevels)
+                {
+                    var path = Path.Combine("Assets/Resources/Scenarios", level + ".json");
+                    Assert.That(File.Exists(path), Is.True, level + " has a Scenario file");
+                    var s = Scenario.Parse(File.ReadAllText(path));
+                    Assert.That(s.UsesActions, Is.True, level + " uses the Student flow");
+                    var key = ScenarioSettings.ActionArtKey(s.setting);
+                    Assert.That(key, Does.EndWith("_v2"));
+                    Assert.That(keys, Does.Contain(key), level + ": the Level scene has no v2 Setting '" + key + "'");
+                }
+            }
+            finally
+            {
+                EditorSceneManager.CloseScene(scene, true);
+            }
         }
     }
 }
