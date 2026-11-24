@@ -131,6 +131,7 @@ namespace DisasterSafety.EditorTools
             CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 4, "h4", "run_push", StudentKind.Girl);
             CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 5, "h5", "pull_up", StudentKind.Boy);
             CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 6, "h6", "no_note", StudentKind.Girl);
+            CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 7, "h7", "rumor", StudentKind.Boy);
         }
 
         static void CaptureHome(LevelController c, ScenarioLibrary scenarios, Action<string, ScreenPanel[]> shot)

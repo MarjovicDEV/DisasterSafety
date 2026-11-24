@@ -359,6 +359,34 @@ The aisle uses (282, 236) and (162, 236). It passes in front of the table and th
 
 Try Again returns the Student to the starting pose and position and restores the props to their starting state. Mom and Dad remain at their starting places during every Unsafe Act-out.
 
+## Evacuation area (`ArtSource/scripts/evacuation_area_v2.lua`, part `evacuation_area_v2`)
+
+The Setting is an open, grassy field near the school in daylight, after the earthquake. It is 480 by 270 art pixels and does not shake. Sprite points refer to their top-left corners. Actor points give the centre of the feet, measured from the top left of the art. Row 230 is the floor reference, so actor height in the builder is 230 minus the art row. The positions are also in `M.LAYOUT` in the script.
+
+| Item | Placement |
+|---|---|
+| School | The small school stands far back on the left, with its wall from (14, 112). A flagpole stands beside it. |
+| Teacher in the distance | A small Teacher, about 30 pixels tall and holding a clipboard, is drawn into the background with her feet at (140, 170). |
+| Mat | The woven mat runs from x 96 to 208 at row 226 and from x 86 to 218 at row 246. |
+| Mom | Mom sits on the mat in `Sit` with her feet at (118, 236). She is a Grown-up actor, not part of the background. |
+| Radio | The radio is two props at (136, 208), both 28 by 30: `evacuation_area_radio` (off) and `evacuation_area_radio_on` (two frames of 260 milliseconds, with yellow sound arcs above the radio). The sound arcs stay inside the mat's x range. |
+| Neighbours | Three neighbours chat at (272, 164), 86 by 62, in two frames of 600 milliseconds: a nod and a hand gesture. They reuse the v2 Grown-up frames, with new clothes below the shoulders and grey hair on the older neighbour. |
+| Path and houses | The path starts on the field at x 395 on the bottom row and leaves the right edge. A far stretch climbs to two houses on the right. |
+| After the earthquake | A road sign near the houses leans to the left. There is no fire, smoke or hurt person. |
+
+### Hard 7, listen to the radio
+
+The Student starts in Idle at (228, 230). Mom sits on the mat and stays there in every Act-out. The Reaction uses the default place above the Student, except at the go home and rumor stops, which place it beside the Student so the neighbours stay in view.
+
+| Choice | Act-out points |
+|---|---|
+| radio | Walk to (182, 236) and sit beside Mom. The radio then turns on beside her, because Mom has no reaching pose. |
+| go_home | Walk to (376, 248) and stop on the field in front of the neighbours. The Student's right edge (x 392) stays left of the path start (x 395). The Reaction sits 20 art pixels to the right of the Student. |
+| rumor | Walk to (254, 228), face the neighbours, take the `Call` pose and say "Did you hear...?" The Student's right edge (x 270) stays left of the first neighbour. The Reaction sits 18 art pixels to the left of the Student. |
+| phone_all_day | Take the `Phone` pose in place at the start. |
+
+Try Again returns the Student to the start in Idle and turns the radio off.
+
 ## Removed art (cleanup, 2026-11-22)
 
 No screen showed these, and no ticket plans them (see `.scratch/cleanup/inventory.md`):
