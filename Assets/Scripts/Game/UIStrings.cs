@@ -157,6 +157,8 @@ namespace DisasterSafety.Game
         public const string ReactionReady = "All ready!";
         public const string ActOutStayStill = "Stay still, Mom.";
         public const string ActOutHelp = "Help!";
+        /// <summary>The Act-out line of Hard 7's rumor Choice, said to the neighbours (spec item 7).</summary>
+        public const string ActOutDidYouHear = "Did you hear...?";
         public static string BantayCheer(string name) =>
             string.IsNullOrEmpty(name) ? "Woof woof! Great job!" : "Woof woof! Great job, " + name + "!";
     }

@@ -46,6 +46,7 @@ namespace DisasterSafety.Core
                 case MallA: return MallASpots;
                 case MallB: return MallBSpots;
                 case HomeAfter: return HomeAfterSpots;
+                case EvacuationArea: return EvacuationAreaSpots;
                 default: return System.Array.Empty<string>();
             }
         }
@@ -81,6 +82,8 @@ namespace DisasterSafety.Core
             "pull_up", "call_adult", "fix_pipe", "leave",
             "no_go_bag", "toys", "no_note", "go_bag",
         };
+
+        static readonly string[] EvacuationAreaSpots = { "go_home", "radio", "rumor", "phone_all_day" };
 
         public static bool CanShake(string key) =>
             key == Classroom || key == Corridor || key == Home || key == Schoolyard || key == MallA;
