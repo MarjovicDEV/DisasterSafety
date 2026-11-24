@@ -28,7 +28,10 @@ namespace DisasterSafety.Game
 
         /// <summary>
         /// How to Play Tutorial Pages, in order. Each page has a matching picture
-        /// (Assets/Art/Tutorial/tutorial_&lt;Art&gt;_0/1.png) drawn by ArtSource/scripts/tutorial.lua.
+        /// (Assets/Art/Tutorial/tutorial_&lt;Art&gt;_0/1.png). The pilot pages (topic, difficulty, stars) are
+        /// drawn by ArtSource/scripts/tutorial.lua; the v2 pages that show the Action Bar flow are drawn by
+        /// ArtSource/scripts/tutorial_v2.lua. Captions only explain how to play; the Tips on pages 3 and 4
+        /// are existing Tips (the Duck, Cover, and Hold Tip traces to EQ-09).
         /// </summary>
         public static readonly TutorialPageText[] TutorialPages =
         {
@@ -38,12 +41,18 @@ namespace DisasterSafety.Game
             new TutorialPageText("difficulty", "Pick a Level",
                 "Tap Easy first. Normal and Hard open later.",
                 "Tip: More hard hats means a harder challenge."),
-            new TutorialPageText("story", "Read the Story",
-                "Something is happening! Read and look at the picture.",
+            new TutorialPageText("v2_actionbar", "Pick an Action",
+                "Look at the room. Then tap a button on the Action Bar.",
                 "Tip: Take your time. Read slowly."),
-            new TutorialPageText("choice", "Tap the Safest Choice",
-                "Pick the thing that keeps you safe.",
+            new TutorialPageText("v2_actout", "Watch Your Student",
+                "Your Student acts out the Choice you picked.",
                 "Tip: Earthquake? DUCK, COVER, and HOLD!"),
+            new TutorialPageText("v2_feedback", "Read the Feedback",
+                "Find out if your Choice was safe, and why.",
+                "Tip: Not safe? Tap " + TryAgain + " and pick again."),
+            new TutorialPageText("v2_hint", "Use the Hint",
+                "Stuck? Tap " + Hint + ". The Hint shows at the top.",
+                "Tip: The Hint helps you find the safe Choice."),
             new TutorialPageText("stars", "Earn Stars",
                 "Pick the safe choice first, with no Hint, for 3 stars!",
                 "Tip: Play again anytime to earn more stars."),
@@ -90,20 +99,20 @@ namespace DisasterSafety.Game
             }
         }
 
-        // Bantay's lines -----------------------------------------------------
-        public const string BantayHello = "Hi! I am Bantay. Tap PLAY to start!";
-        public static string BantayWelcomeBack(string name) => "Welcome back, " + name + "!";
-        public static string BantayNiceToMeet(string name) => "Nice to meet you, " + name + "!";
-        public const string BantayPickEpisode = "Start with Earthquake!";
-        public const string BantayPickDifficulty = "Easy is a good start!";
-        public const string BantayLevelSoon = "This level is coming soon!";
-        public const string BantayContinueLocked = "Finish a level first. Then you can continue!";
-        public static string BantayEpisodeLocked(Episode needed) => "Finish " + EpisodeName(needed) + " first!";
-        public static string BantayDifficultyLocked(Difficulty needed) => "Finish " + DifficultyName(needed) + " first!";
-        public const string BantaySaveKept = "Your old save had a problem. I kept a copy safe.";
+        // The Student's menu lines ------------------------------------------
+        public const string StudentHello = "Hi! Tap PLAY to start!";
+        public static string StudentWelcomeBack(string name) => "Welcome back, " + name + "!";
+        public static string StudentNiceToMeet(string name) => "Nice to meet you, " + name + "!";
+        public const string StudentPickEpisode = "Start with Earthquake!";
+        public const string StudentPickDifficulty = "Easy is a good start!";
+        public const string StudentLevelSoon = "This level is coming soon!";
+        public const string StudentContinueLocked = "Finish a level first. Then you can continue!";
+        public static string StudentEpisodeLocked(Episode needed) => "Finish " + EpisodeName(needed) + " first!";
+        public static string StudentDifficultyLocked(Difficulty needed) => "Finish " + DifficultyName(needed) + " first!";
+        public const string StudentSaveKept = "Your old save had a problem. I kept a copy safe.";
 
         /// <summary>
-        /// Short safety facts Bantay says when tapped on the Main Menu. Only lines that trace
+        /// Short safety facts the Student says when tapped on the Main Menu. Only lines that trace
         /// to a cited finding in docs/research appear here (EQ-09, EQ-37, EQ-35). Tips for the
         /// other Episodes return when each Episode has been researched.
         /// </summary>
@@ -135,8 +144,8 @@ namespace DisasterSafety.Game
         public static string SaveProblem(string name) => LevelCompletedHeadline(name) + " I could not save this time.";
         public static string SafeChoiceLine(string label) => "Safe choice: " + label;
         public static string Opened(string what) => what + " is open!";
-        public static string BantayOpenedSoon(string what) => what + " is open! New levels are coming soon.";
-        public static string BantayOpened(string what) => what + " is open! Let's play!";
+        public static string StudentOpenedSoon(string what) => what + " is open! New levels are coming soon.";
+        public static string StudentOpened(string what) => what + " is open! Let's play!";
         public const string Replay = "REPLAY";
         public const string NextLevel = "NEXT";
         public const string LevelsButton = "LEVELS";

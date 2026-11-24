@@ -685,7 +685,7 @@ namespace DisasterSafety.Game.UI
         }
 
         public static string OpenedLine(string openedName, Episode episode, Difficulty difficulty, PlayableLevels content) =>
-            content.AnyIn(episode, difficulty) ? UIStrings.BantayOpened(openedName) : UIStrings.BantayOpenedSoon(openedName);
+            content.AnyIn(episode, difficulty) ? UIStrings.StudentOpened(openedName) : UIStrings.StudentOpenedSoon(openedName);
 
         void Pause()
         {
