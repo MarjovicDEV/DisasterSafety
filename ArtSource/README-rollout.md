@@ -55,6 +55,10 @@ The `icons=` filter writes only the named icons, so each slice adds its icons wi
 | `icon_route_tree` | Walk the path under the tree | Hard 2 |
 | `icon_route_field` | Take the route across the field | Hard 2 |
 | `icon_route_later` | Find the way when it happens | Hard 2 |
+| `icon_fish` | Pick up the fish on the sand | Normal 5 |
+| `icon_watch_waves` | Stay and watch the waves | Normal 5 |
+| `icon_high_ground` | Go to high ground right away | Normal 5 |
+| `icon_wait_beach` | Wait on the beach for news | Normal 5 |
 
 Easy 2 reuses the pilot's `icon_window` for "Stand by the window".
 
@@ -225,6 +229,30 @@ The canopy and electric post sway only while Normal 4 shakes. Hard 2 uses their 
 | Hard 2 · `route_later` | Turn toward the school and stop at (260, 230). |
 
 The field walks cross in front of the school because the open field lies to the left of the building and both starts lie to its right. The Teacher moves ahead on the Hard 2 field path, leaving the doorway clear before the Student passes. The post path crosses the tree's x range in the foreground, clear of the canopy, trunk, and shade. The two tree approaches stop at or before the edge of the shade. Try Again after a post Choice takes the direct return to the start and passes in front of the tree trunk.
+
+## Beach (`ArtSource/scripts/beach_v2.lua`, part `beach_v2`)
+
+Render with `aseprite.exe -b --script-param root=<project> --script-param only=beach_v2 --script ArtSource/scripts/build.lua`.
+Earthquake Normal 5 uses a 480 × 270 beach after the shaking stops. One art pixel is four UI units. Positions are measured from the top left. Student positions mark the centre of the feet.
+
+| Art or cast | Placement |
+|---|---|
+| Floor line and horizon | y 230 and y 119. |
+| Water line | Top left at (0, 136), with two 306 × 93 frames. Each frame lasts 420 ms, and the animation runs throughout the Level. |
+| Wet sand | Exposed between the left shoreline and the dry sand, with rocks and shells. At art review, the researcher requested removal of the fish sprite. The existing Fish Choice, icon, and wording remain. |
+| Flat beach mat | Top left at (175, 209). The Sit pose rests at (200, 219). |
+| Tsunami evacuation sign | Top left at (405, 103). The small sign uses a wave and a person running uphill. |
+| Student start and Reaction | The Student starts alone in Idle at (260, 230). The 67 × 26 art-pixel Reaction is centred above the Student and sits 2 art pixels above the frame. |
+| Caption | The Goal uses the smaller pixel font so the Caption leaves the Level number and hilltop Reaction clear. |
+
+| Choice | Act-out points |
+|---|---|
+| `fish` | Walk via (201, 247) to (144, 225) on the wet sand. Face left and crouch before reaching farther down the beach. |
+| `watch` | Walk via (201, 247) and (113, 241) to (72, 216). Face the sea and stop on sand, clear of the water. |
+| `high_ground` | Face right and fast-walk through (295, 230), (330, 209), (342, 178), and (367, 158) to (386, 151). Stand to the left of the sign. |
+| `wait` | Walk to (200, 219) and sit on the mat. |
+
+The Fish and Watch walks pass in front of the mat because the wet sand and shoreline lie to its left. Try Again from either wet-sand stop takes a direct walk in front of the mat. The Wait Choice walks onto the mat and starts its return there.
 
 ## Removed art (cleanup, 2026-11-22)
 

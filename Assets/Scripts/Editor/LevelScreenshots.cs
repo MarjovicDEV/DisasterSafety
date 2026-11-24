@@ -126,6 +126,7 @@ namespace DisasterSafety.EditorTools
             CaptureHome(c, scenarios, Shot);
             CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Normal, 4, "n4", "building", StudentKind.Boy);
             CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 2, "h2", "route_post", StudentKind.Girl);
+            CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Normal, 5, "n5", "fish", StudentKind.Boy);
         }
 
         static void CaptureHome(LevelController c, ScenarioLibrary scenarios, Action<string, ScreenPanel[]> shot)
@@ -153,6 +154,7 @@ namespace DisasterSafety.EditorTools
             student.bubble.Hide();
             void SetWobblers(bool shaking)
             {
+                if (setting.shaker == null) return;
                 foreach (var wobbler in setting.shaker.wobblers)
                     wobbler.GetComponent<UnityEngine.UI.Image>().sprite = wobbler.frames[shaking ? 1 : 0];
             }
@@ -209,7 +211,8 @@ namespace DisasterSafety.EditorTools
                 student.PlaceAt(x, y);
                 student.Face(facingLeft);
                 student.ShowFrame(safe ? act.EndPose : act.stopPose, 0);
-                student.bubble.Say(safe ? s.Shakes ? UIStrings.ReactionSafe : UIStrings.ReactionReady : UIStrings.ReactionWait);
+                var safeLine = s.phase == ScenarioPhases.Before ? UIStrings.ReactionReady : UIStrings.ReactionSafe;
+                student.bubble.Say(safe ? safeLine : UIStrings.ReactionWait);
                 SetWobblers(!safe && s.Shakes);
                 shot(prefix + suffix, Array.Empty<ScreenPanel>());
 

@@ -27,6 +27,7 @@ namespace DisasterSafety.Game.UI
         public bool compactChoicesOnWideScreens;
         public float guidanceOffsetX;
         public Vector2 goalPosition = new Vector2(0f, -24f);
+        public Font captionGoalFont;
 
         [Header("Student (the new flow)")]
         public StudentActor student;

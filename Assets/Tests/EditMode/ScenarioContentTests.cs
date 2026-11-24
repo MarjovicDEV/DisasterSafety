@@ -114,6 +114,7 @@ namespace DisasterSafety.Tests
             {
                 "Earthquake/Easy/1", "Earthquake/Easy/2", "Earthquake/Easy/3", "Earthquake/Hard/1", "Earthquake/Hard/2",
                 "Earthquake/Normal/1", "Earthquake/Normal/2", "Earthquake/Normal/3", "Earthquake/Normal/4",
+                "Earthquake/Normal/5",
             }));
             foreach (var path in Files())
             {
@@ -392,6 +393,53 @@ namespace DisasterSafety.Tests
             Assert.That(s.choices[1].sources, Is.EqualTo(new[] { "EQ-80", "EQ-81" }));
             Assert.That(s.choices[2].sources, Is.EqualTo(new[] { "EQ-81", "EQ-80" }));
             Assert.That(s.choices[3].sources, Is.EqualTo(new[] { "EQ-81" }));
+        }
+
+        [Test]
+        public void NormalLevel5_UsesTheStudentFlow_OnTheBeach_WithItsTextUnchanged()
+        {
+            var s = Load(Path.Combine(ScenarioFolder, "Earthquake/Normal/5.json"));
+            Assert.That(s.UsesActions, Is.True, "Normal 5 uses the Student flow");
+            Assert.That(s.level, Is.EqualTo("Earthquake/Normal/5"));
+            Assert.That(s.setting, Is.EqualTo(ScenarioSettings.Beach));
+            Assert.That(s.phase, Is.EqualTo(ScenarioPhases.After));
+            Assert.That(s.Shakes, Is.False);
+            Assert.That(ScenarioSettings.ActionSpots(s.setting), Is.EqualTo(new[] { "fish", "watch", "high_ground", "wait" }));
+            Assert.That(s.choices.Select(c => c.id), Is.EqualTo(new[] { "fish", "watch", "high_ground", "wait" }));
+            Assert.That(s.choices.Select(c => c.action), Is.EqualTo(s.choices.Select(c => c.id)));
+            Assert.That(s.choices.Select(c => c.icon),
+                Is.EqualTo(new[] { "icon_fish", "icon_watch_waves", "icon_high_ground", "icon_wait_beach" }));
+            Assert.That(s.SafeChoice.id, Is.EqualTo("high_ground"));
+            Assert.That(s.choices.Select(c => c.picture),
+                Is.EqualTo(new[] { "choice_fish", "choice_watch_waves", "choice_high_ground", "choice_wait_beach" }));
+            Assert.That(s.goal.text, Is.EqualTo("Stay safe near the sea after a strong earthquake."));
+            Assert.That(s.goal.sources, Is.EqualTo(new[] { "EQ-84" }));
+            Assert.That(s.intro.text, Is.EqualTo("You are at the beach. The shaking stopped. The sea is going out!"));
+            Assert.That(s.intro.sources, Is.EqualTo(new[] { "EQ-85" }));
+            Assert.That(s.hint.text, Is.EqualTo("The water can come back fast. Where can it not reach?"));
+            Assert.That(s.hint.sources, Is.EqualTo(new[] { "EQ-86", "EQ-87" }));
+            Assert.That(s.lesson.text,
+                Is.EqualTo("Near the sea, a strong earthquake can bring a tsunami. Go to high ground and stay until the all clear."));
+            Assert.That(s.lesson.sources, Is.EqualTo(new[] { "EQ-84", "EQ-86", "EQ-89" }));
+            Assert.That(s.choices.Select(c => c.label), Is.EqualTo(new[]
+            {
+                "Pick up the fish on the sand",
+                "Stay and watch the waves",
+                "Go to high ground right away",
+                "Wait on the beach for news",
+            }));
+            Assert.That(s.choices.Select(c => c.heading ?? ""), Is.EqualTo(new[] { "", "", "", "" }));
+            Assert.That(s.choices.Select(c => c.feedback), Is.EqualTo(new[]
+            {
+                "Never go down the beach for fish. Go to high ground.",
+                "Never stay to watch for a tsunami. Go to high ground.",
+                "A strong earthquake near the sea can bring a tsunami. Move to high ground now.",
+                "Do not stay in low places by the sea. A warning may not come in time.",
+            }));
+            Assert.That(s.choices[0].sources, Is.EqualTo(new[] { "EQ-88", "EQ-86" }));
+            Assert.That(s.choices[1].sources, Is.EqualTo(new[] { "EQ-88" }));
+            Assert.That(s.choices[2].sources, Is.EqualTo(new[] { "EQ-84", "EQ-86" }));
+            Assert.That(s.choices[3].sources, Is.EqualTo(new[] { "EQ-87" }));
         }
 
         [Test]

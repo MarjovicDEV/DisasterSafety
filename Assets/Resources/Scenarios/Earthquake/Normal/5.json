@@ -34,6 +34,8 @@
             "id": "fish",
             "label": "Pick up the fish on the sand",
             "picture": "choice_fish",
+            "icon": "icon_fish",
+            "action": "fish",
             "safe": false,
             "feedback": "Never go down the beach for fish. Go to high ground.",
             "sources": [
@@ -45,6 +47,8 @@
             "id": "watch",
             "label": "Stay and watch the waves",
             "picture": "choice_watch_waves",
+            "icon": "icon_watch_waves",
+            "action": "watch",
             "safe": false,
             "feedback": "Never stay to watch for a tsunami. Go to high ground.",
             "sources": [
@@ -55,6 +59,8 @@
             "id": "high_ground",
             "label": "Go to high ground right away",
             "picture": "choice_high_ground",
+            "icon": "icon_high_ground",
+            "action": "high_ground",
             "safe": true,
             "feedback": "A strong earthquake near the sea can bring a tsunami. Move to high ground now.",
             "sources": [
@@ -66,6 +72,8 @@
             "id": "wait",
             "label": "Wait on the beach for news",
             "picture": "choice_wait_beach",
+            "icon": "icon_wait_beach",
+            "action": "wait",
             "safe": false,
             "feedback": "Do not stay in low places by the sea. A warning may not come in time.",
             "sources": [

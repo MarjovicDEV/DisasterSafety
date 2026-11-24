@@ -192,6 +192,7 @@ namespace DisasterSafety.Game.UI
 
         // The Caption's built width (960) and the room its text has on each side.
         float captionBaseWidth = -1f, captionBaseHeight, captionBodyBaseHeight;
+        Font captionBaseGoalFont;
         const float CaptionTextMargin = 80f, CaptionMaxWidth = 1400f, CaptionExtraLine = 48f;
 
         /// <summary>
@@ -227,6 +228,17 @@ namespace DisasterSafety.Game.UI
             bantay.gameObject.SetActive(false);
             choicesPanel.gameObject.SetActive(false);
             caption.gameObject.SetActive(true);
+            var settingGoalFont = ActiveSetting?.captionGoalFont;
+            if (settingGoalFont != null)
+            {
+                captionBaseGoalFont ??= captionGoal.font;
+                captionGoal.font = settingGoalFont;
+            }
+            else if (captionBaseGoalFont != null)
+            {
+                captionGoal.font = captionBaseGoalFont;
+                captionBaseGoalFont = null;
+            }
 
             var hint = (RectTransform)hintButton.transform;
             // The Hint sits under the Caption, over the blackboard: the door, desk, window and cabinet stay clear.

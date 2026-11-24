@@ -73,7 +73,7 @@ namespace DisasterSafety.EditorTools
                 BuildBedroom(world), BuildHome(world), BuildSchoolyard(world), BuildBeach(world),
                 BuildMallA(world), BuildMallB(world), BuildHomeAfter(world), BuildEvacuationArea(world),
                 BuildClassroomV2(world), BuildCorridorV2(world), BuildClassroomAfterV2(world),
-                BuildBedroomV2(world), BuildHomeV2(world), BuildSchoolyardV2(world),
+                BuildBedroomV2(world), BuildHomeV2(world), BuildSchoolyardV2(world), BuildBeachV2(world),
             };
             for (var i = 1; i < c.settings.Length; i++)
                 c.settings[i].gameObject.SetActive(false);
@@ -887,6 +887,77 @@ namespace DisasterSafety.EditorTools
                 new ActOut
                 {
                     key = "route_later", stopAfter = 0, steps = new[] { ActOutStep.Walk(260f) },
+                },
+            };
+            return setting;
+        }
+
+        static LevelSetting BuildBeachV2(RectTransform world)
+        {
+            var group = Stretch(Rect("Beach V2", world));
+            var setting = group.gameObject.AddComponent<LevelSetting>();
+            setting.key = ScenarioSettings.ActionArtKey(ScenarioSettings.Beach);
+            setting.captionGoalFont = f3;
+            setting.artAnchorY = 0f;
+            ArtImage(group, "Beach", S("Level/v2/bg_beach"), 0, 0);
+            BuildLevelAnimation(group, "Water Line", Frames("Level/v2/beach_water", 2),
+                0, 136, 1000f / 420f, onlyWhileShaking: false);
+
+            setting.startX = 260f;
+            setting.student = BuildStudent(group, withBubble: true);
+            ((RectTransform)setting.student.bubble.transform).sizeDelta = new Vector2(268f, 104f);
+            // The Act-out height is measured above the floor at art row 230.
+            const float floorY = 230f;
+            setting.actOuts = new[]
+            {
+                new ActOut
+                {
+                    key = "fish", stopAfter = 4, stopPose = StudentPose.Crouch,
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(201f, floorY - 247f),
+                        ActOutStep.Walk(144f, floorY - 225f),
+                        ActOutStep.Face(left: true),
+                        ActOutStep.Pose(StudentPose.Crouch),
+                        ActOutStep.Wait(0.2f),
+                    },
+                },
+                new ActOut
+                {
+                    key = "watch", stopAfter = 5, stopPose = StudentPose.Wait,
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(201f, floorY - 247f),
+                        ActOutStep.Walk(113f, floorY - 241f),
+                        ActOutStep.Walk(72f, floorY - 216f),
+                        ActOutStep.Face(left: true),
+                        ActOutStep.Pose(StudentPose.Wait),
+                        ActOutStep.Wait(0.2f),
+                    },
+                },
+                new ActOut
+                {
+                    key = "high_ground",
+                    steps = new[]
+                    {
+                        ActOutStep.Face(left: false),
+                        ActOutStep.FastWalk(295f),
+                        ActOutStep.FastWalk(330f, floorY - 209f),
+                        ActOutStep.FastWalk(342f, floorY - 178f),
+                        ActOutStep.FastWalk(367f, floorY - 158f),
+                        ActOutStep.FastWalk(386f, floorY - 151f),
+                        ActOutStep.Pose(StudentPose.Idle),
+                    },
+                },
+                new ActOut
+                {
+                    key = "wait", stopAfter = 2, stopPose = StudentPose.Sit,
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(200f, floorY - 219f),
+                        ActOutStep.Pose(StudentPose.Sit),
+                        ActOutStep.Wait(0.2f),
+                    },
                 },
             };
             return setting;
