@@ -387,6 +387,17 @@ The Student starts in Idle at (228, 230). Mom sits on the mat and stays there in
 
 Try Again returns the Student to the start in Idle and turns the radio off.
 
+## Tutorial Pages (v2) (`ArtSource/scripts/tutorial_v2.lua`, part `tutorial_v2`)
+
+How to Play has seven Tutorial Pages. Pages 1, 2 and 7 keep the pilot pictures from `tutorial.lua` (topic, difficulty and stars), which this script does not change. Pages 3 to 6 show the Action Bar flow with four new pictures. Each is 136 by 76 art pixels with two frames of 400 milliseconds, saved as `Assets/Art/Tutorial/tutorial_v2_<name>_0.png` and `_1.png`. They use the v2 classroom, the v2 Student frames and the v2 Choice icons.
+
+| Picture | Student | Frame 0 | Frame 1 |
+|---|---|---|---|
+| `v2_actionbar` | Boy | The boy stands at the classroom start spot above an Action Bar of three buttons (door, desk, window). | The desk button is pressed: it sits lower with a yellow ring. |
+| `v2_actout` | Girl | The girl holds the desk leg under the desk in `Hold`, with the desk front drawn over her. | The second `Hold` frame. |
+| `v2_feedback` | Boy | The Feedback panel with a green check and the "Safe!" heading, and the boy in `Happy` beside it. | The same, with two small sparkles. |
+| `v2_hint` | Girl | The Caption bar with Easy 1's Hint ("Find something strong to hide under.") and the HINT button below it. The girl stands on the right. | The HINT button is pressed. |
+
 ## Removed art (cleanup, 2026-11-22)
 
 No screen showed these, and no ticket plans them (see `.scratch/cleanup/inventory.md`):

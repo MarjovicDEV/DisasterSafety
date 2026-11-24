@@ -63,11 +63,12 @@ namespace DisasterSafety.EditorTools
                 c.levelSlots[i].Show(i + 1, 0, i == 0);
             }
             c.levelHeader.text = "Earthquake - Easy";
-            c.bantay.bubbleText.text = "Hi! I am Bantay. Tap PLAY to start!";
+            // The Main Menu Student greets in the Happy pose on the first shot and stands Idle on the others.
+            var student = c.student;
 
             var shots = new (string name, ScreenPanel[] show)[]
             {
-                ("01-main", new[] { c.mainPanel, c.bantay.bubble }),
+                ("01-main", new[] { c.mainPanel }),
                 ("02-episodes", new[] { c.episodePanel }),
                 ("03-difficulty", new[] { c.difficultyPanel }),
                 ("04-levels", new[] { c.levelPanel }),
@@ -80,7 +81,7 @@ namespace DisasterSafety.EditorTools
             var all = new[]
             {
                 c.mainPanel, c.settingsPanel, c.howToPlayPanel, c.exitPanel, c.namePanel, c.studentPanel, c.episodePanel,
-                c.difficultyPanel, c.levelPanel, c.dimmer, c.bantay.bubble
+                c.difficultyPanel, c.levelPanel, c.dimmer
             };
 
             foreach (var size in Sizes)
@@ -88,17 +89,25 @@ namespace DisasterSafety.EditorTools
                 foreach (var shot in shots)
                 {
                     foreach (var p in all) p.gameObject.SetActive(Array.IndexOf(shot.show, p) >= 0);
+                    var greeting = shot.name == "01-main";
+                    student.actor.ShowFrame(greeting ? StudentPose.Happy : StudentPose.Idle, 0);
+                    if (greeting) student.Bubble.Say(Game.UIStrings.StudentHello, -1f);
+                    else student.Bubble.Hide();
                     Render(cam, canvas, size, Path.Combine(dir, shot.name + "-" + size.x + "x" + size.y + ".png"));
                 }
             }
 
-            // Every How to Play Tutorial Page, at the reference resolution.
+            // Every How to Play Tutorial Page, at both sizes.
             foreach (var p in all) p.gameObject.SetActive(p == c.mainPanel || p == c.dimmer || p == c.howToPlayPanel);
-            for (var page = 0; page < Game.UIStrings.TutorialPages.Length; page++)
+            student.Bubble.Hide();
+            foreach (var size in Sizes)
             {
-                c.tutorial.Open();
-                for (var n = 0; n < page; n++) c.tutorial.NextPage();
-                Render(cam, canvas, Sizes[0], Path.Combine(dir, "06-howtoplay-page" + (page + 1) + ".png"));
+                for (var page = 0; page < Game.UIStrings.TutorialPages.Length; page++)
+                {
+                    c.tutorial.Open();
+                    for (var n = 0; n < page; n++) c.tutorial.NextPage();
+                    Render(cam, canvas, size, Path.Combine(dir, "06-howtoplay-page" + (page + 1) + "-" + size.x + "x" + size.y + ".png"));
+                }
             }
             LevelScreenshots.Capture(dir);
             Debug.Log("Screenshots written to " + dir);

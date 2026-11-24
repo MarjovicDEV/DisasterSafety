@@ -6,8 +6,10 @@ using DisasterSafety.Game;
 using DisasterSafety.Game.UI;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+using UnityEngine.UI;
 
 namespace DisasterSafety.Tests
 {
@@ -293,6 +295,134 @@ namespace DisasterSafety.Tests
             Assert.That(student.Kind, Is.EqualTo(StudentKind.Girl));
             Assert.That(student.CurrentSprite.name, Does.StartWith("girl_"));
             Assert.That(student.Frames, Is.SameAs(student.girl));
+        }
+
+        // The Student replaces Bantay on the menus (ticket 13) ----------------------------------------
+
+        static StudentActor Named(string name) =>
+            Array.Find(UnityEngine.Object.FindObjectsByType<StudentActor>(FindObjectsInactive.Include, FindObjectsSortMode.None),
+                s => s.name == name);
+
+        static StudentActor MenuStudent() => Named("Menu Student");
+        static StudentActor HowToPlayStudent() => Named("How To Play Student");
+
+        IEnumerator BootWithSave(StudentKind kind, string name = "Ana")
+        {
+            GameServices.Initialize(dir);
+            GameServices.Progress.SetDisplayName(name);
+            GameServices.Progress.SetStudent(kind);
+            GameServices.SaveProgress();
+            yield return BootToMenu();
+        }
+
+        [UnityTest]
+        public IEnumerator MainMenu_FreshInstall_ShowsTheBoyStudentAndNoBantay()
+        {
+            yield return BootToMenu();
+            var student = MenuStudent();
+            Assert.That(student, Is.Not.Null, "the Main Menu has the Learner's Student");
+            Assert.That(student.gameObject.activeInHierarchy, Is.True);
+            Assert.That(student.Kind, Is.EqualTo(StudentKind.Boy), "the boy shows until a pick exists");
+            Assert.That(student.CurrentSprite.name, Does.StartWith("boy_"));
+            var dogs = UnityEngine.Object.FindObjectsByType<BantayGuide>(FindObjectsSortMode.None);
+            Assert.That(dogs, Is.Empty, "no active Bantay on the Main Menu");
+        }
+
+        [UnityTest]
+        public IEnumerator MainMenu_GirlSave_ShowsTheGirlOnTheMenuAndInHowToPlay()
+        {
+            yield return BootWithSave(StudentKind.Girl);
+            var c = UnityEngine.Object.FindAnyObjectByType<MainMenuController>();
+            Assert.That(MenuStudent(), Is.Not.Null, "the Main Menu has the Learner's Student");
+            Assert.That(MenuStudent().Kind, Is.EqualTo(StudentKind.Girl));
+            Assert.That(MenuStudent().CurrentSprite.name, Does.StartWith("girl_"));
+
+            c.howToPlayButton.onClick.Invoke();
+            yield return Wait(0.4f);
+            var guide = HowToPlayStudent();
+            Assert.That(guide, Is.Not.Null, "How to Play has the Learner's Student");
+            Assert.That(guide.gameObject.activeInHierarchy, Is.True);
+            Assert.That(guide.Kind, Is.EqualTo(StudentKind.Girl));
+            Assert.That(guide.CurrentSprite.name, Does.StartWith("girl_"));
+
+            // Name Entry comes before the pick, so it always shows both Students.
+            var names = Array.ConvertAll(c.namePanel.GetComponentsInChildren<Image>(true), i => i.sprite != null ? i.sprite.name : "");
+            Assert.That(names, Does.Contain("boy_idle_0"));
+            Assert.That(names, Does.Contain("girl_idle_0"));
+        }
+
+        [UnityTest]
+        public IEnumerator StudentPick_ChangesTheMenuStudentAtOnce()
+        {
+            yield return BootToMenu();
+            var c = UnityEngine.Object.FindAnyObjectByType<MainMenuController>();
+            Assert.That(MenuStudent(), Is.Not.Null, "the Main Menu has the Learner's Student");
+            Assert.That(MenuStudent().Kind, Is.EqualTo(StudentKind.Boy));
+            c.playButton.onClick.Invoke();
+            yield return Wait(0.4f);
+            c.nameInput.text = "Ana";
+            c.nameOk.onClick.Invoke();
+            yield return Wait(0.5f);
+            c.studentGirl.onClick.Invoke();
+            yield return null;
+            Assert.That(MenuStudent().Kind, Is.EqualTo(StudentKind.Girl), "the Main Menu Student changes without a reload");
+            Assert.That(MenuStudent().CurrentSprite.name, Does.StartWith("girl_"));
+        }
+
+        [UnityTest]
+        public IEnumerator MenuStudent_Tap_SaysATip()
+        {
+            yield return BootToMenu();
+            yield return Wait(1f);
+            var student = MenuStudent();
+            Assert.That(student, Is.Not.Null, "the Main Menu has the Learner's Student");
+            ExecuteEvents.Execute(student.gameObject, new PointerEventData(EventSystem.current), ExecuteEvents.pointerClickHandler);
+            yield return null;
+            Assert.That(student.bubble.gameObject.activeSelf, Is.True);
+            Assert.That(UIStrings.Tips, Does.Contain(student.bubble.Line), "a tap shows a Tip");
+        }
+
+        [UnityTest]
+        public IEnumerator MainMenu_Greeting_IsTheStudentsLine()
+        {
+            yield return BootToMenu();
+            yield return Wait(1f);
+            Assert.That(MenuStudent(), Is.Not.Null, "the Main Menu has the Learner's Student");
+            Assert.That(MenuStudent().bubble.Line, Is.EqualTo(UIStrings.StudentHello));
+            Assert.That(MenuStudent().Pose, Is.EqualTo(StudentPose.Happy), "the Student greets in the Happy pose");
+        }
+
+        [UnityTest]
+        public IEnumerator MainMenu_Greeting_WelcomesBackASavedName()
+        {
+            yield return BootWithSave(StudentKind.Boy);
+            yield return Wait(1f);
+            Assert.That(MenuStudent(), Is.Not.Null, "the Main Menu has the Learner's Student");
+            Assert.That(MenuStudent().bubble.Line, Is.EqualTo(UIStrings.StudentWelcomeBack("Ana")));
+        }
+
+        [UnityTest]
+        public IEnumerator HowToPlay_HasSevenPages_ShowingTheActionBarFlow()
+        {
+            yield return BootToMenu();
+            var c = UnityEngine.Object.FindAnyObjectByType<MainMenuController>();
+            var pages = UIStrings.TutorialPages;
+            Assert.That(Array.ConvertAll(pages, p => p.Art), Is.EqualTo(new[]
+            {
+                "topic", "difficulty", "v2_actionbar", "v2_actout", "v2_feedback", "v2_hint", "stars",
+            }));
+            Assert.That(c.tutorial.frames, Has.Length.EqualTo(14));
+            Assert.That(c.tutorial.frames, Has.None.Null, "every page has two frames");
+            Assert.That(c.tutorial.dots, Has.Length.EqualTo(7));
+        }
+
+        [UnityTest]
+        public IEnumerator Menus_UseNoBantaySprite()
+        {
+            yield return BootToMenu();
+            var images = UnityEngine.Object.FindObjectsByType<Image>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            var bantay = Array.FindAll(images, i => i.sprite != null && i.sprite.name.StartsWith("bantay"));
+            Assert.That(Array.ConvertAll(bantay, i => i.name), Is.Empty, "no menu object shows Bantay");
         }
 
         [UnityTest]
