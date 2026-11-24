@@ -323,7 +323,7 @@ namespace DisasterSafety.Tests
         [UnityTest]
         public IEnumerator HardDifficulty_CompletingAllSevenLevels_CompletesTheEpisode()
         {
-            var settings = new[] { "home_v2", "schoolyard_v2", "mall_a_v2", "mall_b_v2", "home_after_v2", "home_after_v2", "evacuation_area" };
+            var settings = new[] { "home_v2", "schoolyard_v2", "mall_a_v2", "mall_b_v2", "home_after_v2", "home_after_v2", "evacuation_area_v2" };
             var shakes = new[] { false, false, true, false, false, false, false };
 
             GameServices.Initialize(dir);
@@ -344,16 +344,9 @@ namespace DisasterSafety.Tests
                 Assert.That(shaking, Is.EqualTo(shakes[n - 1]), "shaking in Hard " + n);
 
                 Assert.That(GameServices.Scenarios.TryGet(level, out var scenario), Is.True);
-                Assert.That(c.UsesStudentFlow, Is.EqualTo(n <= 6), "the Student flow in Hard " + n);
-                if (c.UsesStudentFlow)
-                {
-                    Tap(c, scenario.SafeChoiceIndex);
-                    yield return FeedbackShown(c);
-                }
-                else
-                {
-                    c.choiceCards[scenario.SafeChoiceIndex].button.onClick.Invoke();
-                }
+                Assert.That(c.UsesStudentFlow, Is.True, "the Student flow in Hard " + n);
+                Tap(c, scenario.SafeChoiceIndex);
+                yield return FeedbackShown(c);
                 Assert.That(c.finishButton.gameObject.activeSelf, Is.True, "the Safe Choice of Hard " + n + " can Finish");
                 c.finishButton.onClick.Invoke();
                 Assert.That(c.completedPanel.IsVisible, Is.True, "Level Completed after Hard " + n);
@@ -374,8 +367,8 @@ namespace DisasterSafety.Tests
             Assert.That(saved.IsOpen(Episode.Fire, Difficulty.Easy), Is.True);
 
             const string openedLine = "Fire is open! New levels are coming soon.";
-            yield return WaitFor(() => c.cheerBantay.bubble.IsVisible && c.cheerBantay.bubbleText.text == openedLine,
-                "Bantay to announce that Fire is open", LevelController.OpenedLineDelay + 2f);
+            yield return WaitFor(() => c.completedBubble.gameObject.activeInHierarchy && c.completedBubble.Line == openedLine,
+                "the Student to announce that Fire is open", LevelController.OpenedLineDelay + 2f);
         }
 
         IEnumerator StartEasyOne(StudentKind kind = StudentKind.None)
@@ -1689,6 +1682,140 @@ namespace DisasterSafety.Tests
                 Assert.That(mom.AtStart, Is.True);
                 Assert.That(bag.AtStart, Is.True);
                 AssertPropAtArtPoint(setting, bag, 73f, 191f);
+                Assert.That(c.actionBar.buttons[stop.Index].button.interactable, Is.False);
+            }
+        }
+
+        static readonly LevelId HardSeven = new LevelId(Episode.Earthquake, Difficulty.Hard, 7);
+
+        static SpriteAnimator Neighbours(LevelSetting setting) =>
+            Array.Find(setting.GetComponentsInChildren<SpriteAnimator>(true), a => a.name == "Neighbours");
+
+        [UnityTest]
+        public IEnumerator HardLevel7_StartsWithMomOnTheMatAndTheRadioOff()
+        {
+            yield return StartRolloutLevel(HardSeven);
+            var c = Level();
+            var setting = c.ActiveSetting;
+            Assert.That(c.UsesStudentFlow, Is.True);
+            Assert.That(setting.key, Is.EqualTo("evacuation_area_v2"));
+            Assert.That(setting.shaker, Is.Null, "the field does not shake");
+            Assert.That(c.bantay.gameObject.activeInHierarchy, Is.False);
+            Assert.That(setting.ActiveGrownUps, Has.Length.EqualTo(1), "Hard 7 has Mom on the mat");
+            var mom = setting.ActiveGrownUps[0];
+            Assert.That(mom.kind, Is.EqualTo(GrownUpKind.Mom));
+            Assert.That(mom.Pose, Is.EqualTo(GrownUpPose.Sit));
+            Assert.That(mom.X, Is.EqualTo(118f));
+            Assert.That(mom.Y, Is.EqualTo(-6f));
+            Assert.That(c.Student.X, Is.EqualTo(228f));
+            Assert.That(c.Student.Y, Is.Zero);
+            Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Idle));
+            AssertPropAtArtPoint(setting, PropIn(c, "radio"), 136f, 208f);
+            Assert.That(PropIn(c, "radio_on").gameObject.activeSelf, Is.False, "the radio starts off");
+
+            var neighbours = Neighbours(setting);
+            Assert.That(neighbours, Is.Not.Null, "the neighbours chat in the background");
+            var firstFrame = neighbours.GetComponent<Image>().sprite;
+            yield return WaitFor(() => neighbours.GetComponent<Image>().sprite != firstFrame, "the neighbours to move");
+        }
+
+        [UnityTest]
+        public IEnumerator HardLevel7_SafeChoice_ActsOutAndCompletes()
+        {
+            yield return StartRolloutLevel(HardSeven);
+            var c = Level();
+            var setting = c.ActiveSetting;
+            var student = c.Student;
+            var mom = setting.ActiveGrownUps[0];
+            var radio = PropIn(c, "radio");
+            var radioOn = PropIn(c, "radio_on");
+            yield return ActionBarShown(c);
+            Assert.That(setting.ActOutFor("radio"), Is.Not.Null, "listening to the radio has an Act-out");
+
+            Tap(c, 1);
+            yield return WaitFor(() => student.Pose == StudentPose.Sit, "the Student to sit on the mat");
+            Assert.That(student.X, Is.EqualTo(182f));
+            Assert.That(student.Y, Is.EqualTo(-6f));
+            yield return WaitFor(() => radioOn.gameObject.activeSelf, "the radio to turn on beside Mom");
+
+            yield return FeedbackShown(c);
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Sit));
+            Assert.That(mom.Pose, Is.EqualTo(GrownUpPose.Sit));
+            Assert.That(mom.AtStart, Is.True);
+            Assert.That(radio.gameObject.activeSelf, Is.False);
+            Assert.That(radioOn.image.sprite.name, Does.StartWith("evacuation_area_radio_on"));
+            var studentBounds = BoundsInSetting(setting, (RectTransform)student.transform);
+            Assert.That(studentBounds.Overlaps(BoundsInSetting(setting, mom.body.rectTransform)), Is.False,
+                "the Student sits beside Mom");
+            var reaction = BoundsInSetting(setting, (RectTransform)student.bubble.transform);
+            Assert.That(reaction.Overlaps(BoundsInSetting(setting, (RectTransform)radioOn.transform)), Is.False,
+                "the Reaction leaves the radio in view");
+            FinishWithThreeStars(c);
+        }
+
+        [UnityTest]
+        public IEnumerator HardLevel7_UnsafeChoice_StopsAndResets()
+        {
+            yield return StartRolloutLevel(HardSeven);
+            var c = Level();
+            var setting = c.ActiveSetting;
+            var student = c.Student;
+            var mom = setting.ActiveGrownUps[0];
+            var radio = PropIn(c, "radio");
+            var radioOn = PropIn(c, "radio_on");
+            var neighbours = (RectTransform)Neighbours(setting).transform;
+            const float pathStart = 395f;
+            yield return ActionBarShown(c);
+
+            foreach (var stop in new[]
+            {
+                (Index: 0, Key: "go_home", X: 376f, Y: -18f, Pose: StudentPose.Wait, Heading: "Not safe yet"),
+                (Index: 2, Key: "rumor", X: 254f, Y: 2f, Pose: StudentPose.Call, Heading: UIStrings.UnsafeHeading),
+                (Index: 3, Key: "phone_all_day", X: 228f, Y: 0f, Pose: StudentPose.Phone, Heading: "Not ready yet"),
+            })
+            {
+                Assert.That(setting.ActOutFor(stop.Key), Is.Not.Null, stop.Key + " has an Unsafe Act-out");
+                Tap(c, stop.Index);
+                if (stop.Key == "rumor")
+                {
+                    yield return WaitFor(() => student.bubble.gameObject.activeSelf && student.bubble.Line == UIStrings.ActOutDidYouHear,
+                        "the Student to pass on the rumor");
+                    Assert.That(student.Pose, Is.EqualTo(StudentPose.Call));
+                    Assert.That(student.FacingLeft, Is.False, "the Student faces the neighbours");
+                }
+                yield return WaitFor(() => student.bubble.gameObject.activeSelf && student.bubble.Line == UIStrings.ReactionWait,
+                    "the stop at " + stop.Key);
+                Assert.That(student.X, Is.EqualTo(stop.X));
+                Assert.That(student.Y, Is.EqualTo(stop.Y));
+                Assert.That(student.Pose, Is.EqualTo(stop.Pose));
+                Assert.That(mom.AtStart, Is.True);
+                Assert.That(radioOn.gameObject.activeSelf, Is.False, "the radio stays off");
+                var studentBounds = BoundsInSetting(setting, (RectTransform)student.transform);
+                if (stop.Key == "go_home")
+                    Assert.That(student.X + 16f, Is.LessThan(pathStart), "the Student stops on the field, before the path");
+                if (stop.Key == "rumor")
+                {
+                    Assert.That(studentBounds.Overlaps(BoundsInSetting(setting, neighbours)), Is.False,
+                        "the Student stands beside the neighbours");
+                    Assert.That(student.FacingLeft, Is.False);
+                }
+                var reaction = BoundsInSetting(setting, (RectTransform)student.bubble.transform);
+                Assert.That(reaction.Overlaps(BoundsInSetting(setting, neighbours)), Is.False,
+                    "the Reaction at " + stop.Key + " leaves the neighbours in view");
+                Assert.That(reaction.xMax, Is.LessThanOrEqualTo(480f * 4f), "the Reaction stays inside the screen");
+                Assert.That(reaction.xMin, Is.GreaterThanOrEqualTo(0f), "the Reaction stays inside the screen");
+
+                yield return FeedbackShown(c);
+                Assert.That(c.feedbackHeading.text, Is.EqualTo(stop.Heading));
+                c.tryAgainButton.onClick.Invoke();
+                yield return ActionBarShown(c);
+                Assert.That(student.X, Is.EqualTo(228f));
+                Assert.That(student.Y, Is.Zero);
+                Assert.That(student.Pose, Is.EqualTo(StudentPose.Idle));
+                Assert.That(radio.gameObject.activeSelf, Is.True);
+                Assert.That(radioOn.gameObject.activeSelf, Is.False);
+                Assert.That(mom.AtStart, Is.True);
+                Assert.That(mom.Pose, Is.EqualTo(GrownUpPose.Sit));
                 Assert.That(c.actionBar.buttons[stop.Index].button.interactable, Is.False);
             }
         }

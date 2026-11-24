@@ -74,7 +74,7 @@ namespace DisasterSafety.EditorTools
                 BuildMallA(world), BuildMallB(world), BuildHomeAfter(world), BuildEvacuationArea(world),
                 BuildClassroomV2(world), BuildCorridorV2(world), BuildClassroomAfterV2(world),
                 BuildBedroomV2(world), BuildHomeV2(world), BuildSchoolyardV2(world), BuildBeachV2(world),
-                BuildMallAV2(world), BuildMallBV2(world), BuildHomeAfterV2(world),
+                BuildMallAV2(world), BuildMallBV2(world), BuildHomeAfterV2(world), BuildEvacuationAreaV2(world),
             };
             for (var i = 1; i < c.settings.Length; i++)
                 c.settings[i].gameObject.SetActive(false);
@@ -1267,6 +1267,93 @@ namespace DisasterSafety.EditorTools
                 {
                     key = "no_note", stopAfter = 5, stopPose = StudentPose.Carry,
                     steps = pickUpBag.Append(ActOutStep.CarryTo(91f, floorY - 232f)).ToArray(),
+                },
+            };
+            return setting;
+        }
+
+        // Hard 7's evacuation area in the v2 art (phase after, nothing shakes). Left to right: the school in
+        // the distance, the family's mat with Mom sitting and the radio beside her, the Student's start on
+        // the open field, the chatting neighbours and the path back to the houses. Placements and Act-out
+        // points are in ArtSource/README-rollout.md (Evacuation area) and evacuation_area_v2.lua (M.LAYOUT).
+        static LevelSetting BuildEvacuationAreaV2(RectTransform world)
+        {
+            var group = Stretch(Rect("Evacuation Area V2", world));
+            var setting = group.gameObject.AddComponent<LevelSetting>();
+            setting.key = ScenarioSettings.ActionArtKey(ScenarioSettings.EvacuationArea);
+            setting.captionGoalFont = f3;
+            setting.artAnchorY = 0f;
+            ArtImage(group, "Evacuation Area", S("Level/v2/bg_evacuation_area"), 0, 0);
+            const float floorY = 230f;
+            BuildLevelAnimation(group, "Neighbours", Frames("Level/v2/evacuation_area_neighbours", 2),
+                272, 164, 1000f / 600f, onlyWhileShaking: false);
+
+            // The radio is two props: off, and on with its two-frame sound waves. The Act-out swaps them.
+            var radio = BuildProp(group, "radio", "Level/v2/evacuation_area_radio", 136, 208, Vector2.zero);
+            var radioOn = BuildProp(group, "radio_on", "Level/v2/evacuation_area_radio_on_0", 136, 208,
+                Vector2.zero, visible: false);
+            var waves = radioOn.gameObject.AddComponent<SpriteAnimator>();
+            waves.frames = Frames("Level/v2/evacuation_area_radio_on", 2);
+            waves.framesPerSecond = 1000f / 260f;
+            waves.randomStart = false;
+
+            var mom = BuildMom(group, 118f);
+            mom.startY = floorY - 236f;
+            mom.startPose = GrownUpPose.Sit;
+            mom.PlaceAtStart();
+
+            setting.startX = 228f;
+            setting.student = BuildStudent(group, withBubble: true);
+            ((RectTransform)setting.student.bubble.transform).sizeDelta = new Vector2(268f, 104f);
+            setting.levelStarts = new[]
+            {
+                new LevelStart
+                {
+                    level = "Earthquake/Hard/7", x = 228f,
+                    props = new[] { radio, radioOn },
+                    grownUps = new[] { mom },
+                },
+            };
+            setting.actOuts = new[]
+            {
+                new ActOut
+                {
+                    // Mom has no reaching pose, so the radio turns on beside her once the Student sits.
+                    key = "radio",
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(182f, floorY - 236f),
+                        ActOutStep.Pose(StudentPose.Sit, 0.3f),
+                        ActOutStep.PropHide(radio.gameObject),
+                        ActOutStep.PropShow(radioOn.gameObject),
+                        ActOutStep.Wait(0.8f),
+                    },
+                },
+                new ActOut
+                {
+                    // The stop is on the open field in front of the neighbours, before the path starts (x 395).
+                    // The Reaction sits 20 art pixels to the right, clear of the neighbours.
+                    key = "go_home", stopAfter = 0,
+                    placeReaction = true, reactionPosition = new Vector2(80f, 8f),
+                    steps = new[] { ActOutStep.Walk(376f, floorY - 248f) },
+                },
+                new ActOut
+                {
+                    // The Reaction sits 18 art pixels to the left, so the neighbours stay in view.
+                    key = "rumor", stopAfter = 3, stopPose = StudentPose.Call,
+                    placeReaction = true, reactionPosition = new Vector2(-70f, 8f),
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(254f, floorY - 228f),
+                        ActOutStep.Face(left: false),
+                        ActOutStep.Pose(StudentPose.Call),
+                        ActOutStep.Say(UIStrings.ActOutDidYouHear),
+                    },
+                },
+                new ActOut
+                {
+                    key = "phone_all_day", stopAfter = 0, stopPose = StudentPose.Phone,
+                    steps = new[] { ActOutStep.Pose(StudentPose.Phone, 0.8f) },
                 },
             };
             return setting;
