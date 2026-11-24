@@ -74,7 +74,7 @@ namespace DisasterSafety.EditorTools
                 BuildMallA(world), BuildMallB(world), BuildHomeAfter(world), BuildEvacuationArea(world),
                 BuildClassroomV2(world), BuildCorridorV2(world), BuildClassroomAfterV2(world),
                 BuildBedroomV2(world), BuildHomeV2(world), BuildSchoolyardV2(world), BuildBeachV2(world),
-                BuildMallAV2(world), BuildMallBV2(world),
+                BuildMallAV2(world), BuildMallBV2(world), BuildHomeAfterV2(world),
             };
             for (var i = 1; i < c.settings.Length; i++)
                 c.settings[i].gameObject.SetActive(false);
@@ -1107,6 +1107,192 @@ namespace DisasterSafety.EditorTools
                 },
             };
             return setting;
+        }
+
+        static LevelSetting BuildHomeAfterV2(RectTransform world)
+        {
+            var group = Stretch(Rect("Home After V2", world));
+            var setting = group.gameObject.AddComponent<LevelSetting>();
+            setting.key = ScenarioSettings.ActionArtKey(ScenarioSettings.HomeAfter);
+            setting.captionGoalFont = f3;
+            setting.artAnchorY = 0f;
+            ArtImage(group, "Living Room After the Earthquake", S("Level/v2/bg_home_after"), 0, 0);
+            const float floorY = 230f;
+            BuildLevelAnimation(group, "Pipe Drip", Frames("Level/v2/home_after_drip", 2),
+                134, 204, 1f / 0.42f, onlyWhileShaking: false);
+
+            var injuredCast = Stretch(Rect("Hard 5 Cast", group));
+            var injuredMom = BuildMom(injuredCast, 322f);
+            injuredMom.startY = floorY - 233f;
+            injuredMom.startPose = GrownUpPose.HurtSit;
+            injuredMom.startFacingLeft = true;
+            injuredMom.PlaceAtStart();
+
+            // At x -24, even the edge of Dad's 36-pixel body is outside the frame.
+            var dad = BuildDad(injuredCast, -24f, floorY - 238f);
+
+            var leavingCast = Stretch(Rect("Hard 6 Cast", group));
+            var leavingMom = BuildMom(leavingCast, 38f);
+            leavingMom.startY = floorY - 215f;
+            leavingMom.PlaceAtStart();
+            var bag = BuildHomeProp(leavingCast, "bag_closed", 73, 191, 20, 23);
+            var paper = BuildProp(leavingCast, "paper", "Level/v2/home_after_paper", 232, 180, Vector2.zero);
+            var pen = BuildProp(leavingCast, "pen", "Level/v2/home_after_pen", 245, 181, Vector2.zero);
+            var note = BuildProp(leavingCast, "note", "Level/v2/home_after_note", 232, 180, Vector2.zero, visible: false);
+
+            setting.student = BuildStudent(group, withBubble: true);
+            ((RectTransform)setting.student.bubble.transform).sizeDelta = new Vector2(268f, 104f);
+            // This prop draws in front of the Student only while writing behind the table.
+            var tableFront = BuildProp(group, "table_front", "Level/v2/table_front",
+                174, 188, Vector2.zero, visible: false);
+            setting.levelStarts = new[]
+            {
+                new LevelStart
+                {
+                    level = "Earthquake/Hard/5", x = 286f, cast = injuredCast.gameObject,
+                    reactionPosition = new Vector2(124f, 56f),
+                    grownUps = new[] { injuredMom, dad },
+                },
+                new LevelStart
+                {
+                    level = "Earthquake/Hard/6", x = 286f, cast = leavingCast.gameObject,
+                    reactionPosition = new Vector2(220f, 8f),
+                    mirrorReactionAtRightEdge = true,
+                    props = new[] { bag, paper, pen, note, tableFront },
+                    grownUps = new[] { leavingMom },
+                },
+            };
+            // Walk below the table legs before turning toward the bag.
+            var crossRoom = new[]
+            {
+                ActOutStep.Walk(282f, floorY - 236f),
+                ActOutStep.Walk(162f, floorY - 236f),
+            };
+            var pickUpBag = crossRoom.Concat(new[]
+            {
+                ActOutStep.Walk(106f, floorY - 225f),
+                ActOutStep.Pose(StudentPose.Crouch, 0.2f),
+                ActOutStep.PropPickUp(bag.gameObject),
+            });
+
+            setting.actOuts = new[]
+            {
+                new ActOut
+                {
+                    key = "call_adult",
+                    steps = new[]
+                    {
+                        // Convert art rows measured from the top to height above the floor line.
+                        ActOutStep.Walk(284f, floorY - 242f),
+                        ActOutStep.Pose(StudentPose.Crouch),
+                        ActOutStep.Say(UIStrings.ActOutStayStill),
+                        ActOutStep.Walk(269f, floorY - 242f),
+                        ActOutStep.Walk(79f, floorY - 216f),
+                        ActOutStep.Face(left: true),
+                        ActOutStep.Pose(StudentPose.Call),
+                        ActOutStep.Say(UIStrings.ActOutHelp),
+                        ActOutStep.GrownUpWalk(dad, 42f, floorY - 239f),
+                        ActOutStep.GrownUpWalk(dad, 265f, floorY - 241f),
+                        ActOutStep.GrownUpWalk(dad, 286f, floorY - 244f),
+                        ActOutStep.GrownUpPoseStep(dad, GrownUpPose.Kneel, 0.4f),
+                    },
+                },
+                new ActOut
+                {
+                    key = "pull_up", stopAfter = 2, stopPose = StudentPose.Reach,
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(284f, floorY - 234f),
+                        ActOutStep.Pose(StudentPose.Reach),
+                        ActOutStep.Wait(0.2f),
+                    },
+                },
+                new ActOut
+                {
+                    key = "fix_pipe", stopAfter = 4, stopPose = StudentPose.Reach,
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(269f, floorY - 242f),
+                        ActOutStep.Walk(167f, floorY - 236f),
+                        ActOutStep.Face(left: true),
+                        ActOutStep.Pose(StudentPose.Reach),
+                        ActOutStep.Wait(0.2f),
+                    },
+                },
+                new ActOut
+                {
+                    key = "leave", stopAfter = 1,
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(269f, floorY - 242f),
+                        ActOutStep.Walk(100f, floorY - 232f),
+                    },
+                },
+                new ActOut
+                {
+                    key = "go_bag",
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(282f, floorY - 208f),
+                        ActOutStep.PropShow(tableFront.gameObject),
+                        ActOutStep.Walk(238f, floorY - 208f),
+                        ActOutStep.Pose(StudentPose.Pack, 0.8f),
+                        ActOutStep.PropHide(paper.gameObject),
+                        ActOutStep.PropShow(note.gameObject),
+                        ActOutStep.Wait(0.3f),
+                        ActOutStep.Walk(282f, floorY - 208f),
+                        ActOutStep.PropHide(tableFront.gameObject),
+                    }.Concat(pickUpBag).Concat(new[]
+                    {
+                        ActOutStep.CarryWith(leavingMom, 56f, floorY - 212f, new Vector2(35f, floorY - 204f)),
+                        ActOutStep.CarryWith(leavingMom, 56f, floorY - 206f, new Vector2(40f, floorY - 175f)),
+                        ActOutStep.Pose(StudentPose.Carry),
+                    }).ToArray(),
+                },
+                new ActOut
+                {
+                    key = "no_go_bag", stopAfter = 2,
+                    steps = crossRoom.Append(ActOutStep.Walk(114f, floorY - 232f)).ToArray(),
+                },
+                new ActOut
+                {
+                    key = "toys", stopAfter = 1,
+                    steps = new[]
+                    {
+                        ActOutStep.Run(363f, floorY - 241f),
+                        ActOutStep.Run(441f, floorY - 235f),
+                    },
+                },
+                new ActOut
+                {
+                    key = "no_note", stopAfter = 5, stopPose = StudentPose.Carry,
+                    steps = pickUpBag.Append(ActOutStep.CarryTo(91f, floorY - 232f)).ToArray(),
+                },
+            };
+            return setting;
+        }
+
+        static GrownUpActor BuildDad(RectTransform parent, float startX, float startY)
+        {
+            var r = Rect("Dad", parent);
+            r.anchorMin = r.anchorMax = Vector2.zero;
+            r.pivot = new Vector2(0.5f, 0f);
+            r.sizeDelta = new Vector2(36f * Px, 62f * Px);
+
+            var dad = r.gameObject.AddComponent<GrownUpActor>();
+            dad.kind = GrownUpKind.Dad;
+            dad.unitsPerPixel = Px;
+            dad.feetY = 1080f - 230f * Px;
+            dad.startX = startX;
+            dad.startY = startY;
+            dad.frames = new GrownUpFrames
+            {
+                walk = Frames("GrownUp/dad_walk", 4),
+                kneel = Frames("GrownUp/dad_kneel", 2),
+            };
+            dad.body = Img(Stretch(Rect("Body", r)), dad.frames.walk[1], Color.white);
+            dad.PlaceAtStart();
+            return dad;
         }
 
         static GrownUpActor BuildTeacher(RectTransform parent, float startX)

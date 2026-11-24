@@ -113,7 +113,7 @@ namespace DisasterSafety.Tests
             Assert.That(levels, Is.EqualTo(new[]
             {
                 "Earthquake/Easy/1", "Earthquake/Easy/2", "Earthquake/Easy/3", "Earthquake/Hard/1", "Earthquake/Hard/2",
-                "Earthquake/Hard/3", "Earthquake/Hard/4",
+                "Earthquake/Hard/3", "Earthquake/Hard/4", "Earthquake/Hard/5", "Earthquake/Hard/6",
                 "Earthquake/Normal/1", "Earthquake/Normal/2", "Earthquake/Normal/3", "Earthquake/Normal/4",
                 "Earthquake/Normal/5",
             }));
@@ -612,6 +612,134 @@ namespace DisasterSafety.Tests
             Assert.That(s.choices[1].sources, Is.EqualTo(new[] { "EQ-92" }));
             Assert.That(s.choices[2].sources, Is.EqualTo(new[] { "EQ-92", "EQ-36" }));
             Assert.That(s.choices[3].sources, Is.EqualTo(new[] { "EQ-94", "EQ-81" }));
+        }
+
+        [Test]
+        public void HardLevel5_UsesTheStudentFlow_InTheHomeAfter_WithItsTextUnchanged()
+        {
+            var s = Load(Path.Combine(ScenarioFolder, "Earthquake/Hard/5.json"));
+            Assert.That(s.UsesActions, Is.True, "Hard 5 uses the Student flow");
+            Assert.That(s.level, Is.EqualTo("Earthquake/Hard/5"));
+            Assert.That(s.setting, Is.EqualTo(ScenarioSettings.HomeAfter));
+            Assert.That(s.phase, Is.EqualTo(ScenarioPhases.After));
+            Assert.That(s.Shakes, Is.False);
+            var ids = new[] { "pull_up", "call_adult", "fix_pipe", "leave" };
+            Assert.That(ScenarioSettings.ActionSpots(s.setting),
+                Is.EqualTo(new[]
+                {
+                    "pull_up", "call_adult", "fix_pipe", "leave",
+                    "no_go_bag", "toys", "no_note", "go_bag",
+                }));
+            Assert.That(s.choices.Select(c => c.id), Is.EqualTo(ids));
+            Assert.That(s.choices.Select(c => c.action), Is.EqualTo(ids));
+            Assert.That(s.SafeChoice.id, Is.EqualTo("call_adult"));
+            Assert.That(s.choices.Select(c => c.icon), Is.Unique);
+            Assert.That(s.choices.Select(c => c.icon),
+                Is.EqualTo(new[] { "icon_pull_up", "icon_call_adult", "icon_fix_pipe", "icon_door" }));
+            Assert.That(s.choices.Select(c => c.picture),
+                Is.EqualTo(new[] { "choice_pull_up", "choice_call_adult", "choice_fix_pipe", "choice_leave_hurt" }));
+            Assert.That(s.goal.text, Is.EqualTo("Help when someone is hurt after an earthquake."));
+            Assert.That(s.goal.sources, Is.EqualTo(new[] { "EQ-90" }));
+            Assert.That(s.intro.text, Is.EqualTo("The shaking stopped. Someone in your family hurt their leg."));
+            Assert.That(s.intro.sources, Is.EqualTo(System.Array.Empty<string>()));
+            Assert.That(s.hint.text, Is.EqualTo("Who can help them the right way?"));
+            Assert.That(s.hint.sources, Is.EqualTo(new[] { "EQ-90" }));
+            Assert.That(s.lesson.text, Is.EqualTo("After the shaking, check yourself and others. Get help for anyone who is hurt."));
+            Assert.That(s.lesson.sources, Is.EqualTo(new[] { "EQ-90" }));
+            Assert.That(s.choices.Select(c => c.label), Is.EqualTo(new[]
+            {
+                "Pull them up to walk",
+                "Call a grown-up for help",
+                "Fix the broken pipe yourself",
+                "Leave them and go outside",
+            }));
+            Assert.That(s.choices.Select(c => c.heading ?? ""), Is.EqualTo(new[]
+            {
+                "Not safe yet",
+                "",
+                "",
+                "",
+            }));
+            Assert.That(s.choices.Select(c => c.feedback), Is.EqualTo(new[]
+            {
+                "Do not move them. Keep them still and get help.",
+                "Good. Keep them still and get help from an adult.",
+                "Adults check water and electric lines. Help them first.",
+                "Stay and call for help. They need an adult.",
+            }));
+            Assert.That(s.choices[0].sources, Is.EqualTo(new[] { "EQ-90" }));
+            Assert.That(s.choices[1].sources, Is.EqualTo(new[] { "EQ-90", "EQ-72" }));
+            Assert.That(s.choices[2].sources, Is.EqualTo(new[] { "EQ-91", "EQ-72" }));
+            Assert.That(s.choices[3].sources, Is.EqualTo(new[] { "EQ-90" }));
+        }
+
+        [Test]
+        public void HomeAfter_ActOutLines_MatchTheSpec()
+        {
+            var strings = System.Type.GetType("DisasterSafety.Game.UIStrings, DisasterSafety.Game");
+            Assert.That(strings, Is.Not.Null);
+            Assert.That(strings.GetField("ActOutStayStill")?.GetRawConstantValue(),
+                Is.EqualTo("Stay still, Mom."), "the Act-out line by Mom matches the spec");
+            Assert.That(strings.GetField("ActOutHelp")?.GetRawConstantValue(), Is.EqualTo("Help!"));
+        }
+
+        [Test]
+        public void HardLevel6_UsesTheStudentFlow_InTheHomeAfter_WithItsTextUnchanged()
+        {
+            var s = Load(Path.Combine(ScenarioFolder, "Earthquake/Hard/6.json"));
+            Assert.That(s.UsesActions, Is.True, "Hard 6 uses the Student flow");
+            Assert.That(s.level, Is.EqualTo("Earthquake/Hard/6"));
+            Assert.That(s.setting, Is.EqualTo(ScenarioSettings.HomeAfter));
+            Assert.That(s.phase, Is.EqualTo(ScenarioPhases.After));
+            Assert.That(s.Shakes, Is.False);
+            var ids = new[] { "no_go_bag", "toys", "no_note", "go_bag" };
+            Assert.That(ScenarioSettings.ActionSpots(s.setting),
+                Is.EqualTo(new[]
+                {
+                    "pull_up", "call_adult", "fix_pipe", "leave",
+                    "no_go_bag", "toys", "no_note", "go_bag",
+                }));
+            Assert.That(s.choices.Select(c => c.id), Is.EqualTo(ids));
+            Assert.That(s.choices.Select(c => c.action), Is.EqualTo(ids));
+            Assert.That(s.SafeChoice.id, Is.EqualTo("go_bag"));
+            Assert.That(s.choices.Select(c => c.icon), Is.Unique);
+            Assert.That(s.choices.Select(c => c.icon),
+                Is.EqualTo(new[] { "icon_no_go_bag", "icon_toy_car", "icon_no_note", "icon_go_bag" }));
+            Assert.That(s.choices.Select(c => c.picture),
+                Is.EqualTo(new[] { "choice_no_go_bag", "choice_back_for_toys", "choice_no_note", "choice_go_bag_out" }));
+            Assert.That(s.goal.text, Is.EqualTo("Leave home safely after the earthquake."));
+            Assert.That(s.goal.sources, Is.EqualTo(new[] { "EQ-92" }));
+            Assert.That(s.intro.text, Is.EqualTo("Your family must leave the house. What do you bring?"));
+            Assert.That(s.intro.sources, Is.EqualTo(System.Array.Empty<string>()));
+            Assert.That(s.hint.text, Is.EqualTo("What did your family pack for 3 days?"));
+            Assert.That(s.hint.sources, Is.EqualTo(new[] { "EQ-68", "EQ-93" }));
+            Assert.That(s.lesson.text, Is.EqualTo("Bring your go bag and walk out. Expect aftershocks."));
+            Assert.That(s.lesson.sources, Is.EqualTo(new[] { "EQ-93", "EQ-92", "EQ-42" }));
+            Assert.That(s.choices.Select(c => c.label), Is.EqualTo(new[]
+            {
+                "Leave without the go bag",
+                "Run back in for your toys",
+                "Leave without a note",
+                "Grab the go bag and walk out",
+            }));
+            Assert.That(s.choices.Select(c => c.heading ?? ""), Is.EqualTo(new[]
+            {
+                "Not ready yet",
+                "Not safe yet",
+                "Not ready yet",
+                "",
+            }));
+            Assert.That(s.choices.Select(c => c.feedback), Is.EqualTo(new[]
+            {
+                "Your go bag has what you need. Bring it with you.",
+                "Do not go back in. Aftershocks can come. Walk out now.",
+                "Leave a message so others know where you went.",
+                "Bring the go bag. Leave a note saying where you went.",
+            }));
+            Assert.That(s.choices[0].sources, Is.EqualTo(new[] { "EQ-93", "EQ-68" }));
+            Assert.That(s.choices[1].sources, Is.EqualTo(new[] { "EQ-43", "EQ-42", "EQ-92" }));
+            Assert.That(s.choices[2].sources, Is.EqualTo(new[] { "EQ-93" }));
+            Assert.That(s.choices[3].sources, Is.EqualTo(new[] { "EQ-93" }));
         }
 
         [Test]

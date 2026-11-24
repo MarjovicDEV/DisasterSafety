@@ -12,6 +12,8 @@ namespace DisasterSafety.Game.UI
         public float x;
         public StudentPose pose = StudentPose.Idle;
         public Vector2 reactionPosition = new Vector2(0f, 8f);
+        [Tooltip("Place the Reaction on the other side of the Student if it would pass the right edge.")]
+        public bool mirrorReactionAtRightEdge;
         public LevelProp[] props = Array.Empty<LevelProp>();
         public GrownUpActor[] grownUps = Array.Empty<GrownUpActor>();
     }
@@ -67,12 +69,23 @@ namespace DisasterSafety.Game.UI
             student.PlaceAt(StartX, startY);
             student.Face(false);
             student.Play(StartPose);
-            if (selectedStart != null)
-                ((RectTransform)student.bubble.transform).anchoredPosition = selectedStart.reactionPosition;
+            PositionReaction();
             foreach (var prop in ActiveProps)
                 if (prop != null) prop.CaptureStart();
             foreach (var grownUp in ActiveGrownUps)
                 if (grownUp != null) grownUp.PlaceAtStart();
+        }
+
+        /// <summary>Places the Reaction for the selected Level at the Student's current position.</summary>
+        public void PositionReaction()
+        {
+            if (selectedStart == null) return;
+            var bubble = (RectTransform)student.bubble.transform;
+            var position = selectedStart.reactionPosition;
+            var right = student.X * student.unitsPerPixel + position.x + bubble.rect.width * 0.5f;
+            if (selectedStart.mirrorReactionAtRightEdge && right > ((RectTransform)transform).rect.width)
+                position.x = -position.x;
+            bubble.anchoredPosition = position;
         }
 
         public ActOut ActOutFor(string action) => Array.Find(actOuts ?? new ActOut[0], a => a.key == action);

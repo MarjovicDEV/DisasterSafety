@@ -67,6 +67,14 @@ The `icons=` filter writes only the named icons, so each slice adds its icons wi
 | `icon_elevator` (reused) | Take the elevator down | Hard 4 |
 | `icon_run_push` | Run and push to get out | Hard 4 |
 | `icon_mall_wall` | Wait by the mall wall outside | Hard 4 |
+| `icon_pull_up` | Pull them up to walk | Hard 5 |
+| `icon_call_adult` | Call a grown-up for help | Hard 5 |
+| `icon_fix_pipe` | Fix the broken pipe yourself | Hard 5 |
+| `icon_door` (reused) | Leave them and go outside | Hard 5 |
+| `icon_no_go_bag` | Leave without the go bag | Hard 6 |
+| `icon_toy_car` | Run back in for your toys | Hard 6 |
+| `icon_no_note` | Leave without a note | Hard 6 |
+| `icon_go_bag` (reused) | Grab the go bag and walk out | Hard 6 |
 
 Easy 2 reuses the pilot's `icon_window` for "Stand by the window".
 
@@ -308,6 +316,48 @@ The exit run and its direct Try Again return use the foreground aisle in front o
 The stair route uses (155, 178), (191, 196), (239, 224), and (251, 230) as its slope changes. The straight sections between those points follow the intervening treads. The shared exit route continues through (279, 235), (329, 235), and (352, 230). This foreground lane passes in front of the still crowd and continues past the mall frontage. The Safe Choice crosses the curb into the open parking area.
 
 Try Again retraces the chosen Act-out's walk or run destinations in reverse at walking speed. It climbs the stairs from the crowd and wall stops and ends on the upper landing at (129, 178).
+
+## Home after (ArtSource/scripts/home_v2.lua, part home_after_v2)
+
+The Setting uses the same 480 by 270 living room as Normal 2, Normal 3 and Hard 1. It uses the same palette, furniture and one-pixel outlines. Neither Hard 5 nor Hard 6 shakes. Sprite points refer to their top-left corners. Actor points give the centre of the feet, measured from the top left of the art. Row 230 is the floor reference, so actor height in the builder is 230 minus the art row.
+
+| Item | Placement |
+|---|---|
+| Front door and path | The original doorway at (18, 107) is open onto a sunlit path. The bottom of the threshold is at row 212. |
+| Table, sofa, window and cabinet | These stay at their original points. The table front sits at (174, 188). |
+| Inner room | A dim doorway at (429, 113) replaces the storage bench. A toy car sits on a shelf inside. |
+| Fallen things | The tilted picture starts at (208, 144), the books at (394, 217), and the toppled chair at (187, 248). The chair lies on its side, seen from the front, as a 43 by 19 pixel shape of straight bars: a slatted back, the seat on edge and two legs, so it cannot be mistaken for an animal. |
+| Broken pipe | The pipe starts at (123, 195). The small puddle centres at (137, 215). The two 7 by 10 drip frames are at (134, 204) and each shows for 420 milliseconds while the room is still. |
+| Go bag | Hard 6 uses the closed go bag from Normal 2 at (73, 191). |
+| Paper, pen and note | The paper and note share (232, 180). The pen is at (245, 181). The paper and pen start visible in Hard 6. The note replaces the paper after the Student writes. |
+
+### Hard 5, help for Mom
+
+The Student starts in Idle at (286, 230). Mom sits at (322, 233) in HurtSit, facing left. Dad's start is (-24, 238), beyond the left edge even with his full 36-pixel frame. He enters only in the Safe Act-out and uses the existing walk and kneel frames. The 67 by 26 art-pixel Reaction sits 31 art pixels right of centre and 14 above the Student frame. This leaves the door, pipe and Mom in view.
+
+| Choice | Act-out points |
+|---|---|
+| call_adult | Walk to (284, 242), crouch facing Mom and say "Stay still, Mom." Stand and walk through (269, 242) to (79, 216). Face left in Call and say "Help!" Dad walks through (42, 239) and (265, 241), then kneels at (286, 244). |
+| pull_up | Walk to (284, 234), then reach toward Mom's hand and stop short of touching her. |
+| fix_pipe | Walk through (269, 242) to (167, 236), turn left, and reach short of the pipe. |
+| leave | Walk through (269, 242) and stop inside at (100, 232). |
+
+The leftward route passes in front of the table to keep the Student's feet clear of its legs. The door routes pass in front of the pipe, with the Student's feet clear of the puddle. Dad follows the foreground aisle below the doorway, the Student, the pipe and the table legs before kneeling by Mom. The fallen chair is farther forward than the aisle. The two Act-out lines use the Student's usual speech bubble and one voice blip each.
+
+### Hard 6, leave with Mom and the go bag
+
+The Student starts in Idle at (286, 230). Mom starts in Idle at (38, 215). The Reaction is 67 by 26 art pixels, 55 art pixels right of centre and 2 above the Student frame. It mirrors to the left near the right edge to leave the inner-room doorway visible. This also keeps the front door clear when the Student carries the bag through it.
+
+| Choice | Act-out points |
+|---|---|
+| go_bag | Approach the table at (282, 208), walk behind it to (238, 208), write in Pack, and show the note. Return through (282, 208) to the aisle. Pick up the bag at (106, 225). Carry it through the threshold at (56, 212) to (56, 206). Mom walks through (35, 204) to (40, 175) on the outside path. |
+| no_go_bag | Follow the aisle and stop inside at (114, 232) with empty hands. |
+| toys | Run through (363, 241) and stop at (441, 235), before the inner-room threshold. |
+| no_note | Follow the aisle to the bag at (106, 225), pick it up, and carry it to (91, 232). The Student stays inside and the paper stays blank. |
+
+The aisle uses (282, 236) and (162, 236). It passes in front of the table and the pipe with the Student's feet clear of the legs and puddle. At the table, the front is drawn over the Student only while the Student is behind it. The route toward the inner room passes in front of the sofa and cabinet, clear of the fallen books at floor level. At the front door, Mom leads on the left side and the Student follows with the bag on a separate track. The unsafe stops end on indoor floor.
+
+Try Again returns the Student to the starting pose and position and restores the props to their starting state. Mom and Dad remain at their starting places during every Unsafe Act-out.
 
 ## Removed art (cleanup, 2026-11-22)
 

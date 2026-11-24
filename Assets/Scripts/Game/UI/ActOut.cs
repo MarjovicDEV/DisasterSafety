@@ -42,6 +42,8 @@ namespace DisasterSafety.Game.UI
         Face,
         /// <summary>Push the target prop by x art pixels over the seconds; the Student moves with it in the push pose.</summary>
         Push,
+        /// <summary>Carry to (x, y), optionally alongside a Grown-up.</summary>
+        CarryTo,
     }
 
     /// <summary>What a GrownUp step makes the Grown-up do.</summary>
@@ -62,7 +64,7 @@ namespace DisasterSafety.Game.UI
         public ActOutStepKind kind;
         [Tooltip("Walk, FastWalk, Run, Crouch: the Student's centre x in art pixels. PropSlide: the distance in art pixels.")]
         public float x;
-        [Tooltip("Walk, FastWalk, Run: the height of the feet above the floor line, in art pixels.")]
+        [Tooltip("Walk, FastWalk, Run, CarryTo: the height of the feet above the floor line, in art pixels.")]
         public float y;
         public StudentPose pose;
         [Tooltip("Crouch, Pose, Say, Wait, PropSlide: seconds.")]
@@ -74,9 +76,9 @@ namespace DisasterSafety.Game.UI
         [Tooltip("PropPlace: where the prop goes (its anchored position, UI units).")]
         public Vector2 place;
 
-        [Tooltip("GrownUp: who acts. Walk: who walks alongside the Student, if anyone.")]
+        [Tooltip("GrownUp: who acts. Walk or CarryTo: who walks alongside the Student, if anyone.")]
         public GrownUpActor grownUp;
-        [Tooltip("Walk with a Grown-up: their x and height above the floor line, in art pixels.")]
+        [Tooltip("Walk or carry with a Grown-up: their x and height above the floor line, in art pixels.")]
         public Vector2 grownUpDestination;
         [Tooltip("GrownUp: what the Grown-up does. Walk uses x and y; Pose uses grownUpPose and seconds; Turn uses faceLeft.")]
         public GrownUpAction grownUpAction;
@@ -87,7 +89,7 @@ namespace DisasterSafety.Game.UI
         /// <summary>True for the steps that move the Student.</summary>
         public bool Moves => kind == ActOutStepKind.Walk || kind == ActOutStepKind.FastWalk
                              || kind == ActOutStepKind.Run || kind == ActOutStepKind.Crouch
-                             || kind == ActOutStepKind.Carry;
+                             || kind == ActOutStepKind.Carry || kind == ActOutStepKind.CarryTo;
 
         public static ActOutStep Walk(float x, float y = 0f) => new ActOutStep { kind = ActOutStepKind.Walk, x = x, y = y };
         public static ActOutStep WalkWith(GrownUpActor who, float x, float y, Vector2 destination) =>
@@ -110,6 +112,9 @@ namespace DisasterSafety.Game.UI
         public static ActOutStep GrownUpTurn(GrownUpActor who, bool left) => new ActOutStep { kind = ActOutStepKind.GrownUp, grownUp = who, grownUpAction = GrownUpAction.Turn, faceLeft = left };
         public static ActOutStep PropSlide(GameObject prop, float artPixels, float seconds) => new ActOutStep { kind = ActOutStepKind.PropSlide, target = prop, x = artPixels, seconds = seconds };
         public static ActOutStep Carry(float x) => new ActOutStep { kind = ActOutStepKind.Carry, x = x };
+        public static ActOutStep CarryTo(float x, float y) => new ActOutStep { kind = ActOutStepKind.CarryTo, x = x, y = y };
+        public static ActOutStep CarryWith(GrownUpActor who, float x, float y, Vector2 destination) =>
+            new ActOutStep { kind = ActOutStepKind.CarryTo, x = x, y = y, grownUp = who, grownUpDestination = destination };
         public static ActOutStep Face(bool left) => new ActOutStep { kind = ActOutStepKind.Face, faceLeft = left };
         public static ActOutStep Push(GameObject prop, float artPixels, float seconds) => new ActOutStep { kind = ActOutStepKind.Push, target = prop, x = artPixels, seconds = seconds };
     }

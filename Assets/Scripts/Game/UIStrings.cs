@@ -155,6 +155,8 @@ namespace DisasterSafety.Game
         public const string ReactionSafe = "I'm safe!";
         /// <summary>The Safe Reaction in a "before" Level, where the Student gets ready rather than takes cover.</summary>
         public const string ReactionReady = "All ready!";
+        public const string ActOutStayStill = "Stay still, Mom.";
+        public const string ActOutHelp = "Help!";
         public static string BantayCheer(string name) =>
             string.IsNullOrEmpty(name) ? "Woof woof! Great job!" : "Woof woof! Great job, " + name + "!";
     }

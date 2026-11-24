@@ -285,6 +285,7 @@ namespace DisasterSafety.Game.UI
                 }
             }
 
+            setting.PositionReaction();
             if (safe)
             {
                 if (scenario.Shakes) setting.shaker?.Calm();
@@ -360,13 +361,17 @@ namespace DisasterSafety.Game.UI
             switch (step.kind)
             {
                 case ActOutStepKind.Walk:
+                case ActOutStepKind.CarryTo:
                     Coroutine grownUpWalk = null;
                     if (step.grownUp != null)
                     {
                         var destination = step.grownUpDestination;
                         grownUpWalk = StartCoroutine(step.grownUp.WalkTo(destination.x, destination.y));
                     }
-                    yield return student.WalkTo(step.x, step.y, PoseActor.WalkSpeed);
+                    if (step.kind == ActOutStepKind.CarryTo)
+                        yield return student.CarryTo(step.x, step.y);
+                    else
+                        yield return student.WalkTo(step.x, step.y, PoseActor.WalkSpeed);
                     if (grownUpWalk != null) yield return grownUpWalk;
                     break;
                 case ActOutStepKind.FastWalk:

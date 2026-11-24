@@ -153,7 +153,11 @@ namespace DisasterSafety.Game.UI
         public Transform Hands => body != null ? body.transform : transform;
 
         /// <summary>Walks to x in the carry pose, holding a prop in both arms, and keeps facing that way.</summary>
-        public IEnumerator CarryTo(float artX) => Move(artX, Y, WalkSpeed, () => Play(StudentPose.Carry), null);
+        public IEnumerator CarryTo(float artX) => CarryTo(artX, Y);
+
+        /// <summary>Carries a prop to a point, such as a doorway behind the floor line.</summary>
+        public IEnumerator CarryTo(float artX, float artY) =>
+            Move(artX, artY, WalkSpeed, () => Play(StudentPose.Carry), null);
 
         /// <summary>Crouches and shuffles to x, optionally looking that way before facing front.</summary>
         public IEnumerator CrouchTo(float artX, float lookSeconds = 0f)

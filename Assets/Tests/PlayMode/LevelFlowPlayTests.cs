@@ -323,7 +323,7 @@ namespace DisasterSafety.Tests
         [UnityTest]
         public IEnumerator HardDifficulty_CompletingAllSevenLevels_CompletesTheEpisode()
         {
-            var settings = new[] { "home_v2", "schoolyard_v2", "mall_a_v2", "mall_b_v2", "home_after", "home_after", "evacuation_area" };
+            var settings = new[] { "home_v2", "schoolyard_v2", "mall_a_v2", "mall_b_v2", "home_after_v2", "home_after_v2", "evacuation_area" };
             var shakes = new[] { false, false, true, false, false, false, false };
 
             GameServices.Initialize(dir);
@@ -344,7 +344,7 @@ namespace DisasterSafety.Tests
                 Assert.That(shaking, Is.EqualTo(shakes[n - 1]), "shaking in Hard " + n);
 
                 Assert.That(GameServices.Scenarios.TryGet(level, out var scenario), Is.True);
-                Assert.That(c.UsesStudentFlow, Is.EqualTo(n <= 4), "the Student flow in Hard " + n);
+                Assert.That(c.UsesStudentFlow, Is.EqualTo(n <= 6), "the Student flow in Hard " + n);
                 if (c.UsesStudentFlow)
                 {
                     Tap(c, scenario.SafeChoiceIndex);
@@ -1426,6 +1426,269 @@ namespace DisasterSafety.Tests
                 Assert.That(student.X, Is.EqualTo(129f));
                 Assert.That(student.Y, Is.EqualTo(52f));
                 Assert.That(student.Pose, Is.EqualTo(StudentPose.Idle));
+                Assert.That(c.actionBar.buttons[stop.Index].button.interactable, Is.False);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator HardLevel5_StartsWithMomHurtAndDadAway()
+        {
+            yield return StartRolloutLevel(new LevelId(Episode.Earthquake, Difficulty.Hard, 5));
+            var c = Level();
+            var setting = c.ActiveSetting;
+            Assert.That(c.UsesStudentFlow, Is.True);
+            Assert.That(setting.key, Is.EqualTo("home_after_v2"));
+            Assert.That(setting.ActiveGrownUps, Has.Length.EqualTo(2), "Hard 5 has Mom and Dad");
+            var mom = System.Array.Find(setting.ActiveGrownUps, actor => actor.kind == GrownUpKind.Mom);
+            var dad = System.Array.Find(setting.ActiveGrownUps, actor => actor.kind == GrownUpKind.Dad);
+            Assert.That(mom.Pose, Is.EqualTo(GrownUpPose.HurtSit));
+            Assert.That(mom.X, Is.EqualTo(322f));
+            Assert.That(mom.Y, Is.EqualTo(-3f));
+            Assert.That(BoundsInSetting(setting, dad.body.rectTransform).xMax, Is.LessThan(0f));
+            Assert.That(c.Student.X, Is.EqualTo(286f));
+            Assert.That(c.Student.Y, Is.Zero);
+            Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Idle));
+            Assert.That(setting.shaker, Is.Null, "the room does not shake");
+            Assert.That(c.bantay.gameObject.activeInHierarchy, Is.False);
+
+            var drip = setting.GetComponentInChildren<SpriteAnimator>();
+            Assert.That(drip, Is.Not.Null, "the pipe drips while the room is still");
+            var firstFrame = drip.GetComponent<Image>().sprite;
+            yield return WaitFor(() => drip.GetComponent<Image>().sprite != firstFrame, "the pipe drip to advance");
+        }
+
+        [UnityTest]
+        public IEnumerator HardLevel5_SafeChoice_ActsOutAndCompletes()
+        {
+            yield return StartRolloutLevel(new LevelId(Episode.Earthquake, Difficulty.Hard, 5));
+            var c = Level();
+            var setting = c.ActiveSetting;
+            var student = c.Student;
+            var mom = System.Array.Find(setting.ActiveGrownUps, actor => actor.kind == GrownUpKind.Mom);
+            var dad = System.Array.Find(setting.ActiveGrownUps, actor => actor.kind == GrownUpKind.Dad);
+            yield return ActionBarShown(c);
+            Assert.That(setting.ActOutFor("call_adult"), Is.Not.Null, "calling a grown-up has an Act-out");
+
+            Tap(c, 1);
+            yield return WaitFor(() => student.bubble.gameObject.activeSelf && student.bubble.Line == "Stay still, Mom.",
+                "the Student to speak to Mom");
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Crouch));
+            Assert.That(student.X, Is.EqualTo(284f));
+            Assert.That(dad.AtStart, Is.True);
+            yield return WaitFor(() => student.IsWalking && student.Pose == StudentPose.Walk && student.FacingLeft,
+                "the Student to stand and walk to the door");
+            yield return WaitFor(() => student.bubble.Line == "Help!", "the Student to call for help");
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Call));
+            Assert.That(student.X, Is.EqualTo(79f));
+            Assert.That(dad.AtStart, Is.True, "Dad stays away until the Student calls");
+            yield return WaitFor(() => dad.IsWalking && dad.X > 0f, "Dad to enter after the call");
+
+            yield return FeedbackShown(c);
+            Assert.That(dad.Pose, Is.EqualTo(GrownUpPose.Kneel));
+            Assert.That(dad.X, Is.EqualTo(286f));
+            Assert.That(dad.Y, Is.EqualTo(-14f));
+            Assert.That(mom.Pose, Is.EqualTo(GrownUpPose.HurtSit));
+            var dadBounds = BoundsInSetting(setting, dad.body.rectTransform);
+            Assert.That(dadBounds.Overlaps(BoundsInSetting(setting, (RectTransform)mom.transform)), Is.False);
+            Assert.That(dadBounds.Overlaps(BoundsInSetting(setting, (RectTransform)student.transform)), Is.False);
+            AssertHomeAfterReactionClear(setting, mom);
+            FinishWithThreeStars(c);
+        }
+
+        static void AssertHomeAfterReactionClear(LevelSetting setting, GrownUpActor mom)
+        {
+            const float px = 4f;
+            const float artHeight = 270f;
+            var reaction = BoundsInSetting(setting, (RectTransform)setting.student.bubble.transform);
+            var frontDoor = new Rect(16f * px, (artHeight - 212f) * px, 56f * px, 105f * px);
+            var pipe = new Rect(123f * px, (artHeight - 217f) * px, 29f * px, 24f * px);
+            Assert.That(reaction.Overlaps(frontDoor), Is.False, "the Reaction leaves the front door in view");
+            Assert.That(reaction.Overlaps(pipe), Is.False, "the Reaction leaves the pipe and puddle in view");
+            Assert.That(reaction.Overlaps(BoundsInSetting(setting, (RectTransform)mom.transform)), Is.False,
+                "the Reaction leaves Mom in view");
+        }
+
+        [UnityTest]
+        public IEnumerator HardLevel5_UnsafeChoice_StopsAndResets()
+        {
+            yield return StartRolloutLevel(new LevelId(Episode.Earthquake, Difficulty.Hard, 5));
+            var c = Level();
+            var setting = c.ActiveSetting;
+            var student = c.Student;
+            var mom = System.Array.Find(setting.ActiveGrownUps, actor => actor.kind == GrownUpKind.Mom);
+            var dad = System.Array.Find(setting.ActiveGrownUps, actor => actor.kind == GrownUpKind.Dad);
+            yield return ActionBarShown(c);
+
+            foreach (var stop in new[]
+            {
+                (Index: 0, Key: "pull_up", X: 284f, Y: -4f, Pose: StudentPose.Reach, Heading: "Not safe yet"),
+                (Index: 2, Key: "fix_pipe", X: 167f, Y: -6f, Pose: StudentPose.Reach, Heading: UIStrings.UnsafeHeading),
+                (Index: 3, Key: "leave", X: 100f, Y: -2f, Pose: StudentPose.Wait, Heading: UIStrings.UnsafeHeading),
+            })
+            {
+                Assert.That(setting.ActOutFor(stop.Key), Is.Not.Null, stop.Key + " has an Unsafe Act-out");
+                Tap(c, stop.Index);
+                yield return WaitFor(() => student.bubble.gameObject.activeSelf && student.bubble.Line == UIStrings.ReactionWait,
+                    "the stop at " + stop.Key);
+                Assert.That(student.X, Is.EqualTo(stop.X));
+                Assert.That(student.Y, Is.EqualTo(stop.Y));
+                Assert.That(student.Pose, Is.EqualTo(stop.Pose));
+                Assert.That(mom.AtStart, Is.True);
+                Assert.That(dad.AtStart, Is.True);
+                if (stop.Key == "pull_up")
+                    Assert.That(student.X + 16f, Is.LessThan(mom.X - 18f), "the Student stops short of Mom's hand");
+                if (stop.Key == "fix_pipe")
+                    Assert.That(student.X - 15f, Is.GreaterThan(151f), "the Student stops short of the pipe");
+                if (stop.Key == "leave")
+                    Assert.That(student.X - 16f, Is.GreaterThan(72f), "the Student stops inside the room");
+                AssertHomeAfterReactionClear(setting, mom);
+
+                yield return FeedbackShown(c);
+                Assert.That(c.feedbackHeading.text, Is.EqualTo(stop.Heading));
+                c.tryAgainButton.onClick.Invoke();
+                yield return ActionBarShown(c);
+                Assert.That(student.X, Is.EqualTo(286f));
+                Assert.That(student.Y, Is.Zero);
+                Assert.That(student.Pose, Is.EqualTo(StudentPose.Idle));
+                Assert.That(mom.AtStart, Is.True);
+                Assert.That(mom.Pose, Is.EqualTo(GrownUpPose.HurtSit));
+                Assert.That(dad.AtStart, Is.True);
+                Assert.That(c.actionBar.buttons[stop.Index].button.interactable, Is.False);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator HardLevel6_StartsWithTheBagAndMomAtTheDoor()
+        {
+            yield return StartRolloutLevel(new LevelId(Episode.Earthquake, Difficulty.Hard, 6));
+            var c = Level();
+            var setting = c.ActiveSetting;
+            Assert.That(c.UsesStudentFlow, Is.True);
+            Assert.That(setting.key, Is.EqualTo("home_after_v2"));
+            Assert.That(setting.ActiveGrownUps, Has.Length.EqualTo(1), "Hard 6 has Mom at the door");
+            var mom = setting.ActiveGrownUps[0];
+            Assert.That(mom.kind, Is.EqualTo(GrownUpKind.Mom));
+            Assert.That(mom.X, Is.EqualTo(38f));
+            Assert.That(mom.Y, Is.EqualTo(15f));
+            Assert.That(mom.Pose, Is.EqualTo(GrownUpPose.Idle));
+            Assert.That(c.Student.X, Is.EqualTo(286f));
+            Assert.That(c.Student.Y, Is.Zero);
+            Assert.That(setting.shaker, Is.Null);
+            Assert.That(c.bantay.gameObject.activeInHierarchy, Is.False);
+
+            AssertPropAtArtPoint(setting, PropIn(c, "bag_closed"), 73f, 191f);
+            AssertPropAtArtPoint(setting, PropIn(c, "paper"), 232f, 180f);
+            AssertPropAtArtPoint(setting, PropIn(c, "pen"), 245f, 181f);
+            Assert.That(PropIn(c, "note").gameObject.activeSelf, Is.False);
+        }
+
+        static void AssertPropAtArtPoint(LevelSetting setting, LevelProp prop, float x, float row)
+        {
+            Assert.That(prop.gameObject.activeInHierarchy, Is.True);
+            var bounds = BoundsInSetting(setting, (RectTransform)prop.transform);
+            Assert.That(bounds.xMin, Is.EqualTo(x * 4f).Within(0.01f));
+            Assert.That(bounds.yMax, Is.EqualTo((270f - row) * 4f).Within(0.01f));
+        }
+
+        [UnityTest]
+        public IEnumerator HardLevel6_SafeChoice_ActsOutAndCompletes()
+        {
+            yield return StartRolloutLevel(new LevelId(Episode.Earthquake, Difficulty.Hard, 6));
+            var c = Level();
+            var setting = c.ActiveSetting;
+            var student = c.Student;
+            var mom = setting.ActiveGrownUps[0];
+            var bag = PropIn(c, "bag_closed");
+            var paper = PropIn(c, "paper");
+            var note = PropIn(c, "note");
+            yield return ActionBarShown(c);
+            Assert.That(setting.ActOutFor("go_bag"), Is.Not.Null, "taking the go bag has an Act-out");
+
+            Tap(c, 3);
+            yield return WaitFor(() => student.Pose == StudentPose.Pack, "the Student to write at the table");
+            Assert.That(note.gameObject.activeSelf, Is.False, "the note follows the writing");
+            Assert.That(student.X, Is.EqualTo(238f));
+            Assert.That(student.Y, Is.EqualTo(22f));
+            yield return WaitFor(() => note.gameObject.activeSelf, "the written note to appear");
+            AssertPropAtArtPoint(setting, note, 232f, 180f);
+            Assert.That(paper.gameObject.activeSelf, Is.False);
+            Assert.That(bag.AtStart, Is.True, "writing comes before picking up the bag");
+            yield return WaitFor(() => student.Pose == StudentPose.Carry && student.IsWalking && mom.IsWalking,
+                "Mom and the Student to walk out together with the bag");
+            Assert.That(bag.transform.parent, Is.SameAs(student.Hands));
+            Assert.That(student.FacingLeft, Is.True);
+
+            yield return FeedbackShown(c);
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Carry));
+            Assert.That(student.X, Is.EqualTo(56f));
+            Assert.That(student.Y, Is.EqualTo(24f));
+            Assert.That(mom.X, Is.EqualTo(40f));
+            Assert.That(mom.Y, Is.EqualTo(55f));
+            Assert.That(note.gameObject.activeSelf, Is.True);
+            Assert.That(bag.transform.parent, Is.SameAs(student.Hands));
+            AssertHomeAfterReactionClear(setting, mom);
+            FinishWithThreeStars(c);
+        }
+
+        [UnityTest]
+        public IEnumerator HardLevel6_UnsafeChoice_StopsAndResets()
+        {
+            yield return StartRolloutLevel(new LevelId(Episode.Earthquake, Difficulty.Hard, 6));
+            var c = Level();
+            var setting = c.ActiveSetting;
+            var student = c.Student;
+            var mom = setting.ActiveGrownUps[0];
+            var bag = PropIn(c, "bag_closed");
+            var note = PropIn(c, "note");
+            yield return ActionBarShown(c);
+
+            foreach (var stop in new[]
+            {
+                (Index: 0, Key: "no_go_bag", X: 114f, Y: -2f, Pose: StudentPose.Wait, Heading: "Not ready yet"),
+                (Index: 1, Key: "toys", X: 441f, Y: -5f, Pose: StudentPose.Wait, Heading: "Not safe yet"),
+                (Index: 2, Key: "no_note", X: 91f, Y: -2f, Pose: StudentPose.Carry, Heading: "Not ready yet"),
+            })
+            {
+                Assert.That(setting.ActOutFor(stop.Key), Is.Not.Null, stop.Key + " has an Unsafe Act-out");
+                Tap(c, stop.Index);
+                if (stop.Key == "toys")
+                    yield return WaitFor(() => student.IsWalking && student.X > 363f, "the run toward the inner room");
+                yield return WaitFor(() => student.bubble.gameObject.activeSelf && student.bubble.Line == UIStrings.ReactionWait,
+                    "the stop at " + stop.Key);
+                Assert.That(student.X, Is.EqualTo(stop.X));
+                Assert.That(student.Y, Is.EqualTo(stop.Y));
+                Assert.That(student.Pose, Is.EqualTo(stop.Pose));
+                Assert.That(mom.AtStart, Is.True);
+                Assert.That(note.gameObject.activeSelf, Is.False);
+                if (stop.Key == "no_note")
+                {
+                    Assert.That(bag.transform.parent, Is.SameAs(student.Hands));
+                    Assert.That(230f - student.Y, Is.GreaterThan(212f), "the Student stays inside the threshold");
+                }
+                else
+                {
+                    Assert.That(bag.AtStart, Is.True, "the Student's hands are empty");
+                }
+                if (stop.Key == "toys")
+                {
+                    var reaction = BoundsInSetting(setting, (RectTransform)student.bubble.transform);
+                    Assert.That(reaction.xMax, Is.LessThanOrEqualTo(480f * 4f), "the Reaction stays inside the screen");
+                    Assert.That(reaction.xMax, Is.LessThan(429f * 4f), "the Reaction leaves the inner door in view");
+                    Assert.That(230f - student.Y, Is.GreaterThan(212f), "the Student stops before the inner room");
+                }
+                AssertHomeAfterReactionClear(setting, mom);
+
+                yield return FeedbackShown(c);
+                Assert.That(c.feedbackHeading.text, Is.EqualTo(stop.Heading));
+                c.tryAgainButton.onClick.Invoke();
+                yield return ActionBarShown(c);
+                Assert.That(student.X, Is.EqualTo(286f));
+                Assert.That(student.Y, Is.Zero);
+                Assert.That(student.Pose, Is.EqualTo(StudentPose.Idle));
+                Assert.That(note.gameObject.activeSelf, Is.False);
+                Assert.That(mom.AtStart, Is.True);
+                Assert.That(bag.AtStart, Is.True);
+                AssertPropAtArtPoint(setting, bag, 73f, 191f);
                 Assert.That(c.actionBar.buttons[stop.Index].button.interactable, Is.False);
             }
         }

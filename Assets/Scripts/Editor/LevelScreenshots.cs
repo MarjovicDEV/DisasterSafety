@@ -129,6 +129,8 @@ namespace DisasterSafety.EditorTools
             CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Normal, 5, "n5", "fish", StudentKind.Boy);
             CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 3, "h3", "shop_window", StudentKind.Boy);
             CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 4, "h4", "run_push", StudentKind.Girl);
+            CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 5, "h5", "pull_up", StudentKind.Boy);
+            CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 6, "h6", "no_note", StudentKind.Girl);
         }
 
         static void CaptureHome(LevelController c, ScenarioLibrary scenarios, Action<string, ScreenPanel[]> shot)
@@ -178,9 +180,11 @@ namespace DisasterSafety.EditorTools
                     var step = act.steps[i];
                     if (step.Moves)
                     {
-                        facingLeft = step.kind == ActOutStepKind.Carry && step.x < x;
+                        var carrying = step.kind == ActOutStepKind.Carry || step.kind == ActOutStepKind.CarryTo;
+                        if (!carrying) facingLeft = false;
+                        else if (step.x != x) facingLeft = step.x < x;
                         x = step.x;
-                        y = step.y;
+                        if (step.kind != ActOutStepKind.Carry) y = step.y;
                     }
                     switch (step.kind)
                     {
@@ -196,13 +200,25 @@ namespace DisasterSafety.EditorTools
                         case ActOutStepKind.PropShow:
                             step.target.GetComponent<LevelProp>().Show();
                             break;
+                        case ActOutStepKind.PropPickUp:
+                            step.target.GetComponent<LevelProp>().PickUp(student.Hands);
+                            break;
                         case ActOutStepKind.PropPlace:
                             step.target.GetComponent<LevelProp>().Place(step.place);
                             break;
                         case ActOutStepKind.Walk when step.grownUp != null:
+                        case ActOutStepKind.CarryTo when step.grownUp != null:
                             step.grownUp.PlaceAt(step.grownUpDestination.x, step.grownUpDestination.y);
                             step.grownUp.Face(false);
                             step.grownUp.Play(GrownUpPose.Idle);
+                            break;
+                        case ActOutStepKind.GrownUp when step.grownUpAction == GrownUpAction.Walk:
+                            step.grownUp.PlaceAt(step.x, step.y);
+                            step.grownUp.Face(false);
+                            step.grownUp.Play(GrownUpPose.Idle);
+                            break;
+                        case ActOutStepKind.GrownUp when step.grownUpAction == GrownUpAction.Turn:
+                            step.grownUp.Face(step.faceLeft);
                             break;
                         case ActOutStepKind.GrownUp when step.grownUpAction == GrownUpAction.Pose:
                             step.grownUp.Play(step.grownUpPose);
@@ -213,6 +229,7 @@ namespace DisasterSafety.EditorTools
                 student.PlaceAt(x, y);
                 student.Face(facingLeft);
                 student.ShowFrame(safe ? act.EndPose : act.stopPose, 0);
+                setting.PositionReaction();
                 var safeLine = s.phase == ScenarioPhases.Before ? UIStrings.ReactionReady : UIStrings.ReactionSafe;
                 student.bubble.Say(safe ? safeLine : UIStrings.ReactionWait);
                 SetWobblers(!safe && s.Shakes);
