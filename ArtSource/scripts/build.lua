@@ -233,6 +233,21 @@ if want("home_v2") then
   L.saveFrames(HM.lampFrames(), "Level/v2/home_lamp", "Level/v2/home_lamp", 160)
 end
 
+-- The same v2 living room after the earthquake, with an always-on drip and writing props.
+if want("home_after_v2") then
+  local HM = dofile(here .. "home_v2.lua")(L, ST)
+  local base = "Level/v2/"
+  L.save(HM.backgroundAfter(), base .. "bg_home_after", base .. "bg_home_after")
+  local drip = base .. "home_after_drip"
+  L.saveFrames(HM.dripFrames(), drip, drip, HM.LAYOUT.homeAfter.dripMs)
+  for _, prop in ipairs({
+    { "paper", HM.paper(false) }, { "pen", HM.pen() }, { "note", HM.paper(true) },
+  }) do
+    local path = base .. "home_after_" .. prop[1]
+    L.save(prop[2], path, path)
+  end
+end
+
 -- The shared v2 schoolyard and its shaking-only canopy and post.
 if want("schoolyard_v2") then
   local SY = dofile(here .. "schoolyard_v2.lua")(L, ST)

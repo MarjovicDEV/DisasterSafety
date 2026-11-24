@@ -40,6 +40,29 @@ return function(L, ST)
       toy = 322, boxes = 425 },
     normal3 = { start = 294, tableEdge = 282, hold = 240, run = 91, glass = 387, sofa = 307 },
     hard1 = { start = 154, mom = 290, park = 207, house = 226, board = 136, door = 91 },
+    -- Coordinates for the same room after the earthquake.
+    homeAfter = {
+      innerDoor = { 429, 113 }, lamp = { 384, 14 },
+      picture = { 208, 144 }, books = { 394, 217 }, chair = { 187, 248 },
+      pipe = { 123, 195 }, drip = { 134, 204 }, dripMs = 420,
+      puddle = { 137, 215 }, paper = { 232, 180 }, pen = { 245, 181 },
+      note = { 232, 180 },
+      -- Actor points are the centre of the feet, measured from the top of the art.
+      hard5 = {
+        start = { 286, 230 }, mom = { 322, 233 }, crouch = { 284, 242 },
+        pullUp = { 284, 234 }, aisle = { 269, 242 }, pipeStop = { 167, 236 },
+        doorStop = { 100, 232 }, call = { 79, 216 },
+        dadOffscreen = { -24, 238 }, dadEntry = { 42, 239 }, dadAisle = { 265, 241 }, dadKneel = { 286, 244 },
+      },
+      hard6 = {
+        start = { 286, 230 }, mom = { 38, 215 }, pack = { 238, 208 },
+        tableApproach = { 282, 208 }, aisle = { 282, 236 }, crossRoom = { 162, 236 }, bagPickUp = { 106, 225 },
+        emptyStop = { 114, 232 }, carryingStop = { 91, 232 },
+        runBend = { 363, 241 }, innerStop = { 441, 235 },
+        studentThreshold = { 56, 212 }, momThreshold = { 35, 204 },
+        studentOutside = { 56, 206 }, momOutside = { 40, 175 },
+      },
+    },
   }
   local A = M.LAYOUT
 
@@ -224,7 +247,7 @@ return function(L, ST)
     L.vline(img, x + 35, y + 16, y + 20, R.paper[2])
   end
 
-  function M.background()
+  local function room(drawFrontDoor, drawRightSide, rightSide)
     local w, h = 480, 270
     local img = L.newImage(w, h)
     L.rect(img, 0, 0, w, 14, CEIL)
@@ -236,14 +259,155 @@ return function(L, ST)
     L.rect(img, 0, 203, w, 4, R.wood[3])
     L.hline(img, 0, w - 1, 207, O)
     floor(img)
-    door(img, table.unpack(A.door))
+    drawFrontDoor(img, table.unpack(A.door))
     television(img, table.unpack(A.tv))
     board(img, table.unpack(A.board))
     window(img, table.unpack(A.window))
     strongTable(img, table.unpack(A.tableFront))
     sofa(img, table.unpack(A.sofa))
     glassCabinet(img, table.unpack(A.cabinet))
-    storage(img, table.unpack(A.boxes))
+    drawRightSide(img, table.unpack(rightSide))
+    return img
+  end
+
+  function M.background()
+    return room(door, storage, A.boxes)
+  end
+
+  -- The open front door shows sunlit ground beyond the threshold.
+  local function openFrontDoor(img, x, y)
+    door(img, x, y)
+    L.rect(img, x + 5, y + 6, 43, 94, R.glass[1])
+    L.poly(img, { x + 5, y + 62, x + 21, y + 54, x + 34, y + 63,
+      x + 47, y + 59, x + 47, y + 81, x + 5, y + 81 }, R.leaf[2])
+    L.rect(img, x + 5, y + 76, 43, 24, R.leaf[1])
+    L.poly(img, { x + 17, y + 62, x + 25, y + 62, x + 47, y + 100,
+      x + 10, y + 100 }, R.floor[1])
+    L.hline(img, x + 5, x + 47, y + 17, R.glass[2])
+    L.vline(img, x + 47, y + 5, y + 100, R.wood[3])
+    L.poly(img, { x + 4, y + 5, x + 16, y + 11, x + 16, y + 94,
+      x + 4, y + 100 }, O)
+    L.poly(img, { x + 5, y + 7, x + 15, y + 12, x + 15, y + 93,
+      x + 5, y + 98 }, R.wood[2])
+    L.line(img, x + 5, y + 7, x + 15, y + 12, R.wood[1])
+    L.vline(img, x + 15, y + 13, y + 92, R.wood[3])
+    L.px(img, x + 13, y + 54, R.metal[1])
+  end
+
+  -- The right opening leads to a dim interior with a toy on a low shelf.
+  local function innerDoor(img, x, y)
+    box(img, x, y, 46, 97, R.wood)
+    L.rect(img, x + 5, y + 5, 36, 89, R.navy[3])
+    L.rect(img, x + 11, y + 13, 24, 66, R.lower[3])
+    L.poly(img, { x + 5, y + 94, x + 11, y + 78, x + 35, y + 78,
+      x + 40, y + 94 }, R.floor[3])
+    box(img, x + 18, y + 67, 16, 4, R.wood)
+    L.poly(img, { x + 19, y + 64, x + 22, y + 64, x + 24, y + 61,
+      x + 28, y + 61, x + 31, y + 64, x + 33, y + 64, x + 33, y + 66,
+      x + 19, y + 66 }, R.red[2])
+    L.px(img, x + 22, y + 67, O)
+    L.px(img, x + 30, y + 67, O)
+    box(img, x - 1, y + 95, 48, 4, R.wood)
+  end
+
+  local function tiltedPicture(img, x, y)
+    L.poly(img, { x, y + 5, x + 29, y, x + 33, y + 20, x + 4, y + 25 }, O)
+    L.poly(img, { x + 1, y + 6, x + 28, y + 1, x + 32, y + 19, x + 5, y + 24 }, R.wood[2])
+    L.line(img, x + 1, y + 6, x + 28, y + 1, R.wood[1])
+    L.line(img, x + 5, y + 24, x + 32, y + 19, R.wood[3])
+    L.poly(img, { x + 5, y + 8, x + 25, y + 4, x + 28, y + 17, x + 8, y + 21 }, R.glass[1])
+    L.poly(img, { x + 7, y + 17, x + 13, y + 12, x + 21, y + 15,
+      x + 24, y + 11, x + 28, y + 17, x + 8, y + 21 }, R.leaf[2])
+  end
+
+  local function fallenBooks(img, x, y)
+    box(img, x, y + 3, 21, 7, R.navy)
+    L.hline(img, x + 4, x + 18, y + 7, R.paper[2])
+    L.poly(img, { x + 5, y + 2, x + 23, y, x + 27, y + 4, x + 9, y + 7 }, O)
+    L.poly(img, { x + 7, y + 2, x + 22, y + 1, x + 25, y + 4, x + 10, y + 6 }, R.red[2])
+    L.line(img, x + 10, y + 6, x + 25, y + 4, R.paper[2])
+  end
+
+  -- The chair lies on its side, seen from the front: the slatted back at left,
+  -- the seat on edge in the middle and two straight legs pointing right.
+  -- Only straight bars are used, so the shape reads as furniture.
+  local function toppledChair(img, x, y)
+    L.hline(img, x + 1, x + 41, y + 17, R.floor[3])
+    L.hline(img, x + 3, x + 39, y + 18, R.floor[3])
+    -- The stretcher between the legs, drawn first so the legs cover its ends.
+    L.vline(img, x + 34, y + 5, y + 13, O)
+    L.vline(img, x + 35, y + 5, y + 13, R.wood[2])
+    L.vline(img, x + 36, y + 5, y + 13, O)
+    box(img, x + 24, y + 3, 19, 3, R.wood)
+    box(img, x + 24, y + 13, 19, 3, R.wood)
+    -- The ladder back: three slats between the two uprights and the top rail.
+    for _, sx in ipairs({ 6, 11, 16 }) do
+      box(img, x + sx, y + 5, 3, 9, R.wood)
+    end
+    box(img, x, y + 3, 22, 3, R.wood)
+    box(img, x, y + 13, 22, 3, R.wood)
+    box(img, x, y + 3, 3, 13, R.wood)
+    -- The seat stands on edge between the back and the legs.
+    box(img, x + 21, y + 1, 5, 17, R.wood)
+  end
+
+  local function brokenPipe(img, x, y)
+    box(img, x, y, 28, 8, R.metal)
+    box(img, x + 1, y - 2, 5, 12, R.metal)
+    box(img, x + 24, y - 2, 5, 12, R.metal)
+    L.line(img, x + 17, y + 1, x + 13, y + 4, O)
+    L.line(img, x + 13, y + 4, x + 16, y + 4, O)
+    L.line(img, x + 16, y + 4, x + 14, y + 7, O)
+    L.px(img, x + 14, y + 8, R.glass[2])
+  end
+
+  function M.backgroundAfter()
+    local B = A.homeAfter
+    local img = room(openFrontDoor, innerDoor, B.innerDoor)
+    -- The lamp is still after the earthquake.
+    L.blit(img, M.lampFrames()[1], table.unpack(B.lamp))
+    tiltedPicture(img, table.unpack(B.picture))
+    fallenBooks(img, table.unpack(B.books))
+    toppledChair(img, table.unpack(B.chair))
+    brokenPipe(img, table.unpack(B.pipe))
+    local x, y = table.unpack(B.puddle)
+    L.ellipse(img, x, y, 10, 2, R.glass[3])
+    L.ellipse(img, x - 1, y, 7, 1, R.glass[2])
+    L.hline(img, x - 6, x - 2, y - 1, R.glass[1])
+    return img
+  end
+
+  function M.dripFrames()
+    local frames = {}
+    for _, y in ipairs({ 1, 6 }) do
+      local img = L.newImage(7, 10)
+      L.poly(img, { 3, y, 4, y + 2, 3, y + 3, 2, y + 2 }, R.glass[3])
+      L.px(img, 3, y + 1, R.glass[1])
+      frames[#frames + 1] = img
+    end
+    return frames
+  end
+
+  function M.paper(written)
+    local img = L.newImage(12, 8)
+    L.poly(img, { 2, 0, 11, 0, 10, 7, 0, 7 }, O)
+    L.poly(img, { 3, 1, 10, 1, 9, 6, 1, 6 }, R.paper[1])
+    L.hline(img, 2, 9, 6, R.paper[3])
+    L.px(img, 9, 5, R.paper[2])
+    if written then
+      L.hline(img, 4, 8, 2, R.navy[2])
+      L.hline(img, 3, 8, 4, R.navy[2])
+      L.hline(img, 3, 6, 5, R.navy[1])
+    end
+    return img
+  end
+
+  function M.pen()
+    local img = L.newImage(9, 6)
+    L.line(img, 1, 4, 7, 1, O, 2)
+    L.line(img, 1, 4, 6, 2, R.navy[1])
+    L.px(img, 7, 1, R.metal[1])
+    L.px(img, 1, 4, R.metal[2])
     return img
   end
 

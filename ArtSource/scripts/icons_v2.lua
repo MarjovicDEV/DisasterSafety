@@ -227,6 +227,83 @@ return function(L, ST)
     out.mall_wall = wall
   end
 
+  local function homeAfterIcons(out)
+    local pull = L.newImage(16, 16)
+    -- Two angled arms end in separate hands.
+    L.poly(pull, { 1, 3, 4, 2, 9, 6, 9, 8, 6, 9, 1, 6 }, M.SKIN[2])
+    L.line(pull, 2, 3, 7, 6, M.SKIN[1])
+    L.line(pull, 1, 6, 6, 9, M.SKIN[3])
+    L.poly(pull, { 6, 12, 10, 9, 12, 10, 14, 12, 14, 14, 11, 14,
+      9, 12, 7, 14 }, M.SKIN[2])
+    L.line(pull, 7, 12, 10, 10, M.SKIN[1])
+    L.rect(pull, 1, 3, 2, 4, M.WHITE[2])
+    L.rect(pull, 13, 11, 2, 4, M.RED[2])
+    L.outline(pull, O)
+    out.pull_up = pull
+
+    local call = L.newImage(16, 16)
+    L.poly(call, { 5, 2, 8, 2, 10, 4, 10, 7, 12, 8, 10, 9,
+      10, 11, 8, 12, 10, 14, 2, 14, 2, 6 }, M.SKIN[2])
+    L.poly(call, { 4, 2, 8, 2, 10, 4, 7, 4, 6, 6, 3, 7 }, M.NAVY[3])
+    L.line(call, 3, 8, 3, 12, M.SKIN[1])
+    L.px(call, 9, 6, O)
+    L.px(call, 9, 10, M.SKIN[3])
+    L.hline(call, 3, 9, 14, M.WHITE[2])
+    L.outline(call, O)
+    L.line(call, 12, 5, 14, 3, M.NAVY[3])
+    L.hline(call, 13, 15, 8, M.NAVY[3])
+    L.line(call, 12, 11, 14, 13, M.NAVY[3])
+    out.call_adult = call
+
+    local pipe = L.newImage(16, 16)
+    M.box(pipe, 1, 3, 14, 6, M.METAL)
+    M.box(pipe, 1, 2, 4, 8, M.METAL)
+    M.box(pipe, 12, 2, 3, 8, M.METAL)
+    L.line(pipe, 9, 4, 7, 6, O)
+    L.line(pipe, 7, 6, 9, 7, O)
+    L.px(pipe, 8, 8, O)
+    L.poly(pipe, { 8, 10, 10, 13, 8, 15, 6, 13 }, M.GLASS[3])
+    L.px(pipe, 8, 12, M.GLASS[1])
+    L.px(pipe, 8, 13, M.GLASS[2])
+    out.fix_pipe = pipe
+
+    local empty = L.newImage(16, 16)
+    -- Keep the crossed-out bag separate from the red go bag used for the Safe Choice.
+    L.poly(empty, { 5, 4, 11, 4, 13, 7, 13, 13, 11, 14, 4, 14,
+      2, 12, 2, 7 }, M.METAL[2])
+    L.hline(empty, 6, 10, 2, M.METAL[3])
+    L.vline(empty, 6, 2, 4, M.METAL[2])
+    L.vline(empty, 10, 2, 4, M.METAL[3])
+    L.line(empty, 3, 7, 5, 5, M.METAL[1])
+    L.hline(empty, 5, 11, 12, M.METAL[3])
+    L.outline(empty, O)
+    L.line(empty, 2, 13, 13, 2, M.RED[3], 3)
+    L.line(empty, 2, 13, 13, 2, M.RED[1])
+    out.no_go_bag = empty
+
+    local note = L.newImage(16, 16)
+    M.box(note, 2, 1, 12, 14, M.WHITE)
+    L.hline(note, 5, 10, 4, M.NAVY[2])
+    L.hline(note, 5, 10, 6, M.NAVY[2])
+    L.hline(note, 5, 8, 8, M.NAVY[1])
+    L.line(note, 2, 13, 13, 2, M.RED[3], 3)
+    L.line(note, 2, 13, 13, 2, M.RED[1])
+    out.no_note = note
+
+    local toy = L.newImage(16, 16)
+    L.poly(toy, { 1, 8, 4, 8, 6, 4, 10, 4, 13, 8, 14, 8,
+      14, 12, 1, 12 }, M.RED[2])
+    L.hline(toy, 2, 13, 9, M.RED[1])
+    L.hline(toy, 2, 13, 12, M.RED[3])
+    L.poly(toy, { 6, 7, 7, 5, 10, 5, 11, 7 }, M.GLASS[1])
+    L.circle(toy, 4, 12, 2, M.NAVY[3])
+    L.circle(toy, 11, 12, 2, M.NAVY[3])
+    L.px(toy, 4, 12, M.METAL[1])
+    L.px(toy, 11, 12, M.METAL[1])
+    L.outline(toy, O)
+    out.toy_car = toy
+  end
+
   function M.icons()
     local out = {}
 
@@ -534,6 +611,7 @@ return function(L, ST)
     beachIcons(out)
 
     mallIcons(out)
+    homeAfterIcons(out)
 
     return out
   end
