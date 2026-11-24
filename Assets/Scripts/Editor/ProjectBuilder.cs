@@ -226,7 +226,7 @@ namespace DisasterSafety.EditorTools
             BuildEpisodes(ui, c);
             BuildDifficulties(ui, c);
             BuildLevels(ui, c);
-            c.bantay = BuildBantay(ui);
+            c.student = BuildMenuStudent(ui);
             c.dimmer = Panel(Stretch(Rect("Dimmer", ui)), ScreenPanel.Style.Fade);
             Img(c.dimmer.transform, S("UI/solid"), new Color(Ink.r, Ink.g, Ink.b, 0.72f), raycast: true);
             BuildSettings(ui, c);
@@ -546,7 +546,34 @@ namespace DisasterSafety.EditorTools
             c.levelBack = BackButton(page);
         }
 
-        // Bantay -----------------------------------------------------------------------------
+        // The Learner's Student on the Main Menu, in Bantay's old corner (bottom right). Its speech bubble is
+        // wide enough for the longest menu line in f4, and sits above and to the left, as Bantay's did.
+        static MenuStudent BuildMenuStudent(RectTransform ui)
+        {
+            const float scale = 1.25f;
+            var actor = BuildStudent(ui, withBubble: false);
+            actor.name = "Menu Student";
+            var r = (RectTransform)actor.transform;
+            r.anchorMin = r.anchorMax = new Vector2(1f, 0f);
+            r.pivot = new Vector2(1f, 0f);
+            r.sizeDelta = new Vector2(32f * Px * scale, 50f * Px * scale);
+            r.anchoredPosition = new Vector2(-40f, 20f);
+            actor.body.raycastTarget = true;
+
+            var bubble = BuildSpeechBubble(r, 620f, 150f);
+            var br = (RectTransform)bubble.transform;
+            br.anchorMin = br.anchorMax = new Vector2(0.5f, 1f);
+            br.pivot = new Vector2(0.9f, 0f);
+            br.anchoredPosition = new Vector2(-10f, 12f);
+            bubble.Hide();
+            actor.bubble = bubble;
+
+            var student = actor.gameObject.AddComponent<MenuStudent>();
+            student.actor = actor;
+            return student;
+        }
+
+        // Bantay (the card flow in the Level scene only, until the cleanup) ---------------------------
         static BantayGuide BuildBantay(RectTransform ui)
         {
             var frames = Frames("Characters/bantay", 4);
@@ -574,7 +601,7 @@ namespace DisasterSafety.EditorTools
             fit.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
 
             var textR = Rect("Text", bubbleR);
-            var text = Label(textR, UIStrings.BantayHello, f4, Ink, TextAnchor.MiddleLeft, shadow: false);
+            var text = Label(textR, string.Empty, f4, Ink, TextAnchor.MiddleLeft, shadow: false);
             text.horizontalOverflow = HorizontalWrapMode.Wrap;
 
             var tail = S("UI/bubble_tail");
@@ -717,11 +744,10 @@ namespace DisasterSafety.EditorTools
             var caption = Label(cr, pages[0].Caption, f4, Ink, TextAnchor.MiddleCenter, shadow: false);
             caption.horizontalOverflow = HorizontalWrapMode.Wrap;
 
-            // Bantay's Tip for this page.
-            var dog = S("Characters/bantay_3");
-            var dr = Rect("Bantay", box);
-            Centered(dr, -540f, -170f, dog.rect.width * Px * 0.75f, dog.rect.height * Px * 0.75f);
-            Img(dr, dog, Color.white);
+            // The Learner's Student beside the Tip for this page.
+            var guide = BuildStudent(box, withBubble: false);
+            guide.name = "How To Play Student";
+            Centered((RectTransform)guide.transform, -540f, -170f, 32f * Px * 0.75f, 50f * Px * 0.75f);
             var bubble = Rect("Tip Bubble", box);
             Centered(bubble, 80f, -170f, 1000f, 130f);
             Img(bubble, S("UI/bubble"), Color.white, sliced: true);
@@ -757,6 +783,7 @@ namespace DisasterSafety.EditorTools
             view.dotOn = starOn;
             view.dotOff = starOff;
             view.frames = frames;
+            view.student = guide;
             c.tutorial = view;
         }
 
@@ -776,10 +803,14 @@ namespace DisasterSafety.EditorTools
             var box = Dialog(ui, "Name Entry", 1160f, 680f, out c.namePanel);
             DialogTitle(box, UIStrings.NameTitle, f6);
 
-            var dog = S("Characters/bantay_0");
-            var dr = Rect("Bantay", box);
-            Centered(dr, -400f, 30f, dog.rect.width * Px * 1.25f, dog.rect.height * Px * 1.25f);
-            Img(dr, dog, Color.white);
+            // Name Entry comes before the Student pick, so the boy and the girl stand side by side.
+            foreach (var (kind, x) in new[] { ("boy", -460f), ("girl", -320f) })
+            {
+                var idle = S("Student/" + kind + "_idle_0");
+                var sr = Rect(kind == "boy" ? "Boy" : "Girl", box);
+                Centered(sr, x, 30f, idle.rect.width * Px, idle.rect.height * Px);
+                Img(sr, idle, Color.white);
+            }
 
             var fr = Rect("Name Field", box);
             Centered(fr, 110f, 60f, 640f, 128f);

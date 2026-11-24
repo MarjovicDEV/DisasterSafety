@@ -75,7 +75,7 @@ namespace DisasterSafety.Game.UI
         public Text levelHeader;
 
         [Header("Guide")]
-        public BantayGuide bantay;
+        public MenuStudent student;
 
         MenuNavigator nav;
         int selectedLevel;
@@ -101,6 +101,7 @@ namespace DisasterSafety.Game.UI
         {
             foreach (var p in AllPanels()) p.SetInstant(false);
             mainPanel.SetInstant(true);
+            student.SetKind(GameServices.Progress.Student);
             RefreshMain();
 
             // Level Completed's "Levels" button lands here on Level Selection for that Level.
@@ -113,11 +114,11 @@ namespace DisasterSafety.Game.UI
 
             yield return new WaitForSeconds(0.8f);
             if (GameServices.StartupLoadStatus == SaveLoadStatus.Preserved)
-                bantay.Say(UIStrings.BantaySaveKept, true);
+                student.Greet(UIStrings.StudentSaveKept);
             else if (HasDisplayName)
-                bantay.Say(UIStrings.BantayWelcomeBack(GameServices.Progress.DisplayName), true);
+                student.Greet(UIStrings.StudentWelcomeBack(GameServices.Progress.DisplayName));
             else
-                bantay.Say(UIStrings.BantayHello, true);
+                student.Greet(UIStrings.StudentHello);
         }
 
         void Update()
@@ -153,7 +154,7 @@ namespace DisasterSafety.Game.UI
                 {
                     AudioManager.Play(Sfx.Locked);
                     Juice.Shake((RectTransform)continueButton.transform);
-                    bantay.Say(UIStrings.BantayContinueLocked);
+                    student.Say(UIStrings.StudentContinueLocked);
                 });
             }
             settingsButton.onClick.AddListener(nav.OpenSettings);
@@ -287,11 +288,11 @@ namespace DisasterSafety.Game.UI
                     break;
                 case MenuScreen.EpisodeSelect:
                     RefreshEpisodes();
-                    if (!GameServices.Progress.HasSavedProgress) bantay.Say(UIStrings.BantayPickEpisode);
+                    if (!GameServices.Progress.HasSavedProgress) student.Say(UIStrings.StudentPickEpisode);
                     break;
                 case MenuScreen.DifficultySelect:
                     RefreshDifficulties();
-                    if (!GameServices.Progress.HasSavedProgress) bantay.Say(UIStrings.BantayPickDifficulty);
+                    if (!GameServices.Progress.HasSavedProgress) student.Say(UIStrings.StudentPickDifficulty);
                     break;
                 case MenuScreen.LevelSelect:
                     selectedLevel = 0;
@@ -373,13 +374,14 @@ namespace DisasterSafety.Game.UI
             AudioManager.Play(Sfx.Confirm);
             Juice.Sparkles((RectTransform)nameOk.transform, 10);
             nav.NameSaved();
-            bantay.Say(UIStrings.BantayNiceToMeet(name), true);
+            student.Say(UIStrings.StudentNiceToMeet(name));
         }
 
         void PickStudent(StudentKind kind)
         {
             GameServices.Progress.SetStudent(kind);
             SaveQuietly("the Student");
+            student.SetKind(kind);
             AudioManager.Play(Sfx.Confirm);
             var button = kind == StudentKind.Boy ? studentBoy : studentGirl;
             Juice.Sparkles((RectTransform)button.transform, 10);
@@ -407,7 +409,7 @@ namespace DisasterSafety.Game.UI
             if (nav.SelectEpisode(card.episode)) return;
             Juice.Shake((RectTransform)card.transform);
             var index = Mathf.Max(0, (int)card.episode - 1);
-            bantay.Say(UIStrings.BantayEpisodeLocked(Curriculum.Episodes[index]));
+            student.Say(UIStrings.StudentEpisodeLocked(Curriculum.Episodes[index]));
         }
 
         void OnDifficulty(DifficultyCard card)
@@ -415,7 +417,7 @@ namespace DisasterSafety.Game.UI
             if (nav.SelectDifficulty(card.difficulty)) return;
             Juice.Shake((RectTransform)card.transform);
             var index = Mathf.Max(0, (int)card.difficulty - 1);
-            bantay.Say(UIStrings.BantayDifficultyLocked(Curriculum.Difficulties[index]));
+            student.Say(UIStrings.StudentDifficultyLocked(Curriculum.Difficulties[index]));
         }
 
         void OnLevel(int number)
@@ -426,7 +428,7 @@ namespace DisasterSafety.Game.UI
             if (!GameServices.Content.IsPlayable(id))
             {
                 AudioManager.Play(Sfx.Soon);
-                bantay.Say(UIStrings.BantayLevelSoon);
+                student.Say(UIStrings.StudentLevelSoon);
             }
         }
 

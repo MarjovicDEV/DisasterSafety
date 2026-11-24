@@ -8,7 +8,8 @@ namespace DisasterSafety.Game.UI
 {
     /// <summary>
     /// The picture tutorial inside How to Play: one Tutorial Page at a time with an animated
-    /// picture, a caption and a Tip from Bantay. Arrows and swipes change pages; star dots show which page is open.
+    /// picture, a caption and a Tip from the Learner's Student. Arrows and swipes change pages; star dots show
+    /// which page is open.
     /// </summary>
     public sealed class TutorialView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
@@ -25,6 +26,8 @@ namespace DisasterSafety.Game.UI
         public Sprite dotOff;
         [Tooltip("Two frames per page, in page order.")]
         public Sprite[] frames;
+        [Tooltip("The Learner's Student beside the Tip. It shows the picked kind, and the boy until a pick exists.")]
+        public StudentActor student;
 
         const float SwipeDistance = 120f;
 
@@ -59,6 +62,11 @@ namespace DisasterSafety.Game.UI
         /// <summary>Always starts at the first page.</summary>
         public void Open()
         {
+            if (student != null)
+            {
+                student.SetKind(GameServices.Ready ? GameServices.Progress.Student : StudentKind.None);
+                student.Play(StudentPose.Idle);
+            }
             Pager.Restart();
             Render();
         }
