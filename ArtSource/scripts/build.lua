@@ -276,6 +276,20 @@ if want("mall_v2") then
     MA.LAYOUT.mall_a.swayMs)
 end
 
+-- The v2 evacuation area (Hard 7): the field, the radio prop (off and two "on" frames with sound
+-- waves) and the chatting neighbours (two frames).
+if want("evacuation_area_v2") then
+  local GU = dofile(here .. "grownups_v2.lua")(L, ST)
+  local EA = dofile(here .. "evacuation_area_v2.lua")(L, ST, GU)
+  local base = "Level/v2/"
+  L.save(EA.background(), base .. "bg_evacuation_area", base .. "bg_evacuation_area")
+  L.save(EA.radioOff(), base .. "evacuation_area_radio", base .. "evacuation_area_radio")
+  L.saveFrames(EA.radioOnFrames(), base .. "evacuation_area_radio_on", base .. "evacuation_area_radio_on",
+    EA.LAYOUT.radioMs)
+  L.saveFrames(EA.neighboursFrames(), base .. "evacuation_area_neighbours", base .. "evacuation_area_neighbours",
+    EA.LAYOUT.neighboursMs)
+end
+
 -- The Home-specific reach-up frames let the Student pinch a card at the board.
 if want("home_reachup") then
   for _, kind in ipairs({ "boy", "girl" }) do
