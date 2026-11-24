@@ -32,7 +32,7 @@ Close the Unity Editor before any batch run, because a project open in the Edito
 
 ## Git
 
-Commit only when the user asks. Each commit message is one simple sentence, written as a history entry that says what was done to the project. It does not mention the user and has no co-author or attribution lines.
+Commit only when the user asks. Split each ticket or feature into 6 to 9 commits. Each commit message is one sentence in basic English, written as a history entry that says what was done to the project. It does not mention the user and has no co-author or attribution lines.
 
 ## Where to look
 
