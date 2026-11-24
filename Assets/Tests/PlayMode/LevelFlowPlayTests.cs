@@ -323,7 +323,7 @@ namespace DisasterSafety.Tests
         [UnityTest]
         public IEnumerator HardDifficulty_CompletingAllSevenLevels_CompletesTheEpisode()
         {
-            var settings = new[] { "home_v2", "schoolyard_v2", "mall_a", "mall_b", "home_after", "home_after", "evacuation_area" };
+            var settings = new[] { "home_v2", "schoolyard_v2", "mall_a_v2", "mall_b_v2", "home_after", "home_after", "evacuation_area" };
             var shakes = new[] { false, false, true, false, false, false, false };
 
             GameServices.Initialize(dir);
@@ -344,7 +344,7 @@ namespace DisasterSafety.Tests
                 Assert.That(shaking, Is.EqualTo(shakes[n - 1]), "shaking in Hard " + n);
 
                 Assert.That(GameServices.Scenarios.TryGet(level, out var scenario), Is.True);
-                Assert.That(c.UsesStudentFlow, Is.EqualTo(n <= 2), "the Student flow in Hard " + n);
+                Assert.That(c.UsesStudentFlow, Is.EqualTo(n <= 4), "the Student flow in Hard " + n);
                 if (c.UsesStudentFlow)
                 {
                     Tap(c, scenario.SafeChoiceIndex);
@@ -1222,6 +1222,215 @@ namespace DisasterSafety.Tests
         }
 
         [UnityTest]
+        public IEnumerator HardLevel3_SafeChoice_ActsOutAndCompletes()
+        {
+            var level = new LevelId(Episode.Earthquake, Difficulty.Hard, 3);
+            yield return StartRolloutLevel(level);
+            var c = Level();
+            var setting = c.ActiveSetting;
+            var student = c.Student;
+            Assert.That(setting.key, Is.EqualTo("mall_a_v2"));
+            Assert.That(setting.shaker.IsShaking, Is.True);
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Surprised));
+            Assert.That(student.bubble.Line, Is.EqualTo(UIStrings.ReactionWhoa));
+            Assert.That(setting.ActiveGrownUps, Is.Empty);
+            Assert.That(c.bantay.gameObject.activeInHierarchy, Is.False);
+            yield return ActionBarShown(c);
+
+            var cover = setting.ActOutFor("table");
+            Assert.That(cover, Is.Not.Null, "the food court table Choice has an Act-out");
+            var overlay = cover.FirstOverlay;
+            Assert.That(overlay, Is.Not.Null);
+            Assert.That(overlay.activeSelf, Is.False);
+            Assert.That(overlay.transform.GetSiblingIndex(), Is.GreaterThan(student.transform.GetSiblingIndex()));
+
+            Tap(c, 3);
+            yield return WaitFor(() => student.IsWalking, "the walk to the food court table");
+            yield return WaitFor(() => student.Pose == StudentPose.Crouch, "the Student to duck under the table");
+            Assert.That(overlay.activeInHierarchy, Is.True, "the table front covers the Student while crouching");
+            yield return WaitFor(() => student.Pose == StudentPose.Hold, "the hold under the table");
+            Assert.That(student.X, Is.EqualTo(168f));
+            Assert.That(student.Y, Is.Zero);
+            yield return FeedbackShown(c);
+            Assert.That(setting.shaker.IsShaking, Is.False);
+            FinishWithThreeStars(c);
+        }
+
+        [UnityTest]
+        public IEnumerator HardLevel3_UnsafeChoice_StopsAndResets()
+        {
+            var level = new LevelId(Episode.Earthquake, Difficulty.Hard, 3);
+            yield return StartRolloutLevel(level);
+            var c = Level();
+            var setting = c.ActiveSetting;
+            var student = c.Student;
+            yield return ActionBarShown(c);
+
+            foreach (var stop in new[]
+            {
+                (Index: 1, Key: "elevator", X: 363f, Y: 0f, Pose: StudentPose.Reach, Heading: UIStrings.UnsafeHeading),
+                (Index: 2, Key: "shop_window", X: 307f, Y: 0f, Pose: StudentPose.Wait, Heading: UIStrings.UnsafeHeading),
+                (Index: 0, Key: "run_exit", X: 66f, Y: -17f, Pose: StudentPose.Wait, Heading: "Not safe yet"),
+            })
+            {
+                Assert.That(setting.ActOutFor(stop.Key), Is.Not.Null, "the food court Unsafe Choice has an Act-out");
+                Tap(c, stop.Index);
+                yield return WaitFor(() => student.bubble.gameObject.activeSelf && student.bubble.Line == UIStrings.ReactionWait,
+                    "the food court stop at " + stop.Key);
+                Assert.That(student.X, Is.EqualTo(stop.X));
+                Assert.That(student.Y, Is.EqualTo(stop.Y));
+                Assert.That(student.Pose, Is.EqualTo(stop.Pose));
+                if (stop.Key == "elevator")
+                    Assert.That(student.X + 16f, Is.LessThan(387f), "the Student stays outside the elevator doors");
+                if (stop.Key == "shop_window")
+                {
+                    Assert.That(230f - student.Y, Is.GreaterThan(207f), "the Student stops in the aisle in front of the glass");
+                    // The glazing spans art x 278 to 354; the Reaction must leave its right half in view.
+                    var reaction = BoundsInSetting(setting, (RectTransform)student.bubble.transform);
+                    Assert.That(reaction.xMax, Is.LessThan(316f * 4f), "the Reaction leaves the shop glass visible");
+                }
+                if (stop.Key == "run_exit")
+                    Assert.That(student.X + 16f, Is.LessThan(83f), "the run stops on open floor, left of the stool");
+
+                yield return FeedbackShown(c);
+                Assert.That(c.feedbackHeading.text, Is.EqualTo(stop.Heading));
+                c.tryAgainButton.onClick.Invoke();
+                yield return ActionBarShown(c);
+                Assert.That(student.X, Is.EqualTo(230f));
+                Assert.That(student.Y, Is.Zero);
+                Assert.That(student.Pose, Is.EqualTo(setting.StartPose));
+                Assert.That(c.actionBar.buttons[stop.Index].button.interactable, Is.False);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator HardLevel3_HangingSign_SwaysOnlyWhileShaking()
+        {
+            yield return StartRolloutLevel(new LevelId(Episode.Earthquake, Difficulty.Hard, 3));
+            var c = Level();
+            var shaker = c.ActiveSetting.shaker;
+            var sign = Array.Find(c.ActiveSetting.GetComponentsInChildren<SpriteAnimator>(), a => a.name == "Food Court Sign");
+            Assert.That(sign, Is.Not.Null, "the food court has an animated hanging sign");
+            Assert.That(shaker.wobblers, Does.Contain(sign));
+            Assert.That(shaker.IsShaking, Is.True);
+            var image = sign.GetComponent<Image>();
+            var initial = image.sprite;
+            yield return WaitFor(() => image.sprite != initial, "the hanging sign to sway");
+            yield return ActionBarShown(c);
+
+            Tap(c, 3);
+            yield return FeedbackShown(c);
+            Assert.That(shaker.IsShaking, Is.False);
+            Assert.That(sign.enabled, Is.False);
+            var resting = image.sprite;
+            yield return Wait(0.4f);
+            Assert.That(image.sprite, Is.SameAs(resting), "the sign holds its resting frame after the shaking stops");
+        }
+
+        [UnityTest]
+        public IEnumerator HardLevel4_StartsOnTheUpperFloor()
+        {
+            yield return StartRolloutLevel(new LevelId(Episode.Earthquake, Difficulty.Hard, 4));
+            var c = Level();
+            var setting = c.ActiveSetting;
+            Assert.That(setting.key, Is.EqualTo("mall_b_v2"));
+            Assert.That(setting.startY, Is.EqualTo(52f), "the landing is 52 art pixels above the floor line");
+            Assert.That(c.Student.X, Is.EqualTo(129f));
+            Assert.That(c.Student.Y, Is.EqualTo(setting.startY));
+            Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Idle));
+            Assert.That(setting.shaker, Is.Null);
+            Assert.That(setting.ActiveGrownUps, Is.Empty);
+            Assert.That(c.bantay.gameObject.activeInHierarchy, Is.False);
+
+            var student = BoundsInSetting(setting, (RectTransform)c.Student.transform);
+            Assert.That(student.Overlaps(BoundsInSetting(setting, c.caption)), Is.False);
+            Assert.That(student.Overlaps(BoundsInSetting(setting, (RectTransform)c.hintButton.transform)), Is.False);
+            Assert.That(student.Overlaps(BoundsInSetting(setting, (RectTransform)c.pauseButton.transform)), Is.False);
+        }
+
+        // Between x 203 and 227 the tread line descends from 27 to 13 pixels above the floor.
+        static bool OnMallStairs(StudentActor student)
+        {
+            if (!student.IsWalking || student.X < 203f || student.X > 227f) return false;
+            var expectedY = Mathf.Lerp(27f, 13f, (student.X - 203f) / 24f);
+            return Mathf.Abs(student.Y - expectedY) <= 1f;
+        }
+
+        [UnityTest]
+        public IEnumerator HardLevel4_SafeChoice_ActsOutAndCompletes()
+        {
+            yield return StartRolloutLevel(new LevelId(Episode.Earthquake, Difficulty.Hard, 4));
+            var c = Level();
+            var student = c.Student;
+            yield return ActionBarShown(c);
+            Assert.That(c.ActiveSetting.ActOutFor("stairs"), Is.Not.Null, "the stairs Choice has an Act-out");
+
+            Tap(c, 0);
+            yield return WaitFor(() => OnMallStairs(student) && !student.FacingLeft, "the Student to descend the stairs");
+            var higherY = student.Y;
+            var earlierX = student.X;
+            yield return WaitFor(() => student.IsWalking && student.X >= 240f, "the Student to reach the foot of the stairs");
+            Assert.That(student.X, Is.GreaterThan(earlierX));
+            Assert.That(student.Y, Is.LessThan(higherY));
+            yield return WaitFor(() => student.IsWalking && student.X > 331f, "the Student to leave through the exit");
+            yield return FeedbackShown(c);
+            Assert.That(student.X, Is.EqualTo(430f));
+            Assert.That(student.Y, Is.Zero);
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Idle));
+            var halfWidth = ((RectTransform)student.transform).rect.width / student.unitsPerPixel / 2f;
+            Assert.That(student.X + halfWidth, Is.LessThan(452f), "the Student stands beside the parking sign");
+            // The outer wall ends at art x 373 and the pavement edge at about x 384 on the standing row.
+            Assert.That(student.X - halfWidth, Is.GreaterThan(405f), "the Student stands out in the open parking, clear of the mall");
+            FinishWithThreeStars(c);
+        }
+
+        [UnityTest]
+        public IEnumerator HardLevel4_UnsafeChoice_StopsAndResets()
+        {
+            yield return StartRolloutLevel(new LevelId(Episode.Earthquake, Difficulty.Hard, 4));
+            var c = Level();
+            var setting = c.ActiveSetting;
+            var student = c.Student;
+            yield return ActionBarShown(c);
+
+            foreach (var stop in new[]
+            {
+                (Index: 2, Key: "run_push", X: 270f, Y: 9f, Pose: StudentPose.Wait, Heading: "Not safe yet"),
+                (Index: 3, Key: "mall_wall", X: 357f, Y: 0f, Pose: StudentPose.Wait, Heading: "Not safe yet"),
+                (Index: 1, Key: "elevator", X: 96f, Y: 52f, Pose: StudentPose.Reach, Heading: UIStrings.UnsafeHeading),
+            })
+            {
+                Assert.That(setting.ActOutFor(stop.Key), Is.Not.Null, "the way out Unsafe Choice has an Act-out");
+                Tap(c, stop.Index);
+                if (stop.Key == "run_push")
+                    yield return WaitFor(() => OnMallStairs(student) && !student.FacingLeft, "the run down the stairs");
+                yield return WaitFor(() => student.bubble.gameObject.activeSelf && student.bubble.Line == UIStrings.ReactionWait,
+                    "the way out stop at " + stop.Key);
+                Assert.That(student.X, Is.EqualTo(stop.X));
+                Assert.That(student.Y, Is.EqualTo(stop.Y));
+                Assert.That(student.Pose, Is.EqualTo(stop.Pose));
+                if (stop.Key == "run_push")
+                    Assert.That(student.X + 16f, Is.LessThan(289f), "the Student stays short of the crowd");
+                if (stop.Key == "mall_wall")
+                    Assert.That(student.X, Is.InRange(333f, 373f), "the Student waits beside the outer wall");
+                if (stop.Key == "elevator")
+                    Assert.That(student.FacingLeft, Is.True, "the Student reaches toward the call button");
+
+                yield return FeedbackShown(c);
+                Assert.That(c.feedbackHeading.text, Is.EqualTo(stop.Heading));
+                c.tryAgainButton.onClick.Invoke();
+                if (stop.Y < setting.startY)
+                    yield return WaitFor(() => OnMallStairs(student) && student.FacingLeft,
+                        "the Try Again return to retrace the stairs from " + stop.Key);
+                yield return ActionBarShown(c);
+                Assert.That(student.X, Is.EqualTo(129f));
+                Assert.That(student.Y, Is.EqualTo(52f));
+                Assert.That(student.Pose, Is.EqualTo(StudentPose.Idle));
+                Assert.That(c.actionBar.buttons[stop.Index].button.interactable, Is.False);
+            }
+        }
+
+        [UnityTest]
         public IEnumerator HardLevel2_SafeChoice_ActsOutAndCompletes()
         {
             yield return StartRolloutLevel(HardTwo);
@@ -1323,7 +1532,7 @@ namespace DisasterSafety.Tests
             yield return WaitFor(() => c.Student.bubble.Line == UIStrings.ReactionSafe, "the Normal 4 Safe Reaction");
             var sign = new Rect(15f * 4f, (270f - 176f) * 4f, 68f * 4f, 34f * 4f);
             var reaction = (RectTransform)c.Student.bubble.transform;
-            Assert.That(SchoolyardArtBounds(c.ActiveSetting, reaction).Overlaps(sign),
+            Assert.That(BoundsInSetting(c.ActiveSetting, reaction).Overlaps(sign),
                 Is.False, "the Normal 4 Reaction leaves the Evacuation Area sign visible");
 
             yield return StartRolloutLevel(HardTwo);
@@ -1333,19 +1542,19 @@ namespace DisasterSafety.Tests
             yield return WaitFor(() => c.Student.bubble.Line == UIStrings.ReactionReady, "the Hard 2 Safe Reaction");
             reaction = (RectTransform)c.Student.bubble.transform;
             var teacher = (RectTransform)c.ActiveSetting.ActiveGrownUps[0].transform;
-            var bounds = SchoolyardArtBounds(c.ActiveSetting, reaction);
+            var bounds = BoundsInSetting(c.ActiveSetting, reaction);
             Assert.That(bounds.Overlaps(sign), Is.False, "the Hard 2 Reaction leaves the sign visible");
-            Assert.That(bounds.Overlaps(SchoolyardArtBounds(c.ActiveSetting, teacher)),
+            Assert.That(bounds.Overlaps(BoundsInSetting(c.ActiveSetting, teacher)),
                 Is.False, "the Hard 2 Reaction leaves the Teacher visible");
         }
 
-        static Rect SchoolyardArtBounds(LevelSetting setting, RectTransform element)
+        static Rect BoundsInSetting(LevelSetting setting, RectTransform element)
         {
-            var yard = (RectTransform)setting.transform;
+            var group = (RectTransform)setting.transform;
             var corners = new Vector3[4];
             element.GetWorldCorners(corners);
-            var min = (Vector2)yard.InverseTransformPoint(corners[0]) - yard.rect.min;
-            var max = (Vector2)yard.InverseTransformPoint(corners[2]) - yard.rect.min;
+            var min = (Vector2)group.InverseTransformPoint(corners[0]) - group.rect.min;
+            var max = (Vector2)group.InverseTransformPoint(corners[2]) - group.rect.min;
             return Rect.MinMaxRect(min.x, min.y, max.x, max.y);
         }
 

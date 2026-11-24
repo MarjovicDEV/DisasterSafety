@@ -31,6 +31,8 @@
             "id": "run_exit",
             "label": "Run to the mall exit",
             "picture": "choice_run_exit",
+            "icon": "icon_door",
+            "action": "run_exit",
             "safe": false,
             "heading": "Not safe yet",
             "feedback": "Do not run while it shakes. Take cover where you are.",
@@ -44,6 +46,8 @@
             "id": "elevator",
             "label": "Ride the elevator down",
             "picture": "choice_elevator_during",
+            "icon": "icon_elevator",
+            "action": "elevator",
             "safe": false,
             "feedback": "Never use the elevator in an earthquake. Take cover first.",
             "sources": [
@@ -54,6 +58,8 @@
             "id": "shop_window",
             "label": "Stand by the glass shop window",
             "picture": "choice_shop_window",
+            "icon": "icon_shop_window",
+            "action": "shop_window",
             "safe": false,
             "feedback": "Glass can break and fall. Stay away from shop windows.",
             "sources": [
@@ -65,6 +71,8 @@
             "id": "table",
             "label": "Duck under the food court table",
             "picture": "choice_food_court_table",
+            "icon": "icon_strong_table",
+            "action": "table",
             "safe": true,
             "feedback": "Duck, Cover, and Hold. Stay until the shaking stops.",
             "sources": [

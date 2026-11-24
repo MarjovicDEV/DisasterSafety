@@ -59,6 +59,14 @@ The `icons=` filter writes only the named icons, so each slice adds its icons wi
 | `icon_watch_waves` | Stay and watch the waves | Normal 5 |
 | `icon_high_ground` | Go to high ground right away | Normal 5 |
 | `icon_wait_beach` | Wait on the beach for news | Normal 5 |
+| `icon_door` (reused) | Run to the mall exit | Hard 3 |
+| `icon_elevator` | Ride the elevator down | Hard 3 |
+| `icon_shop_window` | Stand by the glass shop window | Hard 3 |
+| `icon_strong_table` (reused) | Duck under the food court table | Hard 3 |
+| `icon_stairs` (reused) | Walk down the stairs and out | Hard 4 |
+| `icon_elevator` (reused) | Take the elevator down | Hard 4 |
+| `icon_run_push` | Run and push to get out | Hard 4 |
+| `icon_mall_wall` | Wait by the mall wall outside | Hard 4 |
 
 Easy 2 reuses the pilot's `icon_window` for "Stand by the window".
 
@@ -253,6 +261,53 @@ Earthquake Normal 5 uses a 480 × 270 beach after the shaking stops. One art pix
 | `wait` | Walk to (200, 219) and sit on the mat. |
 
 The Fish and Watch walks pass in front of the mat because the wet sand and shoreline lie to its left. Try Again from either wet-sand stop takes a direct walk in front of the mat. The Wait Choice walks onto the mat and starts its return there.
+
+## Mall (`ArtSource/scripts/mall_v2.lua`, part `mall_v2`)
+
+Render with `aseprite.exe -b --script-param root=<project> --script-param only=mall_v2 --script ArtSource/scripts/build.lua`.
+The two Settings share a palette and both measure 480 by 270 pixels. One art pixel is four UI units. Art placements are measured from the top left. Student positions mark the centre of the feet. Neither Setting has a Grown-up actor.
+
+### Hard 3, food court (`mall_a`)
+
+| Art or cast | Placement |
+|---|---|
+| Floor | Standing line at row 230 and back edge at row 208. |
+| Exit | Door at (29, 126), with the exit symbol at (39, 111). |
+| Food court table | Table and stools stand to the left of the Student. The 88 by 39 pixel `foodtable_front` at (106, 192) draws above the Student during the Safe Act-out. |
+| Shop window | Glazed display at (274, 121), with goods on shelves. |
+| Elevator | Closed doors at (387, 121). The call button is centred at (374, 206). |
+| Hanging sign | Four 55 by 29 pixel frames at (118, 119), each lasting 160 ms. The sign sways while the ground shakes and rests when it stops. |
+| Student and Reaction | The Student starts at (230, 230), plays Surprised during the opening shake, and then stands Idle. The 67 by 26 art-pixel Reaction sits 30 art pixels left of centre and 2 above the Student frame, so the shop window stop leaves the right half of the glass in view. |
+
+| Choice | Act-out points |
+|---|---|
+| `run_exit` | Run via (214, 247) and stop at (66, 247), on open floor left of the stool and short of the door. |
+| `elevator` | Walk to (363, 230) and reach right toward the button. |
+| `shop_window` | Walk to (307, 230) and stop in the aisle in front of the glass. |
+| `table` | Walk to (204, 230), show the table front, and crouch to (168, 230). Hold for 0.65 seconds and calm the shaking. |
+
+The exit run and its direct Try Again return use the foreground aisle in front of the table and stools. The run stops left of the left stool, so no scenery sits behind the stopped Student except the exit wall. The elevator and shop window walks cross in front of the display because the elevator is to its right. The Safe Act-out enters the table from the right and uses the overlay to put the Student behind its front edge.
+
+### Hard 4, the way out (`mall_b`)
+
+| Art or cast | Placement |
+|---|---|
+| Upper landing and stairs | The upper landing is at row 178. The stairs descend to row 230. The Student's `startY` is 52 art pixels above the ground-floor line. |
+| Elevator | Closed doors at (21, 99), with the floor indicator below the Level label. The call button is centred at (84, 154). |
+| Exit and crowd | Exit at (261, 144), with the exit symbol at (281, 129). The two still figures are drawn into the background with feet at (296, 221) and (317, 218). |
+| Mall wall and open parking | The outer wall sign and glass are at (333, 131). The outer wall ends at x 373. The assembly-area sign stands at (452, 173), out in the open parking area. |
+| Student and Reaction | The Student starts Idle at (129, 178). The 67 by 26 art-pixel Reaction sits 20 art pixels left of centre and 2 above the Student frame. The offset leaves the parking sign visible. |
+
+| Choice | Act-out points |
+|---|---|
+| `stairs` | Walk through the shared stair and exit route, then stand in open parking at (430, 230), left of the sign and clear of the mall frontage. |
+| `elevator` | Walk to (96, 178) and reach left toward the call button. |
+| `run_push` | Run down the stair route and stop at (270, 221), short of the nearest person. |
+| `mall_wall` | Walk through the shared stair and exit route to (357, 230), beside the outer wall. |
+
+The stair route uses (155, 178), (191, 196), (239, 224), and (251, 230) as its slope changes. The straight sections between those points follow the intervening treads. The shared exit route continues through (279, 235), (329, 235), and (352, 230). This foreground lane passes in front of the still crowd and continues past the mall frontage. The Safe Choice crosses the curb into the open parking area.
+
+Try Again retraces the chosen Act-out's walk or run destinations in reverse at walking speed. It climbs the stairs from the crowd and wall stops and ends on the upper landing at (129, 178).
 
 ## Removed art (cleanup, 2026-11-22)
 

@@ -447,6 +447,20 @@ namespace DisasterSafety.Game.UI
             }
             else
             {
+                var act = setting.retraceActOutOnRetry
+                    ? setting.ActOutFor(scenario.choices[attempt.LastChoice].action)
+                    : null;
+                if (act != null)
+                {
+                    for (var i = act.LastStep(stops: true); i >= 0; i--)
+                    {
+                        var step = act.steps[i];
+                        if (step.kind != ActOutStepKind.Walk && step.kind != ActOutStepKind.FastWalk &&
+                            step.kind != ActOutStepKind.Run) continue;
+                        if (student.X == step.x && student.Y == step.y) continue;
+                        yield return student.WalkTo(step.x, step.y, PoseActor.WalkSpeed);
+                    }
+                }
                 yield return student.WalkTo(setting.StartX, setting.startY, PoseActor.WalkSpeed);
             }
 

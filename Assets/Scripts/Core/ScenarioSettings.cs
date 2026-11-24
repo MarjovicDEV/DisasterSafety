@@ -43,6 +43,8 @@ namespace DisasterSafety.Core
                 case Home: return HomeSpots;
                 case Schoolyard: return SchoolyardSpots;
                 case Beach: return BeachSpots;
+                case MallA: return MallASpots;
+                case MallB: return MallBSpots;
                 default: return System.Array.Empty<string>();
             }
         }
@@ -68,6 +70,10 @@ namespace DisasterSafety.Core
         };
 
         static readonly string[] BeachSpots = { "fish", "watch", "high_ground", "wait" };
+
+        static readonly string[] MallASpots = { "run_exit", "elevator", "shop_window", "table" };
+
+        static readonly string[] MallBSpots = { "stairs", "elevator", "run_push", "mall_wall" };
 
         public static bool CanShake(string key) =>
             key == Classroom || key == Corridor || key == Home || key == Schoolyard || key == MallA;

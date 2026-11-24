@@ -74,6 +74,7 @@ namespace DisasterSafety.EditorTools
                 BuildMallA(world), BuildMallB(world), BuildHomeAfter(world), BuildEvacuationArea(world),
                 BuildClassroomV2(world), BuildCorridorV2(world), BuildClassroomAfterV2(world),
                 BuildBedroomV2(world), BuildHomeV2(world), BuildSchoolyardV2(world), BuildBeachV2(world),
+                BuildMallAV2(world), BuildMallBV2(world),
             };
             for (var i = 1; i < c.settings.Length; i++)
                 c.settings[i].gameObject.SetActive(false);
@@ -958,6 +959,151 @@ namespace DisasterSafety.EditorTools
                         ActOutStep.Pose(StudentPose.Sit),
                         ActOutStep.Wait(0.2f),
                     },
+                },
+            };
+            return setting;
+        }
+
+        static LevelSetting BuildMallAV2(RectTransform world)
+        {
+            var group = Stretch(Rect("Mall Food Court V2", world));
+            var setting = group.gameObject.AddComponent<LevelSetting>();
+            setting.key = ScenarioSettings.ActionArtKey(ScenarioSettings.MallA);
+            setting.captionGoalFont = f3;
+            setting.artAnchorY = 0f;
+
+            var background = S("Level/v2/bg_mall_a");
+            ArtImage(group, "Backing", background, 0, 0);
+            var shaking = Stretch(Rect("Shaking", group));
+            ArtImage(shaking, "Food Court", background, 0, 0);
+            setting.shaker = shaking.gameObject.AddComponent<SceneShaker>();
+            setting.shaker.target = shaking;
+            setting.shaker.shakeSeconds = 2.5f;
+            setting.shaker.wobblers = new[]
+            {
+                BuildLevelAnimation(shaking, "Food Court Sign", Frames("Level/v2/mall_foodcourt_sign", 4),
+                    118, 119, 1000f / 160f, onlyWhileShaking: true),
+            };
+
+            setting.startX = 230f;
+            setting.student = BuildStudent(shaking, withBubble: true);
+            var reaction = (RectTransform)setting.student.bubble.transform;
+            reaction.sizeDelta = new Vector2(268f, 104f);
+            // 30 art pixels left of centre, so the shop window stop leaves the glass in view.
+            reaction.anchoredPosition = new Vector2(-120f, 8f);
+            var tableFront = ArtImage(shaking, "Food Court Table Front", S("Level/v2/foodtable_front"), 106, 192).gameObject;
+            tableFront.SetActive(false);
+            // Subtract the foot row from the floor row to get the Act-out height.
+            const float floorY = 230f;
+            setting.actOuts = new[]
+            {
+                new ActOut
+                {
+                    key = "run_exit", stopAfter = 2,
+                    steps = new[]
+                    {
+                        ActOutStep.Run(214f, floorY - 247f),
+                        // Stop on open floor left of the stool, short of the door.
+                        ActOutStep.Run(66f, floorY - 247f),
+                        ActOutStep.Face(left: true),
+                    },
+                },
+                new ActOut
+                {
+                    key = "elevator", stopAfter = 2, stopPose = StudentPose.Reach,
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(363f),
+                        ActOutStep.Pose(StudentPose.Reach),
+                        ActOutStep.Wait(0.2f),
+                    },
+                },
+                new ActOut
+                {
+                    key = "shop_window", stopAfter = 0, steps = new[] { ActOutStep.Walk(307f) },
+                },
+                new ActOut
+                {
+                    key = "table",
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(204f),
+                        ActOutStep.Overlay(tableFront),
+                        ActOutStep.Crouch(168f),
+                        ActOutStep.Face(left: false),
+                        ActOutStep.Pose(StudentPose.Hold, 0.65f),
+                        ActOutStep.Calm(),
+                    },
+                },
+            };
+            return setting;
+        }
+
+        static LevelSetting BuildMallBV2(RectTransform world)
+        {
+            var group = Stretch(Rect("Mall Way Out V2", world));
+            var setting = group.gameObject.AddComponent<LevelSetting>();
+            setting.key = ScenarioSettings.ActionArtKey(ScenarioSettings.MallB);
+            setting.captionGoalFont = f3;
+            setting.artAnchorY = 0f;
+            ArtImage(group, "Mall Way Out", S("Level/v2/bg_mall_b"), 0, 0);
+
+            // The upper landing's foot row is 52 art pixels above the ground-floor line.
+            const float floorY = 230f;
+            const float landingY = 178f;
+            setting.startX = 129f;
+            setting.startY = floorY - landingY;
+            setting.retraceActOutOnRetry = true;
+            setting.student = BuildStudent(group, withBubble: true);
+            var reaction = (RectTransform)setting.student.bubble.transform;
+            reaction.sizeDelta = new Vector2(268f, 104f);
+            reaction.anchoredPosition = new Vector2(-80f, 8f);
+
+            // The route follows the tread noses. A point is needed only where the slope changes.
+            var stairs = new[]
+            {
+                new Vector2(155f, landingY),
+                new Vector2(191f, 196f),
+                new Vector2(239f, 224f),
+                new Vector2(251f, floorY),
+            };
+            ActOutStep[] DownStairs(System.Func<float, float, ActOutStep> move) =>
+                System.Array.ConvertAll(stairs, point => move(point.x, floorY - point.y));
+            var outside = DownStairs(ActOutStep.Walk).Concat(new[]
+            {
+                // Use the open lane in front of the still crowd at the exit.
+                ActOutStep.Walk(279f, floorY - 235f),
+                ActOutStep.Walk(329f, floorY - 235f),
+                ActOutStep.Walk(352f),
+            });
+            setting.actOuts = new[]
+            {
+                new ActOut
+                {
+                    key = "stairs",
+                    // Out in the open parking, well clear of the mall frontage that ends at x 373.
+                    steps = outside.Append(ActOutStep.Walk(430f)).ToArray(),
+                },
+                new ActOut
+                {
+                    key = "elevator", stopAfter = 3, stopPose = StudentPose.Reach,
+                    steps = new[]
+                    {
+                        ActOutStep.Walk(96f, setting.startY),
+                        ActOutStep.Face(left: true),
+                        ActOutStep.Pose(StudentPose.Reach),
+                        ActOutStep.Wait(0.2f),
+                    },
+                },
+                new ActOut
+                {
+                    key = "run_push",
+                    steps = DownStairs(ActOutStep.Run).Append(ActOutStep.Run(270f, floorY - 221f)).ToArray(),
+                },
+                new ActOut
+                {
+                    key = "mall_wall",
+                    steps = outside.Append(ActOutStep.Walk(357f)).ToArray(),
                 },
             };
             return setting;
