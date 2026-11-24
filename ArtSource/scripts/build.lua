@@ -161,6 +161,17 @@ if want("classroom_v2") then
   L.saveFrames(CR.cabinetFrames(), "Level/v2/cabinet", "Level/v2/cabinet", 120)
 end
 
+-- The v2 How to Play Tutorial Pages (ticket 13): Tutorial/tutorial_v2_<name>_0.png and _1.png.
+-- tutorial.lua and its pilot pages are not changed.
+if want("tutorial_v2") then
+  local UV = dofile(here .. "ui_v2.lua")(L, ST, CR)
+  local TV = dofile(here .. "tutorial_v2.lua")(L, ST, CR, UV)
+  for _, page in ipairs(TV.pages) do
+    local path = "Tutorial/tutorial_" .. page.name
+    L.saveFrames({ page.draw(0), page.draw(1) }, path, path, 400)
+  end
+end
+
 -- The v2 classroom after the shaking (Easy 3): its own background and desk-front overlay.
 if want("classroom_after_v2") then
   local IC = dofile(here .. "icons_v2.lua")(L, ST)
