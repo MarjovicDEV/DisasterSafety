@@ -391,7 +391,8 @@ namespace DisasterSafety.Tests
             Assert.That(c.LastResult.Opened, Does.Contain("Fire/Easy"));
             Assert.That(c.openedRibbon.activeInHierarchy, Is.True);
             Assert.That(c.openedText.text, Is.EqualTo("Fire is open!"));
-            Assert.That(c.nextButton.gameObject.activeSelf, Is.False, "Hard 7 is the last Earthquake Level");
+            Assert.That(c.nextButton.gameObject.activeSelf, Is.False);
+            Assert.That(c.nextEpisodeButton.gameObject.activeInHierarchy, Is.True);
             var saved = SavedOnDisk();
             Assert.That(saved.IsCompleted(new LevelId(Episode.Earthquake, Difficulty.Hard, 7)), Is.True);
             Assert.That(saved.IsOpen(Episode.Fire, Difficulty.Easy), Is.True);
@@ -399,6 +400,92 @@ namespace DisasterSafety.Tests
             const string openedLine = "Fire is open! New levels are coming soon.";
             yield return WaitFor(() => c.completedBubble.gameObject.activeInHierarchy && c.completedBubble.Line == openedLine,
                 "the Student to announce that Fire is open", LevelController.OpenedLineDelay + 2f);
+        }
+
+        [UnityTest]
+        public IEnumerator LastOutstandingHardLevel_OffersNextEpisode()
+        {
+            GameServices.Initialize(dir);
+            for (var n = 2; n <= 7; n++)
+                LevelCompletion.Record(GameServices.Progress, new LevelId(Episode.Earthquake, Difficulty.Hard, n), 3);
+            yield return StartRolloutLevel(HardOne);
+            var controller = Level();
+            yield return ReadyToChoose(Level);
+            Tap(controller, controller.Attempt.Scenario.SafeChoiceIndex);
+            yield return FeedbackShown(controller);
+            controller.finishButton.onClick.Invoke();
+            Assert.That(controller.LastResult.Opened, Does.Contain("Fire/Easy"));
+            var nextEpisode = controller.nextEpisodeButton;
+            Assert.That(nextEpisode.gameObject.activeInHierarchy, Is.True);
+            Assert.That(controller.nextButton.gameObject.activeSelf, Is.False, "the shortcut takes the Next slot");
+            Assert.That(nextEpisode.GetComponentInChildren<Text>().text, Is.EqualTo("Next Episode"));
+            Assert.That(Array.Exists(nextEpisode.GetComponentsInChildren<Image>(),
+                image => image.sprite != null && image.sprite.name == "episode_fire"), Is.True);
+            yield return Wait(0.4f);
+            var row = nextEpisode.transform.parent;
+            var replayBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(row, controller.replayButton.transform);
+            var episodeBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(row, nextEpisode.transform);
+            var levelsBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(row, controller.levelsButton.transform);
+            Assert.That(episodeBounds.min.x, Is.GreaterThan(replayBounds.max.x));
+            Assert.That(episodeBounds.max.x, Is.LessThan(levelsBounds.min.x));
+            var label = nextEpisode.GetComponentInChildren<Text>();
+            var buttonRect = (RectTransform)nextEpisode.transform;
+            var labelCentre = buttonRect.InverseTransformPoint(label.rectTransform.TransformPoint(label.rectTransform.rect.center));
+            var rightEdge = labelCentre.x + PixelText.Width(label.font, label.text) / 2f;
+            Assert.That(rightEdge, Is.LessThan(buttonRect.rect.xMax - 8f), "the label stays inside the button face");
+            nextEpisode.onClick.Invoke();
+            yield return WaitForScene(GameScenes.MainMenu);
+            var menu = Menu();
+            yield return WaitFor(() => menu.episodePanel.IsVisible, "Episode selection");
+            var fire = Array.Find(menu.episodeCards, card => card.episode == Episode.Fire);
+            Assert.That(fire.gameObject.activeInHierarchy && !fire.lockBadge.activeSelf, Is.True);
+            fire.button.onClick.Invoke();
+            yield return Wait(0.5f);
+            Assert.That(menu.difficultyHeader.text, Is.EqualTo("Fire"));
+            menu.difficultyCards[0].button.onClick.Invoke();
+            yield return Wait(0.5f);
+            menu.levelSlots[0].button.onClick.Invoke();
+            Assert.That(menu.startButton.interactable, Is.False);
+            Assert.That(menu.student.Bubble.Line, Is.EqualTo(UIStrings.StudentLevelSoon));
+            menu.levelBack.onClick.Invoke();
+            yield return Wait(0.5f);
+            menu.difficultyBack.onClick.Invoke();
+            yield return Wait(0.5f);
+            Assert.That(menu.episodePanel.IsVisible, Is.True);
+            menu.episodeBack.onClick.Invoke();
+            yield return Wait(0.5f);
+            Assert.That(menu.mainPanel.IsVisible, Is.True);
+        }
+
+        [UnityTest]
+        public IEnumerator HardSevenEarlyAndAfterReload_OfferDifferentCompletionActions()
+        {
+            yield return StartRolloutLevel(HardSeven);
+            var controller = Level();
+            yield return ReadyToChoose(Level);
+            Tap(controller, controller.Attempt.Scenario.SafeChoiceIndex);
+            yield return FeedbackShown(controller);
+            controller.finishButton.onClick.Invoke();
+            Assert.That(controller.nextEpisodeButton.gameObject.activeSelf, Is.False);
+            Assert.That(controller.nextButton.gameObject.activeSelf, Is.False);
+            Assert.That(SavedOnDisk().IsOpen(Episode.Fire), Is.False);
+
+            for (var n = 1; n <= 6; n++)
+                LevelCompletion.Record(GameServices.Progress, new LevelId(Episode.Earthquake, Difficulty.Hard, n), 3);
+            GameServices.SaveProgress();
+            GameServices.Reset();
+            GameServices.Initialize(dir);
+            Assert.That(GameServices.Progress.IsOpen(Episode.Fire), Is.True);
+            controller.replayButton.onClick.Invoke();
+            yield return WaitFor(() => controller == null, "Hard 7 replay to reload");
+            yield return ReadyToChoose(Level);
+            controller = Level();
+            Tap(controller, controller.Attempt.Scenario.SafeChoiceIndex);
+            yield return FeedbackShown(controller);
+            controller.finishButton.onClick.Invoke();
+            Assert.That(controller.nextEpisodeButton.gameObject.activeInHierarchy, Is.True);
+            Assert.That(controller.LastResult.Opened, Is.Empty);
+            Assert.That(controller.openedRibbon.activeSelf, Is.False);
         }
 
         IEnumerator StartEasyOne(StudentKind kind = StudentKind.None)

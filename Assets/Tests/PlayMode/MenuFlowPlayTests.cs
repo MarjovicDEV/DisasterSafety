@@ -26,6 +26,9 @@ namespace DisasterSafety.Tests
         {
             dir = Path.Combine(Path.GetTempPath(), "ds-play-tests-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(dir);
+            // The prior menu can still be waiting to greet its Learner when the next test starts.
+            var priorMenu = UnityEngine.Object.FindAnyObjectByType<MainMenuController>();
+            if (priorMenu != null) priorMenu.gameObject.SetActive(false);
             GameServices.Reset();
         }
 
