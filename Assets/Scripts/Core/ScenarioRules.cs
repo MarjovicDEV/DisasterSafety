@@ -5,8 +5,8 @@ namespace DisasterSafety.Core
 {
     /// <summary>
     /// What every authored Scenario must satisfy before its Level counts as a Playable Level:
-    /// a Level inside the Curriculum, 3 or 4 Choices with exactly one Safe Choice, Feedback for
-    /// every Choice, a cited source for every safety line, and a known Setting and Phase.
+    /// a Level inside the Curriculum, 3 or 4 Choices with exactly one Safe Choice, an icon, an action
+    /// spot and Feedback for every Choice, a cited source for every safety line, and a known Setting and Phase.
     /// </summary>
     public static class ScenarioRules
     {
@@ -39,11 +39,6 @@ namespace DisasterSafety.Core
             if (count < MinChoices || count > MaxChoices)
                 problems.Add("A Scenario needs 3 or 4 Choices, not " + count + ".");
 
-            var withAction = s.ChoicesWithAction;
-            if (withAction > 0 && withAction < count)
-                problems.Add("Either every Choice has an action or none does, not " + withAction + " of " + count + ".");
-            var usesActions = withAction > 0 && withAction == count;
-
             var safe = 0;
             var ids = new HashSet<string>();
             for (var i = 0; i < count; i++)
@@ -58,13 +53,10 @@ namespace DisasterSafety.Core
                 if (string.IsNullOrWhiteSpace(c.id)) problems.Add(name + " needs an id.");
                 else if (!ids.Add(c.id)) problems.Add(name + ": Choice ids must be unique.");
                 if (string.IsNullOrWhiteSpace(c.label)) problems.Add(name + " needs a label.");
-                if (!usesActions && string.IsNullOrWhiteSpace(c.picture)) problems.Add(name + " needs a picture.");
-                if (usesActions)
-                {
-                    if (string.IsNullOrWhiteSpace(c.icon)) problems.Add(name + " needs an icon.");
-                    if (!ScenarioSettings.HasActionSpot(s.setting, c.action))
-                        problems.Add(name + ": action '" + c.action + "' is not an action spot in Setting '" + s.setting + "'.");
-                }
+                if (string.IsNullOrWhiteSpace(c.icon)) problems.Add(name + " needs an icon.");
+                if (string.IsNullOrWhiteSpace(c.action)) problems.Add(name + " needs an action.");
+                else if (!ScenarioSettings.HasActionSpot(s.setting, c.action))
+                    problems.Add(name + ": action '" + c.action + "' is not an action spot in Setting '" + s.setting + "'.");
                 if (string.IsNullOrWhiteSpace(c.feedback)) problems.Add(name + " needs Feedback.");
                 if (!HasSources(c.sources)) problems.Add(name + " needs a source for its Feedback.");
                 if (c.safe) safe++;

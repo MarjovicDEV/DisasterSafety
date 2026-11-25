@@ -58,62 +58,47 @@ namespace DisasterSafety.Tests
         }
 
         [Test]
-        public void MissingChoicePicture_IsAProblem()
+        public void ScenarioWithoutActions_IsAProblem()
         {
             var s = TestScenarios.Classroom();
-            s.choices[TestScenarios.Safe].picture = " ";
-            Assert.That(ScenarioRules.Problems(s), Does.Contain("Choice 'desk' needs a picture."));
-        }
-
-        [Test]
-        public void ScenarioWithoutActions_UsesTheOldFlow()
-        {
-            var s = TestScenarios.Classroom();
+            foreach (var c in s.choices) c.action = string.Empty;
             Assert.That(s.UsesActions, Is.False);
-            Assert.That(ScenarioRules.Problems(s), Is.Empty);
+            Assert.That(ScenarioRules.Problems(s), Does.Contain("Choice 'run' needs an action."));
         }
 
         [Test]
-        public void ScenarioWithAnActionOnEveryChoice_UsesTheNewFlow()
+        public void ScenarioWithAnActionOnEveryChoice_IsValid()
         {
-            var s = TestScenarios.ClassroomWithActions();
+            var s = TestScenarios.Classroom();
             Assert.That(s.UsesActions, Is.True);
             Assert.That(ScenarioRules.Problems(s), Is.Empty);
         }
 
         [Test]
-        public void NewFlowChoice_MayLeaveThePictureEmpty()
+        public void OneChoiceWithoutAnAction_IsAProblem()
         {
-            var s = TestScenarios.ClassroomWithActions();
-            foreach (var c in s.choices) c.picture = string.Empty;
-            Assert.That(ScenarioRules.Problems(s), Is.Empty);
-        }
-
-        [Test]
-        public void MixedActions_AreRejected()
-        {
-            var s = TestScenarios.ClassroomWithActions();
+            var s = TestScenarios.Classroom();
             s.choices[2].action = string.Empty;
             Assert.That(s.UsesActions, Is.False);
-            Assert.That(ScenarioRules.Problems(s), Has.Some.Contains("every Choice has an action or none does"));
+            Assert.That(ScenarioRules.Problems(s), Does.Contain("Choice 'window' needs an action."));
         }
 
         [Test]
-        public void NewFlowChoice_NeedsAnIcon()
+        public void Choice_NeedsAnIcon()
         {
-            var s = TestScenarios.ClassroomWithActions();
+            var s = TestScenarios.Classroom();
             s.choices[1].icon = " ";
             Assert.That(ScenarioRules.Problems(s), Does.Contain("Choice 'desk' needs an icon."));
         }
 
         [Test]
-        public void NewFlowAction_MustBeAnActionSpotOfTheSetting()
+        public void Action_MustBeAnActionSpotOfTheSetting()
         {
-            var s = TestScenarios.ClassroomWithActions();
+            var s = TestScenarios.Classroom();
             s.choices[3].action = "roof";
             Assert.That(ScenarioRules.Problems(s), Has.Some.Contains("action 'roof'"));
 
-            var corridor = TestScenarios.ClassroomWithActions();
+            var corridor = TestScenarios.Classroom();
             corridor.setting = ScenarioSettings.Corridor;
             Assert.That(ScenarioRules.Problems(corridor), Has.Some.Contains("is not an action spot in Setting 'corridor'"));
         }

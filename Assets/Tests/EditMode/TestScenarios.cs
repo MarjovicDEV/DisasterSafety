@@ -13,34 +13,31 @@ namespace DisasterSafety.Tests
         {
             id = id,
             label = "Label " + id,
-            picture = "pic_" + id,
             safe = safe,
             feedback = "Feedback " + id + ".",
             sources = new[] { "EQ-10" },
         };
 
-        /// <summary>Four Choices; index 1 is the Safe Choice.</summary>
-        public static Scenario Classroom(string level = "Earthquake/Easy/1") => new Scenario
-        {
-            level = level,
-            phase = "during",
-            setting = "classroom",
-            goal = Line("Stay safe.", "EQ-28"),
-            intro = Line("It shakes!"),
-            hint = Line("Hide under something strong.", "EQ-10"),
-            lesson = Line("Duck, Cover, and Hold!", "EQ-09"),
-            choices = new[] { Choice("run", false), Choice("desk", true), Choice("window", false), Choice("cabinet", false) },
-        };
+        static readonly string[] Actions = { "door", "desk", "window", "cabinet" };
 
-        /// <summary>The classroom Scenario with an icon and an action on every Choice (the Student acts it out).</summary>
-        public static Scenario ClassroomWithActions(string level = "Earthquake/Easy/1")
+        /// <summary>Four Choices, each with an icon and an action spot of the classroom; index 1 is the Safe Choice.</summary>
+        public static Scenario Classroom(string level = "Earthquake/Easy/1")
         {
-            var s = Classroom(level);
-            var actions = new[] { "door", "desk", "window", "cabinet" };
+            var s = new Scenario
+            {
+                level = level,
+                phase = "during",
+                setting = "classroom",
+                goal = Line("Stay safe.", "EQ-28"),
+                intro = Line("It shakes!"),
+                hint = Line("Hide under something strong.", "EQ-10"),
+                lesson = Line("Duck, Cover, and Hold!", "EQ-09"),
+                choices = new[] { Choice("run", false), Choice("desk", true), Choice("window", false), Choice("cabinet", false) },
+            };
             for (var i = 0; i < s.choices.Length; i++)
             {
-                s.choices[i].icon = "icon_" + actions[i];
-                s.choices[i].action = actions[i];
+                s.choices[i].icon = "icon_" + Actions[i];
+                s.choices[i].action = Actions[i];
             }
             return s;
         }
