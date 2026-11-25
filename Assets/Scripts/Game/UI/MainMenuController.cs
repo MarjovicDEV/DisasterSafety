@@ -77,6 +77,9 @@ namespace DisasterSafety.Game.UI
         [Header("Guide")]
         public MenuStudent student;
 
+        [Header("Backgrounds")]
+        public MenuWorld world;
+
         MenuNavigator nav;
         int selectedLevel;
 
@@ -102,6 +105,7 @@ namespace DisasterSafety.Game.UI
             foreach (var p in AllPanels()) p.SetInstant(false);
             mainPanel.SetInstant(true);
             student.SetKind(GameServices.Progress.Student);
+            world.Show(nav.Background);
             RefreshMain();
 
             // Level Completed's "Levels" button lands here on Level Selection for that Level.
@@ -264,6 +268,7 @@ namespace DisasterSafety.Game.UI
             }
 
             PanelFor(to).Show();
+            world.Show(nav.Background);
             OnEnter(to);
         }
 
