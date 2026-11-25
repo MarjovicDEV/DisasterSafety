@@ -11,6 +11,13 @@ namespace DisasterSafety.Tests
     public class ScenarioTests
     {
         [Test]
+        public void EasyLevel_AcceptsTwoChoices()
+        {
+            var scenario = TestScenarios.Classroom();
+            Assert.That(ScenarioRules.Problems(scenario), Is.Empty);
+        }
+
+        [Test]
         public void ValidScenario_HasNoProblems()
         {
             Assert.That(ScenarioRules.Problems(TestScenarios.Classroom()), Is.Empty);
@@ -78,9 +85,9 @@ namespace DisasterSafety.Tests
         public void OneChoiceWithoutAnAction_IsAProblem()
         {
             var s = TestScenarios.Classroom();
-            s.choices[2].action = string.Empty;
+            s.choices[0].action = string.Empty;
             Assert.That(s.UsesActions, Is.False);
-            Assert.That(ScenarioRules.Problems(s), Does.Contain("Choice 'window' needs an action."));
+            Assert.That(ScenarioRules.Problems(s), Does.Contain("Choice 'run' needs an action."));
         }
 
         [Test]
@@ -95,7 +102,7 @@ namespace DisasterSafety.Tests
         public void Action_MustBeAnActionSpotOfTheSetting()
         {
             var s = TestScenarios.Classroom();
-            s.choices[3].action = "roof";
+            s.choices[1].action = "roof";
             Assert.That(ScenarioRules.Problems(s), Has.Some.Contains("action 'roof'"));
 
             var corridor = TestScenarios.Classroom();
@@ -125,23 +132,30 @@ namespace DisasterSafety.Tests
             Assert.That(ScenarioRules.Problems(two), Has.Some.Contains("Safe Choice"));
         }
 
-        [Test]
-        public void ThreeOrFourChoices_AreRequired()
+        [TestCase(Difficulty.Easy, 2)]
+        [TestCase(Difficulty.Normal, 3)]
+        [TestCase(Difficulty.Hard, 4)]
+        public void EveryEpisode_RequiresTheExactChoiceCount(Difficulty difficulty, int expected)
         {
-            var s = TestScenarios.Classroom();
-            s.choices = s.choices.Take(2).ToArray();
-            Assert.That(ScenarioRules.Problems(s), Has.Some.Contains("3 or 4"));
+            foreach (var episode in Curriculum.Episodes)
+            for (var count = 1; count <= 5; count++)
+            {
+                var level = new LevelId(episode, difficulty, 1);
+                var problems = ScenarioRules.Problems(TestScenarios.WithChoices(level.Key, count));
+                if (count == expected) Assert.That(problems, Is.Empty, level.Key);
+                else Assert.That(problems, Does.Contain(difficulty + " requires " + expected + " Choices."), level.Key);
+            }
         }
 
         [Test]
         public void EveryChoice_NeedsFeedbackAndASource()
         {
             var s = TestScenarios.Classroom();
-            s.choices[2].feedback = " ";
-            s.choices[3].sources = new string[0];
+            s.choices[0].feedback = " ";
+            s.choices[1].sources = new string[0];
             var problems = ScenarioRules.Problems(s);
-            Assert.That(problems, Has.Some.Matches<string>(p => p.Contains("window") && p.Contains("Feedback")));
-            Assert.That(problems, Has.Some.Matches<string>(p => p.Contains("cabinet") && p.Contains("source")));
+            Assert.That(problems, Has.Some.Matches<string>(p => p.Contains("run") && p.Contains("Feedback")));
+            Assert.That(problems, Has.Some.Matches<string>(p => p.Contains("desk") && p.Contains("source")));
         }
 
         [Test]
@@ -166,7 +180,7 @@ namespace DisasterSafety.Tests
         public void ChoiceIds_MustBeUnique()
         {
             var s = TestScenarios.Classroom();
-            s.choices[3].id = "run";
+            s.choices[1].id = "run";
             Assert.That(ScenarioRules.Problems(s), Has.Some.Contains("unique"));
         }
 

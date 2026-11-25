@@ -66,9 +66,9 @@ namespace DisasterSafety.Tests
         public void TriedUnsafeChoice_CannotBePickedAgain()
         {
             var a = Choosing();
-            a.Choose(2);
+            a.Choose(0);
             a.TryAgain();
-            Assert.That(a.Choose(2), Is.False);
+            Assert.That(a.Choose(0), Is.False);
             Assert.That(a.Phase, Is.EqualTo(AttemptPhase.Choosing));
             Assert.That(a.UnsafeChoices, Is.EqualTo(1));
         }
@@ -107,7 +107,8 @@ namespace DisasterSafety.Tests
         [Test]
         public void EveryUnsafeChoiceTried_StillEndsOnTheSafeChoiceWithOneStar()
         {
-            var a = Choosing();
+            var a = new Attempt(TestScenarios.WithChoices("Earthquake/Hard/1", 4));
+            a.StartChoosing();
             a.UseHint();
             foreach (var i in new[] { 0, 2, 3 })
             {

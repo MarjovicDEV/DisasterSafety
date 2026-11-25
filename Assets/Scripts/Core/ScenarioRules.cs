@@ -5,13 +5,18 @@ namespace DisasterSafety.Core
 {
     /// <summary>
     /// What every authored Scenario must satisfy before its Level counts as a Playable Level:
-    /// a Level inside the Curriculum, 3 or 4 Choices with exactly one Safe Choice, an icon, an action
+    /// a Level inside the Curriculum, the required Choice count for its Difficulty, exactly one Safe Choice, an icon, an action
     /// spot and Feedback for every Choice, a cited source for every safety line, and a known Setting and Phase.
     /// </summary>
     public static class ScenarioRules
     {
-        public const int MinChoices = 3;
-        public const int MaxChoices = 4;
+        static int ChoiceCount(Difficulty difficulty) => difficulty switch
+        {
+            Difficulty.Easy => 2,
+            Difficulty.Normal => 3,
+            Difficulty.Hard => 4,
+            _ => throw new System.ArgumentOutOfRangeException(nameof(difficulty))
+        };
 
         static readonly Regex SourceId = new Regex(@"^[A-Z]{2}-\d{2}$");
 
@@ -24,7 +29,8 @@ namespace DisasterSafety.Core
                 return problems;
             }
 
-            if (!s.TryGetLevel(out _)) problems.Add("Level '" + s.level + "' is not in the Curriculum.");
+            var validLevel = s.TryGetLevel(out var level);
+            if (!validLevel) problems.Add("Level '" + s.level + "' is not in the Curriculum.");
             if (!ScenarioSettings.IsKnown(s.setting)) problems.Add("Setting '" + s.setting + "' has no scene art.");
             if (!ScenarioPhases.IsKnown(s.phase)) problems.Add("Phase '" + s.phase + "' must be before, during or after.");
             if (s.Shakes && !ScenarioSettings.CanShake(s.setting))
@@ -36,8 +42,8 @@ namespace DisasterSafety.Core
             CheckLine(problems, s.lesson, "lesson", needsSource: true);
 
             var count = s.choices?.Length ?? 0;
-            if (count < MinChoices || count > MaxChoices)
-                problems.Add("A Scenario needs 3 or 4 Choices, not " + count + ".");
+            if (validLevel && count != ChoiceCount(level.Difficulty))
+                problems.Add(level.Difficulty + " requires " + ChoiceCount(level.Difficulty) + " Choices.");
 
             var safe = 0;
             var ids = new HashSet<string>();
