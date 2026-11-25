@@ -108,10 +108,16 @@ namespace DisasterSafety.Game.UI
             world.Show(nav.Background);
             RefreshMain();
 
-            // Level Completed's "Levels" button lands here on Level Selection for that Level.
-            var entry = GameServices.MenuOpensLevelSelect;
-            GameServices.MenuOpensLevelSelect = null;
-            if (entry.HasValue && nav.OpenLevelSelect(entry.Value.Item1, entry.Value.Item2)) yield break;
+            var entry = GameServices.MenuDestination;
+            GameServices.MenuDestination = null;
+            if (entry.HasValue)
+            {
+                var (episode, difficulty) = entry.Value;
+                var opened = difficulty.HasValue
+                    ? nav.OpenLevelSelect(episode, difficulty.Value)
+                    : nav.OpenEpisodeSelect(episode);
+                if (opened) yield break;
+            }
 
             // A save with a Display Name but no Student shows the picker once.
             if (nav.OfferStudentPick()) yield break;

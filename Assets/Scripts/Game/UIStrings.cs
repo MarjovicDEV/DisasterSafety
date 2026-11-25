@@ -149,6 +149,7 @@ namespace DisasterSafety.Game
         public static string StudentOpened(string what) => what + " is open! Let's play!";
         public const string Replay = "REPLAY";
         public const string NextLevel = "NEXT";
+        public const string NextEpisode = "Next Episode";
         public const string LevelsButton = "LEVELS";
         public const string MainMenuButton = "MENU";
 

@@ -55,6 +55,7 @@ namespace DisasterSafety.Game.UI
         public Text lessonText;
         public Button replayButton;
         public Button nextButton;
+        public Button nextEpisodeButton;
         public Button levelsButton;
         public Button menuButton;
         public Confetti confetti;
@@ -446,6 +447,7 @@ namespace DisasterSafety.Game.UI
 
             replayButton.onClick.AddListener(() => GameScenes.PlayLevel(level));
             nextButton.onClick.AddListener(() => { if (hasNext) GameScenes.PlayLevel(nextLevel); });
+            nextEpisodeButton.onClick.AddListener(() => GameScenes.ToEpisodeSelect(Episode.Fire));
             levelsButton.onClick.AddListener(() => GameScenes.ToLevelSelect(level.Episode, level.Difficulty));
             menuButton.onClick.AddListener(GameScenes.ToMainMenu);
 
@@ -527,10 +529,7 @@ namespace DisasterSafety.Game.UI
             safeChoiceText.text = UIStrings.SafeChoiceLine(safe.label);
             lessonText.text = scenario.lesson.text;
 
-            hasNext = LevelCompletion.TryNext(level, out nextLevel)
-                      && GameServices.Progress.IsOpen(nextLevel.Episode, nextLevel.Difficulty)
-                      && GameServices.Content.IsPlayable(nextLevel);
-            nextButton.gameObject.SetActive(hasNext);
+            SetCompletionNavigation(level, saved && LastResult.OffersNextEpisode, GameServices.Progress, GameServices.Content);
 
             dimmer.Show();
             completedPanel.Show();
@@ -550,6 +549,14 @@ namespace DisasterSafety.Game.UI
             openedText.text = UIStrings.Opened(openedName);
             StartCoroutine(PlayOpenedSound());
             StartCoroutine(SayOpened(openedName, openedEpisode, openedDifficulty));
+        }
+
+        public void SetCompletionNavigation(LevelId completed, bool offerNextEpisode, ProgressState progress, PlayableLevels content)
+        {
+            hasNext = !offerNextEpisode && LevelCompletion.TryNext(completed, out nextLevel)
+                      && progress.IsOpen(nextLevel.Episode, nextLevel.Difficulty) && content.IsPlayable(nextLevel);
+            nextButton.gameObject.SetActive(hasNext);
+            nextEpisodeButton.gameObject.SetActive(offerNextEpisode);
         }
 
         static string OpenedName(string key, out Episode episode, out Difficulty difficulty)
