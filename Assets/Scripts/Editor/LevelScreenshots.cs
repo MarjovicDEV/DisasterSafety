@@ -69,7 +69,7 @@ namespace DisasterSafety.EditorTools
             CaptureHome(c, scenarios, Shot);
             CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Normal, 4, "n4", "building", StudentKind.Boy);
             CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 2, "h2", "route_post", StudentKind.Girl);
-            CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Normal, 5, "n5", "fish", StudentKind.Boy);
+            CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Normal, 5, "n5", "watch", StudentKind.Boy);
             CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 3, "h3", "shop_window", StudentKind.Boy);
             CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 4, "h4", "run_push", StudentKind.Girl);
             CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 5, "h5", "pull_up", StudentKind.Boy);
@@ -80,7 +80,7 @@ namespace DisasterSafety.EditorTools
         static void CaptureHome(LevelController c, ScenarioLibrary scenarios, Action<string, ScreenPanel[]> shot)
         {
             CaptureSharedSettingLevel(c, scenarios, shot, Difficulty.Normal, 2, "n2", "hidden", StudentKind.Boy);
-            CaptureSharedSettingLevel(c, scenarios, shot, Difficulty.Normal, 3, "n3", "run", StudentKind.Girl);
+            CaptureSharedSettingLevel(c, scenarios, shot, Difficulty.Normal, 3, "n3", "glass", StudentKind.Girl);
             CaptureSharedSettingLevel(c, scenarios, shot, Difficulty.Hard, 1, "h1", "meet_home", StudentKind.Boy);
         }
 
@@ -195,7 +195,7 @@ namespace DisasterSafety.EditorTools
         }
 
         // Normal 1 in the bedroom (n1-*): the Action Bar, the box set down on the low shelf, and the stop
-        // after the bed has slid toward the window.
+        // after the Student reaches up with the books.
         static void CaptureBedroom(LevelController c, ScenarioLibrary scenarios, Action<string, ScreenPanel[]> shot)
         {
             var s = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Normal, 1));
@@ -211,7 +211,7 @@ namespace DisasterSafety.EditorTools
             LevelProp Prop(string key) => Array.Find(setting.props, p => p.key == key);
             var box = Prop("box");
             var placed = Prop("box_placed");
-            var bed = (RectTransform)Prop("bed").transform;
+            var books = Prop("books");
             student.SetKind(StudentKind.Boy);
             student.bubble.Hide();
 
@@ -234,19 +234,19 @@ namespace DisasterSafety.EditorTools
             placed.gameObject.SetActive(false);
             box.gameObject.SetActive(true);
 
-            var push = setting.ActOutFor("bed_window");
-            var slide = Array.Find(push.steps, step => step.kind == ActOutStepKind.Push);
-            var bedStart = bed.anchoredPosition;
-            bed.anchoredPosition = bedStart + new Vector2(slide.x * student.unitsPerPixel, 0f);
-            Stand(push.StopX(setting.startX), push.stopPose, faceLeft: true);
+            var reach = setting.ActOutFor("books_top");
+            var place = Array.Find(reach.steps, step => step.kind == ActOutStepKind.PropPlace);
+            var start = ((RectTransform)books.transform).anchoredPosition;
+            books.Place(place.place);
+            Stand(reach.StopX(setting.startX), reach.stopPose, faceLeft: true);
             student.bubble.Say(UIStrings.ReactionWait);
             shot("n1-stop", Array.Empty<ScreenPanel>());
-            bed.anchoredPosition = bedStart;
+            books.Place(start);
             student.bubble.Hide();
         }
 
         // Easy 2 in the corridor (e2-*): the Action Bar, the last Safe step (cover at the inner wall) and
-        // an Unsafe stop (the top of the stairs). The girl acts here, so both Students are seen in the shots.
+        // an Unsafe stop before the hanging pots. The girl acts here, so both Students are seen in the shots.
         static void CaptureCorridor(LevelController c, ScenarioLibrary scenarios, Action<string, ScreenPanel[]> shot)
         {
             var s = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Easy, 2));
@@ -277,14 +277,14 @@ namespace DisasterSafety.EditorTools
             student.bubble.Say(UIStrings.ReactionSafe);
             shot("e2-safe", new ScreenPanel[0]);
 
-            var stairs = setting.ActOutFor("stairs");
-            Stand(stairs.StopX(setting.startX), StudentPose.Wait);
+            var plants = setting.ActOutFor("plants");
+            Stand(plants.StopX(setting.startX), plants.stopPose);
             student.bubble.Say(UIStrings.ReactionWait);
             shot("e2-stop", new ScreenPanel[0]);
             student.bubble.Hide();
         }
 
-        // Easy 3 in the classroom after the shaking: the Action Bar, the exit and the stop behind the Teacher.
+        // Easy 3 in the classroom after the shaking: the Action Bar, the exit and the stop under the desk.
         static void CaptureClassroomAfter(LevelController c, ScenarioLibrary scenarios, Action<string, ScreenPanel[]> shot)
         {
             var s = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Easy, 3));
@@ -315,9 +315,9 @@ namespace DisasterSafety.EditorTools
             shot("e3-safe", Array.Empty<ScreenPanel>());
 
             teacher.PlaceAtStart();
-            var push = setting.ActOutFor("push");
-            student.PlaceAt(push.StopX(setting.startX), setting.startY);
-            student.ShowFrame(push.stopPose, 0);
+            var stay = setting.ActOutFor("stay");
+            student.PlaceAt(stay.StopX(setting.startX), setting.startY);
+            student.ShowFrame(stay.stopPose, 0);
             student.bubble.Say(UIStrings.ReactionWait);
             shot("e3-stop", Array.Empty<ScreenPanel>());
             student.bubble.Hide();
@@ -377,15 +377,15 @@ namespace DisasterSafety.EditorTools
             shot("63-pilot-duck", new ScreenPanel[0]);
             desk.FirstOverlay.SetActive(false);
 
-            var window = setting.ActOutFor("window");
-            Stand(window.StopX(setting.startX), StudentPose.Wait);
+            var door = setting.ActOutFor("door");
+            Stand(door.StopX(setting.startX), door.stopPose);
             student.bubble.Say(UIStrings.ReactionWait);
             shot("64-pilot-wait", new ScreenPanel[0]);
             student.bubble.Hide();
 
-            var unsafeChoice = s.choices[ChoiceIndex(s, "window")];
+            var unsafeChoice = s.choices[ChoiceIndex(s, "run")];
             c.feedbackBanner.sprite = c.unsafeBanner;
-            c.feedbackHeading.text = UIStrings.UnsafeHeading;
+            c.feedbackHeading.text = string.IsNullOrEmpty(unsafeChoice.heading) ? UIStrings.UnsafeHeading : unsafeChoice.heading;
             c.feedbackText.text = unsafeChoice.feedback;
             c.tryAgainButton.gameObject.SetActive(true);
             c.finishButton.gameObject.SetActive(false);

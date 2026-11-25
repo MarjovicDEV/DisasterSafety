@@ -107,6 +107,11 @@ namespace DisasterSafety.EditorTools
                     c.tutorial.Open();
                     for (var n = 0; n < page; n++) c.tutorial.NextPage();
                     Render(cam, canvas, size, Path.Combine(dir, "06-howtoplay-page" + (page + 1) + "-" + size.x + "x" + size.y + ".png"));
+                    if (page == 2)
+                    {
+                        c.tutorial.picture.sprite = c.tutorial.frames[page * 2 + 1];
+                        Render(cam, canvas, size, Path.Combine(dir, "06-howtoplay-page3-pressed-" + size.x + "x" + size.y + ".png"));
+                    }
                 }
             }
             LevelScreenshots.Capture(dir);
