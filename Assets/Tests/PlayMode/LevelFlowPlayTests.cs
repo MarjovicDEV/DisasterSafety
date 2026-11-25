@@ -1480,6 +1480,86 @@ namespace DisasterSafety.Tests
             }
         }
 
+        // C11: the exterior in Hard 4 (mall_b). The mall's corner at x 373 runs from the cornice to the
+        // pavement, a low curb closes the far edge of the lot, and the painted parking lines are two art
+        // pixels thick. The Safe ending stands on open asphalt inside a green painted assembly box, and the
+        // wall stop on the pavement beside the mall, with open sky above the assembly sign.
+        [UnityTest]
+        public IEnumerator HardLevel4_Exterior_ShowsTheMallCornerCurbAndParking()
+        {
+            yield return StartRolloutLevel(new LevelId(Episode.Earthquake, Difficulty.Hard, 4));
+            var setting = Level().ActiveSetting;
+            var student = Level().Student;
+            var safeSteps = setting.ActOutFor("stairs").steps;
+            var wallSteps = setting.ActOutFor("mall_wall").steps;
+            var parkingX = Mathf.RoundToInt(safeSteps[safeSteps.Length - 1].x);
+            var wallStopX = Mathf.RoundToInt(wallSteps[wallSteps.Length - 1].x);
+            Assert.That(parkingX, Is.EqualTo(430), "the Safe ending is out in the parking");
+            Assert.That(wallStopX, Is.EqualTo(357), "the wall stop is beside the mall");
+            var halfWidth = Mathf.RoundToInt(((RectTransform)student.transform).rect.width / student.unitsPerPixel / 2f);
+
+            var art = LevelArt("bg_mall_b");
+            for (var row = 0; row <= 215; row++)
+            {
+                var edge = false;
+                for (var x = 373; x <= 377; x++) edge |= SameColour(art[x, row], ArtOutline);
+                Assert.That(edge, Is.True, "the mall's exterior corner is outlined on row " + row);
+            }
+
+            // The assembly sign stands at x 452 to 476 and covers the curb there.
+            for (var x = 376; x < 480; x++)
+            {
+                if (x >= 452 && x <= 476) continue;
+                Assert.That(SameColour(art[x, 189], ArtOutline) && SameColour(art[x, 195], ArtOutline), Is.True,
+                    "the curb is outlined above and below at x " + x);
+                Assert.That(SameColour(art[x, 192], ArtRoad) || SameColour(art[x, 192], ArtGrass), Is.False, "the curb face at x " + x);
+                Assert.That(SameColour(art[x, 196], ArtRoad), Is.True, "the asphalt starts below the curb at x " + x);
+            }
+
+            var dividers = 0;
+            for (var x = 380; x < 480;)
+            {
+                var start = x;
+                while (x < 480 && SameColour(art[x, 205], ArtWhite)) x++;
+                if (x - start >= 2) dividers++;
+                if (x == start) x++;
+            }
+            Assert.That(dividers, Is.GreaterThanOrEqualTo(3), "the back stalls have dividers two art pixels thick");
+            for (var x = 390; x <= 455; x++)
+                Assert.That(SameColour(art[x, 213], ArtWhite) && SameColour(art[x, 214], ArtWhite), Is.True,
+                    "the back stalls end in a line two art pixels thick at x " + x);
+
+            for (var x = 452; x <= 476; x++)
+                for (var row = 0; row <= 140; row++)
+                    Assert.That(SameColour(art[x, row], ArtSky), Is.True, "open sky above the assembly sign at " + x + ", " + row);
+
+            // Row 231 is just below the Student's feet at row 230.
+            for (var x = parkingX - halfWidth + 6; x <= parkingX + halfWidth - 6; x++)
+                Assert.That(SameColour(art[x, 231], ArtRoad), Is.True, "the Safe ending stands on open asphalt at x " + x);
+            Assert.That(wallStopX, Is.InRange(333, 373), "the wall stop is in front of the mall's outer wall");
+            Assert.That(SameColour(art[wallStopX, 231], ArtRoad), Is.False, "the wall stop stands on the pavement");
+            Assert.That(parkingX - halfWidth, Is.GreaterThan(377), "the Safe ending is clear of the mall's corner");
+
+            // A green painted box on the asphalt marks where people gather around the Safe ending. Its left
+            // edge is up to 8 art pixels left of the Student's frame and its right edge up to 16 right of it.
+            // The 7 art pixels each side of the feet centre are the asphalt checked above.
+            bool BoxIn(int from, int to)
+            {
+                for (var x = from; x <= to; x++)
+                    if (SameColour(art[x, 231], ArtSign)) return true;
+                return false;
+            }
+            Assert.That(BoxIn(parkingX - halfWidth - 8, parkingX - 7), Is.True, "the assembly box left of the Safe ending");
+            Assert.That(BoxIn(parkingX + 7, parkingX + halfWidth + 16), Is.True, "the assembly box right of the Safe ending");
+        }
+
+        // The Hard 4 exterior the researcher approved for C11 (variant B, with the green assembly box).
+        [Test]
+        public void HardLevel4_ExteriorArt_IsTheApprovedPicture()
+        {
+            Assert.That(ArtHash("bg_mall_b"), Is.EqualTo("2837ece26b9ff19bf5f04381100c06f4be852f839d1049a6b259357802b55384"));
+        }
+
         // C11 changes only mall_b. Hard 3's food court and its overlays come from the same script and stay
         // the same, pixel for pixel.
         [Test]
