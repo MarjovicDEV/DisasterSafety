@@ -1520,6 +1520,12 @@ namespace DisasterSafety.EditorTools
 
             c.replayButton = RowButton(row, "Replay", "blue", UIStrings.Replay, "icon_replay", Sfx.Click);
             c.nextButton = RowButton(row, "Next", "green", UIStrings.NextLevel, "icon_play", Sfx.Confirm);
+            c.nextEpisodeButton = MakeButton(row, "Next Episode", "green", UIStrings.NextEpisode, f4,
+                S("Episodes/episode_fire"), Sfx.Confirm);
+            ((RectTransform)c.nextEpisodeButton.transform).sizeDelta = new Vector2(396f, 124f);
+            var emblem = c.nextEpisodeButton.GetComponentInChildren<LayoutElement>();
+            emblem.preferredWidth = emblem.preferredHeight = 56f;
+            c.nextEpisodeButton.gameObject.SetActive(false);
             c.levelsButton = RowButton(row, "Levels", "orange", UIStrings.LevelsButton, "icon_levels", Sfx.Back);
             c.menuButton = RowButton(row, "Menu", "teal", UIStrings.MainMenuButton, "icon_home", Sfx.Back);
             c.nextButton.gameObject.SetActive(false);
