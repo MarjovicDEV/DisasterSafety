@@ -199,6 +199,16 @@ namespace DisasterSafety.EditorTools
                             step.grownUp.Play(step.grownUpPose);
                             break;
                     }
+
+                    // Hard 4's seventh step, (352, 230), is the first point on the pavement outside the exit,
+                    // before the parking. The steps are the four stair points, then (279, 235), (329, 235) and it.
+                    if (safe && s.SafeChoice.action == "stairs" && i == 6)
+                    {
+                        student.PlaceAt(x, y);
+                        student.Face(false);
+                        student.ShowFrame(StudentPose.Walk, 0);
+                        shot("h4-exit", Array.Empty<ScreenPanel>());
+                    }
                 }
 
                 student.PlaceAt(x, y);
@@ -222,6 +232,18 @@ namespace DisasterSafety.EditorTools
 
             Outcome("-safe", setting.ActOutFor(s.SafeChoice.action), true);
             Outcome("-stop", setting.ActOutFor(stopKey), false);
+            if (s.SafeChoice.action == "stairs")
+            {
+                Outcome("-wall-stop", setting.ActOutFor("mall_wall"), false);
+                Outcome("-elevator-stop", setting.ActOutFor("elevator"), false);
+
+                // Try Again climbs back up the stairs facing left. The tread halfway up is at art row 210,
+                // which is 20 art pixels above the floor line at row 230.
+                student.PlaceAt(215f, 20f);
+                student.Face(true);
+                student.ShowFrame(StudentPose.Walk, 1);
+                shot("h4-stair-return", Array.Empty<ScreenPanel>());
+            }
             SetWobblers(false);
         }
 
