@@ -2268,7 +2268,7 @@ namespace DisasterSafety.Tests
             // Main Menu returns to the title screen with Continue available.
             c.pauseButton.onClick.Invoke();
             yield return Wait(0.4f);
-            c.quitButton.onClick.Invoke();
+            c.pauseMainMenuButton.onClick.Invoke();
             yield return WaitForScene(GameScenes.MainMenu);
             yield return Wait(0.4f);
             var m = Menu();

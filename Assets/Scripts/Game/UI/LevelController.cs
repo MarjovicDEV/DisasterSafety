@@ -63,7 +63,6 @@ namespace DisasterSafety.Game.UI
         public ScreenPanel pausePanel;
         public Button resumeButton;
         public Button restartButton;
-        public Button quitButton;
         public Text pauseLevelLabel;
         public Button pauseLevelsButton;
         public Button pauseMainMenuButton;
@@ -114,7 +113,7 @@ namespace DisasterSafety.Game.UI
         {
             ShowSetting(ScenarioSettings.ActionArtKey(scenario.setting));
             UseStudentLayout();
-            levelLabel.text = UIStrings.LevelLabel(level);
+            SetLevelLabels(level);
             captionGoal.text = scenario.goal.text;
             captionBody.text = scenario.intro.text;
             FitCaption();
@@ -140,6 +139,12 @@ namespace DisasterSafety.Game.UI
             }
             attempt.StartChoosing();
             actionBar.Show();
+        }
+
+        public void SetLevelLabels(LevelId id)
+        {
+            levelLabel.text = UIStrings.LevelLabel(id);
+            pauseLevelLabel.text = UIStrings.PauseLevel(id);
         }
 
         // The Caption's built width (960) and the room its text has on each side.
@@ -446,7 +451,8 @@ namespace DisasterSafety.Game.UI
 
             resumeButton.onClick.AddListener(Resume);
             restartButton.onClick.AddListener(() => GameScenes.PlayLevel(level));
-            quitButton.onClick.AddListener(GameScenes.ToMainMenu);
+            pauseLevelsButton.onClick.AddListener(() => GameScenes.ToLevelSelect(level.Episode, level.Difficulty));
+            pauseMainMenuButton.onClick.AddListener(GameScenes.ToMainMenu);
         }
 
         void Update()
