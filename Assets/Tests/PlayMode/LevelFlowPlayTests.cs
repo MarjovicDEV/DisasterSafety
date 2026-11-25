@@ -675,10 +675,11 @@ namespace DisasterSafety.Tests
 
         static readonly LevelId NormalOne = new LevelId(Episode.Earthquake, Difficulty.Normal, 1);
 
-        IEnumerator StartNormalOne()
+        IEnumerator StartNormalOne(StudentKind kind = StudentKind.None)
         {
             GameServices.Initialize(dir);
             GameServices.Progress.SetDisplayName("Ana");
+            if (kind != StudentKind.None) GameServices.Progress.SetStudent(kind);
             GameServices.Progress.Open(Episode.Earthquake, Difficulty.Normal);
             GameServices.SaveProgress();
             GameScenes.PlayLevel(NormalOne);
