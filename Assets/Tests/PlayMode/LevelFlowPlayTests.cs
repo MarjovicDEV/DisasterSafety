@@ -1480,6 +1480,70 @@ namespace DisasterSafety.Tests
             }
         }
 
+        // C11 changes only mall_b. Hard 3's food court and its overlays come from the same script and stay
+        // the same, pixel for pixel.
+        [Test]
+        public void HardLevel3_MallArt_IsUnchanged()
+        {
+            Assert.That(ArtHash("bg_mall_a"), Is.EqualTo("e493330e96fb9763a00c663b75faac5ff0d6775bdfdae42b25b33084bf2df03e"));
+            Assert.That(ArtHash("foodtable_front"), Is.EqualTo("236cd4938748836a6eda7170bdaf84e0dd888146926c4d42795ac4b5fcc26694"));
+            Assert.That(ArtHash("mall_foodcourt_sign_0"), Is.EqualTo("538d232bd4cfca421aefd97f928d8210f16cb2a7a78a503b8e040fdd7e1bc4fe"));
+            Assert.That(ArtHash("mall_foodcourt_sign_1"), Is.EqualTo("380a4d9761058abefaca3bb7450b2e9e1f81c5b270279f3381e064b5df84e850"));
+            Assert.That(ArtHash("mall_foodcourt_sign_2"), Is.EqualTo("538d232bd4cfca421aefd97f928d8210f16cb2a7a78a503b8e040fdd7e1bc4fe"));
+            Assert.That(ArtHash("mall_foodcourt_sign_3"), Is.EqualTo("fa27f739dca07e0ee64054791a3ef2c8e2629bd0586c7edd3ca03c9eb14857ed"));
+        }
+
+        // Colours from ArtSource/scripts: the outline, the asphalt (ROAD), white paint, the sky, the grass
+        // and the green of the signs (SIGN).
+        static readonly Color32 ArtOutline = new Color32(40, 28, 44, 255);
+        static readonly Color32 ArtRoad = new Color32(152, 156, 168, 255);
+        static readonly Color32 ArtWhite = new Color32(250, 252, 255, 255);
+        static readonly Color32 ArtSky = new Color32(196, 232, 248, 255);
+        static readonly Color32 ArtGrass = new Color32(124, 180, 150, 255);
+        static readonly Color32 ArtSign = new Color32(52, 108, 82, 255);
+
+        static bool SameColour(Color32 a, Color32 b) => a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.a;
+
+        static Color32[] ArtPixels(string name, out int width, out int height)
+        {
+            var path = Path.Combine(Application.dataPath, "Art", "Level", "v2", name + ".png");
+            var texture = new Texture2D(2, 2);
+            Assert.That(texture.LoadImage(File.ReadAllBytes(path)), Is.True, "read " + path);
+            width = texture.width;
+            height = texture.height;
+            var pixels = texture.GetPixels32();
+            UnityEngine.Object.Destroy(texture);
+            return pixels;
+        }
+
+        // A v2 Level picture as [x, row], with row 0 at the top as in the art scripts. The import is not
+        // readable, so this reads the PNG.
+        static Color32[,] LevelArt(string name)
+        {
+            var pixels = ArtPixels(name, out var width, out var height);
+            var art = new Color32[width, height];
+            for (var row = 0; row < height; row++)
+                for (var x = 0; x < width; x++)
+                    art[x, row] = pixels[(height - 1 - row) * width + x];
+            return art;
+        }
+
+        // The SHA-256 of a v2 Level picture's RGBA pixels, bottom row first.
+        static string ArtHash(string name)
+        {
+            var pixels = ArtPixels(name, out _, out _);
+            var bytes = new byte[pixels.Length * 4];
+            for (var i = 0; i < pixels.Length; i++)
+            {
+                bytes[i * 4] = pixels[i].r;
+                bytes[i * 4 + 1] = pixels[i].g;
+                bytes[i * 4 + 2] = pixels[i].b;
+                bytes[i * 4 + 3] = pixels[i].a;
+            }
+            using var sha = System.Security.Cryptography.SHA256.Create();
+            return BitConverter.ToString(sha.ComputeHash(bytes)).Replace("-", "").ToLowerInvariant();
+        }
+
         [UnityTest]
         public IEnumerator HardLevel5_StartsWithMomHurtAndDadAway()
         {
