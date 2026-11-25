@@ -383,6 +383,25 @@ How to Play has seven Tutorial Pages. Pages 1, 2 and 7 keep the pilot pictures f
 | `v2_feedback` | Boy | The Feedback panel with a green check and the "Safe!" heading, and the boy in `Happy` beside it. | The same, with two small sparkles. |
 | `v2_hint` | Girl | The Caption bar with Easy 1's Hint ("Find something strong to hide under.") and the HINT button below it. The girl stands on the right. | The HINT button is pressed. |
 
+## Menu backgrounds (`ArtSource/scripts/background.lua`, part `menu`)
+
+Run: `aseprite.exe -b --script-param root=<project> --script-param only=menu --script ArtSource/scripts/build.lua`. It writes `Background/bg_menu_<name>.png` and its source for each `MenuBackground`. The v1 part still draws the flag, clouds and birds from the same script. The courtyard `bg_courtyard` was removed when the gate replaced it.
+
+Each background is 480x270 and uses the v2 style: one dark outline, three shades and light from the left. The researcher approved the previews on 2026-11-25. The reference photos stay in `earthquake-changes-scratch/references`. The art omits the photographed people, vehicles, seals, map controls and fine print.
+
+| Background | Screen | Reference details used |
+|---|---|---|
+| `gate` | Main Menu and its dialogs | `baluan-gate.jpg`: dark horizontal metal gate between brick pillars, red perimeter wall with a blue top edge, tall palms, power lines, open driveway. `school-perimeter-sign.jpg`: long pale sign reading "BALUAN ELEMENTARY SCHOOL" on the red wall, palm above it. |
+| `noticeboard` | Episode selection | No photo. A neutral cork board on a cream wall with green trim, with blank pinned papers. |
+| `drill_ground` | Earthquake Episode background, on Difficulty selection | No photo. An open field with painted lines, class markers, cones, the flagpole and the Evacuation Area sign, in front of cream school blocks with green doors and barred windows. |
+| `fire_station` | Fire Episode background, on Difficulty selection | No photo. A station with an open bay, a shut red door, a hose tower and a parked engine on the forecourt. |
+| `classroom` | Earthquake Easy Difficulty background, on Level selection | `classroom-chair-rows.jpg`, `classroom-front-left.jpg`: bright green slatted chairs and a dark ruled board. `classroom-board.jpg`: wall screen over the board and green curtains at its ends. `classroom-windows.jpg`: green window frames with patterned curtains. `classroom-front-right.jpg`: cream wall with green trim. `classroom-window-corner.jpg`: low green shelving. |
+| `schoolyard` | Earthquake Normal Difficulty background, on Level selection | `classroom-entrance.jpg`: bright green doors and barred windows in a cream wall. `classroom-corridor.jpg`: shaded concrete walkway with pale posts. |
+| `covered_court` | Earthquake Hard Difficulty background, on Level selection | `school-covered-court.jpg`: broad rust-red metal roof, exposed trusses, pale columns and a low green fence. The photo does not show that the court is a shelter. |
+| `station_noticeboard` | Fire Difficulty background, on Level selection while Fire has no Playable Level | No photo. A simple cork board with a red frame, a hose reel and an extinguisher. |
+
+The menu switches the moving layers with the background (`MenuWorld`). The flag flies on `gate` and `drill_ground`. Clouds and birds appear on every outdoor background. The two walking children appear on `gate`, `drill_ground` and `schoolyard`. Leaves fall on `drill_ground` and `schoolyard`. The sign sits at y 124 to 143, above the greeting bubble at both 1920 and 2400 widths.
+
 ## Removed art (cleanup, 2026-11-22)
 
 No screen showed these, and no ticket plans them (see `.scratch/cleanup/inventory.md`):

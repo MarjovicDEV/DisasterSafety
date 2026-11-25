@@ -8,8 +8,8 @@ All sprites are drawn by Lua scripts that run in Aseprite 1.3:
 
 | Script | Draws |
 |---|---|
-| `scripts/background.lua` | School courtyard (480x270), Philippine flag (4 frames), clouds, birds |
-| `scripts/characters.lua` | Walking boy and girl students for the menu courtyard (6 frames each) |
+| `scripts/background.lua` | The eight menu backgrounds (480x270, see README-rollout.md), Philippine flag (4 frames), clouds, birds |
+| `scripts/characters.lua` | Two walking children (boy and girl) for the menu backgrounds (6 frames each) |
 | `scripts/ui.lua` | 9-slice buttons and panels, icons (including pause, hint, replay, levels), Episode emblems, title logo, particles, font atlas |
 | `scripts/tutorial.lua` | How to Play Tutorial Page pictures `topic`, `difficulty` and `stars` (2 frames each) |
 | `scripts/student.lua` | The v2 Student, boy and girl, 32x50 frames in the style of `StyleSample/student2.py` (ADR 0001): mirrored half maps for the front views, the same 20-colour palette; walk, duck and wait are hand-placed maps, the raised arms of surprised and happy are shaded, outlined limbs. Poses: `idle` (2), `surprised` (2), `walk` (4, side view facing right; the game mirrors it for left), `duck` (2, Duck, Cover, and Hold; no longer used in the Level), `crouch` (2, side view facing right: knees bent, back hunched, shuffling in under the desk), `hold` (2, front view under the desk: the left hand holds the desk leg, the right arm covers the head; EQ-11), `wait` (2), `happy` (2), and `portrait` (1) |

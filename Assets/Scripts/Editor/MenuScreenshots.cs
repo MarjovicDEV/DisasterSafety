@@ -66,17 +66,18 @@ namespace DisasterSafety.EditorTools
             // The Main Menu Student greets in the Happy pose on the first shot and stands Idle on the others.
             var student = c.student;
 
-            var shots = new (string name, ScreenPanel[] show)[]
+            var gate = MenuBackground.SchoolGate;
+            var shots = new (string name, ScreenPanel[] show, MenuBackground background)[]
             {
-                ("01-main", new[] { c.mainPanel }),
-                ("02-episodes", new[] { c.episodePanel }),
-                ("03-difficulty", new[] { c.difficultyPanel }),
-                ("04-levels", new[] { c.levelPanel }),
-                ("05-settings", new[] { c.mainPanel, c.dimmer, c.settingsPanel }),
-                ("06-howtoplay", new[] { c.mainPanel, c.dimmer, c.howToPlayPanel }),
-                ("07-exit", new[] { c.mainPanel, c.dimmer, c.exitPanel }),
-                ("08-name", new[] { c.mainPanel, c.dimmer, c.namePanel }),
-                ("66-student-picker", new[] { c.mainPanel, c.dimmer, c.studentPanel }),
+                ("01-main", new[] { c.mainPanel }, gate),
+                ("02-episodes", new[] { c.episodePanel }, MenuBackground.Noticeboard),
+                ("03-difficulty", new[] { c.difficultyPanel }, MenuBackground.DrillGround),
+                ("04-levels", new[] { c.levelPanel }, MenuBackground.Classroom),
+                ("05-settings", new[] { c.mainPanel, c.dimmer, c.settingsPanel }, gate),
+                ("06-howtoplay", new[] { c.mainPanel, c.dimmer, c.howToPlayPanel }, gate),
+                ("07-exit", new[] { c.mainPanel, c.dimmer, c.exitPanel }, gate),
+                ("08-name", new[] { c.mainPanel, c.dimmer, c.namePanel }, gate),
+                ("66-student-picker", new[] { c.mainPanel, c.dimmer, c.studentPanel }, gate),
             };
             var all = new[]
             {
@@ -89,6 +90,7 @@ namespace DisasterSafety.EditorTools
                 foreach (var shot in shots)
                 {
                     foreach (var p in all) p.gameObject.SetActive(Array.IndexOf(shot.show, p) >= 0);
+                    c.world.Show(shot.background);
                     var greeting = shot.name == "01-main";
                     student.actor.ShowFrame(greeting ? StudentPose.Happy : StudentPose.Idle, 0);
                     if (greeting) student.Bubble.Say(Game.UIStrings.StudentHello, -1f);
@@ -97,7 +99,10 @@ namespace DisasterSafety.EditorTools
                 }
             }
 
+            CaptureBackgrounds(dir, c, cam, canvas, all);
+
             // Every How to Play Tutorial Page, at both sizes.
+            c.world.Show(gate);
             foreach (var p in all) p.gameObject.SetActive(p == c.mainPanel || p == c.dimmer || p == c.howToPlayPanel);
             student.Bubble.Hide();
             foreach (var size in Sizes)
@@ -116,6 +121,66 @@ namespace DisasterSafety.EditorTools
             }
             LevelScreenshots.Capture(dir);
             Debug.Log("Screenshots written to " + dir);
+        }
+
+        /// <summary>
+        /// The gate with a long greeting for both Students, and each other selection background:
+        /// Fire Difficulty selection, Earthquake Normal and Hard Level selection and empty Fire
+        /// Level selection (C3, C4).
+        /// </summary>
+        static void CaptureBackgrounds(string dir, MainMenuController c, Camera cam, Canvas canvas, ScreenPanel[] all)
+        {
+            var student = c.student;
+            var longGreeting = Game.UIStrings.StudentWelcomeBack("Marijoyceann");
+            foreach (var kind in new[] { StudentKind.Boy, StudentKind.Girl })
+            {
+                foreach (var p in all) p.gameObject.SetActive(p == c.mainPanel);
+                c.world.Show(MenuBackground.SchoolGate);
+                student.SetKind(kind);
+                student.actor.ShowFrame(StudentPose.Happy, 0);
+                student.Bubble.Say(longGreeting, -1f);
+                foreach (var size in MenuScreenshots.Sizes)
+                    Render(cam, canvas, size, Path.Combine(dir, "01-main-long-name-" + kind.ToString().ToLowerInvariant()
+                        + "-" + size.x + "x" + size.y + ".png"));
+            }
+            student.SetKind(StudentKind.Boy);
+            student.actor.ShowFrame(StudentPose.Idle, 0);
+            student.Bubble.Hide();
+
+            void Shot(string name, ScreenPanel panel, MenuBackground background)
+            {
+                foreach (var p in all) p.gameObject.SetActive(p == panel);
+                c.world.Show(background);
+                foreach (var size in MenuScreenshots.Sizes)
+                    Render(cam, canvas, size, Path.Combine(dir, name + "-" + size.x + "x" + size.y + ".png"));
+            }
+
+            c.difficultyHeader.text = Game.UIStrings.EpisodeName(Episode.Fire);
+            c.difficultyEmblem.sprite = c.episodeEmblems[(int)Episode.Fire];
+            Shot("03-difficulty-fire", c.difficultyPanel, MenuBackground.FireStation);
+            c.difficultyHeader.text = Game.UIStrings.EpisodeName(Episode.Earthquake);
+            c.difficultyEmblem.sprite = c.episodeEmblems[(int)Episode.Earthquake];
+
+            void StageLevels(Episode e, Difficulty d)
+            {
+                c.levelHeader.text = Game.UIStrings.EpisodeName(e) + " - " + Game.UIStrings.DifficultyName(d);
+                var count = Curriculum.LevelCount(d);
+                for (var i = 0; i < c.levelSlots.Length; i++)
+                {
+                    c.levelSlots[i].gameObject.SetActive(i < count);
+                    c.levelSlots[i].Show(i + 1, 0, i == 0);
+                }
+            }
+            void Levels(string name, Episode e, Difficulty d, MenuBackground background)
+            {
+                StageLevels(e, d);
+                Shot(name, c.levelPanel, background);
+            }
+            Levels("04-levels-normal", Episode.Earthquake, Difficulty.Normal, MenuBackground.Schoolyard);
+            Levels("04-levels-hard", Episode.Earthquake, Difficulty.Hard, MenuBackground.CoveredCourt);
+            Levels("04-levels-fire", Episode.Fire, Difficulty.Easy, MenuBackground.StationNoticeboard);
+            // Put back the Earthquake Easy staging that 04-levels used, without capturing it again.
+            StageLevels(Episode.Earthquake, Difficulty.Easy);
         }
 
         internal static void Render(Camera cam, Canvas canvas, Vector2Int size, string path)
