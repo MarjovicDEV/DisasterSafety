@@ -1,0 +1,1132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="173" result="Passed" total="173" passed="173" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:19Z" duration="0.9614165">
+  <test-suite type="TestSuite" id="1000" name="DisasterSafety" fullname="DisasterSafety" runstate="Runnable" testcasecount="173" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:19Z" duration="0.961417" total="173" passed="173" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1197" name="DisasterSafety.Tests.EditMode.dll" fullname="D:/GameDEV/DisasterSafety-redesign/Library/ScriptAssemblies/DisasterSafety.Tests.EditMode.dll" runstate="Runnable" testcasecount="173" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:19Z" duration="0.937799" total="173" passed="173" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17492" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1198" name="DisasterSafety" fullname="DisasterSafety" runstate="Runnable" testcasecount="173" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:19Z" duration="0.935395" total="173" passed="173" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1199" name="Tests" fullname="DisasterSafety.Tests" runstate="Runnable" testcasecount="173" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:19Z" duration="0.932915" total="173" passed="173" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1001" name="AttemptTests" fullname="DisasterSafety.Tests.AttemptTests" classname="DisasterSafety.Tests.AttemptTests" runstate="Runnable" testcasecount="11" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.062732" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1003" name="CannotChoose_WhileReading" fullname="DisasterSafety.Tests.AttemptTests.CannotChoose_WhileReading" methodname="CannotChoose_WhileReading" classname="DisasterSafety.Tests.AttemptTests" runstate="Runnable" seed="233979593" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.020762" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1008" name="CannotComplete_WithoutTheSafeChoice" fullname="DisasterSafety.Tests.AttemptTests.CannotComplete_WithoutTheSafeChoice" methodname="CannotComplete_WithoutTheSafeChoice" classname="DisasterSafety.Tests.AttemptTests" runstate="Runnable" seed="1047045461" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.004820" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1012" name="ChoiceOutOfRange_IsRefused" fullname="DisasterSafety.Tests.AttemptTests.ChoiceOutOfRange_IsRefused" methodname="ChoiceOutOfRange_IsRefused" classname="DisasterSafety.Tests.AttemptTests" runstate="Runnable" seed="1659887197" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000378" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1010" name="EveryUnsafeChoiceTried_StillEndsOnTheSafeChoiceWithOneStar" fullname="DisasterSafety.Tests.AttemptTests.EveryUnsafeChoiceTried_StillEndsOnTheSafeChoiceWithOneStar" methodname="EveryUnsafeChoiceTried_StillEndsOnTheSafeChoiceWithOneStar" classname="DisasterSafety.Tests.AttemptTests" runstate="Runnable" seed="1407705893" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.001457" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1007" name="HintUse_IsRecordedOnce_AndCostsOneStar" fullname="DisasterSafety.Tests.AttemptTests.HintUse_IsRecordedOnce_AndCostsOneStar" methodname="HintUse_IsRecordedOnce_AndCostsOneStar" classname="DisasterSafety.Tests.AttemptTests" runstate="Runnable" seed="404956793" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000632" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1002" name="NewAttempt_StartsReading_WithNothingTried" fullname="DisasterSafety.Tests.AttemptTests.NewAttempt_StartsReading_WithNothingTried" methodname="NewAttempt_StartsReading_WithNothingTried" classname="DisasterSafety.Tests.AttemptTests" runstate="Runnable" seed="945362097" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000375" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1011" name="Restart_ResetsTheAttempt" fullname="DisasterSafety.Tests.AttemptTests.Restart_ResetsTheAttempt" methodname="Restart_ResetsTheAttempt" classname="DisasterSafety.Tests.AttemptTests" runstate="Runnable" seed="3579768" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000448" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1004" name="SafeChoiceFirst_ShowsFeedback_ThenCompletesWithThreeStars" fullname="DisasterSafety.Tests.AttemptTests.SafeChoiceFirst_ShowsFeedback_ThenCompletesWithThreeStars" methodname="SafeChoiceFirst_ShowsFeedback_ThenCompletesWithThreeStars" classname="DisasterSafety.Tests.AttemptTests" runstate="Runnable" seed="1992302989" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000398" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1006" name="TriedUnsafeChoice_CannotBePickedAgain" fullname="DisasterSafety.Tests.AttemptTests.TriedUnsafeChoice_CannotBePickedAgain" methodname="TriedUnsafeChoice_CannotBePickedAgain" classname="DisasterSafety.Tests.AttemptTests" runstate="Runnable" seed="1472195673" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000261" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1009" name="TryAgain_AfterSafeChoice_IsRefused" fullname="DisasterSafety.Tests.AttemptTests.TryAgain_AfterSafeChoice_IsRefused" methodname="TryAgain_AfterSafeChoice_IsRefused" classname="DisasterSafety.Tests.AttemptTests" runstate="Runnable" seed="1618389862" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.003513" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1005" name="UnsafeChoice_ThenSafeChoice_CompletesWithTwoStars" fullname="DisasterSafety.Tests.AttemptTests.UnsafeChoice_ThenSafeChoice_CompletesWithTwoStars" methodname="UnsafeChoice_ThenSafeChoice_CompletesWithTwoStars" classname="DisasterSafety.Tests.AttemptTests" runstate="Runnable" seed="1784310150" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000739" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1013" name="AudioPreferencesTests" fullname="DisasterSafety.Tests.AudioPreferencesTests" classname="DisasterSafety.Tests.AudioPreferencesTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.013386" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1016" name="Changed_IsRaisedOnlyOnRealChanges" fullname="DisasterSafety.Tests.AudioPreferencesTests.Changed_IsRaisedOnlyOnRealChanges" methodname="Changed_IsRaisedOnlyOnRealChanges" classname="DisasterSafety.Tests.AudioPreferencesTests" runstate="Runnable" seed="139882124" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.001388" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1015" name="Changes_AreStoredImmediately" fullname="DisasterSafety.Tests.AudioPreferencesTests.Changes_AreStoredImmediately" methodname="Changes_AreStoredImmediately" classname="DisasterSafety.Tests.AudioPreferencesTests" runstate="Runnable" seed="45503085" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000470" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1014" name="Defaults_AreMusicAndSoundOn" fullname="DisasterSafety.Tests.AudioPreferencesTests.Defaults_AreMusicAndSoundOn" methodname="Defaults_AreMusicAndSoundOn" classname="DisasterSafety.Tests.AudioPreferencesTests" runstate="Runnable" seed="215788533" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000307" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1017" name="ContinueRuleTests" fullname="DisasterSafety.Tests.ContinueRuleTests" classname="DisasterSafety.Tests.ContinueRuleTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.017344" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1022" name="AnyIn_FindsPlayableLevelInRequestedDifficulty" fullname="DisasterSafety.Tests.ContinueRuleTests.AnyIn_FindsPlayableLevelInRequestedDifficulty" methodname="AnyIn_FindsPlayableLevelInRequestedDifficulty" classname="DisasterSafety.Tests.ContinueRuleTests" runstate="Runnable" seed="725206144" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.005220" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1023" name="AnyIn_ReturnsFalseWithoutPlayableLevelsInRequestedDifficulty" fullname="DisasterSafety.Tests.ContinueRuleTests.AnyIn_ReturnsFalseWithoutPlayableLevelsInRequestedDifficulty" methodname="AnyIn_ReturnsFalseWithoutPlayableLevelsInRequestedDifficulty" classname="DisasterSafety.Tests.ContinueRuleTests" runstate="Runnable" seed="363451110" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000576" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1025" name="Destination_FallsBackToFirstOpenDifficulty" fullname="DisasterSafety.Tests.ContinueRuleTests.Destination_FallsBackToFirstOpenDifficulty" methodname="Destination_FallsBackToFirstOpenDifficulty" classname="DisasterSafety.Tests.ContinueRuleTests" runstate="Runnable" seed="774142924" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.002748" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1024" name="Destination_IsLastPlayedEpisodeAndDifficulty" fullname="DisasterSafety.Tests.ContinueRuleTests.Destination_IsLastPlayedEpisodeAndDifficulty" methodname="Destination_IsLastPlayedEpisodeAndDifficulty" classname="DisasterSafety.Tests.ContinueRuleTests" runstate="Runnable" seed="1945723815" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.003565" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1020" name="NameOnlySave_CannotContinue" fullname="DisasterSafety.Tests.ContinueRuleTests.NameOnlySave_CannotContinue" methodname="NameOnlySave_CannotContinue" classname="DisasterSafety.Tests.ContinueRuleTests" runstate="Runnable" seed="1020826504" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000670" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1018" name="NoSave_CannotContinue" fullname="DisasterSafety.Tests.ContinueRuleTests.NoSave_CannotContinue" methodname="NoSave_CannotContinue" classname="DisasterSafety.Tests.ContinueRuleTests" runstate="Runnable" seed="1508733487" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000357" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1019" name="ValidProgress_WithoutPlayableContent_CannotContinue" fullname="DisasterSafety.Tests.ContinueRuleTests.ValidProgress_WithoutPlayableContent_CannotContinue" methodname="ValidProgress_WithoutPlayableContent_CannotContinue" classname="DisasterSafety.Tests.ContinueRuleTests" runstate="Runnable" seed="709183032" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000205" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1021" name="ValidProgress_WithPlayableContent_CanContinue" fullname="DisasterSafety.Tests.ContinueRuleTests.ValidProgress_WithPlayableContent_CanContinue" methodname="ValidProgress_WithPlayableContent_CanContinue" classname="DisasterSafety.Tests.ContinueRuleTests" runstate="Runnable" seed="84175913" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000233" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1026" name="CurriculumTests" fullname="DisasterSafety.Tests.CurriculumTests" classname="DisasterSafety.Tests.CurriculumTests" runstate="Runnable" testcasecount="12" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.008271" total="12" passed="12" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1032" name="AllLevels_Totals75" fullname="DisasterSafety.Tests.CurriculumTests.AllLevels_Totals75" methodname="AllLevels_Totals75" classname="DisasterSafety.Tests.CurriculumTests" runstate="Runnable" seed="1556102791" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.001188" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1027" name="Episodes_AreTheFiveTopicsInManuscriptOrder" fullname="DisasterSafety.Tests.CurriculumTests.Episodes_AreTheFiveTopicsInManuscriptOrder" methodname="Episodes_AreTheFiveTopicsInManuscriptOrder" classname="DisasterSafety.Tests.CurriculumTests" runstate="Runnable" seed="796060254" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000733" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-suite type="ParameterizedMethod" id="1031" name="LevelCount_MatchesDifficulty" fullname="DisasterSafety.Tests.CurriculumTests.LevelCount_MatchesDifficulty" classname="DisasterSafety.Tests.CurriculumTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.001380" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1028" name="LevelCount_MatchesDifficulty(Easy,3)" fullname="DisasterSafety.Tests.CurriculumTests.LevelCount_MatchesDifficulty(Easy,3)" methodname="LevelCount_MatchesDifficulty" classname="DisasterSafety.Tests.CurriculumTests" runstate="Runnable" seed="432685219" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000309" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1029" name="LevelCount_MatchesDifficulty(Normal,5)" fullname="DisasterSafety.Tests.CurriculumTests.LevelCount_MatchesDifficulty(Normal,5)" methodname="LevelCount_MatchesDifficulty" classname="DisasterSafety.Tests.CurriculumTests" runstate="Runnable" seed="307535906" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000091" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1030" name="LevelCount_MatchesDifficulty(Hard,7)" fullname="DisasterSafety.Tests.CurriculumTests.LevelCount_MatchesDifficulty(Hard,7)" methodname="LevelCount_MatchesDifficulty" classname="DisasterSafety.Tests.CurriculumTests" runstate="Runnable" seed="1145252327" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000084" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="ParameterizedMethod" id="1040" name="LevelId_RejectsKeysOutsideTheCurriculum" fullname="DisasterSafety.Tests.CurriculumTests.LevelId_RejectsKeysOutsideTheCurriculum" classname="DisasterSafety.Tests.CurriculumTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.001812" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1034" name="LevelId_RejectsKeysOutsideTheCurriculum(&quot;Flood/Hard/8&quot;)" fullname="DisasterSafety.Tests.CurriculumTests.LevelId_RejectsKeysOutsideTheCurriculum(&quot;Flood/Hard/8&quot;)" methodname="LevelId_RejectsKeysOutsideTheCurriculum" classname="DisasterSafety.Tests.CurriculumTests" runstate="Runnable" seed="863281237" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000458" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1035" name="LevelId_RejectsKeysOutsideTheCurriculum(&quot;Flood/Hard/0&quot;)" fullname="DisasterSafety.Tests.CurriculumTests.LevelId_RejectsKeysOutsideTheCurriculum(&quot;Flood/Hard/0&quot;)" methodname="LevelId_RejectsKeysOutsideTheCurriculum" classname="DisasterSafety.Tests.CurriculumTests" runstate="Runnable" seed="2092346403" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000075" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1036" name="LevelId_RejectsKeysOutsideTheCurriculum(&quot;Volcano/Easy/1&quot;)" fullname="DisasterSafety.Tests.CurriculumTests.LevelId_RejectsKeysOutsideTheCurriculum(&quot;Volcano/Easy/1&quot;)" methodname="LevelId_RejectsKeysOutsideTheCurriculum" classname="DisasterSafety.Tests.CurriculumTests" runstate="Runnable" seed="1221920041" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000066" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1037" name="LevelId_RejectsKeysOutsideTheCurriculum(&quot;Flood/Medium/1&quot;)" fullname="DisasterSafety.Tests.CurriculumTests.LevelId_RejectsKeysOutsideTheCurriculum(&quot;Flood/Medium/1&quot;)" methodname="LevelId_RejectsKeysOutsideTheCurriculum" classname="DisasterSafety.Tests.CurriculumTests" runstate="Runnable" seed="1928726670" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000067" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1038" name="LevelId_RejectsKeysOutsideTheCurriculum(&quot;&quot;)" fullname="DisasterSafety.Tests.CurriculumTests.LevelId_RejectsKeysOutsideTheCurriculum(&quot;&quot;)" methodname="LevelId_RejectsKeysOutsideTheCurriculum" classname="DisasterSafety.Tests.CurriculumTests" runstate="Runnable" seed="681392695" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000053" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1039" name="LevelId_RejectsKeysOutsideTheCurriculum(null)" fullname="DisasterSafety.Tests.CurriculumTests.LevelId_RejectsKeysOutsideTheCurriculum(null)" methodname="LevelId_RejectsKeysOutsideTheCurriculum" classname="DisasterSafety.Tests.CurriculumTests" runstate="Runnable" seed="678347675" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000059" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-case id="1033" name="LevelId_RoundTripsThroughItsKey" fullname="DisasterSafety.Tests.CurriculumTests.LevelId_RoundTripsThroughItsKey" methodname="LevelId_RoundTripsThroughItsKey" classname="DisasterSafety.Tests.CurriculumTests" runstate="Runnable" seed="2005074656" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.001350" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1041" name="DisplayNameRuleTests" fullname="DisasterSafety.Tests.DisplayNameRuleTests" classname="DisasterSafety.Tests.DisplayNameRuleTests" runstate="Runnable" testcasecount="15" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.007063" total="15" passed="15" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="ParameterizedMethod" id="1049" name="Accepts_AndNormalises" fullname="DisasterSafety.Tests.DisplayNameRuleTests.Accepts_AndNormalises" classname="DisasterSafety.Tests.DisplayNameRuleTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.002819" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1042" name="Accepts_AndNormalises(&quot;Ana&quot;,&quot;Ana&quot;)" fullname="DisasterSafety.Tests.DisplayNameRuleTests.Accepts_AndNormalises(&quot;Ana&quot;,&quot;Ana&quot;)" methodname="Accepts_AndNormalises" classname="DisasterSafety.Tests.DisplayNameRuleTests" runstate="Runnable" seed="1112065557" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000902" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1043" name="Accepts_AndNormalises(&quot;  Ana  &quot;,&quot;Ana&quot;)" fullname="DisasterSafety.Tests.DisplayNameRuleTests.Accepts_AndNormalises(&quot;  Ana  &quot;,&quot;Ana&quot;)" methodname="Accepts_AndNormalises" classname="DisasterSafety.Tests.DisplayNameRuleTests" runstate="Runnable" seed="1434852529" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000131" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1044" name="Accepts_AndNormalises(&quot;Ana   Maria&quot;,&quot;Ana Maria&quot;)" fullname="DisasterSafety.Tests.DisplayNameRuleTests.Accepts_AndNormalises(&quot;Ana   Maria&quot;,&quot;Ana Maria&quot;)" methodname="Accepts_AndNormalises" classname="DisasterSafety.Tests.DisplayNameRuleTests" runstate="Runnable" seed="698688763" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000097" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1045" name="Accepts_AndNormalises(&quot;Niño&quot;,&quot;Niño&quot;)" fullname="DisasterSafety.Tests.DisplayNameRuleTests.Accepts_AndNormalises(&quot;Niño&quot;,&quot;Niño&quot;)" methodname="Accepts_AndNormalises" classname="DisasterSafety.Tests.DisplayNameRuleTests" runstate="Runnable" seed="1792897437" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000070" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1046" name="Accepts_AndNormalises(&quot;PEÑA&quot;,&quot;PEÑA&quot;)" fullname="DisasterSafety.Tests.DisplayNameRuleTests.Accepts_AndNormalises(&quot;PEÑA&quot;,&quot;PEÑA&quot;)" methodname="Accepts_AndNormalises" classname="DisasterSafety.Tests.DisplayNameRuleTests" runstate="Runnable" seed="30141218" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000075" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1047" name="Accepts_AndNormalises(&quot;Kid 7&quot;,&quot;Kid 7&quot;)" fullname="DisasterSafety.Tests.DisplayNameRuleTests.Accepts_AndNormalises(&quot;Kid 7&quot;,&quot;Kid 7&quot;)" methodname="Accepts_AndNormalises" classname="DisasterSafety.Tests.DisplayNameRuleTests" runstate="Runnable" seed="138625668" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000066" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1048" name="Accepts_AndNormalises(&quot;abcdefghijkl&quot;,&quot;abcdefghijkl&quot;)" fullname="DisasterSafety.Tests.DisplayNameRuleTests.Accepts_AndNormalises(&quot;abcdefghijkl&quot;,&quot;abcdefghijkl&quot;)" methodname="Accepts_AndNormalises" classname="DisasterSafety.Tests.DisplayNameRuleTests" runstate="Runnable" seed="1705069645" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000068" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="ParameterizedMethod" id="1059" name="Rejects_CharactersOutsideTheFont" fullname="DisasterSafety.Tests.DisplayNameRuleTests.Rejects_CharactersOutsideTheFont" classname="DisasterSafety.Tests.DisplayNameRuleTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.001276" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1055" name="Rejects_CharactersOutsideTheFont(&quot;Ana!&quot;)" fullname="DisasterSafety.Tests.DisplayNameRuleTests.Rejects_CharactersOutsideTheFont(&quot;Ana!&quot;)" methodname="Rejects_CharactersOutsideTheFont" classname="DisasterSafety.Tests.DisplayNameRuleTests" runstate="Runnable" seed="1977265784" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000223" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1056" name="Rejects_CharactersOutsideTheFont(&quot;&lt;b&gt;&quot;)" fullname="DisasterSafety.Tests.DisplayNameRuleTests.Rejects_CharactersOutsideTheFont(&quot;&lt;b&gt;&quot;)" methodname="Rejects_CharactersOutsideTheFont" classname="DisasterSafety.Tests.DisplayNameRuleTests" runstate="Runnable" seed="185094219" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000085" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1057" name="Rejects_CharactersOutsideTheFont(&quot;Ana_Maria&quot;)" fullname="DisasterSafety.Tests.DisplayNameRuleTests.Rejects_CharactersOutsideTheFont(&quot;Ana_Maria&quot;)" methodname="Rejects_CharactersOutsideTheFont" classname="DisasterSafety.Tests.DisplayNameRuleTests" runstate="Runnable" seed="1776268255" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000062" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1058" name="Rejects_CharactersOutsideTheFont(&quot;José&quot;)" fullname="DisasterSafety.Tests.DisplayNameRuleTests.Rejects_CharactersOutsideTheFont(&quot;José&quot;)" methodname="Rejects_CharactersOutsideTheFont" classname="DisasterSafety.Tests.DisplayNameRuleTests" runstate="Runnable" seed="1355800874" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000061" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-suite type="ParameterizedMethod" id="1053" name="Rejects_Empty" fullname="DisasterSafety.Tests.DisplayNameRuleTests.Rejects_Empty" classname="DisasterSafety.Tests.DisplayNameRuleTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.001074" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1050" name="Rejects_Empty(null)" fullname="DisasterSafety.Tests.DisplayNameRuleTests.Rejects_Empty(null)" methodname="Rejects_Empty" classname="DisasterSafety.Tests.DisplayNameRuleTests" runstate="Runnable" seed="1180615303" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000207" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1051" name="Rejects_Empty(&quot;&quot;)" fullname="DisasterSafety.Tests.DisplayNameRuleTests.Rejects_Empty(&quot;&quot;)" methodname="Rejects_Empty" classname="DisasterSafety.Tests.DisplayNameRuleTests" runstate="Runnable" seed="1262425587" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000096" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1052" name="Rejects_Empty(&quot;    &quot;)" fullname="DisasterSafety.Tests.DisplayNameRuleTests.Rejects_Empty(&quot;    &quot;)" methodname="Rejects_Empty" classname="DisasterSafety.Tests.DisplayNameRuleTests" runstate="Runnable" seed="487933973" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000061" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-case id="1054" name="Rejects_MoreThanTwelveCharacters" fullname="DisasterSafety.Tests.DisplayNameRuleTests.Rejects_MoreThanTwelveCharacters" methodname="Rejects_MoreThanTwelveCharacters" classname="DisasterSafety.Tests.DisplayNameRuleTests" runstate="Runnable" seed="454168625" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000175" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1060" name="LevelCompletionTests" fullname="DisasterSafety.Tests.LevelCompletionTests" classname="DisasterSafety.Tests.LevelCompletionTests" runstate="Runnable" testcasecount="14" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.149211" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1071" name="AbandonedAttempt_SavesNothing" fullname="DisasterSafety.Tests.LevelCompletionTests.AbandonedAttempt_SavesNothing" methodname="AbandonedAttempt_SavesNothing" classname="DisasterSafety.Tests.LevelCompletionTests" runstate="Runnable" seed="2098088006" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.029954" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1072" name="Complete_BeforeTheSafeChoice_IsRefused" fullname="DisasterSafety.Tests.LevelCompletionTests.Complete_BeforeTheSafeChoice_IsRefused" methodname="Complete_BeforeTheSafeChoice_IsRefused" classname="DisasterSafety.Tests.LevelCompletionTests" runstate="Runnable" seed="1918774950" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.002815" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1073" name="Complete_FromACompletedAttempt_UsesItsStars" fullname="DisasterSafety.Tests.LevelCompletionTests.Complete_FromACompletedAttempt_UsesItsStars" methodname="Complete_FromACompletedAttempt_UsesItsStars" classname="DisasterSafety.Tests.LevelCompletionTests" runstate="Runnable" seed="1104307229" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.022999" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1061" name="Complete_SavesStarsAndCompletionToDisk_BeforeReturning" fullname="DisasterSafety.Tests.LevelCompletionTests.Complete_SavesStarsAndCompletionToDisk_BeforeReturning" methodname="Complete_SavesStarsAndCompletionToDisk_BeforeReturning" classname="DisasterSafety.Tests.LevelCompletionTests" runstate="Runnable" seed="997233846" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.016161" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1066" name="CompletingAllEasy_OpensNormal_OnlyOnTheLastOne" fullname="DisasterSafety.Tests.LevelCompletionTests.CompletingAllEasy_OpensNormal_OnlyOnTheLastOne" methodname="CompletingAllEasy_OpensNormal_OnlyOnTheLastOne" classname="DisasterSafety.Tests.LevelCompletionTests" runstate="Runnable" seed="1774401231" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.004507" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1069" name="CompletingAllHard_CompletesTheEpisode_AndOpensTheNextEpisode" fullname="DisasterSafety.Tests.LevelCompletionTests.CompletingAllHard_CompletesTheEpisode_AndOpensTheNextEpisode" methodname="CompletingAllHard_CompletesTheEpisode_AndOpensTheNextEpisode" classname="DisasterSafety.Tests.LevelCompletionTests" runstate="Runnable" seed="882142347" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.002613" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1068" name="CompletingAllNormal_OpensHard" fullname="DisasterSafety.Tests.LevelCompletionTests.CompletingAllNormal_OpensHard" methodname="CompletingAllNormal_OpensHard" classname="DisasterSafety.Tests.LevelCompletionTests" runstate="Runnable" seed="1487695045" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.005774" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1070" name="CompletingTheLastEpisode_OpensNothing" fullname="DisasterSafety.Tests.LevelCompletionTests.CompletingTheLastEpisode_OpensNothing" methodname="CompletingTheLastEpisode_OpensNothing" classname="DisasterSafety.Tests.LevelCompletionTests" runstate="Runnable" seed="868975314" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.006208" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1064" name="Completion_UpdatesLastPlayed" fullname="DisasterSafety.Tests.LevelCompletionTests.Completion_UpdatesLastPlayed" methodname="Completion_UpdatesLastPlayed" classname="DisasterSafety.Tests.LevelCompletionTests" runstate="Runnable" seed="679658425" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.012506" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1063" name="FirstCompletion_IsReported" fullname="DisasterSafety.Tests.LevelCompletionTests.FirstCompletion_IsReported" methodname="FirstCompletion_IsReported" classname="DisasterSafety.Tests.LevelCompletionTests" runstate="Runnable" seed="1737482252" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.006675" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1074" name="Next_IsTheFollowingLevelInTheSameDifficulty" fullname="DisasterSafety.Tests.LevelCompletionTests.Next_IsTheFollowingLevelInTheSameDifficulty" methodname="Next_IsTheFollowingLevelInTheSameDifficulty" classname="DisasterSafety.Tests.LevelCompletionTests" runstate="Runnable" seed="1831581354" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.008408" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1065" name="NoLocksInsideADifficulty_LevelTwoNeedsNothing" fullname="DisasterSafety.Tests.LevelCompletionTests.NoLocksInsideADifficulty_LevelTwoNeedsNothing" methodname="NoLocksInsideADifficulty_LevelTwoNeedsNothing" classname="DisasterSafety.Tests.LevelCompletionTests" runstate="Runnable" seed="74234015" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.004892" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1062" name="Replay_KeepsBestStars_AndReportsThem" fullname="DisasterSafety.Tests.LevelCompletionTests.Replay_KeepsBestStars_AndReportsThem" methodname="Replay_KeepsBestStars_AndReportsThem" classname="DisasterSafety.Tests.LevelCompletionTests" runstate="Runnable" seed="37203905" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.004191" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1067" name="ReplayingAfterEasyIsDone_OpensNothingNew" fullname="DisasterSafety.Tests.LevelCompletionTests.ReplayingAfterEasyIsDone_OpensNothingNew" methodname="ReplayingAfterEasyIsDone_OpensNothingNew" classname="DisasterSafety.Tests.LevelCompletionTests" runstate="Runnable" seed="753766425" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.004214" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1075" name="MenuNavigatorTests" fullname="DisasterSafety.Tests.MenuNavigatorTests" classname="DisasterSafety.Tests.MenuNavigatorTests" runstate="Runnable" testcasecount="18" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.027401" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="ParameterizedMethod" id="1087" name="Back_FromMainMenuPanels_ReturnsToMain" fullname="DisasterSafety.Tests.MenuNavigatorTests.Back_FromMainMenuPanels_ReturnsToMain" classname="DisasterSafety.Tests.MenuNavigatorTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.011846" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1084" name="Back_FromMainMenuPanels_ReturnsToMain(Settings)" fullname="DisasterSafety.Tests.MenuNavigatorTests.Back_FromMainMenuPanels_ReturnsToMain(Settings)" methodname="Back_FromMainMenuPanels_ReturnsToMain" classname="DisasterSafety.Tests.MenuNavigatorTests" runstate="Runnable" seed="502552892" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.001760" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1085" name="Back_FromMainMenuPanels_ReturnsToMain(HowToPlay)" fullname="DisasterSafety.Tests.MenuNavigatorTests.Back_FromMainMenuPanels_ReturnsToMain(HowToPlay)" methodname="Back_FromMainMenuPanels_ReturnsToMain" classname="DisasterSafety.Tests.MenuNavigatorTests" runstate="Runnable" seed="1427315183" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.006751" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1086" name="Back_FromMainMenuPanels_ReturnsToMain(NameEntry)" fullname="DisasterSafety.Tests.MenuNavigatorTests.Back_FromMainMenuPanels_ReturnsToMain(NameEntry)" methodname="Back_FromMainMenuPanels_ReturnsToMain" classname="DisasterSafety.Tests.MenuNavigatorTests" runstate="Runnable" seed="1922228033" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000628" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-case id="1080" name="Back_FromStudentPick_GoesToMain" fullname="DisasterSafety.Tests.MenuNavigatorTests.Back_FromStudentPick_GoesToMain" methodname="Back_FromStudentPick_GoesToMain" classname="DisasterSafety.Tests.MenuNavigatorTests" runstate="Runnable" seed="534285695" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000396" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1088" name="Back_OnMain_AsksToExit_AndBackAgainCancels" fullname="DisasterSafety.Tests.MenuNavigatorTests.Back_OnMain_AsksToExit_AndBackAgainCancels" methodname="Back_OnMain_AsksToExit_AndBackAgainCancels" classname="DisasterSafety.Tests.MenuNavigatorTests" runstate="Runnable" seed="2136310861" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000301" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1094" name="Changed_ReportsEveryMove" fullname="DisasterSafety.Tests.MenuNavigatorTests.Changed_ReportsEveryMove" methodname="Changed_ReportsEveryMove" classname="DisasterSafety.Tests.MenuNavigatorTests" runstate="Runnable" seed="1470329834" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000528" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1091" name="Continue_WhenAllowed_OpensLevelSelectForLastPlayed" fullname="DisasterSafety.Tests.MenuNavigatorTests.Continue_WhenAllowed_OpensLevelSelectForLastPlayed" methodname="Continue_WhenAllowed_OpensLevelSelectForLastPlayed" classname="DisasterSafety.Tests.MenuNavigatorTests" runstate="Runnable" seed="2005633760" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000593" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1090" name="Continue_WhenNotAllowed_StaysOnMain" fullname="DisasterSafety.Tests.MenuNavigatorTests.Continue_WhenNotAllowed_StaysOnMain" methodname="Continue_WhenNotAllowed_StaysOnMain" classname="DisasterSafety.Tests.MenuNavigatorTests" runstate="Runnable" seed="1339554028" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000298" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1089" name="ExitConfirm_YesQuits_NoReturns" fullname="DisasterSafety.Tests.MenuNavigatorTests.ExitConfirm_YesQuits_NoReturns" methodname="ExitConfirm_YesQuits_NoReturns" classname="DisasterSafety.Tests.MenuNavigatorTests" runstate="Runnable" seed="1822255508" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000350" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1083" name="LockedChoices_AreRefused" fullname="DisasterSafety.Tests.MenuNavigatorTests.LockedChoices_AreRefused" methodname="LockedChoices_AreRefused" classname="DisasterSafety.Tests.MenuNavigatorTests" runstate="Runnable" seed="1048701681" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000568" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1078" name="OfferStudentPick_NameWithoutStudent_ShowsPickerAndPickReturnsToMain" fullname="DisasterSafety.Tests.MenuNavigatorTests.OfferStudentPick_NameWithoutStudent_ShowsPickerAndPickReturnsToMain" methodname="OfferStudentPick_NameWithoutStudent_ShowsPickerAndPickReturnsToMain" classname="DisasterSafety.Tests.MenuNavigatorTests" runstate="Runnable" seed="15970441" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000367" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1079" name="OfferStudentPick_WithStudentOrWithoutName_DoesNothing" fullname="DisasterSafety.Tests.MenuNavigatorTests.OfferStudentPick_WithStudentOrWithoutName_DoesNothing" methodname="OfferStudentPick_WithStudentOrWithoutName_DoesNothing" classname="DisasterSafety.Tests.MenuNavigatorTests" runstate="Runnable" seed="141795034" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000338" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1093" name="OpenLevelSelect_ForALockedDifficulty_StaysOnMain" fullname="DisasterSafety.Tests.MenuNavigatorTests.OpenLevelSelect_ForALockedDifficulty_StaysOnMain" methodname="OpenLevelSelect_ForALockedDifficulty_StaysOnMain" classname="DisasterSafety.Tests.MenuNavigatorTests" runstate="Runnable" seed="861690680" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000456" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1092" name="OpenLevelSelect_FromLevelCompleted_ShowsThatEpisodeAndDifficulty" fullname="DisasterSafety.Tests.MenuNavigatorTests.OpenLevelSelect_FromLevelCompleted_ShowsThatEpisodeAndDifficulty" methodname="OpenLevelSelect_FromLevelCompleted_ShowsThatEpisodeAndDifficulty" classname="DisasterSafety.Tests.MenuNavigatorTests" runstate="Runnable" seed="44743395" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000482" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1081" name="Play_WithName_GoesToEpisodes" fullname="DisasterSafety.Tests.MenuNavigatorTests.Play_WithName_GoesToEpisodes" methodname="Play_WithName_GoesToEpisodes" classname="DisasterSafety.Tests.MenuNavigatorTests" runstate="Runnable" seed="1306988721" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000269" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1077" name="Play_WithoutName_AsksForName" fullname="DisasterSafety.Tests.MenuNavigatorTests.Play_WithoutName_AsksForName" methodname="Play_WithoutName_AsksForName" classname="DisasterSafety.Tests.MenuNavigatorTests" runstate="Runnable" seed="369276368" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000366" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1082" name="Selection_WalksEpisodeDifficultyLevel_AndBackReturnsStepByStep" fullname="DisasterSafety.Tests.MenuNavigatorTests.Selection_WalksEpisodeDifficultyLevel_AndBackReturnsStepByStep" methodname="Selection_WalksEpisodeDifficultyLevel_AndBackReturnsStepByStep" classname="DisasterSafety.Tests.MenuNavigatorTests" runstate="Runnable" seed="796978428" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000509" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1076" name="StartsOnMainMenu" fullname="DisasterSafety.Tests.MenuNavigatorTests.StartsOnMainMenu" methodname="StartsOnMainMenu" classname="DisasterSafety.Tests.MenuNavigatorTests" runstate="Runnable" seed="901468753" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000201" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1095" name="ProgressStateTests" fullname="DisasterSafety.Tests.ProgressStateTests" classname="DisasterSafety.Tests.ProgressStateTests" runstate="Runnable" testcasecount="11" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.007056" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1100" name="CompletingALevel_CreatesSavedProgressAndLastPlayed" fullname="DisasterSafety.Tests.ProgressStateTests.CompletingALevel_CreatesSavedProgressAndLastPlayed" methodname="CompletingALevel_CreatesSavedProgressAndLastPlayed" classname="DisasterSafety.Tests.ProgressStateTests" runstate="Runnable" seed="578181482" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000460" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1099" name="DisplayNameAlone_IsNotSavedProgress" fullname="DisasterSafety.Tests.ProgressStateTests.DisplayNameAlone_IsNotSavedProgress" methodname="DisplayNameAlone_IsNotSavedProgress" classname="DisasterSafety.Tests.ProgressStateTests" runstate="Runnable" seed="1839203133" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000310" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1098" name="NewGame_HasNoSavedProgressAndNoName" fullname="DisasterSafety.Tests.ProgressStateTests.NewGame_HasNoSavedProgressAndNoName" methodname="NewGame_HasNoSavedProgressAndNoName" classname="DisasterSafety.Tests.ProgressStateTests" runstate="Runnable" seed="1906511401" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000245" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1103" name="NewGame_HasNoStudent" fullname="DisasterSafety.Tests.ProgressStateTests.NewGame_HasNoStudent" methodname="NewGame_HasNoStudent" classname="DisasterSafety.Tests.ProgressStateTests" runstate="Runnable" seed="1858485187" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000779" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1096" name="NewGame_OpensOnlyEarthquake" fullname="DisasterSafety.Tests.ProgressStateTests.NewGame_OpensOnlyEarthquake" methodname="NewGame_OpensOnlyEarthquake" classname="DisasterSafety.Tests.ProgressStateTests" runstate="Runnable" seed="443007850" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000608" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1097" name="NewGame_OpensOnlyEarthquakeEasy" fullname="DisasterSafety.Tests.ProgressStateTests.NewGame_OpensOnlyEarthquakeEasy" methodname="NewGame_OpensOnlyEarthquakeEasy" classname="DisasterSafety.Tests.ProgressStateTests" runstate="Runnable" seed="1630951856" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000297" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1101" name="RecordCompletion_KeepsBestStarsAndClampsToThree" fullname="DisasterSafety.Tests.ProgressStateTests.RecordCompletion_KeepsBestStarsAndClampsToThree" methodname="RecordCompletion_KeepsBestStarsAndClampsToThree" classname="DisasterSafety.Tests.ProgressStateTests" runstate="Runnable" seed="814692077" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000317" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1106" name="SetStudent_None_ClearsThePick" fullname="DisasterSafety.Tests.ProgressStateTests.SetStudent_None_ClearsThePick" methodname="SetStudent_None_ClearsThePick" classname="DisasterSafety.Tests.ProgressStateTests" runstate="Runnable" seed="35977431" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000313" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1104" name="SetStudent_StoresTheKindAsText" fullname="DisasterSafety.Tests.ProgressStateTests.SetStudent_StoresTheKindAsText" methodname="SetStudent_StoresTheKindAsText" classname="DisasterSafety.Tests.ProgressStateTests" runstate="Runnable" seed="772853481" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000331" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1102" name="StarsFor_UnplayedLevel_IsZero" fullname="DisasterSafety.Tests.ProgressStateTests.StarsFor_UnplayedLevel_IsZero" methodname="StarsFor_UnplayedLevel_IsZero" classname="DisasterSafety.Tests.ProgressStateTests" runstate="Runnable" seed="927596284" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000238" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1105" name="UnknownStudentText_ReadsAsNone" fullname="DisasterSafety.Tests.ProgressStateTests.UnknownStudentText_ReadsAsNone" methodname="UnknownStudentText_ReadsAsNone" classname="DisasterSafety.Tests.ProgressStateTests" runstate="Runnable" seed="1275033404" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.000363" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1107" name="SaveServiceTests" fullname="DisasterSafety.Tests.SaveServiceTests" classname="DisasterSafety.Tests.SaveServiceTests" runstate="Runnable" testcasecount="13" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.259545" total="13" passed="13" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1121" name="Load_InvalidDisplayName_IsClearedButProgressKept" fullname="DisasterSafety.Tests.SaveServiceTests.Load_InvalidDisplayName_IsClearedButProgressKept" methodname="Load_InvalidDisplayName_IsClearedButProgressKept" classname="DisasterSafety.Tests.SaveServiceTests" runstate="Runnable" seed="335574008" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.040833" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1108" name="Load_MissingFile_ReportsMissing" fullname="DisasterSafety.Tests.SaveServiceTests.Load_MissingFile_ReportsMissing" methodname="Load_MissingFile_ReportsMissing" classname="DisasterSafety.Tests.SaveServiceTests" runstate="Runnable" seed="101448795" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.002824" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1111" name="Load_OldSaveWithoutStudent_ReadsNoneAndKeepsTheRest" fullname="DisasterSafety.Tests.SaveServiceTests.Load_OldSaveWithoutStudent_ReadsNoneAndKeepsTheRest" methodname="Load_OldSaveWithoutStudent_ReadsNoneAndKeepsTheRest" classname="DisasterSafety.Tests.SaveServiceTests" runstate="Runnable" seed="2085159935" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.011877" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1118" name="Load_TwoUnreadableFilesInOneSecond_KeepsBoth" fullname="DisasterSafety.Tests.SaveServiceTests.Load_TwoUnreadableFilesInOneSecond_KeepsBoth" methodname="Load_TwoUnreadableFilesInOneSecond_KeepsBoth" classname="DisasterSafety.Tests.SaveServiceTests" runstate="Runnable" seed="1436346537" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.030006" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-suite type="ParameterizedMethod" id="1117" name="Load_UnreadableFile_IsPreservedNotDeleted" fullname="DisasterSafety.Tests.SaveServiceTests.Load_UnreadableFile_IsPreservedNotDeleted" classname="DisasterSafety.Tests.SaveServiceTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.077063" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1112" name="Load_UnreadableFile_IsPreservedNotDeleted(&quot;{ this is not json&quot;)" fullname="DisasterSafety.Tests.SaveServiceTests.Load_UnreadableFile_IsPreservedNotDeleted(&quot;{ this is not json&quot;)" methodname="Load_UnreadableFile_IsPreservedNotDeleted" classname="DisasterSafety.Tests.SaveServiceTests" runstate="Runnable" seed="1440177011" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.026075" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1113" name="Load_UnreadableFile_IsPreservedNotDeleted(&quot;&quot;)" fullname="DisasterSafety.Tests.SaveServiceTests.Load_UnreadableFile_IsPreservedNotDeleted(&quot;&quot;)" methodname="Load_UnreadableFile_IsPreservedNotDeleted" classname="DisasterSafety.Tests.SaveServiceTests" runstate="Runnable" seed="1872525098" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.005369" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1114" name="Load_UnreadableFile_IsPreservedNotDeleted(&quot;{}&quot;)" fullname="DisasterSafety.Tests.SaveServiceTests.Load_UnreadableFile_IsPreservedNotDeleted(&quot;{}&quot;)" methodname="Load_UnreadableFile_IsPreservedNotDeleted" classname="DisasterSafety.Tests.SaveServiceTests" runstate="Runnable" seed="1855657665" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.005716" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1115" name="Load_UnreadableFile_IsPreservedNotDeleted(&quot;{\&quot;saveVersion\&quot;:999}&quot;)" fullname="DisasterSafety.Tests.SaveServiceTests.Load_UnreadableFile_IsPreservedNotDeleted(&quot;{\&quot;saveVersion\&quot;:999}&quot;)" methodname="Load_UnreadableFile_IsPreservedNotDeleted" classname="DisasterSafety.Tests.SaveServiceTests" runstate="Runnable" seed="1968625851" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.017672" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1116" name="Load_UnreadableFile_IsPreservedNotDeleted(&quot;{\&quot;saveVersion\&quot;:1,\&quot;completedLevels\&quot;:[{\&quot;level\&quot;:\&quot;Volcano/Easy/1\&quot;,\&quot;stars\&quot;:1}]}&quot;)" fullname="DisasterSafety.Tests.SaveServiceTests.Load_UnreadableFile_IsPreservedNotDeleted(&quot;{\&quot;saveVersion\&quot;:1,\&quot;completedLevels\&quot;:[{\&quot;level\&quot;:\&quot;Volcano/Easy/1\&quot;,\&quot;stars\&quot;:1}]}&quot;)" methodname="Load_UnreadableFile_IsPreservedNotDeleted" classname="DisasterSafety.Tests.SaveServiceTests" runstate="Runnable" seed="1826373491" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.016341" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-case id="1120" name="Save_IgnoresAStaleTempFileFromACrash" fullname="DisasterSafety.Tests.SaveServiceTests.Save_IgnoresAStaleTempFileFromACrash" methodname="Save_IgnoresAStaleTempFileFromACrash" classname="DisasterSafety.Tests.SaveServiceTests" runstate="Runnable" seed="1597228803" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.022080" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1119" name="Save_ReplacesExistingFile_AndLeavesNoTempFile" fullname="DisasterSafety.Tests.SaveServiceTests.Save_ReplacesExistingFile_AndLeavesNoTempFile" methodname="Save_ReplacesExistingFile_AndLeavesNoTempFile" classname="DisasterSafety.Tests.SaveServiceTests" runstate="Runnable" seed="808045214" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.031377" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1109" name="SaveThenLoad_RoundTripsProgress" fullname="DisasterSafety.Tests.SaveServiceTests.SaveThenLoad_RoundTripsProgress" methodname="SaveThenLoad_RoundTripsProgress" classname="DisasterSafety.Tests.SaveServiceTests" runstate="Runnable" seed="1111443168" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.016318" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1110" name="SaveThenLoad_RoundTripsTheStudentPick" fullname="DisasterSafety.Tests.SaveServiceTests.SaveThenLoad_RoundTripsTheStudentPick" methodname="SaveThenLoad_RoundTripsTheStudentPick" classname="DisasterSafety.Tests.SaveServiceTests" runstate="Runnable" seed="496957941" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.014700" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1122" name="ScenarioContentTests" fullname="DisasterSafety.Tests.ScenarioContentTests" classname="DisasterSafety.Tests.ScenarioContentTests" runstate="Runnable" testcasecount="14" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:19Z" duration="0.338795" total="14" passed="14" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1129" name="EasyLevel2_UsesTheStudentFlow_InTheCorridor_WithItsTextUnchanged" fullname="DisasterSafety.Tests.ScenarioContentTests.EasyLevel2_UsesTheStudentFlow_InTheCorridor_WithItsTextUnchanged" methodname="EasyLevel2_UsesTheStudentFlow_InTheCorridor_WithItsTextUnchanged" classname="DisasterSafety.Tests.ScenarioContentTests" runstate="Runnable" seed="727090161" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.004651" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1123" name="EasyLevels_AllExist" fullname="DisasterSafety.Tests.ScenarioContentTests.EasyLevels_AllExist" methodname="EasyLevels_AllExist" classname="DisasterSafety.Tests.ScenarioContentTests" runstate="Runnable" seed="2046043833" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:18Z" duration="0.014795" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1134" name="EveryCharacter_IsInThePixelFont" fullname="DisasterSafety.Tests.ScenarioContentTests.EveryCharacter_IsInThePixelFont" methodname="EveryCharacter_IsInThePixelFont" classname="DisasterSafety.Tests.ScenarioContentTests" runstate="Runnable" seed="831233296" result="Passed" start-time="2026-11-22 06:08:18Z" end-time="2026-11-22 06:08:19Z" duration="0.215624" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1126" name="EveryChoicePicture_HasArt" fullname="DisasterSafety.Tests.ScenarioContentTests.EveryChoicePicture_HasArt" methodname="EveryChoicePicture_HasArt" classname="DisasterSafety.Tests.ScenarioContentTests" runstate="Runnable" seed="549758962" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.013862" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1127" name="EveryNewFlowIcon_HasArt" fullname="DisasterSafety.Tests.ScenarioContentTests.EveryNewFlowIcon_HasArt" methodname="EveryNewFlowIcon_HasArt" classname="DisasterSafety.Tests.ScenarioContentTests" runstate="Runnable" seed="1017415102" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.003743" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1132" name="EveryScenario_IsStoredUnderItsOwnLevelPath" fullname="DisasterSafety.Tests.ScenarioContentTests.EveryScenario_IsStoredUnderItsOwnLevelPath" methodname="EveryScenario_IsStoredUnderItsOwnLevelPath" classname="DisasterSafety.Tests.ScenarioContentTests" runstate="Runnable" seed="1320830280" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.004439" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1131" name="EveryScenario_PassesTheScenarioRules" fullname="DisasterSafety.Tests.ScenarioContentTests.EveryScenario_PassesTheScenarioRules" methodname="EveryScenario_PassesTheScenarioRules" classname="DisasterSafety.Tests.ScenarioContentTests" runstate="Runnable" seed="1115983696" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.006941" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1130" name="EverySetting_HasArt" fullname="DisasterSafety.Tests.ScenarioContentTests.EverySetting_HasArt" methodname="EverySetting_HasArt" classname="DisasterSafety.Tests.ScenarioContentTests" runstate="Runnable" seed="1422889254" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.006932" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1133" name="EverySource_IsAFindingInTheResearchNotes" fullname="DisasterSafety.Tests.ScenarioContentTests.EverySource_IsAFindingInTheResearchNotes" methodname="EverySource_IsAFindingInTheResearchNotes" classname="DisasterSafety.Tests.ScenarioContentTests" runstate="Runnable" seed="340470202" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.012819" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1125" name="HardLevels_AllExist" fullname="DisasterSafety.Tests.ScenarioContentTests.HardLevels_AllExist" methodname="HardLevels_AllExist" classname="DisasterSafety.Tests.ScenarioContentTests" runstate="Runnable" seed="1543682127" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.004154" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1124" name="NormalLevels_AllExist" fullname="DisasterSafety.Tests.ScenarioContentTests.NormalLevels_AllExist" methodname="NormalLevels_AllExist" classname="DisasterSafety.Tests.ScenarioContentTests" runstate="Runnable" seed="1041157041" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.003683" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1128" name="OnlyTheMovedLevels_UseTheStudentFlow" fullname="DisasterSafety.Tests.ScenarioContentTests.OnlyTheMovedLevels_UseTheStudentFlow" methodname="OnlyTheMovedLevels_UseTheStudentFlow" classname="DisasterSafety.Tests.ScenarioContentTests" runstate="Runnable" seed="1747790281" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.010360" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1136" name="SafetyWording_IsDuckCoverAndHold" fullname="DisasterSafety.Tests.ScenarioContentTests.SafetyWording_IsDuckCoverAndHold" methodname="SafetyWording_IsDuckCoverAndHold" classname="DisasterSafety.Tests.ScenarioContentTests" runstate="Runnable" seed="132410976" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.015707" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1135" name="Sentences_StayShortForYoungReaders" fullname="DisasterSafety.Tests.ScenarioContentTests.Sentences_StayShortForYoungReaders" methodname="Sentences_StayShortForYoungReaders" classname="DisasterSafety.Tests.ScenarioContentTests" runstate="Runnable" seed="934295592" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.007024" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1137" name="ScenarioTests" fullname="DisasterSafety.Tests.ScenarioTests" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" testcasecount="37" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.024095" total="37" passed="37" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="ParameterizedMethod" id="1151" name="CanShake_OnlyForSettingsWithAShaker" fullname="DisasterSafety.Tests.ScenarioTests.CanShake_OnlyForSettingsWithAShaker" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" testcasecount="11" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.002637" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1140" name="CanShake_OnlyForSettingsWithAShaker(&quot;classroom&quot;,True)" fullname="DisasterSafety.Tests.ScenarioTests.CanShake_OnlyForSettingsWithAShaker(&quot;classroom&quot;,True)" methodname="CanShake_OnlyForSettingsWithAShaker" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="13011233" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000421" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1141" name="CanShake_OnlyForSettingsWithAShaker(&quot;corridor&quot;,True)" fullname="DisasterSafety.Tests.ScenarioTests.CanShake_OnlyForSettingsWithAShaker(&quot;corridor&quot;,True)" methodname="CanShake_OnlyForSettingsWithAShaker" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="1445383558" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000079" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1142" name="CanShake_OnlyForSettingsWithAShaker(&quot;home&quot;,True)" fullname="DisasterSafety.Tests.ScenarioTests.CanShake_OnlyForSettingsWithAShaker(&quot;home&quot;,True)" methodname="CanShake_OnlyForSettingsWithAShaker" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="1170548682" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000064" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1143" name="CanShake_OnlyForSettingsWithAShaker(&quot;schoolyard&quot;,True)" fullname="DisasterSafety.Tests.ScenarioTests.CanShake_OnlyForSettingsWithAShaker(&quot;schoolyard&quot;,True)" methodname="CanShake_OnlyForSettingsWithAShaker" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="1377127042" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000073" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1144" name="CanShake_OnlyForSettingsWithAShaker(&quot;mall_a&quot;,True)" fullname="DisasterSafety.Tests.ScenarioTests.CanShake_OnlyForSettingsWithAShaker(&quot;mall_a&quot;,True)" methodname="CanShake_OnlyForSettingsWithAShaker" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="2044050261" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000062" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1145" name="CanShake_OnlyForSettingsWithAShaker(&quot;mall_b&quot;,False)" fullname="DisasterSafety.Tests.ScenarioTests.CanShake_OnlyForSettingsWithAShaker(&quot;mall_b&quot;,False)" methodname="CanShake_OnlyForSettingsWithAShaker" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="90145382" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000089" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1146" name="CanShake_OnlyForSettingsWithAShaker(&quot;home_after&quot;,False)" fullname="DisasterSafety.Tests.ScenarioTests.CanShake_OnlyForSettingsWithAShaker(&quot;home_after&quot;,False)" methodname="CanShake_OnlyForSettingsWithAShaker" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="573439493" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000064" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1147" name="CanShake_OnlyForSettingsWithAShaker(&quot;evacuation_area&quot;,False)" fullname="DisasterSafety.Tests.ScenarioTests.CanShake_OnlyForSettingsWithAShaker(&quot;evacuation_area&quot;,False)" methodname="CanShake_OnlyForSettingsWithAShaker" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="298720220" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000062" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1148" name="CanShake_OnlyForSettingsWithAShaker(&quot;classroom_after&quot;,False)" fullname="DisasterSafety.Tests.ScenarioTests.CanShake_OnlyForSettingsWithAShaker(&quot;classroom_after&quot;,False)" methodname="CanShake_OnlyForSettingsWithAShaker" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="991731533" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000089" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1149" name="CanShake_OnlyForSettingsWithAShaker(&quot;bedroom&quot;,False)" fullname="DisasterSafety.Tests.ScenarioTests.CanShake_OnlyForSettingsWithAShaker(&quot;bedroom&quot;,False)" methodname="CanShake_OnlyForSettingsWithAShaker" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="1646433947" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000062" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1150" name="CanShake_OnlyForSettingsWithAShaker(&quot;beach&quot;,False)" fullname="DisasterSafety.Tests.ScenarioTests.CanShake_OnlyForSettingsWithAShaker(&quot;beach&quot;,False)" methodname="CanShake_OnlyForSettingsWithAShaker" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="616190387" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000059" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-case id="1170" name="ChoiceIds_MustBeUnique" fullname="DisasterSafety.Tests.ScenarioTests.ChoiceIds_MustBeUnique" methodname="ChoiceIds_MustBeUnique" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="1188166328" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000976" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1176" name="ContinueRule_BecomesTrue_AfterTheFirstCompletedLevel_WithLibraryContent" fullname="DisasterSafety.Tests.ScenarioTests.ContinueRule_BecomesTrue_AfterTheFirstCompletedLevel_WithLibraryContent" methodname="ContinueRule_BecomesTrue_AfterTheFirstCompletedLevel_WithLibraryContent" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="1834295051" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.002899" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1153" name="DuringScenario_WithStillSetting_IsAProblem" fullname="DisasterSafety.Tests.ScenarioTests.DuringScenario_WithStillSetting_IsAProblem" methodname="DuringScenario_WithStillSetting_IsAProblem" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="5798353" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000264" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1167" name="EveryChoice_NeedsFeedbackAndASource" fullname="DisasterSafety.Tests.ScenarioTests.EveryChoice_NeedsFeedbackAndASource" methodname="EveryChoice_NeedsFeedbackAndASource" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="141944900" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000885" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1165" name="ExactlyOneSafeChoice_IsRequired" fullname="DisasterSafety.Tests.ScenarioTests.ExactlyOneSafeChoice_IsRequired" methodname="ExactlyOneSafeChoice_IsRequired" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="1859894588" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000225" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1168" name="GoalHintAndLesson_NeedSources" fullname="DisasterSafety.Tests.ScenarioTests.GoalHintAndLesson_NeedSources" methodname="GoalHintAndLesson_NeedSources" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="33433155" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000208" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1169" name="LevelOutsideTheCurriculum_IsAProblem" fullname="DisasterSafety.Tests.ScenarioTests.LevelOutsideTheCurriculum_IsAProblem" methodname="LevelOutsideTheCurriculum_IsAProblem" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="777498534" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000158" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1175" name="Library_DuplicateLevel_KeepsTheFirstAndReportsIt" fullname="DisasterSafety.Tests.ScenarioTests.Library_DuplicateLevel_KeepsTheFirstAndReportsIt" methodname="Library_DuplicateLevel_KeepsTheFirstAndReportsIt" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="1327907750" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000642" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1174" name="Library_OnlyValidScenariosArePlayable" fullname="DisasterSafety.Tests.ScenarioTests.Library_OnlyValidScenariosArePlayable" methodname="Library_OnlyValidScenariosArePlayable" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="595735911" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000555" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1154" name="MissingChoicePicture_IsAProblem" fullname="DisasterSafety.Tests.ScenarioTests.MissingChoicePicture_IsAProblem" methodname="MissingChoicePicture_IsAProblem" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="1355204600" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000171" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1158" name="MixedActions_AreRejected" fullname="DisasterSafety.Tests.ScenarioTests.MixedActions_AreRejected" methodname="MixedActions_AreRejected" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="412012202" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000294" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1160" name="NewFlowAction_MustBeAnActionSpotOfTheSetting" fullname="DisasterSafety.Tests.ScenarioTests.NewFlowAction_MustBeAnActionSpotOfTheSetting" methodname="NewFlowAction_MustBeAnActionSpotOfTheSetting" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="686201054" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000261" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1157" name="NewFlowChoice_MayLeaveThePictureEmpty" fullname="DisasterSafety.Tests.ScenarioTests.NewFlowChoice_MayLeaveThePictureEmpty" methodname="NewFlowChoice_MayLeaveThePictureEmpty" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="308072481" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000223" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1159" name="NewFlowChoice_NeedsAnIcon" fullname="DisasterSafety.Tests.ScenarioTests.NewFlowChoice_NeedsAnIcon" methodname="NewFlowChoice_NeedsAnIcon" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="1541194076" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000193" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-suite type="ParameterizedMethod" id="1164" name="OnlyDuringScenariosShake" fullname="DisasterSafety.Tests.ScenarioTests.OnlyDuringScenariosShake" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.001055" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1161" name="OnlyDuringScenariosShake(&quot;before&quot;,False)" fullname="DisasterSafety.Tests.ScenarioTests.OnlyDuringScenariosShake(&quot;before&quot;,False)" methodname="OnlyDuringScenariosShake" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="1842593482" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000229" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1162" name="OnlyDuringScenariosShake(&quot;during&quot;,True)" fullname="DisasterSafety.Tests.ScenarioTests.OnlyDuringScenariosShake(&quot;during&quot;,True)" methodname="OnlyDuringScenariosShake" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="1236059171" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000076" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1163" name="OnlyDuringScenariosShake(&quot;after&quot;,False)" fullname="DisasterSafety.Tests.ScenarioTests.OnlyDuringScenariosShake(&quot;after&quot;,False)" methodname="OnlyDuringScenariosShake" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="1250769694" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000074" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-case id="1172" name="Parse_BrokenJson_ReturnsNull" fullname="DisasterSafety.Tests.ScenarioTests.Parse_BrokenJson_ReturnsNull" methodname="Parse_BrokenJson_ReturnsNull" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="1440093722" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000203" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1171" name="Parse_ReadsJson" fullname="DisasterSafety.Tests.ScenarioTests.Parse_ReadsJson" methodname="Parse_ReadsJson" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="2101482381" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.002097" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1173" name="SafeChoice_IsFound" fullname="DisasterSafety.Tests.ScenarioTests.SafeChoice_IsFound" methodname="SafeChoice_IsFound" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="323896856" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000490" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1156" name="ScenarioWithAnActionOnEveryChoice_UsesTheNewFlow" fullname="DisasterSafety.Tests.ScenarioTests.ScenarioWithAnActionOnEveryChoice_UsesTheNewFlow" methodname="ScenarioWithAnActionOnEveryChoice_UsesTheNewFlow" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="1897701980" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000321" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1155" name="ScenarioWithoutActions_UsesTheOldFlow" fullname="DisasterSafety.Tests.ScenarioTests.ScenarioWithoutActions_UsesTheOldFlow" methodname="ScenarioWithoutActions_UsesTheOldFlow" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="212472656" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000244" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1166" name="ThreeOrFourChoices_AreRequired" fullname="DisasterSafety.Tests.ScenarioTests.ThreeOrFourChoices_AreRequired" methodname="ThreeOrFourChoices_AreRequired" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="777494287" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000452" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1152" name="UnknownPhase_IsAProblem" fullname="DisasterSafety.Tests.ScenarioTests.UnknownPhase_IsAProblem" methodname="UnknownPhase_IsAProblem" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="141688121" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000202" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1139" name="UnknownSetting_IsAProblem" fullname="DisasterSafety.Tests.ScenarioTests.UnknownSetting_IsAProblem" methodname="UnknownSetting_IsAProblem" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="1392715335" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000198" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1138" name="ValidScenario_HasNoProblems" fullname="DisasterSafety.Tests.ScenarioTests.ValidScenario_HasNoProblems" methodname="ValidScenario_HasNoProblems" classname="DisasterSafety.Tests.ScenarioTests" runstate="Runnable" seed="725528764" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000184" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1177" name="StarRuleTests" fullname="DisasterSafety.Tests.StarRuleTests" classname="DisasterSafety.Tests.StarRuleTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.003345" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="ParameterizedMethod" id="1186" name="Stars_LoseOnePerUnsafeChoiceAndOneForTheHint" fullname="DisasterSafety.Tests.StarRuleTests.Stars_LoseOnePerUnsafeChoiceAndOneForTheHint" classname="DisasterSafety.Tests.StarRuleTests" runstate="Runnable" testcasecount="8" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.001854" total="8" passed="8" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1178" name="Stars_LoseOnePerUnsafeChoiceAndOneForTheHint(0,False,3)" fullname="DisasterSafety.Tests.StarRuleTests.Stars_LoseOnePerUnsafeChoiceAndOneForTheHint(0,False,3)" methodname="Stars_LoseOnePerUnsafeChoiceAndOneForTheHint" classname="DisasterSafety.Tests.StarRuleTests" runstate="Runnable" seed="135188636" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000285" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1179" name="Stars_LoseOnePerUnsafeChoiceAndOneForTheHint(0,True,2)" fullname="DisasterSafety.Tests.StarRuleTests.Stars_LoseOnePerUnsafeChoiceAndOneForTheHint(0,True,2)" methodname="Stars_LoseOnePerUnsafeChoiceAndOneForTheHint" classname="DisasterSafety.Tests.StarRuleTests" runstate="Runnable" seed="1378647353" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000064" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1180" name="Stars_LoseOnePerUnsafeChoiceAndOneForTheHint(1,False,2)" fullname="DisasterSafety.Tests.StarRuleTests.Stars_LoseOnePerUnsafeChoiceAndOneForTheHint(1,False,2)" methodname="Stars_LoseOnePerUnsafeChoiceAndOneForTheHint" classname="DisasterSafety.Tests.StarRuleTests" runstate="Runnable" seed="117384525" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000092" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1181" name="Stars_LoseOnePerUnsafeChoiceAndOneForTheHint(1,True,1)" fullname="DisasterSafety.Tests.StarRuleTests.Stars_LoseOnePerUnsafeChoiceAndOneForTheHint(1,True,1)" methodname="Stars_LoseOnePerUnsafeChoiceAndOneForTheHint" classname="DisasterSafety.Tests.StarRuleTests" runstate="Runnable" seed="1755605101" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000060" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1182" name="Stars_LoseOnePerUnsafeChoiceAndOneForTheHint(2,False,1)" fullname="DisasterSafety.Tests.StarRuleTests.Stars_LoseOnePerUnsafeChoiceAndOneForTheHint(2,False,1)" methodname="Stars_LoseOnePerUnsafeChoiceAndOneForTheHint" classname="DisasterSafety.Tests.StarRuleTests" runstate="Runnable" seed="1531834651" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000084" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1183" name="Stars_LoseOnePerUnsafeChoiceAndOneForTheHint(2,True,1)" fullname="DisasterSafety.Tests.StarRuleTests.Stars_LoseOnePerUnsafeChoiceAndOneForTheHint(2,True,1)" methodname="Stars_LoseOnePerUnsafeChoiceAndOneForTheHint" classname="DisasterSafety.Tests.StarRuleTests" runstate="Runnable" seed="1590049830" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000094" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1184" name="Stars_LoseOnePerUnsafeChoiceAndOneForTheHint(3,False,1)" fullname="DisasterSafety.Tests.StarRuleTests.Stars_LoseOnePerUnsafeChoiceAndOneForTheHint(3,False,1)" methodname="Stars_LoseOnePerUnsafeChoiceAndOneForTheHint" classname="DisasterSafety.Tests.StarRuleTests" runstate="Runnable" seed="745847562" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000069" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1185" name="Stars_LoseOnePerUnsafeChoiceAndOneForTheHint(3,True,1)" fullname="DisasterSafety.Tests.StarRuleTests.Stars_LoseOnePerUnsafeChoiceAndOneForTheHint(3,True,1)" methodname="Stars_LoseOnePerUnsafeChoiceAndOneForTheHint" classname="DisasterSafety.Tests.StarRuleTests" runstate="Runnable" seed="1982611302" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000086" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-case id="1187" name="Stars_NeverDropBelowOneOnCompletion" fullname="DisasterSafety.Tests.StarRuleTests.Stars_NeverDropBelowOneOnCompletion" methodname="Stars_NeverDropBelowOneOnCompletion" classname="DisasterSafety.Tests.StarRuleTests" runstate="Runnable" seed="1270246644" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000172" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1188" name="Stars_NeverExceedThree" fullname="DisasterSafety.Tests.StarRuleTests.Stars_NeverExceedThree" methodname="Stars_NeverExceedThree" classname="DisasterSafety.Tests.StarRuleTests" runstate="Runnable" seed="1023582834" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000164" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1189" name="TutorialPagerTests" fullname="DisasterSafety.Tests.TutorialPagerTests" classname="DisasterSafety.Tests.TutorialPagerTests" runstate="Runnable" testcasecount="7" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.003689" total="7" passed="7" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1194" name="Changed_ReportsTheNewPageOnlyWhenItMoves" fullname="DisasterSafety.Tests.TutorialPagerTests.Changed_ReportsTheNewPageOnlyWhenItMoves" methodname="Changed_ReportsTheNewPageOnlyWhenItMoves" classname="DisasterSafety.Tests.TutorialPagerTests" runstate="Runnable" seed="1682057760" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000692" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1191" name="Next_MovesForward_AndStopsOnLastPage" fullname="DisasterSafety.Tests.TutorialPagerTests.Next_MovesForward_AndStopsOnLastPage" methodname="Next_MovesForward_AndStopsOnLastPage" classname="DisasterSafety.Tests.TutorialPagerTests" runstate="Runnable" seed="339540951" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000311" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1192" name="Previous_MovesBack_AndRefusesOnFirstPage" fullname="DisasterSafety.Tests.TutorialPagerTests.Previous_MovesBack_AndRefusesOnFirstPage" methodname="Previous_MovesBack_AndRefusesOnFirstPage" classname="DisasterSafety.Tests.TutorialPagerTests" runstate="Runnable" seed="649168745" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000227" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1196" name="RequiresAtLeastOnePage" fullname="DisasterSafety.Tests.TutorialPagerTests.RequiresAtLeastOnePage" methodname="RequiresAtLeastOnePage" classname="DisasterSafety.Tests.TutorialPagerTests" runstate="Runnable" seed="742906513" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000405" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1193" name="Restart_ReturnsToFirstPage" fullname="DisasterSafety.Tests.TutorialPagerTests.Restart_ReturnsToFirstPage" methodname="Restart_ReturnsToFirstPage" classname="DisasterSafety.Tests.TutorialPagerTests" runstate="Runnable" seed="1472694985" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000226" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1195" name="SinglePage_IsBothFirstAndLast" fullname="DisasterSafety.Tests.TutorialPagerTests.SinglePage_IsBothFirstAndLast" methodname="SinglePage_IsBothFirstAndLast" classname="DisasterSafety.Tests.TutorialPagerTests" runstate="Runnable" seed="1085986734" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000171" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1190" name="StartsOnFirstPage" fullname="DisasterSafety.Tests.TutorialPagerTests.StartsOnFirstPage" methodname="StartsOnFirstPage" classname="DisasterSafety.Tests.TutorialPagerTests" runstate="Runnable" seed="1446454624" result="Passed" start-time="2026-11-22 06:08:19Z" end-time="2026-11-22 06:08:19Z" duration="0.000191" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: C:/Users/Marjovic/AppData/LocalLow/DefaultCompany/DisasterSafety\TestResults.xml
+Saving results to: C:/Users/Marjovic/AppData/LocalLow/DefaultCompany/DisasterSafety\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="33" result="Passed" total="33" passed="33" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-22 06:08:55Z" end-time="2026-11-22 06:11:38Z" duration="163.5160691">
+  <test-suite type="TestSuite" id="1044" name="DisasterSafety" fullname="DisasterSafety" runstate="Runnable" testcasecount="33" result="Passed" start-time="2026-11-22 06:08:55Z" end-time="2026-11-22 06:11:38Z" duration="163.516069" total="33" passed="33" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1082" name="DisasterSafety.Tests.PlayMode.dll" fullname="D:/GameDEV/DisasterSafety-redesign/Library/ScriptAssemblies/DisasterSafety.Tests.PlayMode.dll" runstate="Runnable" testcasecount="33" result="Passed" start-time="2026-11-22 06:08:55Z" end-time="2026-11-22 06:11:38Z" duration="163.505666" total="33" passed="33" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="18728" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestSuite" id="1083" name="DisasterSafety" fullname="DisasterSafety" runstate="Runnable" testcasecount="33" result="Passed" start-time="2026-11-22 06:08:55Z" end-time="2026-11-22 06:11:38Z" duration="163.504482" total="33" passed="33" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1084" name="Tests" fullname="DisasterSafety.Tests" runstate="Runnable" testcasecount="33" result="Passed" start-time="2026-11-22 06:08:55Z" end-time="2026-11-22 06:11:38Z" duration="163.503652" total="33" passed="33" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1045" name="ActOutPlayTests" fullname="DisasterSafety.Tests.ActOutPlayTests" classname="DisasterSafety.Tests.ActOutPlayTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-22 06:08:55Z" end-time="2026-11-22 06:08:57Z" duration="1.678574" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1051" name="ActOut_StopsAfterItsStopStep_AndEndsAtItsLastMove" fullname="DisasterSafety.Tests.ActOutPlayTests.ActOut_StopsAfterItsStopStep_AndEndsAtItsLastMove" methodname="ActOut_StopsAfterItsStopStep_AndEndsAtItsLastMove" classname="DisasterSafety.Tests.ActOutPlayTests" runstate="Runnable" seed="1740359560" result="Passed" start-time="2026-11-22 06:08:55Z" end-time="2026-11-22 06:08:55Z" duration="0.038450" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1050" name="Prop_HiddenAtStartAndShown_IsHiddenAgain" fullname="DisasterSafety.Tests.ActOutPlayTests.Prop_HiddenAtStartAndShown_IsHiddenAgain" methodname="Prop_HiddenAtStartAndShown_IsHiddenAgain" classname="DisasterSafety.Tests.ActOutPlayTests" runstate="Runnable" seed="925475215" result="Passed" start-time="2026-11-22 06:08:55Z" end-time="2026-11-22 06:08:55Z" duration="0.138732" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1048" name="Prop_PickedUpAndPutDown_GoesBackToItsStartPlace" fullname="DisasterSafety.Tests.ActOutPlayTests.Prop_PickedUpAndPutDown_GoesBackToItsStartPlace" methodname="Prop_PickedUpAndPutDown_GoesBackToItsStartPlace" classname="DisasterSafety.Tests.ActOutPlayTests" runstate="Runnable" seed="1790905522" result="Passed" start-time="2026-11-22 06:08:55Z" end-time="2026-11-22 06:08:55Z" duration="0.203316" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1049" name="Prop_Slid_SlidesBack" fullname="DisasterSafety.Tests.ActOutPlayTests.Prop_Slid_SlidesBack" methodname="Prop_Slid_SlidesBack" classname="DisasterSafety.Tests.ActOutPlayTests" runstate="Runnable" seed="1901902011" result="Passed" start-time="2026-11-22 06:08:55Z" end-time="2026-11-22 06:08:56Z" duration="0.403016" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1047" name="Student_WalkOnTheFlat_KeepsItsHeight" fullname="DisasterSafety.Tests.ActOutPlayTests.Student_WalkOnTheFlat_KeepsItsHeight" methodname="Student_WalkOnTheFlat_KeepsItsHeight" classname="DisasterSafety.Tests.ActOutPlayTests" runstate="Runnable" seed="1214664382" result="Passed" start-time="2026-11-22 06:08:56Z" end-time="2026-11-22 06:08:56Z" duration="0.502531" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1046" name="Student_WalksUpASlope_AndStandsAtTheTopFacingFront" fullname="DisasterSafety.Tests.ActOutPlayTests.Student_WalksUpASlope_AndStandsAtTheTopFacingFront" methodname="Student_WalksUpASlope_AndStandsAtTheTopFacingFront" classname="DisasterSafety.Tests.ActOutPlayTests" runstate="Runnable" seed="256975045" result="Passed" start-time="2026-11-22 06:08:56Z" end-time="2026-11-22 06:08:57Z" duration="0.374883" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1052" name="GrownUpPlayTests" fullname="DisasterSafety.Tests.GrownUpPlayTests" classname="DisasterSafety.Tests.GrownUpPlayTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-22 06:08:57Z" end-time="2026-11-22 06:09:00Z" duration="3.017922" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1058" name="ActOutSteps_DescribeWhatTheGrownUpDoes" fullname="DisasterSafety.Tests.GrownUpPlayTests.ActOutSteps_DescribeWhatTheGrownUpDoes" methodname="ActOutSteps_DescribeWhatTheGrownUpDoes" classname="DisasterSafety.Tests.GrownUpPlayTests" runstate="Runnable" seed="450506707" result="Passed" start-time="2026-11-22 06:08:57Z" end-time="2026-11-22 06:08:57Z" duration="0.003252" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1057" name="GrownUp_AfterWalkingAndPosing_ReturnsToItsStartPlaceAndPose" fullname="DisasterSafety.Tests.GrownUpPlayTests.GrownUp_AfterWalkingAndPosing_ReturnsToItsStartPlaceAndPose" methodname="GrownUp_AfterWalkingAndPosing_ReturnsToItsStartPlaceAndPose" classname="DisasterSafety.Tests.GrownUpPlayTests" runstate="Runnable" seed="2118989217" result="Passed" start-time="2026-11-22 06:08:57Z" end-time="2026-11-22 06:08:59Z" duration="2.502510" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1055" name="GrownUp_PlaysAPoseAndTurns" fullname="DisasterSafety.Tests.GrownUpPlayTests.GrownUp_PlaysAPoseAndTurns" methodname="GrownUp_PlaysAPoseAndTurns" classname="DisasterSafety.Tests.GrownUpPlayTests" runstate="Runnable" seed="1156920875" result="Passed" start-time="2026-11-22 06:08:59Z" end-time="2026-11-22 06:08:59Z" duration="0.001332" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1053" name="GrownUp_StartsAtItsStartPlaceAndPose" fullname="DisasterSafety.Tests.GrownUpPlayTests.GrownUp_StartsAtItsStartPlaceAndPose" methodname="GrownUp_StartsAtItsStartPlaceAndPose" classname="DisasterSafety.Tests.GrownUpPlayTests" runstate="Runnable" seed="835017761" result="Passed" start-time="2026-11-22 06:08:59Z" end-time="2026-11-22 06:08:59Z" duration="0.000770" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1054" name="GrownUp_Walks_AndStandsIdleFacingTheFront" fullname="DisasterSafety.Tests.GrownUpPlayTests.GrownUp_Walks_AndStandsIdleFacingTheFront" methodname="GrownUp_Walks_AndStandsIdleFacingTheFront" classname="DisasterSafety.Tests.GrownUpPlayTests" runstate="Runnable" seed="1348561192" result="Passed" start-time="2026-11-22 06:08:59Z" end-time="2026-11-22 06:09:00Z" duration="0.502297" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1056" name="GrownUp_WithoutIdleFrames_StandsOnAWalkFrame" fullname="DisasterSafety.Tests.GrownUpPlayTests.GrownUp_WithoutIdleFrames_StandsOnAWalkFrame" methodname="GrownUp_WithoutIdleFrames_StandsOnAWalkFrame" classname="DisasterSafety.Tests.GrownUpPlayTests" runstate="Runnable" seed="1959434613" result="Passed" start-time="2026-11-22 06:09:00Z" end-time="2026-11-22 06:09:00Z" duration="0.004841" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1059" name="LevelFlowPlayTests" fullname="DisasterSafety.Tests.LevelFlowPlayTests" classname="DisasterSafety.Tests.LevelFlowPlayTests" runstate="Runnable" testcasecount="15" result="Passed" start-time="2026-11-22 06:09:00Z" end-time="2026-11-22 06:11:20Z" duration="140.786880" total="15" passed="15" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1061" name="EasyDifficulty_CompletingAllThreeLevels_OpensNormal" fullname="DisasterSafety.Tests.LevelFlowPlayTests.EasyDifficulty_CompletingAllThreeLevels_OpensNormal" methodname="EasyDifficulty_CompletingAllThreeLevels_OpensNormal" classname="DisasterSafety.Tests.LevelFlowPlayTests" runstate="Runnable" seed="1503162513" result="Passed" start-time="2026-11-22 06:09:00Z" end-time="2026-11-22 06:09:26Z" duration="26.209012" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1068" name="EasyLevel1_NewFlow_Hint_ShowsInCaption" fullname="DisasterSafety.Tests.LevelFlowPlayTests.EasyLevel1_NewFlow_Hint_ShowsInCaption" methodname="EasyLevel1_NewFlow_Hint_ShowsInCaption" classname="DisasterSafety.Tests.LevelFlowPlayTests" runstate="Runnable" seed="2146234869" result="Passed" start-time="2026-11-22 06:09:26Z" end-time="2026-11-22 06:09:29Z" duration="2.989614" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1072" name="EasyLevel1_NewFlow_Pause_FreezesTheStudent" fullname="DisasterSafety.Tests.LevelFlowPlayTests.EasyLevel1_NewFlow_Pause_FreezesTheStudent" methodname="EasyLevel1_NewFlow_Pause_FreezesTheStudent" classname="DisasterSafety.Tests.LevelFlowPlayTests" runstate="Runnable" seed="578874239" result="Passed" start-time="2026-11-22 06:09:29Z" end-time="2026-11-22 06:09:34Z" duration="5.004571" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1064" name="EasyLevel1_NewFlow_SafeChoice_StudentDucksAndCompletes" fullname="DisasterSafety.Tests.LevelFlowPlayTests.EasyLevel1_NewFlow_SafeChoice_StudentDucksAndCompletes" methodname="EasyLevel1_NewFlow_SafeChoice_StudentDucksAndCompletes" classname="DisasterSafety.Tests.LevelFlowPlayTests" runstate="Runnable" seed="623256171" result="Passed" start-time="2026-11-22 06:09:34Z" end-time="2026-11-22 06:09:40Z" duration="6.483537" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1065" name="EasyLevel1_NewFlow_UnsafeChoice_StudentStopsAndTriesAgain" fullname="DisasterSafety.Tests.LevelFlowPlayTests.EasyLevel1_NewFlow_UnsafeChoice_StudentStopsAndTriesAgain" methodname="EasyLevel1_NewFlow_UnsafeChoice_StudentStopsAndTriesAgain" classname="DisasterSafety.Tests.LevelFlowPlayTests" runstate="Runnable" seed="930474638" result="Passed" start-time="2026-11-22 06:09:40Z" end-time="2026-11-22 06:09:49Z" duration="8.923082" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1066" name="EasyLevel2_SafeChoice_ActsOutAndCompletes" fullname="DisasterSafety.Tests.LevelFlowPlayTests.EasyLevel2_SafeChoice_ActsOutAndCompletes" methodname="EasyLevel2_SafeChoice_ActsOutAndCompletes" classname="DisasterSafety.Tests.LevelFlowPlayTests" runstate="Runnable" seed="1458271980" result="Passed" start-time="2026-11-22 06:09:49Z" end-time="2026-11-22 06:09:56Z" duration="7.224392" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1067" name="EasyLevel2_UnsafeChoice_StopsAndResets" fullname="DisasterSafety.Tests.LevelFlowPlayTests.EasyLevel2_UnsafeChoice_StopsAndResets" methodname="EasyLevel2_UnsafeChoice_StopsAndResets" classname="DisasterSafety.Tests.LevelFlowPlayTests" runstate="Runnable" seed="130800500" result="Passed" start-time="2026-11-22 06:09:56Z" end-time="2026-11-22 06:10:04Z" duration="7.444687" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1060" name="FreshInstall_PlaysLevelOne_FromNameToContinue" fullname="DisasterSafety.Tests.LevelFlowPlayTests.FreshInstall_PlaysLevelOne_FromNameToContinue" methodname="FreshInstall_PlaysLevelOne_FromNameToContinue" classname="DisasterSafety.Tests.LevelFlowPlayTests" runstate="Runnable" seed="422377428" result="Passed" start-time="2026-11-22 06:10:04Z" end-time="2026-11-22 06:10:20Z" duration="15.802547" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1063" name="HardDifficulty_CompletingAllSevenLevels_CompletesTheEpisode" fullname="DisasterSafety.Tests.LevelFlowPlayTests.HardDifficulty_CompletingAllSevenLevels_CompletesTheEpisode" methodname="HardDifficulty_CompletingAllSevenLevels_CompletesTheEpisode" classname="DisasterSafety.Tests.LevelFlowPlayTests" runstate="Runnable" seed="1519935906" result="Passed" start-time="2026-11-22 06:10:20Z" end-time="2026-11-22 06:10:34Z" duration="14.648496" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1071" name="Level_PlaysItsOwnMusic_AndTheMenuMusicComesBack" fullname="DisasterSafety.Tests.LevelFlowPlayTests.Level_PlaysItsOwnMusic_AndTheMenuMusicComesBack" methodname="Level_PlaysItsOwnMusic_AndTheMenuMusicComesBack" classname="DisasterSafety.Tests.LevelFlowPlayTests" runstate="Runnable" seed="373489878" result="Passed" start-time="2026-11-22 06:10:34Z" end-time="2026-11-22 06:10:38Z" duration="3.547766" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1062" name="NormalDifficulty_CompletingAllFiveLevels_OpensHard" fullname="DisasterSafety.Tests.LevelFlowPlayTests.NormalDifficulty_CompletingAllFiveLevels_OpensHard" methodname="NormalDifficulty_CompletingAllFiveLevels_OpensHard" classname="DisasterSafety.Tests.LevelFlowPlayTests" runstate="Runnable" seed="963878357" result="Passed" start-time="2026-11-22 06:10:38Z" end-time="2026-11-22 06:10:50Z" duration="11.712735" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1074" name="Pause_ResumeRestartAndQuit_KeepSavedProgress" fullname="DisasterSafety.Tests.LevelFlowPlayTests.Pause_ResumeRestartAndQuit_KeepSavedProgress" methodname="Pause_ResumeRestartAndQuit_KeepSavedProgress" classname="DisasterSafety.Tests.LevelFlowPlayTests" runstate="Runnable" seed="2124015182" result="Passed" start-time="2026-11-22 06:10:50Z" end-time="2026-11-22 06:11:00Z" duration="10.692423" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1070" name="Reaction_PlaysTheVoiceBlip_OnlyWhenSoundIsOn" fullname="DisasterSafety.Tests.LevelFlowPlayTests.Reaction_PlaysTheVoiceBlip_OnlyWhenSoundIsOn" methodname="Reaction_PlaysTheVoiceBlip_OnlyWhenSoundIsOn" classname="DisasterSafety.Tests.LevelFlowPlayTests" runstate="Runnable" seed="1617909508" result="Passed" start-time="2026-11-22 06:11:00Z" end-time="2026-11-22 06:11:00Z" duration="0.152528" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1073" name="Replay_KeepsTheBestStars" fullname="DisasterSafety.Tests.LevelFlowPlayTests.Replay_KeepsTheBestStars" methodname="Replay_KeepsTheBestStars" classname="DisasterSafety.Tests.LevelFlowPlayTests" runstate="Runnable" seed="1928427921" result="Passed" start-time="2026-11-22 06:11:00Z" end-time="2026-11-22 06:11:20Z" duration="19.805116" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1069" name="Student_HasEveryRolloutPose_ForTheBoyAndTheGirl" fullname="DisasterSafety.Tests.LevelFlowPlayTests.Student_HasEveryRolloutPose_ForTheBoyAndTheGirl" methodname="Student_HasEveryRolloutPose_ForTheBoyAndTheGirl" classname="DisasterSafety.Tests.LevelFlowPlayTests" runstate="Runnable" seed="2073144471" result="Passed" start-time="2026-11-22 06:11:20Z" end-time="2026-11-22 06:11:20Z" duration="0.140952" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1075" name="MenuFlowPlayTests" fullname="DisasterSafety.Tests.MenuFlowPlayTests" classname="DisasterSafety.Tests.MenuFlowPlayTests" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-22 06:11:20Z" end-time="2026-11-22 06:11:38Z" duration="18.017826" total="6" passed="6" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1081" name="CorruptSave_IsPreserved_AndMenuStillLoads" fullname="DisasterSafety.Tests.MenuFlowPlayTests.CorruptSave_IsPreserved_AndMenuStillLoads" methodname="CorruptSave_IsPreserved_AndMenuStillLoads" classname="DisasterSafety.Tests.MenuFlowPlayTests" runstate="Runnable" seed="620333693" result="Passed" start-time="2026-11-22 06:11:20Z" end-time="2026-11-22 06:11:21Z" duration="0.671352" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Save file could not be read and was kept at: C:\Users\Marjovic\AppData\Local\Temp\ds-play-tests-bb0becac321040e59ea1a56b1cbbeb30\save.corrupt-20261122-141120.json
+Save file could not be read and was kept at: C:\Users\Marjovic\AppData\Local\Temp\ds-play-tests-bb0becac321040e59ea1a56b1cbbeb30\save.corrupt-20261122-141120.json
+]]></output>
+            </test-case>
+            <test-case id="1076" name="FreshInstall_WalksEveryRouteAndBack" fullname="DisasterSafety.Tests.MenuFlowPlayTests.FreshInstall_WalksEveryRouteAndBack" methodname="FreshInstall_WalksEveryRouteAndBack" classname="DisasterSafety.Tests.MenuFlowPlayTests" runstate="Runnable" seed="589296695" result="Passed" start-time="2026-11-22 06:11:21Z" end-time="2026-11-22 06:11:29Z" duration="8.332141" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1080" name="GirlPick_Easy1UsesTheGirlFrames" fullname="DisasterSafety.Tests.MenuFlowPlayTests.GirlPick_Easy1UsesTheGirlFrames" methodname="GirlPick_Easy1UsesTheGirlFrames" classname="DisasterSafety.Tests.MenuFlowPlayTests" runstate="Runnable" seed="373128032" result="Passed" start-time="2026-11-22 06:11:29Z" end-time="2026-11-22 06:11:33Z" duration="3.368044" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1078" name="HardOpen_LevelSelection_StartsEveryHardLevel" fullname="DisasterSafety.Tests.MenuFlowPlayTests.HardOpen_LevelSelection_StartsEveryHardLevel" methodname="HardOpen_LevelSelection_StartsEveryHardLevel" classname="DisasterSafety.Tests.MenuFlowPlayTests" runstate="Runnable" seed="1644866209" result="Passed" start-time="2026-11-22 06:11:33Z" end-time="2026-11-22 06:11:35Z" duration="2.345839" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1079" name="NameWithoutStudent_ShowsPickerOnceAtMainMenu" fullname="DisasterSafety.Tests.MenuFlowPlayTests.NameWithoutStudent_ShowsPickerOnceAtMainMenu" methodname="NameWithoutStudent_ShowsPickerOnceAtMainMenu" classname="DisasterSafety.Tests.MenuFlowPlayTests" runstate="Runnable" seed="857105580" result="Passed" start-time="2026-11-22 06:11:35Z" end-time="2026-11-22 06:11:36Z" duration="1.137892" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1077" name="NormalOpen_LevelSelection_StartsEveryNormalLevel" fullname="DisasterSafety.Tests.MenuFlowPlayTests.NormalOpen_LevelSelection_StartsEveryNormalLevel" methodname="NormalOpen_LevelSelection_StartsEveryNormalLevel" classname="DisasterSafety.Tests.MenuFlowPlayTests" runstate="Runnable" seed="1875250804" result="Passed" start-time="2026-11-22 06:11:36Z" end-time="2026-11-22 06:11:38Z" duration="2.156903" asserts="0">
+              <properties>
+                <property name="_JOINTYPE" value="UnityCombinatorial" />
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: C:/Users/Marjovic/AppData/LocalLow/DefaultCompany/DisasterSafety\TestResults.xml
+Saving results to: C:/Users/Marjovic/AppData/LocalLow/DefaultCompany/DisasterSafety\TestResults.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
