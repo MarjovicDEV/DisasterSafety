@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using DisasterSafety.Core;
 using DisasterSafety.Game;
 using DisasterSafety.Game.UI;
@@ -216,7 +217,7 @@ namespace DisasterSafety.EditorTools
 
             var c = new GameObject("MenuController", typeof(MainMenuController)).GetComponent<MainMenuController>();
 
-            BuildWorld(root);
+            c.world = BuildWorld(root);
 
             var ui = Stretch(Rect("SafeArea", root));
             ui.gameObject.AddComponent<SafeAreaFitter>();
@@ -244,16 +245,28 @@ namespace DisasterSafety.EditorTools
             EditorSceneManager.SaveScene(scene, MenuScenePath);
         }
 
-        // World: the animated courtyard -----------------------------------------------
-        static void BuildWorld(RectTransform root)
+        // World: the menu backgrounds and their moving layers (C3, C4) ---------------------
+        // Background sprites in MenuBackground order, drawn by ArtSource/scripts/background.lua.
+        static readonly string[] MenuBackgroundArt =
+        {
+            "gate", "noticeboard", "drill_ground", "fire_station", "classroom", "schoolyard", "covered_court",
+            "station_noticeboard"
+        };
+
+        static MenuWorld BuildWorld(RectTransform root)
         {
             var world = Rect("World", root);
             world.anchorMin = world.anchorMax = new Vector2(0.5f, 0.5f);
             world.pivot = new Vector2(0.5f, 0.5f);
             world.sizeDelta = new Vector2(1920f, 1080f);
             world.gameObject.AddComponent<EnvelopeScaler>();
+            var menuWorld = world.gameObject.AddComponent<MenuWorld>();
+            if (MenuBackgroundArt.Length != Enum.GetValues(typeof(MenuBackground)).Length)
+                throw new InvalidOperationException("Every MenuBackground needs a sprite in MenuBackgroundArt.");
+            menuWorld.sprites = MenuBackgroundArt.Select(n => S("Background/bg_menu_" + n)).ToArray();
 
-            ArtImage(world, "Background", S("Background/bg_courtyard"), 0, 0);
+            var background = ArtImage(world, "Background", menuWorld.sprites[(int)MenuBackground.SchoolGate], 0, 0);
+            menuWorld.background = background.GetComponent<Image>();
 
             var clouds = Stretch(Rect("Clouds", world));
             AddCloud(clouds, "Cloud A", S("Background/cloud_big"), 250, 20, 10f);
@@ -271,12 +284,21 @@ namespace DisasterSafety.EditorTools
             var leaves = Stretch(Rect("Leaves", world));
             var fall = leaves.gameObject.AddComponent<LeafFall>();
             fall.leaves = new[] { S("UI/leaf_0"), S("UI/leaf_1") };
-            fall.spawnArea = new Rect(0f, 560f, 300f, 300f);
+            // Under the left-hand trees of the drill ground and the schoolyard.
+            fall.spawnArea = new Rect(0f, 470f, 380f, 220f);
             fall.groundY = 250f;
 
             var walkers = Stretch(Rect("Students", world));
             AddWalker(walkers, "Student Girl", Frames("Characters/student_girl", 6), 128f, 2040f, -120f, 118f, 3.5f);
             AddWalker(walkers, "Student Boy", Frames("Characters/student_boy", 6), 96f, -120f, 2040f, 140f, 0.4f);
+
+            menuWorld.clouds = clouds.gameObject;
+            menuWorld.birds = birds.gameObject;
+            menuWorld.flag = flag.gameObject;
+            menuWorld.leaves = leaves.gameObject;
+            menuWorld.walkers = walkers.gameObject;
+            menuWorld.Show(MenuBackground.SchoolGate);
+            return menuWorld;
         }
 
         static RectTransform ArtImage(RectTransform parent, string name, Sprite sprite, int artX, int artY, float artScale = 1f)
