@@ -38,6 +38,9 @@ namespace DisasterSafety.Core
         public Episode SelectedEpisode { get; private set; }
         public Difficulty SelectedDifficulty { get; private set; }
 
+        /// <summary>The picture behind the current screen.</summary>
+        public MenuBackground Background => MenuBackgrounds.For(Current, SelectedEpisode, SelectedDifficulty);
+
         /// <summary>(from, to) after every move.</summary>
         public event Action<MenuScreen, MenuScreen> Changed;
 

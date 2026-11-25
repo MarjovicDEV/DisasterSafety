@@ -11,8 +11,12 @@ namespace DisasterSafety.Tests
             public bool HasStudent { get; set; }
             public bool CanContinue { get; set; }
             public (Episode, Difficulty) ContinueDestination { get; set; } = (Episode.Earthquake, Difficulty.Easy);
-            public bool IsOpen(Episode e) => e == Episode.Earthquake;
-            public bool IsOpen(Episode e, Difficulty d) => e == Episode.Earthquake && d == Difficulty.Easy;
+            /// <summary>Every Earthquake Difficulty and Fire Easy open, as after finishing Earthquake Hard.</summary>
+            public bool EarthquakeDone { get; set; }
+            public bool IsOpen(Episode e) => e == Episode.Earthquake || (EarthquakeDone && e == Episode.Fire);
+            public bool IsOpen(Episode e, Difficulty d) =>
+                (e == Episode.Earthquake && (EarthquakeDone || d == Difficulty.Easy))
+                || (EarthquakeDone && e == Episode.Fire && d == Difficulty.Easy);
         }
 
         FakeState state;
@@ -184,6 +188,111 @@ namespace DisasterSafety.Tests
             nav.OpenSettings();
             Assert.That(from, Is.EqualTo(MenuScreen.Main));
             Assert.That(to, Is.EqualTo(MenuScreen.Settings));
+        }
+
+        // Backgrounds (C3, C4) ------------------------------------------------------------
+
+        [Test]
+        public void Background_MainMenuAndItsDialogs_ShowTheSchoolGate()
+        {
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.SchoolGate));
+            nav.OpenSettings();
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.SchoolGate), "Settings");
+            nav.Back();
+            nav.OpenHowToPlay();
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.SchoolGate), "How to Play");
+            nav.Back();
+            nav.RequestExit();
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.SchoolGate), "Exit");
+            nav.CancelExit();
+            nav.Play();
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.SchoolGate), "name entry");
+            nav.NameSaved();
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.SchoolGate), "Student picker");
+        }
+
+        [Test]
+        public void Background_FreshSave_EarthquakeEasyWalkAndBack()
+        {
+            state.HasDisplayName = true;
+            nav.Play();
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.Noticeboard), "Episode selection");
+
+            Assert.That(nav.SelectEpisode(Episode.Fire), Is.False, "Fire is locked on a fresh save");
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.Noticeboard), "a locked card keeps the noticeboard");
+
+            nav.SelectEpisode(Episode.Earthquake);
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.DrillGround), "Earthquake Difficulty selection");
+            Assert.That(nav.SelectDifficulty(Difficulty.Hard), Is.False, "Hard is locked on a fresh save");
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.DrillGround), "a locked card keeps the drill ground");
+
+            nav.SelectDifficulty(Difficulty.Easy);
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.Classroom), "Earthquake Easy Level selection");
+
+            nav.Back();
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.DrillGround), "Back to Difficulty selection");
+            nav.Back();
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.Noticeboard), "Back to Episode selection");
+            nav.Back();
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.SchoolGate), "Back to the Main Menu");
+        }
+
+        [TestCase(Difficulty.Easy, MenuBackground.Classroom)]
+        [TestCase(Difficulty.Normal, MenuBackground.Schoolyard)]
+        [TestCase(Difficulty.Hard, MenuBackground.CoveredCourt)]
+        public void Background_EarthquakeLevelSelection_MatchesTheDifficulty(Difficulty difficulty, MenuBackground expected)
+        {
+            state.HasDisplayName = true;
+            state.EarthquakeDone = true;
+            nav.Play();
+            nav.SelectEpisode(Episode.Earthquake);
+            Assert.That(nav.SelectDifficulty(difficulty), Is.True);
+            Assert.That(nav.Background, Is.EqualTo(expected));
+            nav.Back();
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.DrillGround));
+        }
+
+        [Test]
+        public void Background_ExistingSave_OpensFireWithTheStationAndAnEmptyNoticeboard()
+        {
+            state.HasDisplayName = true;
+            state.EarthquakeDone = true;
+            nav.Play();
+            Assert.That(nav.SelectEpisode(Episode.Fire), Is.True, "Fire is open after Earthquake Hard");
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.FireStation), "Fire Difficulty selection");
+            Assert.That(nav.SelectDifficulty(Difficulty.Easy), Is.True);
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.StationNoticeboard), "empty Fire Level selection");
+
+            nav.Back();
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.FireStation));
+            nav.Back();
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.Noticeboard));
+
+            // Choosing Earthquake after Fire swaps the Episode background.
+            nav.SelectEpisode(Episode.Earthquake);
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.DrillGround));
+        }
+
+        [TestCase(Difficulty.Easy, MenuBackground.Classroom)]
+        [TestCase(Difficulty.Normal, MenuBackground.Schoolyard)]
+        [TestCase(Difficulty.Hard, MenuBackground.CoveredCourt)]
+        public void Background_ReturnFromALevel_ShowsThatDifficulty(Difficulty difficulty, MenuBackground expected)
+        {
+            state.EarthquakeDone = true;
+            Assert.That(nav.OpenLevelSelect(Episode.Earthquake, difficulty), Is.True);
+            Assert.That(nav.Background, Is.EqualTo(expected));
+            nav.Back();
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.DrillGround));
+        }
+
+        [Test]
+        public void Background_Continue_ShowsTheLastPlayedDifficulty()
+        {
+            state.EarthquakeDone = true;
+            state.CanContinue = true;
+            state.ContinueDestination = (Episode.Earthquake, Difficulty.Normal);
+            nav.Continue();
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.Schoolyard));
         }
     }
 }
