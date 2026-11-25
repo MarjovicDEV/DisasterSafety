@@ -210,27 +210,28 @@ The 480 × 270 schoolyard is shared by Normal 4 (during) and Hard 2 (before). Th
 |---|---|
 | Standing line and horizon | y 230 and y 132 |
 | Building, roof, and doorway | (148, 120), (140, 98), and (191, 140). The roof stays below the Hint button at 1920x1080. |
-| Evacuation Area sign | (15, 142). The sign uses two lines of the shared pixel font. |
-| Tree trunk and shade | Trunk at (330, 127). Shade centred at (356, 194). |
+| Evacuation Area sign | (15, 116). The sign uses two lines of the shared pixel font. |
+| Tree trunk and shade | The trunk forks above its roots near (350, 190). The shade is centred at (356, 194). |
 | Tree canopy | (300, 83), 119 × 75 pixels. Two frames, 160 ms each. |
 | Electric post and lines | (418, 95), 62 × 107 pixels. Two frames, 160 ms each. |
-| Normal 4 cast and Reaction | The Student starts alone at (302, 230) and plays Surprised during the opening shake. The Reaction sits 31 art pixels to the right and 2 above the top of the Student frame. |
-| Hard 2 cast and Reaction | The Student starts Idle at (306, 230). The Teacher waves inside the doorway at (217, 230). The Reaction sits 24 art pixels to the right and 2 above the top of the Student frame. |
+| Normal 4 cast and Reaction | The Student starts alone at (190, 230) and plays Surprised during the opening shake. The Unsafe Reaction sits 31 art pixels to the right and 2 above the Student frame. The field Reaction is lower to clear the sign. |
+| Hard 2 cast and Reaction | The Student starts Idle at (306, 230). The Teacher waves inside the doorway at (217, 230). The Unsafe Reaction sits 24 art pixels to the right and 2 above the Student frame. The Safe Reaction sits farther right to clear the Teacher. |
 
 The canopy and electric post sway only while Normal 4 shakes. Hard 2 uses their rest frames. Each Level has its own `LevelStart`. There are no movable props.
 
 | Level and Choice | Act-out points |
 |---|---|
-| Normal 4 · `tree` | Walk to (320, 199) and stop at the edge of the shade. |
-| Normal 4 · `field` | Walk to (110, 230) on open grass clear of the sign, face left, crouch, and Cover for one second as the yard shakes. Then calm the shaking. |
-| Normal 4 · `building` | Run toward the door and stop at (260, 230), outside the door frame. |
-| Normal 4 · `post` | Walk via (336, 244), then stop at (393, 244), short of the pole and its lines. |
-| Hard 2 · `route_post` | Follow the same foreground path and stop at (393, 244), short of the pole. |
+| Normal 4 · `tree` | Walk along the foreground to (287, 230), then turn toward (320, 199) and stop at the edge of the shade. |
+| Normal 4 · `field` | Walk 160 art pixels in two seconds to (30, 230) on open grass west of the path, face left, crouch, and Cover for one second as the yard shakes. Then calm the shaking. |
+| Normal 4 · `building` | Run toward the door and stop at (207, 236), on the forecourt outside the door frame. |
+| Hard 2 · `route_post` | Walk via (336, 244) and stop at (393, 244), short of the pole. |
 | Hard 2 · `route_tree` | Walk to (323, 215) and stop before the shade. |
-| Hard 2 · `route_field` | The Student goes via (170, 230) to (133, 198), and the Teacher goes via (142, 225) to (101, 183) and waves. |
+| Hard 2 · `route_field` | The Teacher steps out to (217, 243) before the Student joins at (251, 243). They cross to (60, 243) and (94, 243), respectively. Both turn upfield. The Teacher waves at (52, 206) and the Student stops at (84, 210). |
 | Hard 2 · `route_later` | Turn toward the school and stop at (260, 230). |
 
-The field walks cross in front of the school because the open field lies to the left of the building and both starts lie to its right. The Teacher moves ahead on the Hard 2 field path, leaving the doorway clear before the Student passes. The post path crosses the tree's x range in the foreground, clear of the canopy, trunk, and shade. The two tree approaches stop at or before the edge of the shade. Try Again after a post Choice takes the direct return to the start and passes in front of the tree trunk.
+The approved Normal 4 field stop is 118 art pixels left of the wall. The Student crouches and covers there. The field Reaction appears below the Evacuation Area sign. In Hard 2, both walkers clear the left corner before they turn toward the sign. The Safe Reaction appears to the right of the Teacher. Try Again retraces the foreground bends before returning the Student to the Level start.
+
+The school frontage uses the Baluan classroom entrance and corridor as references for the green door, barred windows, and shaded concrete walkway. The tree separates its trunk and branches from the canopy. The post has a crossarm, insulators and visible wires.
 
 ## Beach (`ArtSource/scripts/beach_v2.lua`, part `beach_v2`)
 
