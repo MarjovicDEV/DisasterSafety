@@ -23,54 +23,6 @@ local BG = dofile(here .. "background.lua")(L)
 local CH = dofile(here .. "characters.lua")(L)
 local UI = dofile(here .. "ui.lua")(L)
 local TU = dofile(here .. "tutorial.lua")(L, CH, UI)
-local LV = dofile(here .. "level.lua")(L, CH)
-
--- Level scene: classroom, wobbling fan and cabinet, and one picture per Choice
-L.save(LV.classroom(), "Level/bg_classroom", "Level/bg_classroom")
-L.saveFrames(LV.fanFrames(), "Level/fan", "Level/fan", 120)
-L.saveFrames(LV.cabinetFrames(), "Level/cabinet", "Level/cabinet", 120)
-for name, img in pairs(LV.choicePictures()) do
-  L.save(img, "Level/" .. name, "Level/" .. name)
-end
--- Easy / 2 corridor (hanging pots sway) and Easy / 3 classroom after the shaking (teacher waves)
-L.save(LV.corridor(), "Level/bg_corridor", "Level/bg_corridor")
-L.saveFrames(LV.potFrames(), "Level/pots", "Level/pots", 160)
-L.save(LV.classroomAfter(), "Level/bg_classroom_after", "Level/bg_classroom_after")
-L.saveFrames(LV.teacherFrames(), "Level/teacher", "Level/teacher", 300)
-for _, set in ipairs({ LV.choicePictures2(), LV.choicePictures3() }) do
-  for name, img in pairs(set) do
-    L.save(img, "Level/" .. name, "Level/" .. name)
-  end
-end
-
--- Earthquake / Normal: bedroom, home (hanging lamp, glass cabinet), schoolyard (tree, post),
--- beach (wave line), and one picture per Choice
-local NM = dofile(here .. "normal.lua")(L, CH, LV)
-L.save(NM.bedroom(), "Level/bg_bedroom", "Level/bg_bedroom")
-L.save(NM.home(), "Level/bg_home", "Level/bg_home")
-L.saveFrames(NM.lampFrames(), "Level/lamp", "Level/lamp", 160)
-L.saveFrames(NM.glassCabinetFrames(), "Level/glass_cabinet", "Level/glass_cabinet", 120)
-L.save(NM.schoolyard(), "Level/bg_schoolyard", "Level/bg_schoolyard")
-L.saveFrames(NM.treeFrames(), "Level/tree", "Level/tree", 200)
-L.saveFrames(NM.postFrames(), "Level/post", "Level/post", 160)
-L.save(NM.beach(), "Level/bg_beach", "Level/bg_beach")
-L.saveFrames(NM.waveFrames(), "Level/waves", "Level/waves", 400)
-for name, img in pairs(NM.choicePicturesNormal()) do
-  L.save(img, "Level/" .. name, "Level/" .. name)
-end
-
--- Earthquake / Hard: mall_a (hanging sign, glass display), mall_b, home_after,
--- evacuation_area, and one picture per Choice
-local HD = dofile(here .. "hard.lua")(L, CH, LV, NM)
-L.save(HD.mallA(), "Level/bg_mall_a", "Level/bg_mall_a")
-L.saveFrames(HD.mallSignFrames(), "Level/mall_sign", "Level/mall_sign", 160)
-L.saveFrames(HD.shopDisplayFrames(), "Level/shop_display", "Level/shop_display", 120)
-L.save(HD.mallB(), "Level/bg_mall_b", "Level/bg_mall_b")
-L.save(HD.homeAfter(), "Level/bg_home_after", "Level/bg_home_after")
-L.save(HD.evacuationArea(), "Level/bg_evacuation_area", "Level/bg_evacuation_area")
-for name, img in pairs(HD.choicePicturesHard()) do
-  L.save(img, "Level/" .. name, "Level/" .. name)
-end
 
 -- How to Play Tutorial Pages: Tutorial/<name>_0.png and _1.png
 for _, page in ipairs(TU.pages) do
