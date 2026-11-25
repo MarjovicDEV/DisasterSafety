@@ -1075,7 +1075,7 @@ namespace DisasterSafety.Tests
             yield return StartRolloutLevel(NormalFour);
             var c = Level();
             Assert.That(c.ActiveSetting.key, Is.EqualTo("schoolyard_v2"));
-            Assert.That(c.Student.X, Is.EqualTo(302f), "Normal 4 starts at the recess spot");
+            Assert.That(c.Student.X, Is.EqualTo(190f), "Normal 4 starts one short walk from open grass");
             Assert.That(c.Student.Y, Is.Zero);
             Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Surprised));
             Assert.That(c.actionBar.IsVisible, Is.False);
@@ -1120,14 +1120,18 @@ namespace DisasterSafety.Tests
 
             Tap(c, "field");
             yield return WaitFor(() => student.IsWalking && student.FacingLeft, "the walk into the field");
+            float walkingSince = Time.time;
+            yield return WaitFor(() => !student.IsWalking, "the feet to reach the field");
+            Assert.That(Time.time - walkingSince, Is.EqualTo(2f).Within(0.12f),
+                "the approved walk to (30, 230) takes about two seconds before the crouch");
             yield return WaitFor(() => student.Pose == StudentPose.Crouch, "the crouch in the field");
-            Assert.That(student.X, Is.EqualTo(110f));
+            Assert.That(student.X, Is.EqualTo(30f));
             yield return WaitFor(() => student.Pose == StudentPose.Cover, "the Student to cover");
             Assert.That(student.FacingLeft, Is.True);
             Assert.That(shaker.IsShaking, Is.True, "the Student covers while the ground still shakes");
             yield return WaitFor(() => !shaker.IsShaking, "the schoolyard to calm");
             Assert.That(student.Pose, Is.EqualTo(StudentPose.Cover));
-            Assert.That(student.X, Is.EqualTo(110f));
+            Assert.That(student.X, Is.EqualTo(30f));
             Assert.That(student.Y, Is.Zero);
             foreach (var wobbler in shaker.wobblers)
             {
@@ -1152,10 +1156,10 @@ namespace DisasterSafety.Tests
             var shaker = c.ActiveSetting.shaker;
 
             Tap(c, "building");
-            yield return WaitFor(() => student.IsWalking && student.FacingLeft, "the run toward the door");
+            yield return WaitFor(() => student.IsWalking && !student.FacingLeft, "the run from recess toward the door");
             yield return WaitFor(() => student.bubble.gameObject.activeSelf && student.bubble.Line == UIStrings.ReactionWait, "the building stop");
-            Assert.That(student.X, Is.EqualTo(260f), "the Student stops outside the doorway");
-            Assert.That(student.Y, Is.Zero);
+            Assert.That(student.X, Is.EqualTo(207f), "the Student stops outside the doorway");
+            Assert.That(student.Y, Is.EqualTo(-6f));
             Assert.That(student.Pose, Is.EqualTo(StudentPose.Wait));
             Assert.That(shaker.IsShaking, Is.True);
 
@@ -1163,10 +1167,12 @@ namespace DisasterSafety.Tests
             Assert.That(c.feedbackHeading.text, Is.EqualTo(scenario.choices[2].heading));
             c.tryAgainButton.onClick.Invoke();
             yield return ActionBarShown(c);
-            AssertSchoolyardReset(c, 302f, 2);
+            AssertSchoolyardReset(c, 190f, 2);
             Assert.That(shaker.IsShaking, Is.True);
 
             Tap(c, "tree");
+            yield return WaitFor(() => student.X >= 279f && student.Y == 0f,
+                "the tree approach to pass in front of the school before turning");
             yield return WaitFor(() => student.bubble.gameObject.activeSelf && student.bubble.Line == UIStrings.ReactionWait, "the tree stop");
             Assert.That(student.X, Is.EqualTo(320f), "the Student stops at the edge of the shade");
             Assert.That(student.Y, Is.EqualTo(31f));
@@ -1177,7 +1183,7 @@ namespace DisasterSafety.Tests
             Assert.That(c.feedbackHeading.text, Is.EqualTo(UIStrings.UnsafeHeading));
             c.tryAgainButton.onClick.Invoke();
             yield return ActionBarShown(c);
-            AssertSchoolyardReset(c, 302f, 0);
+            AssertSchoolyardReset(c, 190f, 0);
             Assert.That(shaker.IsShaking, Is.True);
         }
 
@@ -2025,7 +2031,11 @@ namespace DisasterSafety.Tests
             var student = c.Student;
             var teacher = c.ActiveSetting.ActiveGrownUps[0];
 
-            Tap(c, 2);
+            Tap(c, "route_field");
+            yield return WaitFor(() => teacher.IsWalking, "the Teacher to step out");
+            float studentAtDeparture = student.X;
+            yield return WaitFor(() => student.IsWalking, "the Student to follow");
+            float teacherRowWhenFollowed = 230f - teacher.Y;
             yield return WaitFor(() => student.IsWalking && teacher.IsWalking, "the Student and Teacher to walk together");
             Assert.That(student.FacingLeft, Is.True);
             Assert.That(teacher.FacingLeft, Is.True);
@@ -2033,13 +2043,67 @@ namespace DisasterSafety.Tests
                 "the Student and Teacher to turn into the field path");
 
             yield return FeedbackShown(c);
-            Assert.That(student.X, Is.EqualTo(133f));
-            Assert.That(student.Y, Is.EqualTo(32f));
-            Assert.That(teacher.X, Is.EqualTo(101f));
-            Assert.That(teacher.Y, Is.EqualTo(47f));
+            Assert.That(teacherRowWhenFollowed, Is.GreaterThanOrEqualTo(240f),
+                "the Teacher steps clear of the threshold before the Student follows");
+            Assert.That(studentAtDeparture, Is.EqualTo(306f), "the Student waits in place at the start");
+            Assert.That(student.X, Is.EqualTo(84f));
+            Assert.That(student.Y, Is.EqualTo(20f));
+            Assert.That(teacher.X, Is.EqualTo(52f));
+            Assert.That(teacher.Y, Is.EqualTo(24f));
             Assert.That(teacher.Pose, Is.EqualTo(GrownUpPose.Wave));
             Assert.That(c.ActiveSetting.shaker.IsShaking, Is.False);
             FinishWithThreeStars(c);
+        }
+
+        [UnityTest]
+        public IEnumerator HardLevel2_FieldWalk_KeepsBothFootprintsOutsideTheWall()
+        {
+            yield return StartRolloutLevel(HardTwo);
+            var c = Level();
+            yield return ActionBarShown(c);
+            var student = c.Student;
+            var teacher = c.ActiveSetting.ActiveGrownUps[0];
+            Tap(c, "route_field");
+            const float cornerX = 151f;
+            float previousX = student.X;
+            float? cornerRow = null;
+            string firstViolation = null;
+            float previousStudentRow = 230f - student.Y;
+            float previousTeacherRow = 230f - teacher.Y;
+            var walkers = new PoseActor[] { student, teacher };
+            float deadline = Time.time + 10f;
+            while (Time.time < deadline)
+            {
+                float row = 230f - student.Y;
+                if (previousX > cornerX && student.X <= cornerX)
+                {
+                    float fraction = (previousX - cornerX) / (previousX - student.X);
+                    cornerRow = Mathf.Lerp(previousStudentRow, row, fraction);
+                }
+                if (firstViolation == null)
+                {
+                    foreach (var actor in walkers)
+                    {
+                        if (actor.X + 10f >= 148f && actor.X - 10f <= 279f && 230f - actor.Y < 226f)
+                            firstViolation = $"{actor.name}'s feet touch the wall at ({actor.X:F1}, {230f - actor.Y:F1}).";
+                    }
+                    if (student.X - teacher.X < 24f)
+                        firstViolation = "The Teacher must lead with room between the walkers.";
+                    if ((row < previousStudentRow - 0.01f || 230f - teacher.Y < previousTeacherRow - 0.01f) &&
+                        Mathf.Max(student.X, teacher.X) + 10f >= 148f)
+                        firstViolation = "Both pairs of feet must clear the left corner before turning upfield.";
+                }
+                previousX = student.X;
+                previousStudentRow = row;
+                previousTeacherRow = 230f - teacher.Y;
+                if (c.feedbackPanel.IsVisible) break;
+                yield return null;
+            }
+            Assert.That(cornerRow.HasValue, Is.True, "the Student crossed the old wall intersection");
+            Assert.That(cornerRow.Value, Is.GreaterThanOrEqualTo(226f),
+                "the Student's feet must stay in front of the wall at art column 151");
+            Assert.That(firstViolation, Is.Null);
+            Assert.That(student.X, Is.EqualTo(84f), "the Student reached the sign");
         }
 
         [UnityTest]
@@ -2068,6 +2132,18 @@ namespace DisasterSafety.Tests
             AssertSchoolyardReset(c, 306f, 0);
             Assert.That(teacher.AtStart, Is.True);
             Assert.That(teacher.Pose, Is.EqualTo(GrownUpPose.Wave));
+
+            Tap(c, "route_tree");
+            yield return WaitFor(() => student.IsWalking && !student.FacingLeft, "the tree approach");
+            yield return WaitFor(() => student.bubble.gameObject.activeSelf && student.bubble.Line == UIStrings.ReactionWait, "the tree route stop");
+            Assert.That(student.X, Is.EqualTo(323f));
+            Assert.That(student.Y, Is.EqualTo(15f));
+            Assert.That(student.Pose, Is.EqualTo(StudentPose.Wait));
+            Assert.That(teacher.AtStart, Is.True);
+            yield return FeedbackShown(c);
+            c.tryAgainButton.onClick.Invoke();
+            yield return ActionBarShown(c);
+            AssertSchoolyardReset(c, 306f, 1);
 
             Tap(c, 3);
             yield return WaitFor(() => student.IsWalking && student.FacingLeft, "the return toward the school");
@@ -2115,7 +2191,7 @@ namespace DisasterSafety.Tests
             yield return ActionBarShown(c);
             Tap(c, 1);
             yield return WaitFor(() => c.Student.bubble.Line == UIStrings.ReactionSafe, "the Normal 4 Safe Reaction");
-            var sign = new Rect(15f * 4f, (270f - 176f) * 4f, 68f * 4f, 34f * 4f);
+            var sign = new Rect(15f * 4f, (270f - 163f) * 4f, 76f * 4f, 47f * 4f);
             var reaction = (RectTransform)c.Student.bubble.transform;
             Assert.That(BoundsInSetting(c.ActiveSetting, reaction).Overlaps(sign),
                 Is.False, "the Normal 4 Reaction leaves the Evacuation Area sign visible");
