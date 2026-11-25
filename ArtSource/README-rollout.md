@@ -289,14 +289,17 @@ The exit run and its direct Try Again return use the foreground aisle in front o
 | Elevator | Closed doors at (21, 99), with the floor indicator below the Level label. The call button is centred at (84, 154). |
 | Exit and crowd | Exit at (261, 144), with the exit symbol at (281, 129). The two still figures are drawn into the background with feet at (296, 221) and (317, 218). |
 | Mall wall and open parking | The outer wall sign and glass are at (333, 131). The outer wall ends at x 373. The assembly-area sign stands at (452, 173), out in the open parking area. |
+| Exterior corner (C11) | The exterior wall runs from (333, 0) to the pavement in the darker wall shade. Its corner at x 373 is outlined from the cornice (rows 0 to 8, out to x 377) down to a stone plinth (rows 208 to 215, out to x 375). |
+| Curb and parking lines (C11) | A low curb closes the far edge of the lot from x 374: an outline on rows 189 and 195, a lit top face and a stone front face. The asphalt starts on row 196. The painted lines are 2 art pixels thick and lean away from a vanishing point at (240, 0), like the pavement edge. The back stalls have dividers from x 384, 412 and 440 and end on rows 213 and 214. The front stall around the Safe ending lies between dividers from (398, 217) and (452, 217) and ends on rows 246 and 247. |
+| Assembly box (C11) | A green painted box (the sign green) inside that stall runs from (409, 220) and (452, 220) to (412, 242) and (466, 242). The Safe ending stands inside it, under the sign. |
 | Student and Reaction | The Student starts Idle at (129, 178). The 67 by 26 art-pixel Reaction sits 20 art pixels left of centre and 2 above the Student frame. The offset leaves the parking sign visible. |
 
 | Choice | Act-out points |
 |---|---|
-| `stairs` | Walk through the shared stair and exit route, then stand in open parking at (430, 230), left of the sign and clear of the mall frontage. |
+| `stairs` | Walk through the shared stair and exit route, then stand in open parking at (430, 230), inside the green assembly box, left of the sign and clear of the mall frontage. |
 | `elevator` | Walk to (96, 178) and reach left toward the call button. |
 | `run_push` | Run down the stair route and stop at (270, 221), short of the nearest person. |
-| `mall_wall` | Walk through the shared stair and exit route to (357, 230), beside the outer wall. |
+| `mall_wall` | Walk through the shared stair and exit route to (357, 230), on the pavement against the outer wall's plinth. |
 
 The stair route uses (155, 178), (191, 196), (239, 224), and (251, 230) as its slope changes. The straight sections between those points follow the intervening treads. The shared exit route continues through (279, 235), (329, 235), and (352, 230). This foreground lane passes in front of the still crowd and continues past the mall frontage. The Safe Choice crosses the curb into the open parking area.
 
