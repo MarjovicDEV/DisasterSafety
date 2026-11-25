@@ -43,10 +43,25 @@ namespace DisasterSafety.Tests
         IEnumerator BootToMenu()
         {
             GameServices.Initialize(dir);
+            var previous = SceneManager.GetActiveScene();
             SceneManager.LoadScene("Boot");
-            for (var i = 0; i < 300 && SceneManager.GetActiveScene().name != "MainMenu"; i++) yield return null;
-            Assert.That(SceneManager.GetActiveScene().name, Is.EqualTo("MainMenu"));
+            yield return NewActiveScene(GameScenes.MainMenu, previous);
             yield return Wait(0.5f);
+        }
+
+        /// <summary>
+        /// Waits for a newly loaded scene with this name. A test that starts while the last test's
+        /// Main Menu is still active must not take that old scene for the new one.
+        /// </summary>
+        static IEnumerator NewActiveScene(string name, Scene previous)
+        {
+            for (var i = 0; i < 600; i++)
+            {
+                var active = SceneManager.GetActiveScene();
+                if (active.name == name && active.handle != previous.handle) yield break;
+                yield return null;
+            }
+            Assert.Fail("Scene " + name + " did not load");
         }
 
         [UnityTest]
@@ -423,6 +438,201 @@ namespace DisasterSafety.Tests
             Assert.That(Directory.GetFiles(dir, "save.corrupt-*.json"), Has.Length.EqualTo(1));
             Assert.That(GameServices.CanContinue, Is.False);
             LogAssert.Expect(LogType.Warning, new System.Text.RegularExpressions.Regex("could not be read"));
+        }
+
+        // Backgrounds (C3, C4) ---------------------------------------------------------------
+
+        // The moving layers each background shows, written out here so a wrong rule in MenuWorld fails.
+        static readonly MenuBackground[] WithFlag = { MenuBackground.SchoolGate, MenuBackground.DrillGround };
+        static readonly MenuBackground[] Outdoors =
+        {
+            MenuBackground.SchoolGate, MenuBackground.DrillGround, MenuBackground.FireStation, MenuBackground.Schoolyard,
+            MenuBackground.CoveredCourt
+        };
+        static readonly MenuBackground[] WithTrees = { MenuBackground.DrillGround, MenuBackground.Schoolyard };
+        static readonly MenuBackground[] WithWalkers =
+            { MenuBackground.SchoolGate, MenuBackground.DrillGround, MenuBackground.Schoolyard };
+
+        static void AssertBackground(MainMenuController c, MenuBackground expected, string sprite, string why)
+        {
+            Assert.That(c.world.Current, Is.EqualTo(expected), why);
+            Assert.That(c.world.background.sprite.name, Is.EqualTo(sprite), why);
+            Assert.That(c.world.flag.activeSelf, Is.EqualTo(Array.IndexOf(WithFlag, expected) >= 0), why + ": flag");
+            Assert.That(c.world.clouds.activeSelf, Is.EqualTo(Array.IndexOf(Outdoors, expected) >= 0), why + ": clouds");
+            Assert.That(c.world.birds.activeSelf, Is.EqualTo(Array.IndexOf(Outdoors, expected) >= 0), why + ": birds");
+            Assert.That(c.world.leaves.activeSelf, Is.EqualTo(Array.IndexOf(WithTrees, expected) >= 0), why + ": leaves");
+            Assert.That(c.world.walkers.activeSelf, Is.EqualTo(Array.IndexOf(WithWalkers, expected) >= 0), why + ": walkers");
+        }
+
+        [UnityTest]
+        public IEnumerator Backgrounds_FreshSave_FollowEachScreenAndBack()
+        {
+            yield return BootToMenu();
+            var c = UnityEngine.Object.FindAnyObjectByType<MainMenuController>();
+            AssertBackground(c, MenuBackground.SchoolGate, "bg_menu_gate", "Main Menu");
+
+            c.settingsButton.onClick.Invoke();
+            yield return Wait(0.4f);
+            AssertBackground(c, MenuBackground.SchoolGate, "bg_menu_gate", "Settings over the gate");
+            c.settingsBack.onClick.Invoke();
+            yield return Wait(0.4f);
+
+            c.playButton.onClick.Invoke();
+            yield return Wait(0.4f);
+            AssertBackground(c, MenuBackground.SchoolGate, "bg_menu_gate", "name entry over the gate");
+            c.nameInput.text = "Ana";
+            c.nameOk.onClick.Invoke();
+            yield return Wait(0.5f);
+            AssertBackground(c, MenuBackground.SchoolGate, "bg_menu_gate", "Student picker over the gate");
+            c.studentBoy.onClick.Invoke();
+            yield return Wait(0.5f);
+            AssertBackground(c, MenuBackground.Noticeboard, "bg_menu_noticeboard", "Episode selection");
+
+            c.episodeCards[1].button.onClick.Invoke();
+            yield return null;
+            AssertBackground(c, MenuBackground.Noticeboard, "bg_menu_noticeboard", "locked Fire card");
+            c.episodeCards[0].button.onClick.Invoke();
+            yield return Wait(0.5f);
+            AssertBackground(c, MenuBackground.DrillGround, "bg_menu_drill_ground", "Earthquake Difficulty selection");
+
+            c.difficultyCards[2].button.onClick.Invoke();
+            yield return null;
+            AssertBackground(c, MenuBackground.DrillGround, "bg_menu_drill_ground", "locked Hard card");
+            c.difficultyCards[0].button.onClick.Invoke();
+            yield return Wait(0.5f);
+            AssertBackground(c, MenuBackground.Classroom, "bg_menu_classroom", "Earthquake Easy Level selection");
+
+            c.levelBack.onClick.Invoke();
+            yield return Wait(0.5f);
+            AssertBackground(c, MenuBackground.DrillGround, "bg_menu_drill_ground", "Back to Difficulty selection");
+            c.difficultyBack.onClick.Invoke();
+            yield return Wait(0.5f);
+            AssertBackground(c, MenuBackground.Noticeboard, "bg_menu_noticeboard", "Back to Episode selection");
+            c.episodeBack.onClick.Invoke();
+            yield return Wait(0.5f);
+            AssertBackground(c, MenuBackground.SchoolGate, "bg_menu_gate", "Back to the Main Menu");
+        }
+
+        [UnityTest]
+        public IEnumerator Backgrounds_EarthquakeDifficulties_ShowTheirOwnLevelSelection()
+        {
+            GameServices.Initialize(dir);
+            GameServices.Progress.SetDisplayName("Ana");
+            GameServices.Progress.SetStudent(StudentKind.Boy);
+            GameServices.Progress.Open(Episode.Earthquake, Difficulty.Normal);
+            GameServices.Progress.Open(Episode.Earthquake, Difficulty.Hard);
+            GameServices.SaveProgress();
+            yield return BootToMenu();
+            var c = UnityEngine.Object.FindAnyObjectByType<MainMenuController>();
+
+            c.playButton.onClick.Invoke();
+            yield return Wait(0.5f);
+            c.episodeCards[0].button.onClick.Invoke();
+            yield return Wait(0.5f);
+            var expected = new[]
+            {
+                (MenuBackground.Classroom, "bg_menu_classroom"),
+                (MenuBackground.Schoolyard, "bg_menu_schoolyard"),
+                (MenuBackground.CoveredCourt, "bg_menu_covered_court"),
+            };
+            for (var i = 0; i < 3; i++)
+            {
+                c.difficultyCards[i].button.onClick.Invoke();
+                yield return Wait(0.5f);
+                Assert.That(c.levelPanel.IsVisible, Is.True, Curriculum.Difficulties[i] + " opens Level selection");
+                AssertBackground(c, expected[i].Item1, expected[i].Item2, Curriculum.Difficulties[i] + " Level selection");
+                c.levelBack.onClick.Invoke();
+                yield return Wait(0.5f);
+                AssertBackground(c, MenuBackground.DrillGround, "bg_menu_drill_ground", "Back from " + Curriculum.Difficulties[i]);
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator Backgrounds_ExistingSave_OpensFireOnTheStationAndAnEmptyNoticeboard()
+        {
+            GameServices.Initialize(dir);
+            GameServices.Progress.SetDisplayName("Ana");
+            GameServices.Progress.SetStudent(StudentKind.Girl);
+            GameServices.Progress.Open(Episode.Earthquake, Difficulty.Hard);
+            GameServices.Progress.Open(Episode.Fire, Difficulty.Easy);
+            GameServices.SaveProgress();
+            yield return BootToMenu();
+            var c = UnityEngine.Object.FindAnyObjectByType<MainMenuController>();
+
+            c.playButton.onClick.Invoke();
+            yield return Wait(0.5f);
+            c.episodeCards[1].button.onClick.Invoke();
+            yield return Wait(0.5f);
+            Assert.That(c.difficultyPanel.IsVisible, Is.True, "Fire is open");
+            AssertBackground(c, MenuBackground.FireStation, "bg_menu_fire_station", "Fire Difficulty selection");
+
+            c.difficultyCards[0].button.onClick.Invoke();
+            yield return Wait(0.5f);
+            Assert.That(c.levelPanel.IsVisible, Is.True);
+            AssertBackground(c, MenuBackground.StationNoticeboard, "bg_menu_station_noticeboard", "empty Fire Level selection");
+            c.levelSlots[0].button.onClick.Invoke();
+            yield return null;
+            Assert.That(c.startButton.interactable, Is.False, "Fire has no Playable Level yet");
+            Assert.That(MenuStudent().bubble.Line, Is.EqualTo(UIStrings.StudentLevelSoon), "the Student says the Level is coming soon");
+
+            c.levelBack.onClick.Invoke();
+            yield return Wait(0.5f);
+            AssertBackground(c, MenuBackground.FireStation, "bg_menu_fire_station", "Back to Fire Difficulty selection");
+            c.difficultyBack.onClick.Invoke();
+            yield return Wait(0.5f);
+            AssertBackground(c, MenuBackground.Noticeboard, "bg_menu_noticeboard", "Back to Episode selection");
+            c.episodeCards[0].button.onClick.Invoke();
+            yield return Wait(0.5f);
+            AssertBackground(c, MenuBackground.DrillGround, "bg_menu_drill_ground", "Earthquake after Fire");
+        }
+
+        [UnityTest]
+        public IEnumerator Backgrounds_ReturnFromALevel_ShowThatDifficultyOrTheGate()
+        {
+            GameServices.Initialize(dir);
+            GameServices.Progress.SetDisplayName("Ana");
+            GameServices.Progress.SetStudent(StudentKind.Boy);
+            GameServices.Progress.Open(Episode.Earthquake, Difficulty.Normal);
+            GameServices.Progress.Open(Episode.Earthquake, Difficulty.Hard);
+            GameServices.SaveProgress();
+            yield return BootToMenu();
+
+            var expected = new[]
+            {
+                (Difficulty.Easy, MenuBackground.Classroom, "bg_menu_classroom"),
+                (Difficulty.Normal, MenuBackground.Schoolyard, "bg_menu_schoolyard"),
+                (Difficulty.Hard, MenuBackground.CoveredCourt, "bg_menu_covered_court"),
+            };
+            foreach (var (difficulty, background, sprite) in expected)
+            {
+                var loaded = SceneManager.GetActiveScene();
+                GameScenes.PlayLevel(new LevelId(Episode.Earthquake, difficulty, 1));
+                yield return NewActiveScene(GameScenes.Level, loaded);
+                yield return Wait(0.3f);
+
+                // Level Completed's and Pause's Levels button.
+                loaded = SceneManager.GetActiveScene();
+                GameScenes.ToLevelSelect(Episode.Earthquake, difficulty);
+                yield return NewActiveScene(GameScenes.MainMenu, loaded);
+                yield return Wait(0.3f);
+                var c = UnityEngine.Object.FindAnyObjectByType<MainMenuController>();
+                Assert.That(c.levelPanel.IsVisible, Is.True, difficulty + " Level selection after its Level");
+                AssertBackground(c, background, sprite, difficulty + " after its Level");
+                c.levelBack.onClick.Invoke();
+                yield return Wait(0.5f);
+                AssertBackground(c, MenuBackground.DrillGround, "bg_menu_drill_ground", "Back after " + difficulty);
+            }
+
+            var before = SceneManager.GetActiveScene();
+            GameScenes.PlayLevel(new LevelId(Episode.Earthquake, Difficulty.Easy, 1));
+            yield return NewActiveScene(GameScenes.Level, before);
+            yield return Wait(0.3f);
+            before = SceneManager.GetActiveScene();
+            GameScenes.ToMainMenu();
+            yield return NewActiveScene(GameScenes.MainMenu, before);
+            yield return Wait(0.3f);
+            AssertBackground(UnityEngine.Object.FindAnyObjectByType<MainMenuController>(), MenuBackground.SchoolGate,
+                "bg_menu_gate", "Main Menu after a Level");
         }
     }
 }
