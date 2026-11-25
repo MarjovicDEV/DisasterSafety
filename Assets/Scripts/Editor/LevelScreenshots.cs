@@ -52,15 +52,7 @@ namespace DisasterSafety.EditorTools
             c.completedBubble.Hide();
             c.openedRibbon.SetActive(false);
 
-            // Hard 7 (the Evacuation Area): Level Completed opening Fire, which has no Playable Level yet.
-            var evacuation = StartStudentLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Hard, 7), StudentKind.Boy);
-            var fireName = UIStrings.EpisodeName(Episode.Fire);
-            c.openedText.text = UIStrings.Opened(fireName);
-            c.openedRibbon.SetActive(true);
-            CompletedWithStudent(c, evacuation, 3, LevelController.OpenedLine(fireName, Episode.Fire, Difficulty.Easy, scenarios.Playable));
-            Shot("58-level-completed-fire-open", c.dimmer, c.completedPanel);
-            c.completedBubble.Hide();
-            c.openedRibbon.SetActive(false);
+            CaptureHardCompletions(c, scenarios, Shot);
 
             CaptureStudentFlow(c, scenarios, Shot);
             CaptureCorridor(c, scenarios, Shot);
@@ -75,6 +67,43 @@ namespace DisasterSafety.EditorTools
             CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 5, "h5", "pull_up", StudentKind.Boy);
             CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 6, "h6", "no_note", StudentKind.Girl);
             CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 7, "h7", "rumor", StudentKind.Boy);
+        }
+
+        static void CaptureHardCompletions(LevelController c, ScenarioLibrary scenarios, Action<string, ScreenPanel[]> shot)
+        {
+            LevelId Hard(int n) => new LevelId(Episode.Earthquake, Difficulty.Hard, n);
+            void Finish(ProgressState progress, int number, string name)
+            {
+                var id = Hard(number);
+                var scenario = StartStudentLevel(c, scenarios, id, StudentKind.Boy);
+                var result = LevelCompletion.Record(progress, id, 3);
+                var openedFire = result.Opened.Count > 0;
+                var line = UIStrings.LevelCompletedHeadline("Niño");
+                if (openedFire)
+                {
+                    var fire = UIStrings.EpisodeName(Episode.Fire);
+                    c.openedText.text = UIStrings.Opened(fire);
+                    line = LevelController.OpenedLine(fire, Episode.Fire, Difficulty.Easy, scenarios.Playable);
+                }
+                c.openedRibbon.SetActive(openedFire);
+                c.SetCompletionNavigation(id, result.OffersNextEpisode, progress, scenarios.Playable);
+                CompletedWithStudent(c, scenario, 3, line);
+                shot(name, new[] { c.dimmer, c.completedPanel });
+            }
+
+            var progress = ProgressState.NewGame();
+            progress.Open(Episode.Earthquake, Difficulty.Hard);
+            Finish(progress, 7, "58-hard7-early");
+            for (var n = 2; n <= 6; n++) LevelCompletion.Record(progress, Hard(n), 3);
+            Finish(progress, 1, "58-hard1-opens-fire");
+            Finish(progress, 7, "58-hard7-replay");
+
+            progress = ProgressState.NewGame();
+            for (var n = 1; n <= 6; n++) LevelCompletion.Record(progress, Hard(n), 3);
+            Finish(progress, 7, "58-level-completed-fire-open");
+            c.nextEpisodeButton.gameObject.SetActive(false);
+            c.completedBubble.Hide();
+            c.openedRibbon.SetActive(false);
         }
 
         static void CaptureHome(LevelController c, ScenarioLibrary scenarios, Action<string, ScreenPanel[]> shot)

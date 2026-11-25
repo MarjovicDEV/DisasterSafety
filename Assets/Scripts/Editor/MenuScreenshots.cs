@@ -155,6 +155,11 @@ namespace DisasterSafety.EditorTools
                     Render(cam, canvas, size, Path.Combine(dir, name + "-" + size.x + "x" + size.y + ".png"));
             }
 
+            var fire = Array.Find(c.episodeCards, card => card.episode == Episode.Fire);
+            fire.Show(true);
+            Shot("02-episodes-fire-open", c.episodePanel, MenuBackground.Noticeboard);
+            fire.Show(false);
+
             c.difficultyHeader.text = Game.UIStrings.EpisodeName(Episode.Fire);
             c.difficultyEmblem.sprite = c.episodeEmblems[(int)Episode.Fire];
             Shot("03-difficulty-fire", c.difficultyPanel, MenuBackground.FireStation);
