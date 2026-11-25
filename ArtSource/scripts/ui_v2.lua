@@ -1,5 +1,5 @@
 -- v2 UI pieces in the Student palette (docs/adr/0001-v2-art-and-no-bantay.md):
--- four 16x16 Choice icons for the Action Bar and three 9-slices. The 9-slice borders below
+-- two 16x16 Choice icons for the Action Bar and three 9-slices. The 9-slice borders below
 -- must match PixelArtImporter.BorderFor.
 --   caption_banner 32x24, border 8   (the Caption at the top of a Level)
 --   action_button  32x26, border 9   (one Choice in the Action Bar; 3-pixel bottom lip)
@@ -51,25 +51,6 @@ return function(L, ST, CR)
     box(k, 11, 6, 4, 10, WOOD)
     L.rect(k, 4, 12, 8, 2, O)
     out.desk = k
-    -- window: a jalousie window with a sill
-    local w = L.newImage(16, 16)
-    box(w, 1, 0, 14, 14, WOOD)
-    L.rect(w, 3, 2, 10, 10, O)
-    L.rect(w, 4, 3, 8, 8, GLASS[1])
-    for y = 4, 10, 3 do L.hline(w, 4, 11, y, GLASS[3]) end
-    L.vline(w, 7, 2, 11, O); L.vline(w, 8, 2, 11, O)
-    box(w, 0, 13, 16, 3, WOOD)
-    out.window = w
-    -- cabinet: a tall cabinet with books on its shelves
-    local c = L.newImage(16, 16)
-    box(c, 2, 0, 12, 16, WOOD)
-    L.rect(c, 4, 2, 8, 12, WOOD[3])
-    L.hline(c, 4, 11, 7, O); L.hline(c, 4, 11, 12, O)
-    local cols = { rgb(206, 17, 38), K.N, GREEN[2], SUN }
-    for i = 0, 3 do
-      L.rect(c, 4 + i * 2, 3, 1, 4, cols[i + 1]); L.rect(c, 5 + i * 2, 9, 1, 3, cols[4 - i])
-    end
-    out.cabinet = c
     return out
   end
 

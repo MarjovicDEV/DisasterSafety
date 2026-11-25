@@ -128,7 +128,7 @@ if want("classroom_after_v2") then
   L.save(CA.deskFront(), "Level/v2/classroom_after_desk_front", "Level/v2/classroom_after_desk_front")
 end
 
--- v2 UI: the 4 Choice icons and the Caption, Action Bar button and speech bubble 9-slices
+-- v2 UI: the door and desk Choice icons and the Caption, Action Bar button and speech bubble 9-slices
 if want("ui_v2") then
   local UV = dofile(here .. "ui_v2.lua")(L, ST, CR)
   for name, img in pairs(UV.icons()) do

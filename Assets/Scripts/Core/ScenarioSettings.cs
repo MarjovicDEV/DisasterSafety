@@ -53,25 +53,25 @@ namespace DisasterSafety.Core
 
         public static bool HasActionSpot(string setting, string action) => ActionSpots(setting).Contains(action);
 
-        static readonly string[] ClassroomSpots = { "door", "desk", "window", "cabinet" };
-        static readonly string[] CorridorSpots = { "stairs", "window", "cover", "plants" };
-        static readonly string[] ClassroomAfterSpots = { "stay", "walk", "push" };
-        static readonly string[] BedroomSpots = { "picture", "low_shelf", "bed_window", "books_top" };
+        static readonly string[] ClassroomSpots = { "door", "desk" };
+        static readonly string[] CorridorSpots = { "cover", "plants" };
+        static readonly string[] ClassroomAfterSpots = { "stay", "walk" };
+        static readonly string[] BedroomSpots = { "picture", "low_shelf", "books_top" };
 
         static readonly string[] HomeSpots =
         {
-            "later", "hidden", "go_bag", "toys",
-            "run", "glass", "sofa", "table",
+            "hidden", "go_bag", "toys",
+            "glass", "sofa", "table",
             "own_way", "meeting_place", "meet_home", "phone_numbers",
         };
 
         static readonly string[] SchoolyardSpots =
         {
-            "tree", "field", "building", "post",
+            "tree", "field", "building",
             "route_post", "route_tree", "route_field", "route_later",
         };
 
-        static readonly string[] BeachSpots = { "fish", "watch", "high_ground", "wait" };
+        static readonly string[] BeachSpots = { "watch", "high_ground", "wait" };
 
         static readonly string[] MallASpots = { "run_exit", "elevator", "shop_window", "table" };
 

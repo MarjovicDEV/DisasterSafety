@@ -28,18 +28,14 @@ The `icons=` filter writes only the named icons, so each slice adds its icons wi
 
 | Icon | Choice | Slice |
 |---|---|---|
-| `icon_stairs` | Run down the stairs | Easy 2 |
 | `icon_cover` | Duck and cover your head | Easy 2 |
 | `icon_plants` | Stand under the hanging plants | Easy 2 |
 | `icon_picture` | Hang a big picture over the bed | Normal 1 |
 | `icon_low_shelf` | Put heavy things on a low shelf | Normal 1 |
-| `icon_bed` | Move the bed under the window | Normal 1 |
 | `icon_books` | Put books on top of the tall cabinet | Normal 1 |
-| `icon_pack_later` | Pack it later, when it shakes | Normal 2 |
 | `icon_bag_hidden` | Hide it under the boxes | Normal 2 |
 | `icon_go_bag` | Pack water, food, a flashlight and a whistle | Normal 2 |
 | `icon_snack_toy` | Pack only snacks and toys | Normal 2 |
-| `icon_door` (pilot) | Run out the door | Normal 3 |
 | `icon_glass_cabinet` | Stand by the glass cabinet | Normal 3 |
 | `icon_sofa` | Lie down beside the sofa | Normal 3 |
 | `icon_strong_table` | Duck under the strong table | Normal 3 |
@@ -50,12 +46,10 @@ The `icons=` filter writes only the named icons, so each slice adds its icons wi
 | `icon_tree` | Hide under the big tree | Normal 4 |
 | `icon_field` | Go to the open field | Normal 4 |
 | `icon_building` | Run back into the building | Normal 4 |
-| `icon_post` | Stand by the electric post | Normal 4 |
 | `icon_route_post` | Take the path by the post | Hard 2 |
 | `icon_route_tree` | Walk the path under the tree | Hard 2 |
 | `icon_route_field` | Take the route across the field | Hard 2 |
 | `icon_route_later` | Find the way when it happens | Hard 2 |
-| `icon_fish` | Pick up the fish on the sand | Normal 5 |
 | `icon_watch_waves` | Stay and watch the waves | Normal 5 |
 | `icon_high_ground` | Go to high ground right away | Normal 5 |
 | `icon_wait_beach` | Wait on the beach for news | Normal 5 |
@@ -75,8 +69,6 @@ The `icons=` filter writes only the named icons, so each slice adds its icons wi
 | `icon_toy_car` | Run back in for your toys | Hard 6 |
 | `icon_no_note` | Leave without a note | Hard 6 |
 | `icon_go_bag` (reused) | Grab the go bag and walk out | Hard 6 |
-
-Easy 2 reuses the pilot's `icon_window` for "Stand by the window".
 
 ## Corridor (`ArtSource/scripts/corridor_v2.lua`, part `corridor_v2`)
 
@@ -102,14 +94,12 @@ Act-out points (the Student's centre x, `BuildCorridorV2` in `ProjectBuilder.Lev
 |---|---|---|
 | Start | `idle` | 214, in front of the Grade 4 door |
 | Safe: `cover` | walk to 270, crouch to 286, `cover` for 1.5 s, calm the shaking | 286, the middle of the inner wall |
-| `stairs` | run-start to 394, stop | 394, the right foot on the top step |
-| `window` | walk to 188, stop | 188, just right of the sill |
 | `plants` | walk to 82, stop | 82, just short of the spot under the pots |
 
 ## Classroom after (`ArtSource/scripts/classroom_after_v2.lua`, part `classroom_after_v2`)
 
 Run: `aseprite.exe -b --script-param root=<project> --script-param only=classroom_after_v2 --script ArtSource/scripts/build.lua`.
-It writes `Level/v2/bg_classroom_after` (480x270) and `Level/v2/classroom_after_desk_front` (84x42). The separate desk front draws over the Student. Use `only=icons_v2` and `icons=stay,teacher_walk,push` for the three 16x16 Choice icons.
+It writes `Level/v2/bg_classroom_after` (480x270) and `Level/v2/classroom_after_desk_front` (84x42). The separate desk front draws over the Student. Use `only=icons_v2` and `icons=stay,teacher_walk` for the two 16x16 Choice icons.
 
 All coordinates are art pixels measured from the top left. The floor line is y 230. One art pixel is four UI units. The bulletin board, flag, blackboard, clock, window, plant, desk, fan and tall cabinet keep their pilot placements. The room is still during this Phase.
 
@@ -131,7 +121,6 @@ Act-out points use the centre of each character's feet. `LevelSetting` stores he
 | Start | Hold at (222, 230) under the desk | Wave at (77, 230) by the door |
 | Safe: `walk` | Crouch-shuffle to (182, 230), stand briefly, walk to (113, 230), then follow the Teacher to (51, 209) and play Happy | Wave until the Student approaches, then turn left and lead to (36, 195) |
 | `stay` | Hold for 0.45 s, shift to (220, 230), and peek left for 0.3 s. The Unsafe Reaction plays while the Student is still low under the desk. | Wave at (77, 230) |
-| `push` | Crouch-shuffle to (182, 230), stand briefly, then run-start and stop at (110, 230) behind the Teacher. | Wave at (77, 230) |
 | Try Again | From the door, walk back to (182, 230) before crouching. From the peek point, shuffle directly back to (222, 230). Resume Hold at (222, 230). | Resume the start position and Wave. |
 
 ## Easy art follow-up
@@ -143,7 +132,7 @@ In Easy 2, both Students use the redrawn `cover` pose. Each `boy_cover` and `gir
 ## Bedroom (`ArtSource/scripts/bedroom_v2.lua`, part `bedroom_v2`)
 
 Run: `aseprite.exe -b --script-param root=<project> --script-param only=bedroom_v2 --script ArtSource/scripts/build.lua`.
-It writes `Level/v2/bg_bedroom` (480x270) and five props, each its own sprite: `bedroom_bed` (112x31), `bedroom_box` and `bedroom_box_placed` (24x17), `bedroom_picture` (36x29) and `bedroom_books` (16x12). Use `only=icons_v2` and `icons=picture,low_shelf,bed,books` for the four Choice icons. Normal 1 is a "before" Level: nothing shakes and the Student starts standing calm.
+It writes `Level/v2/bg_bedroom` (480x270) and five props, each its own sprite: `bedroom_bed` (112x31), `bedroom_box` and `bedroom_box_placed` (24x17), `bedroom_picture` (36x29) and `bedroom_books` (16x12). Use `only=icons_v2` and `icons=picture,low_shelf,books` for the three Choice icons. Normal 1 is a "before" Level: nothing shakes and the Student starts standing calm.
 
 All values are art pixels from the top left; one art pixel is four UI units. The floor line (the Student's feet) is y 230 and the floor art is the continuous concrete of the Easy art follow-up, lit from the window. Every prop stands on the back of the floor (bottom row at y 212 or 213), like the furniture.
 
@@ -166,11 +155,10 @@ Act-out points use the centre of the Student's feet (`BuildBedroomV2` in `Projec
 | Start | `idle` at 306, facing front | |
 | Safe: `low_shelf` | walk to 343, crouch and lift the box, carry it right to 384 (beside the shelf), the box shows in the shelf, crouch, stand | |
 | `picture` | walk to 34, face left, reach and pick up the picture, carry it right to 140, reach up; the picture is held against the wall over the bed at (134, 155) | reaching up at 140 |
-| `bed_window` | walk to 229, face left, push: the bed slides 8 to the left (toward the window) and the Student steps with it | pushing at 221, palms on the headboard |
 | `books_top` | walk to 316, crouch and pick up the books, carry them left to 272, reach up on tiptoe; the books are held up against the cabinet at (251, 172) | reaching up at 272 |
 | Try Again | The Student walks back to 306. The bed slides back; the box, the picture and the books fade back to their start; the placed box hides. | |
 
-Only the walk to the box passes a prop (the books beside the start). With three floor props and a bed to push on one floor line, one prop always sits between the start and something else, so the smallest prop takes that place.
+Only the walk to the box passes a prop (the books beside the start). With three floor props and a bed on one floor line, one prop always sits between the start and something else, so the smallest prop takes that place.
 
 The Student's `carry`, `reachup` and `push` poses were redrawn for this slice (`student.lua`, "Action poses"): `carry` holds the load on level forearms and leans back; `reachup` raises both arms in front of the face on tiptoe; `push` leans forward with flat palms and the back foot pushing off. Frame counts stay 4, 2 and 2.
 
@@ -199,12 +187,10 @@ The following x values mark the centre of the Student's feet at y 230. Walks and
 |---|---|
 | Normal 2 start | Student x 281, Mom x 158 in the clear gap between the board and the table. Both are Idle. |
 | `go_bag` | Pack the four supplies at x 308, close the bag, and carry it left to x 108. Crouch to set it by the door. Mom plays Happy. |
-| `later` | Turn away from the bag, walk left toward the TV, and stop at x 190, before Mom. |
 | `hidden` | Pick up the open bag from x 308, carry it to x 425, and crouch at the gap under the boxes. |
 | `toys` | Pick up the toy from x 322, carry it left to x 308, and stop in Pack over the bag. |
 | Normal 3 start | Student x 294. No Grown-up or loose props. |
 | `table` | Walk left to x 282, show the table front, crouch-shuffle to x 240, face left, and Hold the right front leg until the room calms. |
-| `run` | Run left to x 91 and stop inside while the room still shakes. |
 | `glass` | Walk to x 387 and stop beside the cabinet. |
 | `sofa` | Walk to x 307 and stop in Crouch beside the sofa. |
 | Hard 1 start | Student x 154, Mom x 290 in the clear gap between the table and the sofa. Both are Idle. |
@@ -263,7 +249,6 @@ Earthquake Normal 5 uses a 480 × 270 beach after the shaking stops. One art pix
 
 | Choice | Act-out points |
 |---|---|
-| `fish` | Walk via (201, 247) to (144, 225) on the wet sand. Face left and crouch before reaching farther down the beach. |
 | `watch` | Walk via (201, 247) and (113, 241) to (72, 216). Face the sea and stop on sand, clear of the water. |
 | `high_ground` | Face right and fast-walk through (295, 230), (330, 209), (342, 178), and (367, 158) to (386, 151). Stand to the left of the sign. |
 | `wait` | Walk to (200, 219) and sit on the mat. |
@@ -393,7 +378,7 @@ How to Play has seven Tutorial Pages. Pages 1, 2 and 7 keep the pilot pictures f
 
 | Picture | Student | Frame 0 | Frame 1 |
 |---|---|---|---|
-| `v2_actionbar` | Boy | The boy stands at the classroom start spot above an Action Bar of three buttons (door, desk, window). | The desk button is pressed: it sits lower with a yellow ring. |
+| `v2_actionbar` | Boy | The boy stands at the classroom start spot above an Action Bar of two buttons (door, desk). | The desk button is pressed: it sits lower with a yellow ring. |
 | `v2_actout` | Girl | The girl holds the desk leg under the desk in `Hold`, with the desk front drawn over her. | The second `Hold` frame. |
 | `v2_feedback` | Boy | The Feedback panel with a green check and the "Safe!" heading, and the boy in `Happy` beside it. | The same, with two small sparkles. |
 | `v2_hint` | Girl | The Caption bar with Easy 1's Hint ("Find something strong to hide under.") and the HINT button below it. The girl stands on the right. | The HINT button is pressed. |

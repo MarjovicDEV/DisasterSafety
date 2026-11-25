@@ -1,8 +1,7 @@
 -- The 16x16 Choice icons for the rollout Levels, in the style of the pilot's four icons in
 -- ui_v2.lua (one dark outline, three shades with light from the left, the Student palette).
 -- Each Setting slice adds its icons to M.icons(); build.lua saves them as UI/icon_<name>
--- (run with --script-param only=icons_v2). The pilot's icon_door, icon_desk, icon_window and
--- icon_cabinet stay in ui_v2.lua and are reused where a Choice matches.
+-- (run with --script-param only=icons_v2). The pilot's icon_door and icon_desk stay in ui_v2.lua and are reused where a Choice matches.
 
 return function(L, ST)
   local M = {}
@@ -79,14 +78,6 @@ return function(L, ST)
     L.rect(building, 11, 10, 2, 2, M.GLASS[3])
     out.building = building
 
-    local post = L.newImage(16, 16)
-    M.box(post, 5, 1, 5, 14, M.METAL)
-    L.line(post, 8, 4, 14, 6, O)
-    L.line(post, 8, 7, 15, 9, O)
-    M.box(post, 2, 4, 11, 4, M.METAL)
-    L.px(post, 3, 3, M.GLASS[2])
-    L.px(post, 11, 3, M.GLASS[2])
-    out.post = post
 
     -- The route Choices pair an arrow in the foreground with a smaller landmark.
     local function route(ramp)
@@ -133,14 +124,6 @@ return function(L, ST)
   end
 
   local function beachIcons(out)
-    local fish = L.newImage(16, 16)
-    L.poly(fish, { 3, 8, 1, 5, 4, 6, 6, 7, 8, 4, 10, 5, 12, 5,
-      14, 7, 14, 9, 12, 11, 9, 11, 5, 9, 1, 11 }, M.GLASS[3])
-    L.poly(fish, { 5, 8, 8, 6, 12, 6, 13, 8, 12, 10, 8, 10 }, M.GLASS[2])
-    L.line(fish, 7, 8, 10, 6, M.GLASS[1])
-    L.px(fish, 12, 7, O)
-    L.outline(fish, O)
-    out.fish = fish
 
     local watch = L.newImage(16, 16)
     L.poly(watch, { 2, 5, 5, 2, 10, 2, 13, 5, 10, 8, 5, 8 }, M.WHITE[3])
@@ -460,27 +443,6 @@ return function(L, ST)
     }, K)
     out.teacher_walk = walk
 
-    -- push: the Student leans forward with both arms out behind the taller figure.
-    local push = L.newImage(16, 16)
-    L.map(push, 0, 0, {
-      "...........ooo..",
-      "..........oHHHo.",
-      "..........oHjSSo",
-      "..........oHtSso",
-      "....ooo...oomno.",
-      "...oHHHo..omNno.",
-      "...oHtSsoomprno.",
-      "....oWwwooNNno..",
-      "...oWwwwtSmNno..",
-      "...oWvvooomNno..",
-      "..omNno..omNno..",
-      "..omNno...oSoo..",
-      ".omNoNno..oSoSo.",
-      ".oBo.oNo.oBooSo.",
-      ".oo..oBBo.ooBBo.",
-      "......ooo...ooo.",
-    }, K)
-    out.push = push
 
     -- Normal 1, bedroom ----------------------------------------------------------------------
     -- picture: a framed hill and sun hanging from a nail on its string
@@ -507,21 +469,6 @@ return function(L, ST)
     L.vline(sh, 8, 9, 10, M.WHITE[1])
     out.low_shelf = sh
 
-    -- Side-view bed with a raised headboard, pillow, blanket and two legs.
-    local bd = L.newImage(16, 16)
-    L.rect(bd, 1, 4, 2, 10, M.WOOD[2])
-    L.rect(bd, 13, 9, 2, 5, M.WOOD[2])
-    L.rect(bd, 3, 10, 10, 2, M.WOOD[2])
-    L.rect(bd, 3, 8, 10, 2, M.WHITE[2])
-    L.hline(bd, 3, 5, 7, M.WHITE[1])
-    L.rect(bd, 7, 7, 6, 3, M.NAVY[2])
-    L.hline(bd, 7, 12, 7, M.NAVY[1])
-    L.hline(bd, 8, 12, 9, M.NAVY[3])
-    L.vline(bd, 1, 4, 12, M.WOOD[1])
-    L.hline(bd, 3, 12, 11, M.WOOD[3])
-    L.vline(bd, 14, 10, 13, M.WOOD[3])
-    L.outline(bd, O)
-    out.bed = bd
 
     -- books: a stack of three books, pages on the right
     local bk = L.newImage(16, 16)
@@ -534,16 +481,6 @@ return function(L, ST)
     book(1, 3, 14, M.GREEN)
     out.books = bk
 
-    -- Normal 2, living room: a clock, storage boxes, the go bag, and snacks with a toy.
-    local later = L.newImage(16, 16)
-    L.circle(later, 8, 8, 7, O)
-    L.circle(later, 8, 8, 6, M.METAL[3])
-    L.circle(later, 8, 8, 5, M.WHITE[2])
-    L.line(later, 5, 5, 7, 4, M.WHITE[1])
-    L.vline(later, 8, 4, 8, O)
-    L.hline(later, 8, 11, 8, O)
-    L.px(later, 8, 12, M.METAL[3])
-    out.pack_later = later
 
     local hidden = L.newImage(16, 16)
     M.box(hidden, 1, 2, 14, 7, M.WOOD)
@@ -578,7 +515,7 @@ return function(L, ST)
     L.outline(toys, O)
     out.snack_toy = toys
 
-    -- Normal 3 reuses the pilot door. Glass panes distinguish this cabinet from the pilot bookcase.
+    -- Normal 3: a glass cabinet, sofa and sturdy table.
     local glassCabinet = L.newImage(16, 16)
     M.box(glassCabinet, 2, 0, 12, 16, M.WOOD)
     L.rect(glassCabinet, 4, 2, 8, 10, M.GLASS[2])

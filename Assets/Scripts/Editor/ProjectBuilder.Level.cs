@@ -126,8 +126,7 @@ namespace DisasterSafety.EditorTools
             setting.startX = 126f;
             setting.actOuts = new[]
             {
-                // Unsafe Choices stop clear of the desk and its chair (x 198 to 302), the door and the window:
-                // short of the door (46), the window (372) and the cabinet (440).
+                // The Student stops on open floor before the door (x 46).
                 new ActOut { key = "door", stopAfter = 0, steps = new[] { ActOutStep.Walk(94f) } },
                 // The Safe Choice walks up beside the desk (184), crouches and shuffles in, then holds the
                 // left front leg (x 200-206) with its reaching hand at 222, and the shaking calms.
@@ -143,8 +142,6 @@ namespace DisasterSafety.EditorTools
                         ActOutStep.Calm(),
                     },
                 },
-                new ActOut { key = "window", stopAfter = 0, steps = new[] { ActOutStep.Walk(322.8f) } },
-                new ActOut { key = "cabinet", stopAfter = 0, steps = new[] { ActOutStep.Walk(361.5f) } },
             };
             return setting;
         }
@@ -176,10 +173,6 @@ namespace DisasterSafety.EditorTools
             setting.startX = 214f;
             setting.actOuts = new[]
             {
-                // Run-start toward the stairs and stop at the top step (the front of the first tread is at x 404).
-                new ActOut { key = "stairs", stopAfter = 0, steps = new[] { ActOutStep.Run(394f) } },
-                // Walk toward the hall window (its sill ends at x 180) and stop by it.
-                new ActOut { key = "window", stopAfter = 0, steps = new[] { ActOutStep.Walk(188f) } },
                 // The Safe Choice: walk to the inner wall, away from the glass and the pots, crouch low,
                 // then kneel and cover the head and neck with both arms, and hold until the shaking calms.
                 new ActOut
@@ -246,17 +239,6 @@ namespace DisasterSafety.EditorTools
                         ActOutStep.Pose(StudentPose.Happy),
                     },
                 },
-                new ActOut
-                {
-                    key = "push",
-                    stopAfter = 2,
-                    steps = new[]
-                    {
-                        ActOutStep.Crouch(deskEdge),
-                        ActOutStep.Pose(StudentPose.Idle, 0.16f),
-                        ActOutStep.Run(110f),
-                    },
-                },
             };
             return setting;
         }
@@ -280,7 +262,7 @@ namespace DisasterSafety.EditorTools
             new Vector2(artX * Px, 1080f - artY * Px - artHeight * Px);
 
         // Normal 1's bedroom in the v2 art (phase before, nothing shakes). Left to right: the picture
-        // leaning under the window, the bed (slides toward the window), the tall cabinet, the start spot
+        // leaning under the window, the bed, the tall cabinet, the start spot
         // with the books beside it, the heavy box and the low shelf. Placements and Act-out points are in
         // ArtSource/README-rollout.md (Bedroom) and ArtSource/scripts/bedroom_v2.lua (M.LAYOUT).
         static LevelSetting BuildBedroomV2(RectTransform world)
@@ -341,21 +323,6 @@ namespace DisasterSafety.EditorTools
                         ActOutStep.Pose(StudentPose.Crouch, 0.35f),
                         ActOutStep.Pose(StudentPose.Idle),
                         ActOutStep.Calm(),
-                    },
-                },
-                // Walk to the bed's headboard (x 215), push, and the bed slides 8 pixels toward the window
-                // with the Student stepping after it, palms on the headboard (the stop is at x 221).
-                new ActOut
-                {
-                    key = "bed_window",
-                    stopAfter = 3,
-                    stopPose = StudentPose.Push,
-                    steps = new[]
-                    {
-                        ActOutStep.Walk(229f),
-                        ActOutStep.Face(left: true),
-                        ActOutStep.Pose(StudentPose.Push, 0.3f),
-                        ActOutStep.Push(bed.gameObject, -8f, 0.8f),
                     },
                 },
                 // Pick up the books beside the start, carry them to the tall cabinet and reach up on tiptoe.
@@ -444,11 +411,6 @@ namespace DisasterSafety.EditorTools
             {
                 new ActOut
                 {
-                    key = "later", stopAfter = 0,
-                    steps = new[] { ActOutStep.Walk(190f) },
-                },
-                new ActOut
-                {
                     key = "hidden", stopAfter = 5, stopPose = StudentPose.Crouch,
                     steps = new[]
                     {
@@ -500,11 +462,6 @@ namespace DisasterSafety.EditorTools
                     },
                 },
 
-                new ActOut
-                {
-                    key = "run", stopAfter = 0,
-                    steps = new[] { ActOutStep.Run(91f) },
-                },
                 new ActOut
                 {
                     key = "glass", stopAfter = 0,
@@ -686,10 +643,6 @@ namespace DisasterSafety.EditorTools
                 },
                 new ActOut
                 {
-                    key = "post", stopAfter = postPath.Length - 1, steps = postPath,
-                },
-                new ActOut
-                {
                     key = "route_post", stopAfter = postPath.Length - 1, steps = postPath,
                 },
                 new ActOut
@@ -732,18 +685,6 @@ namespace DisasterSafety.EditorTools
             const float floorY = 230f;
             setting.actOuts = new[]
             {
-                new ActOut
-                {
-                    key = "fish", stopAfter = 4, stopPose = StudentPose.Crouch,
-                    steps = new[]
-                    {
-                        ActOutStep.Walk(201f, floorY - 247f),
-                        ActOutStep.Walk(144f, floorY - 225f),
-                        ActOutStep.Face(left: true),
-                        ActOutStep.Pose(StudentPose.Crouch),
-                        ActOutStep.Wait(0.2f),
-                    },
-                },
                 new ActOut
                 {
                     key = "watch", stopAfter = 5, stopPose = StudentPose.Wait,
