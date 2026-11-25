@@ -2,8 +2,8 @@
 -- 136x76 art pixels with two frames, shown at 4x like the pilot pages drawn by tutorial.lua, which
 -- this script does not change. The pictures use the v2 classroom, the v2 Student frames and the v2
 -- UI pieces, so they match what the Learner sees in a Level:
---   v2_actionbar: the boy in the classroom above an Action Bar of three Choice buttons; frame 1
---                 presses the middle button.
+--   v2_actionbar: the boy in the classroom above an Action Bar of two centered Choice buttons; frame 1
+--                 presses the desk button.
 --   v2_actout:    the girl under the desk in the Hold pose (both Hold frames).
 --   v2_feedback:  the Feedback panel with the "Safe!" heading and a green check, and the boy Happy
 --                 beside it; frame 1 adds a sparkle.
@@ -70,9 +70,8 @@ return function(L, ST, CR, UV)
     student(img, "boy", "idle", f, 66, 52)
     L.rect(img, 0, 54, W, H - 54, K.n)
     L.hline(img, 0, W - 1, 54, O)
-    actionButton(img, 4, 56, icons.door, false)
-    actionButton(img, 48, 56, icons.desk, f == 1)
-    actionButton(img, 92, 56, icons.window, false)
+    actionButton(img, 26, 56, icons.door, false)
+    actionButton(img, 70, 56, icons.desk, f == 1)
     return img
   end
 
