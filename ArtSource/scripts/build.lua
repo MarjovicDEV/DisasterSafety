@@ -29,8 +29,7 @@ for _, page in ipairs(TU.pages) do
   L.saveFrames({ page.draw(0), page.draw(1) }, "Tutorial/" .. page.name, "Tutorial/" .. page.name, 400)
 end
 
--- Background and ambient animation
-L.save(BG.background(), "Background/bg_courtyard", "Background/bg_courtyard")
+-- Ambient menu animation (the menu backgrounds are the "menu" part below)
 L.saveFrames(BG.flagFrames(), "Background/flag", "Background/flag", 140)
 local clouds = BG.clouds()
 L.save(clouds.big, "Background/cloud_big", "Background/cloud_big")
@@ -79,6 +78,15 @@ end -- v1
 
 -- v2 art (docs/adr/0001-v2-art-and-no-bantay.md) ----------------------------
 local ST = dofile(here .. "student.lua")(L)
+
+-- The menu backgrounds (C3, C4): Background/bg_menu_<name>.png, one per MenuBackground.
+if want("menu") then
+  local MB = dofile(here .. "background.lua")(L, ST)
+  for _, b in ipairs(MB.BACKGROUNDS) do
+    local name = "Background/bg_menu_" .. b[1]
+    L.save(b[2](), name, name)
+  end
+end
 
 -- The Student, boy and girl: Student/<kind>_<pose>_<n>.png and Student/<kind>_portrait.png
 -- Optional: --script-param poses=carry,reach writes only those poses (and not the portrait), so
