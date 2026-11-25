@@ -24,14 +24,14 @@ return function(L, ST)
   M.LAYOUT = {
     floorY = 230, horizonY = 132,
     building = { 148, 120 }, roof = { 140, 98 }, door = { 191, 140 },
-    sign = { 15, 142 }, trunk = { 330, 127 }, shade = { 356, 194 },
+    sign = { 15, 116 }, shade = { 356, 194 },
     canopy = { 300, 83 }, post = { 418, 95 }, swayMs = 160,
-    normal4 = { start = { 302, 230 }, field = { 110, 230 },
-      tree = { 320, 199 }, building = { 260, 230 },
-      postBend = { 336, 244 }, post = { 393, 244 } },
+    normal4 = { start = { 190, 230 }, field = { 30, 230 },
+      treeBend = { 287, 230 }, tree = { 320, 199 }, building = { 207, 236 } },
     hard2 = { start = { 306, 230 }, teacher = { 217, 230 }, later = { 260, 230 },
-      fieldBend = { 170, 230 }, teacherBend = { 142, 225 },
-      field = { 133, 198 }, teacherField = { 101, 183 },
+      doorExit = { 217, 243 }, join = { 251, 243 },
+      fieldBend = { 94, 243 }, teacherBend = { 60, 243 },
+      field = { 84, 210 }, teacherField = { 52, 206 },
       tree = { 323, 215 },
       postBend = { 336, 244 }, post = { 393, 244 } },
   }
@@ -41,8 +41,7 @@ return function(L, ST)
   -- front-left edge of the shade, and the building run stops outside the doorway.
   -- The post route bends through the foreground, clear of the trunk and shade, and
   -- stops short of the pole and its lines. The field spot is on open grass, clear of the sign.
-  -- In Hard 2 the Teacher stays ahead on the field path and stops to the right of
-  -- the sign. The tree route ends before the shade, and the late route faces the door.
+  -- In Hard 2 the Teacher leads along the foreground and stops in front of the sign. The tree route ends before the shade, and the late route faces the door.
 
   local function box(img, x, y, w, h, ramp)
     L.rect(img, x, y, w, h, O)
@@ -115,13 +114,25 @@ return function(L, ST)
     L.line(img, 337, 239, 388, 240, light)
     L.line(img, 392, 238, 423, 209, light)
 
-    -- A wider turn leaves room for the Student and Teacher beside the sign.
-    L.poly(img, { 81, 167, 91, 165, 117, 179, 139, 194, 159, 216, 300, 221,
-      315, 232, 300, 242, 149, 242, 130, 234, 116, 207, 99, 186 }, side)
-    L.poly(img, { 83, 168, 91, 166, 115, 180, 137, 195, 158, 218, 299, 223,
-      313, 232, 299, 240, 149, 240, 132, 232, 118, 205, 101, 185 }, fill)
-    L.line(img, 89, 168, 113, 181, light)
-    L.line(img, 160, 219, 296, 224, light)
+    -- One continuous gravel walk runs along the front of the veranda and
+    -- opens into a gathering place beside the sign. The Normal 4 field stop lies west of this path.
+    local walk = { 33, 162, 42, 159, 65, 160, 74, 165, 74, 178, 88, 197, 101, 235, 248, 235, 300, 221,
+      311, 229, 303, 239, 255, 252, 59, 252, 51, 247, 43, 207, 41, 182, 34, 173 }
+    L.poly(img, walk, side)
+    L.poly(img, { 35, 163, 43, 161, 64, 162, 72, 166, 72, 179, 86, 198, 100, 237, 249, 237, 300, 223,
+      309, 229, 302, 237, 254, 250, 60, 250, 53, 246, 45, 206, 43, 182, 36, 172 }, fill)
+    L.line(img, 53, 245, 45, 201, light)
+    L.hline(img, 101, 248, 237, light)
+    L.line(img, 251, 236, 298, 224, light)
+    -- A short concrete apron connects the shaded threshold to the gravel.
+    L.poly(img, { 147, 213, 279, 213, 286, 230, 250, 240, 205, 240,
+      207, 232, 143, 232 }, side)
+    L.poly(img, { 148, 214, 278, 214, 284, 229, 249, 238, 207, 238,
+      209, 230, 145, 230 }, light)
+    L.line(img, 149, 224, 278, 224, fill)
+    L.line(img, 207, 233, 252, 233, fill)
+    L.line(img, 172, 224, 170, 229, fill)
+    L.line(img, 263, 224, 266, 231, fill)
 
     L.seed(809)
     for _ = 1, 205 do
@@ -131,27 +142,30 @@ return function(L, ST)
   end
 
   local function window(img, x, y, w)
-    box(img, x, y, w, 29, R.wood)
-    L.rect(img, x + 3, y + 3, w - 6, 23, R.glass[2])
-    for row = y + 5, y + 25, 5 do
-      L.hline(img, x + 3, x + w - 4, row, R.glass[1])
-      L.hline(img, x + 3, x + w - 4, row + 1, R.glass[3])
+    box(img, x, y, w, 32, R.sign)
+    L.rect(img, x + 2, y + 2, w - 4, 27, R.glass[3])
+    L.rect(img, x + 3, y + 5, w - 6, 21, R.glass[2])
+    for col = x + 5, x + w - 4, 5 do
+      L.vline(img, col, y + 2, y + 29, R.sign[3])
+      L.vline(img, col - 1, y + 3, y + 23, R.lower[1])
     end
-    L.vline(img, x + math.floor(w / 2), y + 3, y + 25, R.wood[3])
-    L.hline(img, x - 1, x + w, y + 28, O)
-    L.hline(img, x, x + w - 1, y + 27, R.wood[1])
+    L.hline(img, x + 2, x + w - 3, y + 17, R.sign[3])
+    L.hline(img, x - 1, x + w, y + 31, R.path[3])
+    L.hline(img, x - 1, x + w - 1, y + 30, R.path[1])
   end
 
   local function building(img)
     local x, y = table.unpack(A.building)
-    -- The roof stays below the Hint button. The wall ends at y 223, as before.
-    box(img, x, y, 132, 104, R.wall)
-    L.rect(img, x + 1, y + 8, 130, 5, R.wall[3])
-    L.rect(img, x + 1, y + 65, 130, 36, R.lower[2])
-    L.hline(img, x + 1, x + 130, y + 65, R.lower[1])
-    L.hline(img, x + 2, x + 129, y + 101, R.lower[3])
-    window(img, x + 8, y + 23, 27)
-    window(img, x + 100, y + 23, 24)
+    box(img, x, y, 132, 100, R.wall)
+    L.rect(img, x + 1, y + 7, 130, 9, R.wall[3])
+    L.rect(img, x + 1, y + 16, 130, 2, R.wall[2])
+    L.rect(img, x + 1, y + 70, 130, 24, R.lower[2])
+    L.hline(img, x + 1, x + 130, y + 70, R.lower[1])
+    L.rect(img, x + 1, y + 93, 130, 6, R.path[3])
+    L.poly(img, { 148, 218, 279, 218, 283, 223, 145, 223 }, R.path[2])
+    L.hline(img, 146, 282, 223, R.path[1])
+    window(img, x + 10, y + 25, 29)
+    window(img, x + 98, y + 25, 27)
 
     local rx, ry = table.unpack(A.roof)
     L.poly(img, { rx, y, rx + 21, ry, rx + 120, ry, rx + 145, y,
@@ -169,45 +183,66 @@ return function(L, ST)
     L.hline(img, rx + 1, rx + 144, y + 7, R.roof[3])
 
     local dx, dy = table.unpack(A.door)
-    -- The dark opening is wider than the Teacher's frame. The threshold is at the floor line.
-    box(img, dx, dy, 52, A.floorY - dy, R.wood)
-    L.rect(img, dx + 5, dy + 6, 42, 78, P.teal2)
-    L.rect(img, dx + 7, dy + 8, 37, 67, R.lower[3])
-    L.rect(img, dx + 8, dy + 8, 32, 60, R.sign[3])
-    L.vline(img, dx + 44, dy + 7, dy + 82, R.wood[3])
-    L.hline(img, dx + 5, dx + 46, dy + 83, R.path[3])
-    L.hline(img, dx + 4, dx + 47, dy + 86, R.path[1])
-    L.hline(img, dx + 1, dx + 50, dy + 88, R.path[3])
+    box(img, dx, dy, 52, 83, R.sign)
+    L.rect(img, dx + 3, dy + 4, 46, 76, R.sign[3])
+    L.rect(img, dx + 6, dy + 8, 40, 69, P.ink2)
+    L.rect(img, dx + 19, dy + 17, 26, 55, P.teal2)
+    -- The ajar panel is seen at an angle. Keep the opening free for the Teacher.
+    L.poly(img, { dx + 3, dy + 5, dx + 18, dy + 9, dx + 18, dy + 76,
+      dx + 3, dy + 81 }, O)
+    L.poly(img, { dx + 4, dy + 6, dx + 17, dy + 10, dx + 17, dy + 75,
+      dx + 4, dy + 79 }, P.green2)
+    for _, top in ipairs({ 13, 43 }) do
+      L.rect(img, dx + 6, dy + top, 8, 22, P.green3)
+      L.rect(img, dx + 7, dy + top + 1, 6, 19, P.green2)
+      L.vline(img, dx + 7, dy + top + 1, dy + top + 18, P.green)
+    end
+    L.rect(img, dx + 14, dy + 38, 2, 2, P.yellow3)
+    L.poly(img, { 192, 221, 242, 221, 245, 230, 190, 230 }, R.path[3])
+    L.poly(img, { 193, 222, 241, 222, 244, 228, 191, 228 }, R.path[2])
+    L.hline(img, 192, 243, 228, R.path[1])
+    for _, cx in ipairs({ 149, 273 }) do
+      L.rect(img, cx, 127, 5, 95, R.wall[3])
+      L.rect(img, cx, 127, 2, 94, R.wall[1])
+      L.rect(img, cx - 1, 216, 7, 7, R.path[2])
+      L.hline(img, cx - 1, cx + 5, 216, R.path[1])
+    end
   end
 
   local function shadeAndTrunk(img)
     local sx, sy = table.unpack(A.shade)
-    L.ellipse(img, sx, sy, 39, 10, R.grass[3])
-    L.ellipse(img, sx + 3, sy + 1, 34, 7, R.leaf[2])
-    local x, y = table.unpack(A.trunk)
-    L.poly(img, { x, y + 5, x + 5, y, x + 19, y + 16, x + 33, y + 2,
-      x + 39, y + 8, x + 27, y + 27, x + 25, y + 55, x + 34, y + 62,
-      x + 25, y + 62, x + 18, y + 59, x + 8, y + 63, x + 3, y + 62,
-      x + 13, y + 53, x + 14, y + 26 }, O)
-    L.poly(img, { x + 2, y + 5, x + 6, y + 2, x + 19, y + 19, x + 33, y + 4,
-      x + 37, y + 8, x + 25, y + 26, x + 23, y + 56, x + 30, y + 61,
-      x + 25, y + 61, x + 18, y + 58, x + 8, y + 61, x + 15, y + 53,
-      x + 16, y + 26 }, R.wood[3])
-    L.line(img, x + 6, y + 8, x + 18, y + 27, R.wood[2], 3)
-    L.line(img, x + 18, y + 28, x + 16, y + 55, R.wood[2], 3)
-    L.line(img, x + 17, y + 32, x + 15, y + 54, R.wood[1])
-    L.line(img, x + 14, y + 56, x + 9, y + 60, R.wood[1])
+    L.ellipse(img, sx + 2, sy, 40, 9, R.grass[3])
+    L.ellipse(img, sx + 4, sy, 31, 6, R.leaf[2])
+    local wood = R.wood
+    local function branch(x, y, ex, ey, width)
+      L.line(img, x, y, ex, ey, O, width)
+      L.line(img, x + 1, y + 1, ex + 1, ey + 1, wood[2], width - 2)
+      L.line(img, x + 1, y + 1, ex + 1, ey + 1, wood[1])
+    end
+    branch(346, 160, 317, 127, 6)
+    branch(327, 139, 330, 119, 4)
+    branch(351, 155, 380, 129, 6)
+    branch(367, 142, 374, 119, 4)
+    L.poly(img, { 341, 145, 352, 152, 365, 141, 363, 152, 356, 162,
+      355, 179, 359, 185, 370, 191, 361, 192, 351, 188, 340, 194,
+      331, 193, 343, 184, 346, 177, 346, 159 }, O)
+    L.poly(img, { 343, 148, 352, 155, 362, 146, 357, 156, 353, 161,
+      353, 180, 357, 186, 365, 190, 360, 190, 351, 186, 339, 192,
+      335, 192, 345, 184, 348, 177, 348, 158 }, wood[3])
+    L.line(img, 349, 159, 348, 180, wood[2], 3)
+    L.line(img, 348, 157, 347, 179, wood[1])
+    L.line(img, 347, 182, 339, 190, wood[1])
   end
 
   local function evacuationSign(img)
     local x, y = table.unpack(A.sign)
-    L.ellipse(img, x + 35, y + 33, 30, 3, R.grass[3])
-    box(img, x + 8, y + 20, 5, 14, R.wood)
-    box(img, x + 55, y + 20, 5, 14, R.wood)
-    box(img, x, y, 68, 24, R.sign)
+    L.ellipse(img, x + 37, y + 46, 34, 4, R.grass[3])
+    for _, off in ipairs({ 9, 62 }) do box(img, x + off, y + 20, 5, 27, R.metal) end
+    box(img, x, y, 76, 28, R.sign)
+    L.hline(img, x + 3, x + 72, y + 2, R.lower[1])
     for i, label in ipairs({ "EVACUATION", "AREA" }) do
-      local textX = x + math.floor((68 - L.F.width(label, 1)) / 2)
-      L.text(img, textX, y + 4 + (i - 1) * 9, label, P.white)
+      local left = x + math.floor((76 - L.F.width(label, 1)) / 2)
+      L.text(img, left, y + 6 + (i - 1) * 10, label, P.white)
     end
   end
 
@@ -225,28 +260,23 @@ return function(L, ST)
   local function canopyFrame(sway)
     local img = L.newImage(119, 75)
     local dark, base, light = R.leaf[3], R.leaf[2], R.leaf[1]
-    L.poly(img, { 3 + sway, 39, 11 + sway, 30, 20 + sway, 24, 31 + sway, 23,
-      38 + sway, 11, 49 + sway, 6, 58 + sway, 6, 69 + sway, 1, 82 + sway, 4,
-      90 + sway, 11, 95 + sway, 21, 105 + sway, 25, 111 + sway, 34, 113 + sway, 46,
-      110 + sway, 55, 102 + sway, 60, 87, 61, 79, 66, 66, 67, 57, 72,
-      43, 72, 34, 67, 24, 67, 15, 63, 6 + sway, 61, 2 + sway, 53 }, dark)
-    L.poly(img, { 5 + sway, 40, 14 + sway, 29, 25 + sway, 24, 36 + sway, 25,
-      41 + sway, 12, 50 + sway, 8, 62 + sway, 7, 72 + sway, 4, 82 + sway, 6,
-      89 + sway, 16, 91 + sway, 26, 103 + sway, 28, 108 + sway, 36,
-      110 + sway, 44, 103 + sway, 52, 93, 54, 84, 51, 75, 59, 67, 59,
-      57, 66, 44, 65, 37, 57, 24, 63, 14, 58, 7 + sway, 53 }, base)
-    L.poly(img, { 8 + sway, 40, 16 + sway, 31, 27 + sway, 26, 37 + sway, 27,
-      34 + sway, 33, 23 + sway, 34, 17 + sway, 42, 12 + sway, 46 }, light)
-    L.poly(img, { 40 + sway, 28, 43 + sway, 16, 52 + sway, 10, 61 + sway, 9,
-      68 + sway, 7, 75 + sway, 8, 69 + sway, 14, 58 + sway, 14, 51 + sway, 21,
-      49 + sway, 28 }, light)
-    L.poly(img, { 27 + sway, 49, 35 + sway, 41, 45 + sway, 37, 55 + sway, 38,
-      50 + sway, 42, 41 + sway, 44, 36 + sway, 51, 29 + sway, 54 }, light)
-    L.poly(img, { 64 + sway, 33, 72 + sway, 23, 81 + sway, 20, 90 + sway, 24,
-      86 + sway, 28, 77 + sway, 28, 72 + sway, 34 }, light)
-    L.poly(img, { 74 + sway, 47, 82 + sway, 42, 90 + sway, 43, 87 + sway, 47,
-      81 + sway, 50 }, dark)
-    L.poly(img, { 51, 54, 58, 49, 67, 50, 63, 54, 59, 59, 53, 58 }, dark)
+    -- Overlapping sprays leave wedges of sky between the exposed lower limbs.
+    local crowns = { {21,37,18,12}, {37,26,24,16}, {56,20,20,17},
+      {78,24,22,16}, {94,34,18,14}, {82,43,20,11}, {48,36,16,13} }
+    for _, v in ipairs(crowns) do
+      L.ellipse(img, v[1]+sway, v[2], v[3], v[4], dark)
+    end
+    for _, v in ipairs(crowns) do
+      L.ellipse(img, v[1]-2+sway, v[2]-3, v[3]-3, v[4]-3, base)
+    end
+    for _, tip in ipairs({ {8,32,9,4}, {18,28,7,3}, {21,18,12,4},
+      {37,12,9,3}, {47,7,10,3}, {63,10,8,3}, {72,15,9,3},
+      {42,29,7,3}, {56,25,7,2}, {87,29,7,3}, {31,35,6,2} }) do
+      L.ellipse(img, tip[1]+sway,tip[2],tip[3],tip[4],light)
+    end
+    for _, d in ipairs({ {22,39},{36,25},{53,17},{62,31},{72,39},{89,35},{97,40} }) do
+      L.line(img, d[1]+sway, d[2], d[1]+sway+4, d[2]-2, dark)
+    end
     L.outline(img, O)
     return img
   end
@@ -258,22 +288,27 @@ return function(L, ST)
   local function postFrame(sway)
     local img = L.newImage(62, 107)
     local x = 21 + sway
-    -- The street-side spans run to the right edge. The foot of the post stays fixed.
-    for i = 0, 2 do
-      local y = 11 + 5 * i
-      L.line(img, x + 5 + 5 * i, y, 46, y + 5 - sway, O)
-      L.line(img, 46, y + 5 - sway, 61, y + 3, O)
+    local metal = R.metal
+    -- Two spans dip between pin insulators; the three pins stand on one wooden crossarm.
+    for _, off in ipairs({ -14, 0, 15 }) do
+      local px = x + off
+      L.line(img, px, 10, px + 11, 14, O)
+      L.line(img, px + 11, 14, px + 27, 16, O)
+      L.line(img, px + 27, 16, 61, 11 + (off + 14) // 4, O)
     end
-    L.poly(img, { x - 3, 4, x + 3, 4, 25, 105, 16, 105 }, O)
-    L.poly(img, { x - 2, 5, x + 2, 5, 24, 104, 17, 104 }, R.metal[2])
-    L.line(img, x - 2, 6, 17, 104, R.metal[1])
-    L.line(img, x + 2, 6, 23, 104, R.metal[3])
-    box(img, x - 12, 24, 35, 5, R.metal)
-    for i = 0, 2 do
-      local y = 10 + i * 5
-      local ix = x + 5 + i * 5
-      L.line(img, ix, y + 3, ix, 24, R.metal[3])
-      box(img, ix - 2, y, 5, 4, R.glass)
+    L.poly(img, { x - 3, 7, x + 3, 7, 25, 105, 16, 105 }, O)
+    L.poly(img, { x - 2, 8, x + 2, 8, 24, 104, 17, 104 }, metal[2])
+    L.line(img, x - 2, 10, 17, 104, metal[1])
+    L.line(img, x + 2, 10, 23, 104, metal[3])
+    L.line(img, x - 13, 24, x, 37, metal[3], 2)
+    L.line(img, x, 37, x + 15, 24, metal[3], 2)
+    box(img, x - 19, 21, 40, 5, R.wood)
+    for _, off in ipairs({ -14, 0, 15 }) do
+      local px = x + off
+      L.vline(img, px, 10, 20, O)
+      L.rect(img, px - 2, 11, 5, 6, metal[3])
+      L.hline(img, px - 3, px + 3, 12, R.glass[1])
+      L.hline(img, px - 3, px + 3, 15, R.glass[1])
     end
     return img
   end
