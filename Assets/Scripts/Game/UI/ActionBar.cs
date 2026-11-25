@@ -45,8 +45,15 @@ namespace DisasterSafety.Game.UI
             for (var i = 0; i < buttons.Length && i < scenario.choices.Length; i++)
                 if (PixelText.Lines(normalFont, scenario.choices[i].label, labelWidth) > 2) tooLong = true;
             var font = tooLong && smallFont != null ? smallFont : normalFont;
-            foreach (var b in buttons)
-                if (b.label != null) b.label.font = font;
+            foreach (var button in buttons)
+            {
+                var label = button.label;
+                if (label == null) continue;
+                label.font = font;
+                // Leave room for the third line of a long Normal Choice above the button lip.
+                var needsThirdLine = scenario.choices.Length == 3 && PixelText.Lines(font, label.text, labelWidth) > 2;
+                label.lineSpacing = needsThirdLine ? 0.75f : 0.9f;
+            }
         }
 
         public void SetTried(int index, bool tried) => buttons[index].SetTried(tried);

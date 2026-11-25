@@ -20,7 +20,6 @@ namespace DisasterSafety.Tests
     public class LevelFlowPlayTests
     {
         static readonly LevelId First = new LevelId(Episode.Earthquake, Difficulty.Easy, 1);
-        const int Run = 0, Desk = 1, Window = 2;
 
         string dir;
 
@@ -67,9 +66,40 @@ namespace DisasterSafety.Tests
         static MainMenuController Menu() => UnityEngine.Object.FindAnyObjectByType<MainMenuController>();
 
         // Easy 1 uses the Student flow: a tap on the Action Bar starts the Student walking, and Feedback shows about a second later.
-        const int Cabinet = 3;
 
         static void Tap(LevelController c, int choice) => c.actionBar.buttons[choice].button.onClick.Invoke();
+
+        static void AssertActionBarLayout(LevelController controller, int expected)
+        {
+            Canvas.ForceUpdateCanvases();
+            var buttons = Array.FindAll(controller.actionBar.buttons, button => button.gameObject.activeInHierarchy);
+            Assert.That(buttons.Length, Is.EqualTo(expected));
+            var row = (RectTransform)buttons[0].transform.parent;
+            for (var i = 0; i < buttons.Length; i++)
+            {
+                var button = buttons[i];
+                var target = (RectTransform)button.button.targetGraphic.transform;
+                var centre = row.InverseTransformPoint(target.TransformPoint(target.rect.center));
+                Assert.That(centre.x, Is.EqualTo(row.rect.center.x + (i - (expected - 1) / 2f) * 450f).Within(0.1f));
+                Assert.That(centre.y, Is.EqualTo(row.rect.center.y).Within(0.1f));
+                Assert.That(target.rect.size, Is.EqualTo(new Vector2(430f, 124f)));
+                Assert.That(button.button.targetGraphic.raycastTarget && button.button.IsInteractable(), Is.True);
+                var label = button.label;
+                Assert.That(label.preferredHeight, Is.LessThanOrEqualTo(label.rectTransform.rect.height + 0.1f), label.text);
+                var bounds = RectTransformUtility.CalculateRelativeRectTransformBounds(target, label.rectTransform);
+                Assert.That(bounds.min.y, Is.GreaterThanOrEqualTo(target.rect.yMin), label.text);
+                Assert.That(bounds.max.y, Is.LessThanOrEqualTo(target.rect.yMax), label.text);
+            }
+        }
+
+        static ActionButton ButtonFor(LevelController controller, string action)
+        {
+            var index = Array.FindIndex(controller.Attempt.Scenario.choices, choice => choice.action == action);
+            Assert.That(index, Is.GreaterThanOrEqualTo(0), controller.Level + " has no action " + action);
+            return controller.actionBar.buttons[index];
+        }
+
+        static void Tap(LevelController controller, string action) => ButtonFor(controller, action).button.onClick.Invoke();
 
         static IEnumerator FeedbackShown(LevelController c) =>
             WaitFor(() => c.feedbackPanel.IsVisible, "the Feedback panel", 12f);
@@ -78,7 +108,7 @@ namespace DisasterSafety.Tests
             WaitFor(() => c.actionBar.IsVisible && !c.Student.IsWalking, "the Action Bar", 12f);
 
         /// <summary>Taps a Choice of an Easy 1 Level and waits for its Feedback.</summary>
-        static IEnumerator ChooseAndWait(LevelController c, int choice)
+        static IEnumerator ChooseAndWait(LevelController c, string choice)
         {
             Tap(c, choice);
             yield return FeedbackShown(c);
@@ -125,17 +155,18 @@ namespace DisasterSafety.Tests
             var c = Level();
             Assert.That(c.Level, Is.EqualTo(First));
             Assert.That(c.captionGoal.text, Is.EqualTo("Stay safe when the ground shakes."));
-            Assert.That(c.actionBar.buttons[Desk].label.text, Is.EqualTo("Duck under the desk"));
+            Assert.That(ButtonFor(c, "desk").label.text, Is.EqualTo("Duck under the desk"));
             Assert.That(c.ActiveSetting.shaker.wobblers, Has.All.Matches<SpriteAnimator>(w => w.enabled), "fan and cabinet wobble while it shakes");
 
+            var attempt = c.Attempt;
             // An Unsafe Choice shows kind Feedback and can be tried again; the button is marked tried.
-            yield return ChooseAndWait(c, Run);
+            yield return ChooseAndWait(c, "door");
             Assert.That(c.feedbackPanel.IsVisible, Is.True);
             Assert.That(c.feedbackHeading.text, Is.EqualTo("Not safe yet"), "Run outside has its own heading");
             Assert.That(c.ActiveSetting.shaker.wobblers, Has.All.Matches<SpriteAnimator>(w => !w.enabled), "the shaking calms after a Choice");
             Assert.That(c.tryAgainButton.gameObject.activeSelf, Is.True);
             Assert.That(c.finishButton.gameObject.activeSelf, Is.False);
-            Assert.That(c.actionBar.buttons[Run].button.interactable, Is.False, "a tried Unsafe Choice cannot be picked again");
+            Assert.That(ButtonFor(c, "door").button.interactable, Is.False, "a tried Unsafe Choice cannot be picked again");
             Assert.That(File.Exists(Path.Combine(dir, "save.json")), Is.True, "the name was saved");
             Assert.That(SavedOnDisk().HasSavedProgress, Is.False, "nothing is saved for an unfinished Attempt");
             c.tryAgainButton.onClick.Invoke();
@@ -144,11 +175,13 @@ namespace DisasterSafety.Tests
             Assert.That(c.Attempt.Phase, Is.EqualTo(AttemptPhase.Choosing));
             yield return ActionBarShown(c);
 
+            Assert.That(c.Attempt, Is.SameAs(attempt));
+
             // The Hint, then the Safe Choice.
             c.hintButton.onClick.Invoke();
             Assert.That(c.Attempt.HintUsed, Is.True);
             Assert.That(c.captionBody.text, Does.StartWith("Hint:"));
-            yield return ChooseAndWait(c, Desk);
+            yield return ChooseAndWait(c, "desk");
             Assert.That(c.feedbackHeading.text, Is.EqualTo(UIStrings.SafeHeading));
             Assert.That(c.finishButton.gameObject.activeSelf, Is.True);
             c.finishButton.onClick.Invoke();
@@ -207,7 +240,7 @@ namespace DisasterSafety.Tests
 
             var c = Level();
             Assert.That(c.Level, Is.EqualTo(First));
-            yield return ChooseAndWait(c, Desk);
+            yield return ChooseAndWait(c, "desk");
             c.finishButton.onClick.Invoke();
             Assert.That(c.nextButton.gameObject.activeSelf, Is.True, "Level 1 leads to Level 2");
             c.nextButton.onClick.Invoke();
@@ -219,13 +252,12 @@ namespace DisasterSafety.Tests
             Assert.That(c.ActiveSetting.shaker.IsShaking, Is.True);
 
             // Easy 2 is acted out by the Student in the corridor.
-            const int Stairs = 0, Cover = 2;
-            Tap(c, Stairs);
+            Tap(c, "plants");
             yield return FeedbackShown(c);
-            Assert.That(c.feedbackHeading.text, Is.EqualTo("Not safe yet"));
+            Assert.That(c.feedbackHeading.text, Is.EqualTo(UIStrings.UnsafeHeading));
             c.tryAgainButton.onClick.Invoke();
             yield return ActionBarShown(c);
-            Tap(c, Cover);
+            Tap(c, "cover");
             yield return FeedbackShown(c);
             c.finishButton.onClick.Invoke();
             Assert.That(c.nextButton.gameObject.activeSelf, Is.True, "Level 2 leads to Level 3");
@@ -236,7 +268,7 @@ namespace DisasterSafety.Tests
             Assert.That(c.ActiveSetting.key, Is.EqualTo("classroom_after_v2"));
             yield return ReadyToChoose(Level);
 
-            yield return ChooseAndWait(c, ClassroomWalk);
+            yield return ChooseAndWait(c, "walk");
             c.finishButton.onClick.Invoke();
             Assert.That(c.completedPanel.IsVisible, Is.True);
             Assert.That(c.LastResult.Opened, Does.Contain("Earthquake/Normal"));
@@ -258,7 +290,7 @@ namespace DisasterSafety.Tests
             yield return ReadyToChoose(Level);
             c = Level();
             Assert.That(c.Level, Is.EqualTo(third));
-            yield return ChooseAndWait(c, ClassroomWalk);
+            yield return ChooseAndWait(c, "walk");
             c.finishButton.onClick.Invoke();
             Assert.That(c.completedPanel.IsVisible, Is.True);
             Assert.That(c.LastResult.Opened, Is.Empty);
@@ -286,6 +318,7 @@ namespace DisasterSafety.Tests
                 yield return WaitFor(() => Level()?.Level.Equals(level) == true, "Normal " + n + " to load");
                 yield return ReadyToChoose(Level);
                 c = Level();
+                AssertActionBarLayout(c, 3);
                 Assert.That(c.ActiveSetting.key, Is.EqualTo(settings[n - 1]), "Setting of Normal " + n);
                 var shaking = c.ActiveSetting.shaker != null && c.ActiveSetting.shaker.IsShaking;
                 Assert.That(shaking, Is.EqualTo(shakes[n - 1]), "shaking in Normal " + n);
@@ -398,15 +431,13 @@ namespace DisasterSafety.Tests
             yield return ReadyToChoose(Level);
             Assert.That(c.actionBar.IsVisible, Is.True);
             Assert.That(student.Pose, Is.EqualTo(StudentPose.Idle));
-            var shown = 0;
-            foreach (var b in c.actionBar.buttons) if (b.gameObject.activeSelf) shown++;
-            Assert.That(shown, Is.EqualTo(4));
-            Assert.That(c.actionBar.buttons[Desk].label.text, Is.EqualTo("Duck under the desk"));
-            Assert.That(c.actionBar.buttons[Desk].icon.sprite.name, Is.EqualTo("icon_desk"));
+            AssertActionBarLayout(c, 2);
+            Assert.That(ButtonFor(c, "desk").label.text, Is.EqualTo("Duck under the desk"));
+            Assert.That(ButtonFor(c, "desk").icon.sprite.name, Is.EqualTo("icon_desk"));
 
             // The desk: the Action Bar hides, the Student walks up beside the desk, crouches and
             // shuffles in under it, then holds the desk leg.
-            Tap(c, Desk);
+            Tap(c, "desk");
             Assert.That(c.actionBar.IsVisible, Is.False);
             var desk = c.ActiveSetting.ActOutFor("desk");
             var deskX = desk.EndX(c.ActiveSetting.startX);
@@ -441,17 +472,17 @@ namespace DisasterSafety.Tests
             var student = c.Student;
             yield return ReadyToChoose(Level);
 
-            Tap(c, Window);
+            Tap(c, "door");
             yield return WaitFor(() => student.Pose == StudentPose.Wait, "the Student to stop", 12f);
-            var window = c.ActiveSetting.ActOutFor("window");
-            Assert.That(student.X, Is.EqualTo(window.StopX(c.ActiveSetting.startX)).Within(0.01f));
-            Assert.That(student.X, Is.LessThan(372f), "the Student stops short of the window (x 372)");
+            var door = c.ActiveSetting.ActOutFor("door");
+            Assert.That(student.X, Is.EqualTo(door.StopX(c.ActiveSetting.startX)).Within(0.01f));
+            Assert.That(student.X - 16f, Is.GreaterThan(46f), "the Student stops before the door");
             Assert.That(student.bubble.Line, Is.EqualTo("Hmm, wait..."));
 
             yield return FeedbackShown(c);
             Assert.That(c.tryAgainButton.gameObject.activeSelf, Is.True);
             Assert.That(c.finishButton.gameObject.activeSelf, Is.False);
-            Assert.That(c.feedbackText.text, Does.Contain("Window glass can break"));
+            Assert.That(c.feedbackText.text, Does.Contain("Stay inside while it shakes"));
             Assert.That(c.Attempt.UnsafeChoices, Is.EqualTo(1));
 
             c.tryAgainButton.onClick.Invoke();
@@ -459,12 +490,11 @@ namespace DisasterSafety.Tests
             Assert.That(student.X, Is.EqualTo(c.ActiveSetting.startX));
             Assert.That(student.Pose, Is.EqualTo(StudentPose.Idle));
             Assert.That(c.Attempt.Phase, Is.EqualTo(AttemptPhase.Choosing));
-            Assert.That(c.actionBar.buttons[Window].button.interactable, Is.False, "the window is marked tried");
-            Assert.That(c.actionBar.buttons[Desk].button.interactable, Is.True);
+            Assert.That(ButtonFor(c, "door").button.interactable, Is.False, "the door is marked tried");
+            Assert.That(ButtonFor(c, "desk").button.interactable, Is.True);
         }
 
         static readonly LevelId Second = new LevelId(Episode.Earthquake, Difficulty.Easy, 2);
-        const int CorridorStairs = 0, CorridorWindow = 1, CorridorCover = 2, CorridorPlants = 3;
 
         IEnumerator StartEasyTwo()
         {
@@ -489,18 +519,16 @@ namespace DisasterSafety.Tests
             Assert.That(student.X, Is.EqualTo(setting.startX));
 
             yield return ReadyToChoose(Level);
-            Assert.That(c.actionBar.buttons[CorridorCover].label.text, Is.EqualTo("Duck and cover your head"));
-            Assert.That(c.actionBar.buttons[CorridorStairs].icon.sprite.name, Is.EqualTo("icon_stairs"));
-            Assert.That(c.actionBar.buttons[CorridorWindow].icon.sprite.name, Is.EqualTo("icon_window"));
-            Assert.That(c.actionBar.buttons[CorridorCover].icon.sprite.name, Is.EqualTo("icon_cover"));
-            Assert.That(c.actionBar.buttons[CorridorPlants].icon.sprite.name, Is.EqualTo("icon_plants"));
+            Assert.That(ButtonFor(c, "cover").label.text, Is.EqualTo("Duck and cover your head"));
+            Assert.That(ButtonFor(c, "cover").icon.sprite.name, Is.EqualTo("icon_cover"));
+            Assert.That(ButtonFor(c, "plants").icon.sprite.name, Is.EqualTo("icon_plants"));
             // The long Goal and labels still fit: the Goal on one line, each label in two.
             Assert.That(PixelText.Lines(c.captionGoal.font, c.captionGoal.text, c.captionGoal.rectTransform.sizeDelta.x), Is.EqualTo(1));
             foreach (var b in c.actionBar.buttons)
                 Assert.That(PixelText.Lines(b.label.font, b.label.text, c.actionBar.labelWidth), Is.LessThanOrEqualTo(2), b.label.text);
 
             // Walk to the inner wall, crouch, then cover the head and hold until the shaking calms.
-            Tap(c, CorridorCover);
+            Tap(c, "cover");
             Assert.That(c.actionBar.IsVisible, Is.False);
             yield return WaitFor(() => student.IsWalking, "the Student to walk", 4f);
             Assert.That(student.Pose, Is.EqualTo(StudentPose.Walk));
@@ -531,16 +559,15 @@ namespace DisasterSafety.Tests
             var setting = c.ActiveSetting;
             yield return ReadyToChoose(Level);
 
-            // Run-start toward the stairs, stop at the top step, then "Hmm, wait...".
-            Tap(c, CorridorStairs);
-            yield return WaitFor(() => student.IsWalking, "the Student to run", 4f);
+            Tap(c, "plants");
+            yield return WaitFor(() => student.IsWalking, "the Student to walk", 4f);
             yield return WaitFor(() => student.Pose == StudentPose.Wait, "the Student to stop", 12f);
-            Assert.That(student.X, Is.EqualTo(setting.ActOutFor("stairs").StopX(setting.startX)).Within(0.01f));
-            Assert.That(student.X + 16f, Is.LessThanOrEqualTo(410f), "the Student stops on the top step (x 404), not down the stairs");
+            Assert.That(student.X, Is.EqualTo(setting.ActOutFor("plants").StopX(setting.startX)).Within(0.01f));
+            Assert.That(student.X - 16f, Is.GreaterThan(63f), "the Student stops clear of the pots");
             Assert.That(student.bubble.Line, Is.EqualTo("Hmm, wait..."));
 
             yield return FeedbackShown(c);
-            Assert.That(c.feedbackHeading.text, Is.EqualTo("Not safe yet"));
+            Assert.That(c.feedbackHeading.text, Is.EqualTo(UIStrings.UnsafeHeading));
             Assert.That(c.tryAgainButton.gameObject.activeSelf, Is.True);
             Assert.That(c.Attempt.UnsafeChoices, Is.EqualTo(1));
 
@@ -549,20 +576,11 @@ namespace DisasterSafety.Tests
             Assert.That(student.X, Is.EqualTo(setting.startX));
             Assert.That(student.Pose, Is.EqualTo(StudentPose.Idle));
             Assert.That(c.Attempt.Phase, Is.EqualTo(AttemptPhase.Choosing));
-            Assert.That(c.actionBar.buttons[CorridorStairs].button.interactable, Is.False, "the stairs are marked tried");
-            Assert.That(c.actionBar.buttons[CorridorCover].button.interactable, Is.True);
-
-            // The other Unsafe Choices stop short of their danger: the window (sill ends at x 180)
-            // and the spot under the pots (the right pot ends at x 63).
-            var window = setting.ActOutFor("window").StopX(setting.startX);
-            Assert.That(window, Is.LessThan(setting.startX));
-            Assert.That(window - 16f, Is.GreaterThanOrEqualTo(170f));
-            var plants = setting.ActOutFor("plants").StopX(setting.startX);
-            Assert.That(plants - 16f, Is.GreaterThan(63f));
+            Assert.That(ButtonFor(c, "plants").button.interactable, Is.False, "the plants are marked tried");
+            Assert.That(ButtonFor(c, "cover").button.interactable, Is.True);
         }
 
         static readonly LevelId Third = new LevelId(Episode.Earthquake, Difficulty.Easy, 3);
-        const int ClassroomStay = 0, ClassroomWalk = 1, ClassroomPush = 2;
 
         IEnumerator StartEasyThree()
         {
@@ -594,11 +612,10 @@ namespace DisasterSafety.Tests
             Assert.That(firstFrame, Is.Not.Null);
             yield return WaitFor(() => teacher.CurrentSprite != firstFrame, "the Teacher to wave");
             yield return ReadyToChoose(Level);
-            Assert.That(c.actionBar.buttons[ClassroomStay].icon.sprite.name, Is.EqualTo("icon_stay"));
-            Assert.That(c.actionBar.buttons[ClassroomWalk].icon.sprite.name, Is.EqualTo("icon_teacher_walk"));
-            Assert.That(c.actionBar.buttons[ClassroomPush].icon.sprite.name, Is.EqualTo("icon_push"));
+            Assert.That(ButtonFor(c, "stay").icon.sprite.name, Is.EqualTo("icon_stay"));
+            Assert.That(ButtonFor(c, "walk").icon.sprite.name, Is.EqualTo("icon_teacher_walk"));
 
-            Tap(c, ClassroomWalk);
+            Tap(c, "walk");
             Assert.That(c.actionBar.IsVisible, Is.False);
             yield return WaitFor(() => student.Pose == StudentPose.Crouch && student.IsWalking,
                 "the Student to shuffle out from under the desk");
@@ -638,7 +655,7 @@ namespace DisasterSafety.Tests
             var teacher = c.ActiveSetting.grownUps[0];
             yield return ReadyToChoose(Level);
 
-            Tap(c, ClassroomStay);
+            Tap(c, "stay");
             Assert.That(student.Pose, Is.EqualTo(StudentPose.Hold));
             yield return WaitFor(() => student.bubble.Line == "Hmm, wait...", "the stop under the desk");
             Assert.That(student.X, Is.EqualTo(220f), "the Student only peeks out");
@@ -649,38 +666,12 @@ namespace DisasterSafety.Tests
             yield return ActionBarShown(c);
             Assert.That(student.X, Is.EqualTo(222f));
             Assert.That(student.Pose, Is.EqualTo(StudentPose.Hold));
-            Assert.That(c.actionBar.buttons[ClassroomStay].button.interactable, Is.False);
+            Assert.That(ButtonFor(c, "stay").button.interactable, Is.False);
 
-            Tap(c, ClassroomPush);
-            yield return WaitFor(() => student.Pose == StudentPose.Crouch && student.IsWalking,
-                "the Student to shuffle out from under the desk");
-            yield return WaitFor(() => student.IsWalking && student.Pose == StudentPose.Walk,
-                "the Student to start running toward the door");
-            yield return WaitFor(() => student.Pose == StudentPose.Wait, "the Student to stop behind the Teacher");
-            Assert.That(student.X, Is.EqualTo(110f));
-            Assert.That(student.X - 16f, Is.GreaterThanOrEqualTo(teacher.X + 18f - 1f),
-                "the Student stops with room between the two figures");
-            Assert.That(teacher.AtStart, Is.True, "the Student does not push or move the Teacher");
-            Assert.That(student.bubble.Line, Is.EqualTo("Hmm, wait..."));
-
-            yield return FeedbackShown(c);
-            Assert.That(c.tryAgainButton.gameObject.activeSelf, Is.True);
-            c.tryAgainButton.onClick.Invoke();
-            yield return WaitFor(() => student.Pose == StudentPose.Crouch && student.IsWalking,
-                "the Student to crouch before shuffling back under the desk");
-            yield return ActionBarShown(c);
-            Assert.That(student.X, Is.EqualTo(222f));
-            Assert.That(student.Y, Is.Zero);
-            Assert.That(student.Pose, Is.EqualTo(StudentPose.Hold));
-            Assert.That(teacher.AtStart, Is.True);
-            Assert.That(c.Attempt.Phase, Is.EqualTo(AttemptPhase.Choosing));
-            Assert.That(c.actionBar.buttons[ClassroomStay].button.interactable, Is.False);
-            Assert.That(c.actionBar.buttons[ClassroomPush].button.interactable, Is.False);
-            Assert.That(c.actionBar.buttons[ClassroomWalk].button.interactable, Is.True);
+            Assert.That(ButtonFor(c, "walk").button.interactable, Is.True);
         }
 
         static readonly LevelId NormalOne = new LevelId(Episode.Earthquake, Difficulty.Normal, 1);
-        const int BedroomPicture = 0, BedroomLowShelf = 1, BedroomBedWindow = 2, BedroomBooksTop = 3;
 
         IEnumerator StartNormalOne()
         {
@@ -739,7 +730,8 @@ namespace DisasterSafety.Tests
             var closed = PropIn(c, "bag_closed");
             var open = PropIn(c, "bag_open");
             var mom = c.ActiveSetting.ActiveGrownUps[0];
-            Tap(c, 2);
+            AssertActionBarLayout(c, 3);
+            Tap(c, "go_bag");
 
             foreach (var key in new[] { "water", "can", "flashlight", "whistle" })
             {
@@ -796,7 +788,7 @@ namespace DisasterSafety.Tests
             var mom = c.ActiveSetting.ActiveGrownUps[0];
             var props = c.ActiveSetting.ActiveProps;
 
-            Tap(c, 1);
+            Tap(c, "hidden");
             yield return WaitFor(() => open.transform.IsChildOf(student.transform) && student.IsWalking,
                 "the Student to carry the bag toward the boxes");
             yield return WaitFor(() => student.bubble.Line == UIStrings.ReactionWait, "the boxes stop");
@@ -810,9 +802,9 @@ namespace DisasterSafety.Tests
             foreach (var prop in props) Assert.That(prop.AtStart, Is.True, prop.key);
             Assert.That(mom.AtStart, Is.True);
             Assert.That(student.X, Is.EqualTo(281f));
-            Assert.That(c.actionBar.buttons[1].button.interactable, Is.False);
+            Assert.That(ButtonFor(c, "hidden").button.interactable, Is.False);
 
-            Tap(c, 3);
+            Tap(c, "toys");
             yield return WaitFor(() => student.Pose == StudentPose.Pack && toy.transform.IsChildOf(student.transform),
                 "the Student to start packing the toy");
             yield return FeedbackShown(c);
@@ -823,7 +815,7 @@ namespace DisasterSafety.Tests
             Assert.That(mom.AtStart, Is.True);
             Assert.That(student.X, Is.EqualTo(281f));
             Assert.That(student.Pose, Is.EqualTo(StudentPose.Idle));
-            Assert.That(c.actionBar.buttons[3].button.interactable, Is.False);
+            Assert.That(ButtonFor(c, "toys").button.interactable, Is.False);
         }
 
         [UnityTest]
@@ -846,7 +838,7 @@ namespace DisasterSafety.Tests
             Assert.That(table, Is.Not.Null);
             var overlay = table.FirstOverlay;
             Assert.That(overlay.activeSelf, Is.False);
-            Tap(c, 3);
+            Tap(c, "table");
             yield return WaitFor(() => c.Student.Pose == StudentPose.Crouch && overlay.activeSelf, "the front of the table");
             yield return WaitFor(() => c.Student.Pose == StudentPose.Hold, "the Student to hold the table leg");
             Assert.That(c.Student.X, Is.EqualTo(240f));
@@ -864,20 +856,20 @@ namespace DisasterSafety.Tests
             yield return StartRolloutLevel(NormalThree);
             var c = Level();
             yield return ReadyToChoose(Level);
-            Assert.That(c.ActiveSetting.ActOutFor("run"), Is.Not.Null, "the door Choice has an Act-out");
-            Tap(c, 0);
-            yield return WaitFor(() => c.Student.IsWalking && c.Student.FacingLeft, "the Student to run toward the door");
-            yield return WaitFor(() => c.Student.bubble.Line == UIStrings.ReactionWait, "the run to stop");
-            Assert.That(c.Student.X, Is.EqualTo(91f), "the Student stops inside the living room");
+            Assert.That(c.ActiveSetting.ActOutFor("glass"), Is.Not.Null, "the glass cabinet Choice has an Act-out");
+            Tap(c, "glass");
+            yield return WaitFor(() => c.Student.IsWalking && !c.Student.FacingLeft, "the Student to walk toward the cabinet");
+            yield return WaitFor(() => c.Student.bubble.Line == UIStrings.ReactionWait, "the walk to stop");
+            Assert.That(c.Student.X, Is.EqualTo(387f), "the Student stops inside the living room");
             Assert.That(c.ActiveSetting.shaker.IsShaking, Is.True);
             yield return FeedbackShown(c);
-            Assert.That(c.feedbackHeading.text, Is.EqualTo("Not safe yet"));
+            Assert.That(c.feedbackHeading.text, Is.EqualTo(UIStrings.UnsafeHeading));
             c.tryAgainButton.onClick.Invoke();
             yield return ActionBarShown(c);
             Assert.That(c.Student.X, Is.EqualTo(294f));
             Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Idle));
             Assert.That(c.ActiveSetting.shaker.IsShaking, Is.True);
-            Assert.That(c.actionBar.buttons[0].button.interactable, Is.False);
+            Assert.That(ButtonFor(c, "glass").button.interactable, Is.False);
         }
 
         [UnityTest]
@@ -1036,7 +1028,7 @@ namespace DisasterSafety.Tests
                 yield return WaitFor(() => image.sprite == wobbler.frames[1], wobbler.name + " to sway");
             }
 
-            Tap(c, 1);
+            Tap(c, "field");
             yield return WaitFor(() => student.IsWalking && student.FacingLeft, "the walk into the field");
             yield return WaitFor(() => student.Pose == StudentPose.Crouch, "the crouch in the field");
             Assert.That(student.X, Is.EqualTo(110f));
@@ -1069,7 +1061,7 @@ namespace DisasterSafety.Tests
             var student = c.Student;
             var shaker = c.ActiveSetting.shaker;
 
-            Tap(c, 2);
+            Tap(c, "building");
             yield return WaitFor(() => student.IsWalking && student.FacingLeft, "the run toward the door");
             yield return WaitFor(() => student.bubble.gameObject.activeSelf && student.bubble.Line == UIStrings.ReactionWait, "the building stop");
             Assert.That(student.X, Is.EqualTo(260f), "the Student stops outside the doorway");
@@ -1084,7 +1076,7 @@ namespace DisasterSafety.Tests
             AssertSchoolyardReset(c, 302f, 2);
             Assert.That(shaker.IsShaking, Is.True);
 
-            Tap(c, 0);
+            Tap(c, "tree");
             yield return WaitFor(() => student.bubble.gameObject.activeSelf && student.bubble.Line == UIStrings.ReactionWait, "the tree stop");
             Assert.That(student.X, Is.EqualTo(320f), "the Student stops at the edge of the shade");
             Assert.That(student.Y, Is.EqualTo(31f));
@@ -1127,7 +1119,7 @@ namespace DisasterSafety.Tests
             Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Idle));
 
             var student = c.Student;
-            Tap(c, 2);
+            Tap(c, "high_ground");
             yield return WaitFor(() => student.IsWalking && student.X > 300f && student.Y > 5f, "the climb up the beach path");
             Assert.That(student.FacingLeft, Is.False);
             Assert.That(Array.FindAll(route.steps, step => step.kind == ActOutStepKind.FastWalk).Length,
@@ -1147,16 +1139,14 @@ namespace DisasterSafety.Tests
             yield return StartRolloutLevel(NormalFive);
             var c = Level();
             yield return ActionBarShown(c);
-            Assert.That(c.ActiveSetting.ActOutFor("fish"), Is.Not.Null, "the fish Choice has an Act-out");
 
             foreach (var stop in new[]
             {
-                (Index: 0, X: 144f, Y: 5f, Pose: StudentPose.Crouch, Left: true),
-                (Index: 3, X: 200f, Y: 11f, Pose: StudentPose.Sit, Left: false),
-                (Index: 1, X: 72f, Y: 14f, Pose: StudentPose.Wait, Left: true),
+                (Action: "wait", X: 200f, Y: 11f, Pose: StudentPose.Sit, Left: false),
+                (Action: "watch", X: 72f, Y: 14f, Pose: StudentPose.Wait, Left: true),
             })
             {
-                Tap(c, stop.Index);
+                Tap(c, stop.Action);
                 yield return WaitFor(() => c.Student.IsWalking && c.Student.FacingLeft, "the walk toward the Unsafe stop");
                 yield return WaitFor(() => c.Student.bubble.gameObject.activeSelf &&
                     c.Student.bubble.Line == UIStrings.ReactionWait, "the beach stop");
@@ -1172,7 +1162,7 @@ namespace DisasterSafety.Tests
                 Assert.That(c.Student.X, Is.EqualTo(260f));
                 Assert.That(c.Student.Y, Is.Zero);
                 Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Idle));
-                Assert.That(c.actionBar.buttons[stop.Index].button.interactable, Is.False);
+                Assert.That(ButtonFor(c, stop.Action).button.interactable, Is.False);
             }
         }
 
@@ -1926,7 +1916,6 @@ namespace DisasterSafety.Tests
             return prop;
         }
 
-        static float AnchoredX(LevelProp prop) => ((RectTransform)prop.transform).anchoredPosition.x;
 
         // The world x of a prop's centre: its pivot is its bottom-left corner, which mirrors with the Student.
         static float CentreX(LevelProp prop)
@@ -1950,12 +1939,11 @@ namespace DisasterSafety.Tests
             Assert.That(box.gameObject.activeSelf, Is.True);
             Assert.That(placed.gameObject.activeSelf, Is.False, "the shelf starts empty");
             yield return ReadyToChoose(Level);
-            Assert.That(c.actionBar.buttons[BedroomPicture].icon.sprite.name, Is.EqualTo("icon_picture"));
-            Assert.That(c.actionBar.buttons[BedroomLowShelf].icon.sprite.name, Is.EqualTo("icon_low_shelf"));
-            Assert.That(c.actionBar.buttons[BedroomBedWindow].icon.sprite.name, Is.EqualTo("icon_bed"));
-            Assert.That(c.actionBar.buttons[BedroomBooksTop].icon.sprite.name, Is.EqualTo("icon_books"));
+            Assert.That(ButtonFor(c, "picture").icon.sprite.name, Is.EqualTo("icon_picture"));
+            Assert.That(ButtonFor(c, "low_shelf").icon.sprite.name, Is.EqualTo("icon_low_shelf"));
+            Assert.That(ButtonFor(c, "books_top").icon.sprite.name, Is.EqualTo("icon_books"));
 
-            Tap(c, BedroomLowShelf);
+            Tap(c, "low_shelf");
             Assert.That(c.actionBar.IsVisible, Is.False);
             yield return WaitFor(() => student.Pose == StudentPose.Carry && student.IsWalking, "the Student to carry the box");
             Assert.That(box.transform.IsChildOf(student.transform), Is.True, "the box is in the Student's hands");
@@ -1983,27 +1971,9 @@ namespace DisasterSafety.Tests
             var student = c.Student;
             var bed = PropIn(c, "bed");
             var props = new[] { bed, PropIn(c, "box"), PropIn(c, "picture"), PropIn(c, "books"), PropIn(c, "box_placed") };
-            var bedStartX = AnchoredX(bed);
             yield return ReadyToChoose(Level);
 
-            Tap(c, BedroomBedWindow);
-            yield return WaitFor(() => student.Pose == StudentPose.Push, "the Student to push the bed");
-            Assert.That(student.X, Is.EqualTo(229f));
-            Assert.That(student.FacingLeft, Is.True, "the Student pushes the bed toward the window");
-            yield return WaitFor(() => student.bubble.Line == UIStrings.ReactionWait, "the stop");
-            Assert.That(AnchoredX(bed), Is.EqualTo(bedStartX - 8f * student.unitsPerPixel).Within(0.01f),
-                "the bed slid 8 art pixels toward the window");
-            Assert.That(student.X, Is.EqualTo(221f), "the Student steps with the bed, palms on the headboard");
-            Assert.That(student.Pose, Is.EqualTo(StudentPose.Push));
-            yield return FeedbackShown(c);
-            Assert.That(c.feedbackHeading.text, Is.EqualTo(UIStrings.UnsafeHeading));
-            c.tryAgainButton.onClick.Invoke();
-            yield return ActionBarShown(c);
-            Assert.That(AnchoredX(bed), Is.EqualTo(bedStartX), "Try Again slides the bed back");
-            Assert.That(student.X, Is.EqualTo(306f));
-            Assert.That(c.actionBar.buttons[BedroomBedWindow].button.interactable, Is.False);
-
-            Tap(c, BedroomBooksTop);
+            Tap(c, "books_top");
             var books = PropIn(c, "books");
             yield return WaitFor(() => student.Pose == StudentPose.Carry && student.IsWalking && student.FacingLeft,
                 "the Student to carry the books left to the cabinet");
@@ -2014,7 +1984,7 @@ namespace DisasterSafety.Tests
             c.tryAgainButton.onClick.Invoke();
             yield return ActionBarShown(c);
 
-            Tap(c, BedroomPicture);
+            Tap(c, "picture");
             yield return WaitFor(() => student.Pose == StudentPose.ReachUp, "the Student to reach up over the bed");
             Assert.That(student.X, Is.EqualTo(140f));
             Assert.That(PropIn(c, "picture").AtStart, Is.False);
@@ -2026,7 +1996,7 @@ namespace DisasterSafety.Tests
             Assert.That(student.X, Is.EqualTo(306f));
             Assert.That(student.Pose, Is.EqualTo(StudentPose.Idle));
             Assert.That(c.Attempt.Phase, Is.EqualTo(AttemptPhase.Choosing));
-            Assert.That(c.actionBar.buttons[BedroomLowShelf].button.interactable, Is.True);
+            Assert.That(ButtonFor(c, "low_shelf").button.interactable, Is.True);
         }
 
         [UnityTest]
@@ -2112,7 +2082,7 @@ namespace DisasterSafety.Tests
             var c = Level();
             yield return ReadyToChoose(Level);
 
-            Tap(c, Cabinet);
+            Tap(c, "door");
             yield return WaitFor(() => c.Student.IsWalking, "the Student to walk");
             yield return Wait(0.3f);
             c.pauseButton.onClick.Invoke();
@@ -2141,7 +2111,7 @@ namespace DisasterSafety.Tests
 
             // First try, no Hint: 3 Stars.
             var c = Level();
-            yield return ChooseAndWait(c, Desk);
+            yield return ChooseAndWait(c, "desk");
             c.finishButton.onClick.Invoke();
             yield return Wait(0.4f);
             Assert.That(c.LastResult.Stars, Is.EqualTo(3));
@@ -2154,10 +2124,10 @@ namespace DisasterSafety.Tests
             yield return ReadyToChoose(Level);
             c = Level();
             Assert.That(c.Attempt.UnsafeChoices, Is.EqualTo(0), "Replay starts a new Attempt");
-            yield return ChooseAndWait(c, Window);
+            yield return ChooseAndWait(c, "door");
             c.tryAgainButton.onClick.Invoke();
             yield return ActionBarShown(c);
-            yield return ChooseAndWait(c, Desk);
+            yield return ChooseAndWait(c, "desk");
             c.finishButton.onClick.Invoke();
             yield return Wait(0.4f);
             Assert.That(c.LastResult.Stars, Is.EqualTo(2));
@@ -2180,14 +2150,14 @@ namespace DisasterSafety.Tests
             var c = Level();
 
             // Pause freezes the scene; Resume continues the same Attempt.
-            yield return ChooseAndWait(c, Run);
+            yield return ChooseAndWait(c, "door");
             c.tryAgainButton.onClick.Invoke();
             yield return ActionBarShown(c);
             c.pauseButton.onClick.Invoke();
             yield return Wait(0.4f);
             Assert.That(c.IsPaused, Is.True);
             Assert.That(Time.timeScale, Is.EqualTo(0f));
-            Tap(c, Desk);
+            Tap(c, "desk");
             Assert.That(c.Attempt.Phase, Is.EqualTo(AttemptPhase.Choosing), "Choices wait while paused");
             c.resumeButton.onClick.Invoke();
             yield return Wait(0.4f);
