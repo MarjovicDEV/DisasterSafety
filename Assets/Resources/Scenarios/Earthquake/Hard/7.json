@@ -30,7 +30,6 @@
         {
             "id": "go_home",
             "label": "Go home now to get things",
-            "picture": "choice_go_home",
             "icon": "icon_go_home",
             "action": "go_home",
             "safe": false,
@@ -44,7 +43,6 @@
         {
             "id": "radio",
             "label": "Listen to the radio for news",
-            "picture": "choice_radio",
             "icon": "icon_radio",
             "action": "radio",
             "safe": true,
@@ -57,7 +55,6 @@
         {
             "id": "rumor",
             "label": "Share news you heard from others",
-            "picture": "choice_rumor",
             "icon": "icon_rumor",
             "action": "rumor",
             "safe": false,
@@ -69,7 +66,6 @@
         {
             "id": "phone",
             "label": "Call friends on the phone all day",
-            "picture": "choice_phone_all_day",
             "icon": "icon_phone_all_day",
             "action": "phone_all_day",
             "safe": false,

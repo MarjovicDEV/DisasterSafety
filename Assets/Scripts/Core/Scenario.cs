@@ -17,7 +17,7 @@ namespace DisasterSafety.Core
         /// <summary>Art key for the scene picture, e.g. "classroom".</summary>
         public string setting;
         public TextLine goal;
-        /// <summary>Bantay's opening line. A story line, so it may have no source.</summary>
+        /// <summary>The opening line shown in the Caption. A story line, so it may have no source.</summary>
         public TextLine intro;
         public TextLine hint;
         /// <summary>The short explanation shown on Level Completed.</summary>
@@ -58,7 +58,7 @@ namespace DisasterSafety.Core
         /// <summary>True when every Choice has an action: the Student acts it out (Action Bar and Caption).</summary>
         public bool UsesActions => ChoicesWithAction > 0 && ChoicesWithAction == choices.Length;
 
-        /// <summary>How many Choices name an action spot. A Scenario must have all of them or none.</summary>
+        /// <summary>How many Choices name an action spot. ScenarioRules requires an action on every Choice.</summary>
         public int ChoicesWithAction
         {
             get
@@ -86,11 +86,9 @@ namespace DisasterSafety.Core
     {
         public string id;
         public string label;
-        /// <summary>Art key for the card picture and the Feedback picture.</summary>
-        public string picture;
-        /// <summary>Art key of the 16x16 Action Bar icon, e.g. "icon_desk". Empty in a Scenario without actions.</summary>
+        /// <summary>Art key of the 16x16 Action Bar icon, e.g. "icon_desk".</summary>
         public string icon;
-        /// <summary>Key of the action spot in the Setting the Student walks to, e.g. "desk". Empty in a Scenario without actions.</summary>
+        /// <summary>Key of the action spot in the Setting the Student acts out, e.g. "desk".</summary>
         public string action;
         public bool safe;
         /// <summary>Optional Feedback heading, e.g. "Not safe yet". Empty uses "Safe!" or "Not safe".</summary>

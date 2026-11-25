@@ -81,23 +81,11 @@ namespace DisasterSafety.Tests
         }
 
         [Test]
-        public void EveryChoicePicture_HasArt()
-        {
-            foreach (var path in Files())
-            foreach (var choice in Load(path).choices)
-            {
-                var picture = "Assets/Art/Level/" + choice.picture + ".png";
-                Assert.That(File.Exists(picture), Is.True, path + ": missing " + picture);
-            }
-        }
-
-        [Test]
-        public void EveryNewFlowIcon_HasArt()
+        public void EveryChoiceIcon_HasArt()
         {
             foreach (var path in Files())
             {
                 var s = Load(path);
-                if (!s.UsesActions) continue;
                 foreach (var choice in s.choices)
                 {
                     var icon = "Assets/Art/UI/" + choice.icon + ".png";
@@ -107,7 +95,7 @@ namespace DisasterSafety.Tests
         }
 
         [Test]
-        public void OnlyTheMovedLevels_UseTheStudentFlow()
+        public void AllEarthquakeLevels_UseTheStudentFlow()
         {
             var levels = Files().Select(Load).Where(s => s.UsesActions).Select(s => s.level).OrderBy(l => l).ToList();
             Assert.That(levels, Is.EqualTo(new[]
@@ -118,12 +106,6 @@ namespace DisasterSafety.Tests
                 "Earthquake/Normal/1", "Earthquake/Normal/2", "Earthquake/Normal/3", "Earthquake/Normal/4",
                 "Earthquake/Normal/5",
             }));
-            foreach (var path in Files())
-            {
-                var s = Load(path);
-                if (s.UsesActions) continue;
-                Assert.That(s.ChoicesWithAction, Is.EqualTo(0), path + " must use the old flow, with no action on any Choice");
-            }
         }
 
         [Test]
@@ -162,7 +144,6 @@ namespace DisasterSafety.Tests
             Assert.That(s.choices.Select(c => c.action), Is.EqualTo(new[] { "stay", "walk", "push" }));
             Assert.That(s.choices.Select(c => c.icon), Is.EqualTo(new[] { "icon_stay", "icon_teacher_walk", "icon_push" }));
             Assert.That(s.SafeChoice.id, Is.EqualTo("walk"));
-            Assert.That(s.choices.Select(c => c.picture), Is.EqualTo(new[] { "choice_stay", "choice_walk", "choice_push" }));
             Assert.That(s.choices.Select(c => c.label), Is.EqualTo(new[]
             {
                 "Stay under the desk", "Walk out with your teacher", "Run and push to the door",
@@ -193,8 +174,6 @@ namespace DisasterSafety.Tests
             Assert.That(s.choices.Select(c => c.icon),
                 Is.EqualTo(new[] { "icon_picture", "icon_low_shelf", "icon_bed", "icon_books" }));
             Assert.That(s.SafeChoice.id, Is.EqualTo("low_shelf"));
-            Assert.That(s.choices.Select(c => c.picture),
-                Is.EqualTo(new[] { "choice_picture_bed", "choice_low_shelf", "choice_bed_window", "choice_books_top" }));
             // The rollout changes no Scenario text (docs/specs/earthquake-rollout.md, Data).
             Assert.That(s.choices.Select(c => c.label), Is.EqualTo(new[]
             {
@@ -233,8 +212,6 @@ namespace DisasterSafety.Tests
             Assert.That(s.choices.Select(c => c.icon),
                 Is.EqualTo(new[] { "icon_pack_later", "icon_bag_hidden", "icon_go_bag", "icon_snack_toy" }));
             Assert.That(s.SafeChoice.id, Is.EqualTo("go_bag"));
-            Assert.That(s.choices.Select(c => c.picture),
-                Is.EqualTo(new[] { "choice_pack_later", "choice_bag_hidden", "choice_go_bag", "choice_bag_toys" }));
             Assert.That(s.goal.text, Is.EqualTo("Get your go bag ready."));
             Assert.That(s.intro.text, Is.EqualTo("Your family is packing a go bag. Let's help!"));
             Assert.That(s.hint.text, Is.EqualTo("Think of what you need for 3 days."));
@@ -273,8 +250,6 @@ namespace DisasterSafety.Tests
             Assert.That(s.choices.Select(c => c.icon),
                 Is.EqualTo(new[] { "icon_door", "icon_glass_cabinet", "icon_sofa", "icon_strong_table" }));
             Assert.That(s.SafeChoice.id, Is.EqualTo("table"));
-            Assert.That(s.choices.Select(c => c.picture),
-                Is.EqualTo(new[] { "choice_run_home", "choice_glass_cabinet", "choice_sofa", "choice_table" }));
             Assert.That(s.goal.text, Is.EqualTo("Stay safe when the ground shakes at home."));
             Assert.That(s.intro.text, Is.EqualTo("You are in the living room. The ground is shaking!"));
             Assert.That(s.hint.text, Is.EqualTo("Is there something strong to hide under?"));
@@ -313,8 +288,6 @@ namespace DisasterSafety.Tests
             Assert.That(s.choices.Select(c => c.icon),
                 Is.EqualTo(new[] { "icon_own_way", "icon_meet_park", "icon_meet_house", "icon_phone_numbers" }));
             Assert.That(s.SafeChoice.id, Is.EqualTo("meeting_place"));
-            Assert.That(s.choices.Select(c => c.picture),
-                Is.EqualTo(new[] { "choice_own_way", "choice_meeting_place", "choice_meet_home", "choice_phone_numbers" }));
             Assert.That(s.goal.text, Is.EqualTo("Make a family plan for earthquakes."));
             Assert.That(s.intro.text, Is.EqualTo("Your family is making an earthquake plan. Join in!"));
             Assert.That(s.hint.text, Is.EqualTo("Where will your family meet after it shakes?"));
@@ -359,8 +332,6 @@ namespace DisasterSafety.Tests
             Assert.That(s.choices.Select(c => c.icon),
                 Is.EqualTo(new[] { "icon_tree", "icon_field", "icon_building", "icon_post" }));
             Assert.That(s.SafeChoice.id, Is.EqualTo("field"));
-            Assert.That(s.choices.Select(c => c.picture),
-                Is.EqualTo(new[] { "choice_tree", "choice_open_field", "choice_building", "choice_post" }));
             Assert.That(s.goal.text, Is.EqualTo("Stay safe when it shakes outside."));
             Assert.That(s.goal.sources, Is.EqualTo(new[] { "EQ-80" }));
             Assert.That(s.intro.text, Is.EqualTo("It is recess. You are outside when the ground shakes!"));
@@ -412,8 +383,6 @@ namespace DisasterSafety.Tests
             Assert.That(s.choices.Select(c => c.icon),
                 Is.EqualTo(new[] { "icon_fish", "icon_watch_waves", "icon_high_ground", "icon_wait_beach" }));
             Assert.That(s.SafeChoice.id, Is.EqualTo("high_ground"));
-            Assert.That(s.choices.Select(c => c.picture),
-                Is.EqualTo(new[] { "choice_fish", "choice_watch_waves", "choice_high_ground", "choice_wait_beach" }));
             Assert.That(s.goal.text, Is.EqualTo("Stay safe near the sea after a strong earthquake."));
             Assert.That(s.goal.sources, Is.EqualTo(new[] { "EQ-84" }));
             Assert.That(s.intro.text, Is.EqualTo("You are at the beach. The shaking stopped. The sea is going out!"));
@@ -463,8 +432,6 @@ namespace DisasterSafety.Tests
             Assert.That(s.choices.Select(c => c.icon),
                 Is.EqualTo(new[] { "icon_route_post", "icon_route_tree", "icon_route_field", "icon_route_later" }));
             Assert.That(s.SafeChoice.id, Is.EqualTo("route_field"));
-            Assert.That(s.choices.Select(c => c.picture),
-                Is.EqualTo(new[] { "choice_route_post", "choice_route_tree", "choice_route_field", "choice_route_later" }));
             Assert.That(s.goal.text, Is.EqualTo("Know your way out of school."));
             Assert.That(s.goal.sources, Is.EqualTo(new[] { "EQ-53", "EQ-54" }));
             Assert.That(s.intro.text, Is.EqualTo("Your class is learning the evacuation route today."));
@@ -517,8 +484,6 @@ namespace DisasterSafety.Tests
             Assert.That(s.choices.Select(c => c.icon),
                 Is.EqualTo(new[] { "icon_door", "icon_elevator", "icon_shop_window", "icon_strong_table" }));
             Assert.That(s.SafeChoice.id, Is.EqualTo("table"));
-            Assert.That(s.choices.Select(c => c.picture),
-                Is.EqualTo(new[] { "choice_run_exit", "choice_elevator_during", "choice_shop_window", "choice_food_court_table" }));
             Assert.That(s.goal.text,
                 Is.EqualTo("Stay safe when it shakes at the mall."));
             Assert.That(s.goal.sources, Is.EqualTo(new[] { "EQ-16" }));
@@ -574,8 +539,6 @@ namespace DisasterSafety.Tests
             Assert.That(s.choices.Select(c => c.icon),
                 Is.EqualTo(new[] { "icon_stairs", "icon_elevator", "icon_run_push", "icon_mall_wall" }));
             Assert.That(s.SafeChoice.id, Is.EqualTo("stairs"));
-            Assert.That(s.choices.Select(c => c.picture),
-                Is.EqualTo(new[] { "choice_mall_stairs", "choice_elevator_after", "choice_run_push", "choice_mall_wall" }));
             Assert.That(s.goal.text,
                 Is.EqualTo("Leave the mall safely after the shaking."));
             Assert.That(s.goal.sources, Is.EqualTo(new[] { "EQ-92" }));
@@ -637,8 +600,6 @@ namespace DisasterSafety.Tests
             Assert.That(s.choices.Select(c => c.icon), Is.Unique);
             Assert.That(s.choices.Select(c => c.icon),
                 Is.EqualTo(new[] { "icon_pull_up", "icon_call_adult", "icon_fix_pipe", "icon_door" }));
-            Assert.That(s.choices.Select(c => c.picture),
-                Is.EqualTo(new[] { "choice_pull_up", "choice_call_adult", "choice_fix_pipe", "choice_leave_hurt" }));
             Assert.That(s.goal.text, Is.EqualTo("Help when someone is hurt after an earthquake."));
             Assert.That(s.goal.sources, Is.EqualTo(new[] { "EQ-90" }));
             Assert.That(s.intro.text, Is.EqualTo("The shaking stopped. Someone in your family hurt their leg."));
@@ -706,8 +667,6 @@ namespace DisasterSafety.Tests
             Assert.That(s.choices.Select(c => c.icon), Is.Unique);
             Assert.That(s.choices.Select(c => c.icon),
                 Is.EqualTo(new[] { "icon_no_go_bag", "icon_toy_car", "icon_no_note", "icon_go_bag" }));
-            Assert.That(s.choices.Select(c => c.picture),
-                Is.EqualTo(new[] { "choice_no_go_bag", "choice_back_for_toys", "choice_no_note", "choice_go_bag_out" }));
             Assert.That(s.goal.text, Is.EqualTo("Leave home safely after the earthquake."));
             Assert.That(s.goal.sources, Is.EqualTo(new[] { "EQ-92" }));
             Assert.That(s.intro.text, Is.EqualTo("Your family must leave the house. What do you bring?"));
@@ -761,8 +720,6 @@ namespace DisasterSafety.Tests
                 Is.EqualTo(new[] { "icon_go_home", "icon_radio", "icon_rumor", "icon_phone_all_day" }));
             foreach (var icon in s.choices.Select(c => c.icon))
                 Assert.That(File.Exists("Assets/Art/UI/" + icon + ".png"), Is.True, icon + " has art");
-            Assert.That(s.choices.Select(c => c.picture),
-                Is.EqualTo(new[] { "choice_go_home", "choice_radio", "choice_rumor", "choice_phone_all_day" }));
             Assert.That(s.goal.text, Is.EqualTo("Stay safe at the evacuation area."));
             Assert.That(s.goal.sources, Is.EqualTo(new[] { "EQ-54" }));
             Assert.That(s.intro.text, Is.EqualTo("You are at the evacuation area. Your family is here!"));
@@ -813,7 +770,7 @@ namespace DisasterSafety.Tests
         {
             foreach (var path in Files())
             {
-                var background = "Assets/Art/Level/bg_" + Load(path).setting + ".png";
+                var background = "Assets/Art/Level/v2/bg_" + Load(path).setting + ".png";
                 Assert.That(File.Exists(background), Is.True, path + ": missing " + background);
             }
         }

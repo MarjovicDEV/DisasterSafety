@@ -13,7 +13,6 @@
         {
             "id": "stay",
             "label": "Stay under the desk",
-            "picture": "choice_stay",
             "icon": "icon_stay",
             "action": "stay",
             "safe": false,
@@ -24,7 +23,6 @@
         {
             "id": "walk",
             "label": "Walk out with your teacher",
-            "picture": "choice_walk",
             "icon": "icon_teacher_walk",
             "action": "walk",
             "safe": true,
@@ -34,7 +32,6 @@
         {
             "id": "push",
             "label": "Run and push to the door",
-            "picture": "choice_push",
             "icon": "icon_push",
             "action": "push",
             "safe": false,

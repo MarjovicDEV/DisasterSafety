@@ -13,7 +13,6 @@
         {
             "id": "run",
             "label": "Run outside",
-            "picture": "choice_run",
             "icon": "icon_door",
             "action": "door",
             "safe": false,
@@ -24,7 +23,6 @@
         {
             "id": "desk",
             "label": "Duck under the desk",
-            "picture": "choice_desk",
             "icon": "icon_desk",
             "action": "desk",
             "safe": true,
@@ -34,7 +32,6 @@
         {
             "id": "window",
             "label": "Go to the window",
-            "picture": "choice_window",
             "icon": "icon_window",
             "action": "window",
             "safe": false,
@@ -44,7 +41,6 @@
         {
             "id": "cabinet",
             "label": "Stand by the tall cabinet",
-            "picture": "choice_cabinet",
             "icon": "icon_cabinet",
             "action": "cabinet",
             "safe": false,

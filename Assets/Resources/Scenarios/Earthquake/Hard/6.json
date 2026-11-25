@@ -31,7 +31,6 @@
         {
             "id": "no_go_bag",
             "label": "Leave without the go bag",
-            "picture": "choice_no_go_bag",
             "icon": "icon_no_go_bag",
             "action": "no_go_bag",
             "safe": false,
@@ -45,7 +44,6 @@
         {
             "id": "toys",
             "label": "Run back in for your toys",
-            "picture": "choice_back_for_toys",
             "icon": "icon_toy_car",
             "action": "toys",
             "safe": false,
@@ -60,7 +58,6 @@
         {
             "id": "no_note",
             "label": "Leave without a note",
-            "picture": "choice_no_note",
             "icon": "icon_no_note",
             "action": "no_note",
             "safe": false,
@@ -73,7 +70,6 @@
         {
             "id": "go_bag",
             "label": "Grab the go bag and walk out",
-            "picture": "choice_go_bag_out",
             "icon": "icon_go_bag",
             "action": "go_bag",
             "safe": true,

@@ -29,7 +29,6 @@
         {
             "id": "own_way",
             "label": "Each of us finds our own way",
-            "picture": "choice_own_way",
             "icon": "icon_own_way",
             "action": "own_way",
             "safe": false,
@@ -43,7 +42,6 @@
         {
             "id": "meeting_place",
             "label": "Agree on a meeting place",
-            "picture": "choice_meeting_place",
             "icon": "icon_meet_park",
             "action": "meeting_place",
             "safe": true,
@@ -56,7 +54,6 @@
         {
             "id": "meet_home",
             "label": "Plan to meet back at home",
-            "picture": "choice_meet_home",
             "icon": "icon_meet_house",
             "action": "meet_home",
             "safe": false,
@@ -69,7 +66,6 @@
         {
             "id": "phone_numbers",
             "label": "Keep numbers only in the phone",
-            "picture": "choice_phone_numbers",
             "icon": "icon_phone_numbers",
             "action": "phone_numbers",
             "safe": false,

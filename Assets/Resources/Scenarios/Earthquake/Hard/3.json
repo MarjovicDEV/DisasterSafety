@@ -30,7 +30,6 @@
         {
             "id": "run_exit",
             "label": "Run to the mall exit",
-            "picture": "choice_run_exit",
             "icon": "icon_door",
             "action": "run_exit",
             "safe": false,
@@ -45,7 +44,6 @@
         {
             "id": "elevator",
             "label": "Ride the elevator down",
-            "picture": "choice_elevator_during",
             "icon": "icon_elevator",
             "action": "elevator",
             "safe": false,
@@ -57,7 +55,6 @@
         {
             "id": "shop_window",
             "label": "Stand by the glass shop window",
-            "picture": "choice_shop_window",
             "icon": "icon_shop_window",
             "action": "shop_window",
             "safe": false,
@@ -70,7 +67,6 @@
         {
             "id": "table",
             "label": "Duck under the food court table",
-            "picture": "choice_food_court_table",
             "icon": "icon_strong_table",
             "action": "table",
             "safe": true,

@@ -29,7 +29,6 @@
         {
             "id": "stairs",
             "label": "Walk down the stairs and out",
-            "picture": "choice_mall_stairs",
             "icon": "icon_stairs",
             "action": "stairs",
             "safe": true,
@@ -43,7 +42,6 @@
         {
             "id": "elevator",
             "label": "Take the elevator down",
-            "picture": "choice_elevator_after",
             "icon": "icon_elevator",
             "action": "elevator",
             "safe": false,
@@ -55,7 +53,6 @@
         {
             "id": "run_push",
             "label": "Run and push to get out",
-            "picture": "choice_run_push",
             "icon": "icon_run_push",
             "action": "run_push",
             "safe": false,
@@ -69,7 +66,6 @@
         {
             "id": "mall_wall",
             "label": "Wait by the mall wall outside",
-            "picture": "choice_mall_wall",
             "icon": "icon_mall_wall",
             "action": "mall_wall",
             "safe": false,

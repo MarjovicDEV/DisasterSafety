@@ -29,7 +29,6 @@
         {
             "id": "picture",
             "label": "Hang a big picture over the bed",
-            "picture": "choice_picture_bed",
             "icon": "icon_picture",
             "action": "picture",
             "safe": false,
@@ -41,7 +40,6 @@
         {
             "id": "low_shelf",
             "label": "Put heavy things on a low shelf",
-            "picture": "choice_low_shelf",
             "icon": "icon_low_shelf",
             "action": "low_shelf",
             "safe": true,
@@ -53,7 +51,6 @@
         {
             "id": "bed_window",
             "label": "Move the bed under the window",
-            "picture": "choice_bed_window",
             "icon": "icon_bed",
             "action": "bed_window",
             "safe": false,
@@ -66,7 +63,6 @@
         {
             "id": "books_top",
             "label": "Put books on top of the tall cabinet",
-            "picture": "choice_books_top",
             "icon": "icon_books",
             "action": "books_top",
             "safe": false,

@@ -30,7 +30,6 @@
         {
             "id": "tree",
             "label": "Hide under the big tree",
-            "picture": "choice_tree",
             "icon": "icon_tree",
             "action": "tree",
             "safe": false,
@@ -42,7 +41,6 @@
         {
             "id": "field",
             "label": "Go to the open field",
-            "picture": "choice_open_field",
             "icon": "icon_field",
             "action": "field",
             "safe": true,
@@ -55,7 +53,6 @@
         {
             "id": "building",
             "label": "Run back into the building",
-            "picture": "choice_building",
             "icon": "icon_building",
             "action": "building",
             "safe": false,
@@ -69,7 +66,6 @@
         {
             "id": "post",
             "label": "Stand by the electric post",
-            "picture": "choice_post",
             "icon": "icon_post",
             "action": "post",
             "safe": false,

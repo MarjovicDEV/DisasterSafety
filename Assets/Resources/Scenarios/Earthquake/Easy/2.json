@@ -13,7 +13,6 @@
         {
             "id": "stairs",
             "label": "Run down the stairs",
-            "picture": "choice_stairs",
             "icon": "icon_stairs",
             "action": "stairs",
             "safe": false,
@@ -24,7 +23,6 @@
         {
             "id": "window",
             "label": "Stand by the window",
-            "picture": "choice_hall_window",
             "icon": "icon_window",
             "action": "window",
             "safe": false,
@@ -34,7 +32,6 @@
         {
             "id": "cover",
             "label": "Duck and cover your head",
-            "picture": "choice_cover",
             "icon": "icon_cover",
             "action": "cover",
             "safe": true,
@@ -44,7 +41,6 @@
         {
             "id": "plants",
             "label": "Stand under the hanging plants",
-            "picture": "choice_plants",
             "icon": "icon_plants",
             "action": "plants",
             "safe": false,

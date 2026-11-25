@@ -28,7 +28,6 @@
         {
             "id": "pull_up",
             "label": "Pull them up to walk",
-            "picture": "choice_pull_up",
             "icon": "icon_pull_up",
             "action": "pull_up",
             "safe": false,
@@ -41,7 +40,6 @@
         {
             "id": "call_adult",
             "label": "Call a grown-up for help",
-            "picture": "choice_call_adult",
             "icon": "icon_call_adult",
             "action": "call_adult",
             "safe": true,
@@ -54,7 +52,6 @@
         {
             "id": "fix_pipe",
             "label": "Fix the broken pipe yourself",
-            "picture": "choice_fix_pipe",
             "icon": "icon_fix_pipe",
             "action": "fix_pipe",
             "safe": false,
@@ -67,7 +64,6 @@
         {
             "id": "leave",
             "label": "Leave them and go outside",
-            "picture": "choice_leave_hurt",
             "icon": "icon_door",
             "action": "leave",
             "safe": false,

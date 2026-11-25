@@ -28,7 +28,6 @@
         {
             "id": "later",
             "label": "Pack it later, when it shakes",
-            "picture": "choice_pack_later",
             "icon": "icon_pack_later",
             "action": "later",
             "safe": false,
@@ -42,7 +41,6 @@
         {
             "id": "hidden",
             "label": "Hide it under the boxes",
-            "picture": "choice_bag_hidden",
             "icon": "icon_bag_hidden",
             "action": "hidden",
             "safe": false,
@@ -54,7 +52,6 @@
         {
             "id": "go_bag",
             "label": "Pack water, food, a flashlight and a whistle",
-            "picture": "choice_go_bag",
             "icon": "icon_go_bag",
             "action": "go_bag",
             "safe": true,
@@ -67,7 +64,6 @@
         {
             "id": "toys",
             "label": "Pack only snacks and toys",
-            "picture": "choice_bag_toys",
             "icon": "icon_snack_toy",
             "action": "toys",
             "safe": false,
