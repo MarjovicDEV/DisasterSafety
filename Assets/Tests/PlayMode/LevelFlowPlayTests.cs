@@ -6,6 +6,8 @@ using DisasterSafety.Game;
 using DisasterSafety.Game.UI;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
@@ -2095,9 +2097,37 @@ namespace DisasterSafety.Tests
             Assert.That(c.Student.Pose, Is.EqualTo(pose));
             Assert.That(c.Student.CurrentSprite, Is.SameAs(sprite), "the walk animation stops too");
 
-            c.resumeButton.onClick.Invoke();
-            yield return Wait(0.5f);
-            Assert.That(c.Student.X, Is.Not.EqualTo(x), "the Student walks on after Resume");
+            // Batch mode has no focused Game view to receive the simulated Android Back key.
+#if UNITY_EDITOR
+            var settings = InputSystem.settings;
+            var previousFocus = settings.editorInputBehaviorInPlayMode;
+            var previousBackground = settings.backgroundBehavior;
+            var ranInBackground = Application.runInBackground;
+            Application.runInBackground = true;
+            settings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
+            settings.editorInputBehaviorInPlayMode = InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
+#endif
+            var keyboard = InputSystem.AddDevice<Keyboard>();
+            try
+            {
+                InputSystem.QueueStateEvent(keyboard, new KeyboardState(Key.Escape));
+                yield return WaitFor(() => !c.IsPaused, "Android Back to resume the Act-out");
+                InputSystem.QueueStateEvent(keyboard, new KeyboardState());
+                yield return WaitFor(() => c.Student.X != x, "the Student to continue the same walk");
+                InputSystem.QueueStateEvent(keyboard, new KeyboardState(Key.Escape));
+                yield return WaitFor(() => c.IsPaused, "Android Back to open Pause again");
+                c.resumeButton.onClick.Invoke();
+                yield return FeedbackShown(c);
+            }
+            finally
+            {
+                InputSystem.RemoveDevice(keyboard);
+#if UNITY_EDITOR
+                settings.editorInputBehaviorInPlayMode = previousFocus;
+                settings.backgroundBehavior = previousBackground;
+                Application.runInBackground = ranInBackground;
+#endif
+            }
         }
 
         [UnityTest]
@@ -2136,33 +2166,89 @@ namespace DisasterSafety.Tests
         }
 
         [UnityTest]
-        public IEnumerator Pause_ResumeRestartAndQuit_KeepSavedProgress()
+        public IEnumerator Pause_Hard4_ShowsCurrentLevelAndFourButtonsInTwoRows()
+        {
+            yield return StartRolloutLevel(new LevelId(Episode.Earthquake, Difficulty.Hard, 4));
+            var c = Level();
+            yield return ReadyToChoose(Level);
+            c.pauseButton.onClick.Invoke();
+            yield return Wait(0.4f);
+            Canvas.ForceUpdateCanvases();
+
+            var panel = c.pausePanel;
+            Assert.That(panel.IsVisible, Is.True);
+            var labels = Array.ConvertAll(panel.GetComponentsInChildren<Text>(), label => label.text);
+            Assert.That(labels, Does.Contain("Earthquake - Hard 4"));
+            var buttons = panel.GetComponentsInChildren<Button>();
+            Assert.That(buttons.Length, Is.EqualTo(4));
+
+            // Read the controls as a Learner would, top to bottom and left to right.
+            Array.Sort(buttons, (left, right) =>
+            {
+                var a = left.transform.position;
+                var b = right.transform.position;
+                return a.y == b.y ? a.x.CompareTo(b.x) : b.y.CompareTo(a.y);
+            });
+            var names = new[] { "RESUME", "RESTART", "LEVELS", "MAIN MENU" };
+            var icons = new[] { "icon_play", "icon_replay", "icon_levels", "icon_home" };
+            var bounds = new Bounds[4];
+            for (var i = 0; i < buttons.Length; i++)
+            {
+                var button = buttons[i];
+                var label = button.GetComponentInChildren<Text>();
+                Assert.That(label.text, Is.EqualTo(names[i]));
+                Assert.That(button.IsInteractable() && button.targetGraphic.raycastTarget, Is.True, names[i]);
+                Assert.That(Array.Exists(button.GetComponentsInChildren<Image>(),
+                    image => image.sprite != null && image.sprite.name == icons[i]), Is.True, names[i]);
+                Assert.That(label.preferredWidth, Is.LessThanOrEqualTo(label.rectTransform.rect.width + 1f), names[i]);
+                bounds[i] = RectTransformUtility.CalculateRelativeRectTransformBounds(panel.transform, button.transform);
+            }
+            Assert.That(bounds[0].center.y, Is.EqualTo(bounds[1].center.y).Within(1f));
+            Assert.That(bounds[2].center.y, Is.EqualTo(bounds[3].center.y).Within(1f));
+            Assert.That(bounds[0].min.y, Is.GreaterThan(bounds[2].max.y));
+            Assert.That(bounds[0].max.x, Is.LessThan(bounds[1].min.x));
+            Assert.That(bounds[2].max.x, Is.LessThan(bounds[3].min.x));
+
+            buttons[2].onClick.Invoke();
+            yield return WaitForScene(GameScenes.MainMenu);
+            var menu = Menu();
+            Assert.That(menu.levelPanel.IsVisible, Is.True);
+            Assert.That(menu.levelHeader.text, Is.EqualTo("Earthquake - Hard"));
+            Assert.That(Time.timeScale, Is.EqualTo(1f));
+        }
+
+        [UnityTest]
+        public IEnumerator Pause_Hard4_ResumeRestartAndMainMenu_KeepSavedProgress()
         {
             // Saved Progress from an earlier session.
+            var hard4 = new LevelId(Episode.Earthquake, Difficulty.Hard, 4);
             GameServices.Initialize(dir);
+            GameServices.Progress.Open(hard4.Episode, hard4.Difficulty);
             GameServices.Progress.SetDisplayName("Ana");
-            GameServices.Progress.RecordCompletion(First, 3);
+            GameServices.Progress.RecordCompletion(hard4, 3);
             GameServices.SaveProgress();
 
-            SceneManager.LoadScene(GameScenes.Level);
+            GameScenes.PlayLevel(hard4);
             yield return WaitForScene(GameScenes.Level);
             yield return ReadyToChoose(Level);
             var c = Level();
 
             // Pause freezes the scene; Resume continues the same Attempt.
-            yield return ChooseAndWait(c, "door");
+            var attempt = c.Attempt;
+            yield return ChooseAndWait(c, "elevator");
             c.tryAgainButton.onClick.Invoke();
             yield return ActionBarShown(c);
             c.pauseButton.onClick.Invoke();
             yield return Wait(0.4f);
             Assert.That(c.IsPaused, Is.True);
             Assert.That(Time.timeScale, Is.EqualTo(0f));
-            Tap(c, "desk");
+            Tap(c, "stairs");
             Assert.That(c.Attempt.Phase, Is.EqualTo(AttemptPhase.Choosing), "Choices wait while paused");
             c.resumeButton.onClick.Invoke();
             yield return Wait(0.4f);
             Assert.That(c.IsPaused, Is.False);
             Assert.That(Time.timeScale, Is.EqualTo(1f));
+            Assert.That(c.Attempt, Is.SameAs(attempt));
             Assert.That(c.Attempt.UnsafeChoices, Is.EqualTo(1), "Resume keeps the Attempt");
 
             // Restart reloads the Level as a new Attempt and keeps saved progress.
@@ -2174,10 +2260,12 @@ namespace DisasterSafety.Tests
             yield return WaitForScene(GameScenes.Level);
             yield return ReadyToChoose(Level);
             c = Level();
+            Assert.That(c.Level, Is.EqualTo(hard4));
+            Assert.That(c.Attempt, Is.Not.SameAs(attempt));
             Assert.That(c.Attempt.UnsafeChoices, Is.EqualTo(0));
-            Assert.That(SavedOnDisk().StarsFor(First), Is.EqualTo(3));
+            Assert.That(SavedOnDisk().StarsFor(hard4), Is.EqualTo(3));
 
-            // Quit to Menu returns through the Continue check: Continue is on.
+            // Main Menu returns to the title screen with Continue available.
             c.pauseButton.onClick.Invoke();
             yield return Wait(0.4f);
             c.quitButton.onClick.Invoke();
@@ -2186,7 +2274,7 @@ namespace DisasterSafety.Tests
             var m = Menu();
             Assert.That(m.mainPanel.IsVisible, Is.True);
             Assert.That(m.continueButton.interactable, Is.True);
-            Assert.That(SavedOnDisk().StarsFor(First), Is.EqualTo(3));
+            Assert.That(SavedOnDisk().StarsFor(hard4), Is.EqualTo(3));
         }
     }
 }

@@ -5,6 +5,7 @@
         "DisasterSafety.Core",
         "DisasterSafety.Game",
         "UnityEngine.UI",
+        "Unity.InputSystem",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],
