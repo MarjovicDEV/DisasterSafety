@@ -217,11 +217,11 @@ namespace DisasterSafety.EditorTools
             student.SetKind(StudentKind.Boy);
             student.bubble.Hide();
 
-            void Stand(float x, StudentPose pose, bool faceLeft = false)
+            void Stand(float x, StudentPose pose, bool faceLeft = false, int frame = 0)
             {
                 student.PlaceAt(x);
                 student.Face(faceLeft);
-                student.ShowFrame(pose, 0);
+                student.ShowFrame(pose, frame);
             }
 
             Stand(setting.startX, setting.startPose);
@@ -236,15 +236,32 @@ namespace DisasterSafety.EditorTools
             placed.gameObject.SetActive(false);
             box.gameObject.SetActive(true);
 
-            var reach = setting.ActOutFor("books_top");
-            var place = Array.Find(reach.steps, step => step.kind == ActOutStepKind.PropPlace);
-            var start = ((RectTransform)books.transform).anchoredPosition;
-            books.Place(place.place);
-            Stand(reach.StopX(setting.startX), reach.stopPose, faceLeft: true);
-            student.bubble.Say(UIStrings.ReactionWait);
-            shot("n1-stop", Array.Empty<ScreenPanel>());
-            books.Place(start);
-            student.bubble.Hide();
+            // An Unsafe stop that reaches up: the prop put where the Act-out puts it, the Student at the stop on
+            // the given reach-up frame, with the Reaction when one is given. The prop goes back afterwards.
+            void ReachUpStop(string name, LevelProp prop, string action, bool faceLeft, int frame, string reaction)
+            {
+                var actOut = setting.ActOutFor(action);
+                var put = Array.Find(actOut.steps, step => step.kind == ActOutStepKind.PropPlace);
+                var from = ((RectTransform)prop.transform).anchoredPosition;
+                prop.Place(put.place);
+                Stand(actOut.StopX(setting.startX), actOut.stopPose, faceLeft, frame);
+                if (reaction != null) student.bubble.Say(reaction);
+                shot(name, Array.Empty<ScreenPanel>());
+                prop.Place(from);
+                student.bubble.Hide();
+            }
+            ReachUpStop("n1-stop", books, "books_top", true, 0, UIStrings.ReactionWait);
+
+            // The peak reach-up frame for both Students (C7): the picture held over the bed facing right
+            // and the books held at the cabinet facing left (n1-picture-peak-*, n1-books-peak-*).
+            foreach (var kind in new[] { StudentKind.Boy, StudentKind.Girl })
+            {
+                student.SetKind(kind);
+                var suffix = "-" + kind.ToString().ToLowerInvariant();
+                ReachUpStop("n1-picture-peak" + suffix, Prop("picture"), "picture", false, 1, null);
+                ReachUpStop("n1-books-peak" + suffix, books, "books_top", true, 1, null);
+            }
+            student.SetKind(StudentKind.Boy);
         }
 
         // Easy 2 in the corridor (e2-*): the Action Bar, the last Safe step (cover at the inner wall) and
