@@ -575,6 +575,7 @@ namespace DisasterSafety.EditorTools
             var setting = group.gameObject.AddComponent<LevelSetting>();
             setting.key = ScenarioSettings.ActionArtKey(ScenarioSettings.Schoolyard);
             setting.artAnchorY = 0f;
+            setting.retraceActOutOnRetry = true;
             var background = S("Level/v2/bg_schoolyard");
             ArtImage(group, "Backing", background, 0, 0);
             var shaking = Stretch(Rect("Shaking", group));
@@ -602,7 +603,7 @@ namespace DisasterSafety.EditorTools
             {
                 new LevelStart
                 {
-                    level = "Earthquake/Normal/4", x = 302f, cast = recess.gameObject,
+                    level = "Earthquake/Normal/4", x = 190f, cast = recess.gameObject,
                     reactionPosition = new Vector2(124f, 8f),
                 },
                 new LevelStart
@@ -624,14 +625,15 @@ namespace DisasterSafety.EditorTools
             {
                 new ActOut
                 {
-                    key = "tree", stopAfter = 0, steps = new[] { ActOutStep.Walk(320f, floorY - 199f) },
+                    key = "tree", stopAfter = 1,
+                    steps = new[] { ActOutStep.Walk(287f), ActOutStep.Walk(320f, floorY - 199f) },
                 },
                 new ActOut
                 {
-                    key = "field",
+                    key = "field", placeReaction = true, reactionPosition = new Vector2(124f, -76f),
                     steps = new[]
                     {
-                        ActOutStep.Walk(110f),
+                        ActOutStep.Walk(30f),
                         ActOutStep.Face(left: true),
                         ActOutStep.Pose(StudentPose.Crouch, 0.28f),
                         ActOutStep.Pose(StudentPose.Cover, 1f),
@@ -640,7 +642,7 @@ namespace DisasterSafety.EditorTools
                 },
                 new ActOut
                 {
-                    key = "building", stopAfter = 0, steps = new[] { ActOutStep.Run(260f) },
+                    key = "building", stopAfter = 0, steps = new[] { ActOutStep.Run(207f, floorY - 236f) },
                 },
                 new ActOut
                 {
@@ -652,11 +654,13 @@ namespace DisasterSafety.EditorTools
                 },
                 new ActOut
                 {
-                    key = "route_field",
+                    key = "route_field", placeReaction = true, reactionPosition = new Vector2(192f, 8f),
                     steps = new[]
                     {
-                        ActOutStep.WalkWith(teacher, 170f, 0f, new Vector2(142f, floorY - 225f)),
-                        ActOutStep.WalkWith(teacher, 133f, floorY - 198f, new Vector2(101f, floorY - 183f)),
+                        ActOutStep.GrownUpWalk(teacher, 217f, floorY - 243f),
+                        ActOutStep.Walk(251f, floorY - 243f),
+                        ActOutStep.WalkWith(teacher, 94f, floorY - 243f, new Vector2(60f, floorY - 243f)),
+                        ActOutStep.WalkWith(teacher, 84f, floorY - 210f, new Vector2(52f, floorY - 206f)),
                         ActOutStep.GrownUpPoseStep(teacher, GrownUpPose.Wave),
                     },
                 },
