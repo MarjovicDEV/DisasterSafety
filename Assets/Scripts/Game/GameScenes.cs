@@ -23,7 +23,14 @@ namespace DisasterSafety.Game
         public static void ToMainMenu()
         {
             Time.timeScale = 1f;
-            GameServices.MenuOpensLevelSelect = null;
+            GameServices.MenuDestination = null;
+            SceneManager.LoadScene(MainMenu);
+        }
+
+        public static void ToEpisodeSelect(Episode episode)
+        {
+            Time.timeScale = 1f;
+            GameServices.MenuDestination = (episode, null);
             SceneManager.LoadScene(MainMenu);
         }
 
@@ -31,7 +38,7 @@ namespace DisasterSafety.Game
         public static void ToLevelSelect(Episode episode, Difficulty difficulty)
         {
             Time.timeScale = 1f;
-            GameServices.MenuOpensLevelSelect = (episode, difficulty);
+            GameServices.MenuDestination = (episode, difficulty);
             SceneManager.LoadScene(MainMenu);
         }
     }

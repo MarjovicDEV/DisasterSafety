@@ -33,11 +33,8 @@ namespace DisasterSafety.Game
         /// <summary>The Level the Level scene plays. Set by Level Selection before loading it.</summary>
         public static LevelId CurrentLevel { get; set; } = new LevelId(Episode.Earthquake, Difficulty.Easy, 1);
 
-        /// <summary>
-        /// Set by Level Completed's "Levels" button: the Main Menu opens straight on Level
-        /// Selection for this Episode and Difficulty, then clears it.
-        /// </summary>
-        public static (Episode, Difficulty)? MenuOpensLevelSelect { get; set; }
+        /// <summary>A one-time menu destination. A Difficulty opens Level selection; an Episode alone opens Episode selection.</summary>
+        public static (Episode Episode, Difficulty? Difficulty)? MenuDestination { get; set; }
 
         public const string ScenarioFolder = "Scenarios";
 
@@ -53,7 +50,7 @@ namespace DisasterSafety.Game
             PreservedSavePath = null;
             Scenarios = ScenarioLibrary.Empty;
             CurrentLevel = new LevelId(Episode.Earthquake, Difficulty.Easy, 1);
-            MenuOpensLevelSelect = null;
+            MenuDestination = null;
         }
 
         /// <param name="saveDirectory">Folder for save.json. Defaults to Application.persistentDataPath; tests pass a temp folder.</param>

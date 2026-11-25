@@ -33,6 +33,19 @@ namespace DisasterSafety.Tests
         public void StartsOnMainMenu() => Assert.That(nav.Current, Is.EqualTo(MenuScreen.Main));
 
         [Test]
+        public void EpisodeShortcut_OpensTheNoticeboardForAnOpenEpisodeAndBackReturnsToMain()
+        {
+            Assert.That(nav.OpenEpisodeSelect(Episode.Fire), Is.False);
+            state.EarthquakeDone = true;
+            Assert.That(nav.OpenEpisodeSelect(Episode.Fire), Is.True);
+            Assert.That(nav.Current, Is.EqualTo(MenuScreen.EpisodeSelect));
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.Noticeboard));
+            Assert.That(nav.SelectedEpisode, Is.EqualTo(Episode.Fire));
+            nav.Back();
+            Assert.That(nav.Current, Is.EqualTo(MenuScreen.Main));
+        }
+
+        [Test]
         public void Play_WithoutName_AsksForName()
         {
             nav.Play();
