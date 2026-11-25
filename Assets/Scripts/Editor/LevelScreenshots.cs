@@ -112,6 +112,8 @@ namespace DisasterSafety.EditorTools
 
             SetWobblers(s.Shakes);
             shot(prefix + "-actionbar", new[] { c.actionBar.panel });
+            if (difficulty == Difficulty.Hard && number == 4)
+                shot("h4-pause", new[] { c.actionBar.panel, c.dimmer, c.pausePanel });
 
             void Outcome(string suffix, ActOut act, bool safe)
             {
@@ -414,7 +416,7 @@ namespace DisasterSafety.EditorTools
             if (!scenarios.TryGet(level, out var scenario))
                 throw new InvalidOperationException($"Cannot capture Level screenshots. '{level.Key}' has no Playable Level.");
             c.ShowSetting(ScenarioSettings.ActionArtKey(scenario.setting));
-            c.levelLabel.text = UIStrings.LevelLabel(level);
+            c.SetLevelLabels(level);
             return scenario;
         }
 
