@@ -131,6 +131,9 @@ namespace DisasterSafety.Game
         public const string Restart = "RESTART";
         public const string QuitToMenu = "QUIT TO MENU";
         public const string PauseBody = "Stars you earned are kept.";
+        public const string PauseMainMenu = "MAIN MENU";
+        public static string PauseLevel(LevelId id) =>
+            EpisodeName(id.Episode) + " - " + DifficultyName(id.Difficulty) + " " + id.Number;
 
         public const string SafeHeading = "Safe!";
         public const string UnsafeHeading = "Not safe";
