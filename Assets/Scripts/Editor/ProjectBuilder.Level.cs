@@ -285,8 +285,9 @@ namespace DisasterSafety.EditorTools
             setting.startX = 306f;
             setting.startPose = StudentPose.Idle;
 
-            // The reach-up hands are about (28, 3) in the frame: art x 152 at x 140 facing right, and
-            // art x 259 at x 272 facing left, both at art y 183. The prop is held up just above them.
+            // The reach-up palms are columns 22-25 and 27-30 of the frame: art x 146-154 at x 140 facing right,
+            // and art x 257-265 at x 272 facing left. Both props are placed with their bottom row at art y 183,
+            // which the fingertips touch on frame 1 and overlap by 1 pixel on frame 2.
             setting.actOuts = new[]
             {
                 // Pick up the picture under the window, carry it to the bed and reach up toward the wall over it.
