@@ -19,7 +19,6 @@ namespace DisasterSafety.Game
         public AudioClip type;
         public AudioClip toggle;
         public AudioClip sparkle;
-        public AudioClip bark;
         public AudioClip soon;
         public AudioClip rumble;
         public AudioClip safe;
@@ -46,7 +45,6 @@ namespace DisasterSafety.Game
                 case Sfx.Type: return type;
                 case Sfx.Toggle: return toggle;
                 case Sfx.Sparkle: return sparkle;
-                case Sfx.Bark: return bark;
                 case Sfx.Soon: return soon;
                 case Sfx.Rumble: return rumble;
                 case Sfx.Safe: return safe;

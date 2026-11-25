@@ -22,7 +22,6 @@ MonoBehaviour:
   type: {fileID: 8300000, guid: 898d089ca5462b8418492bf9da135e7d, type: 3}
   toggle: {fileID: 8300000, guid: 816ca3f500c2d1646b9d6d565aeaf4b3, type: 3}
   sparkle: {fileID: 8300000, guid: e61606b71b1bd4a4ea181316fc0e87a0, type: 3}
-  bark: {fileID: 8300000, guid: 23bdaf16f12cce5488e06652e75cd144, type: 3}
   soon: {fileID: 8300000, guid: d8a9d5dfe596f6e439f2cdb76c8de58c, type: 3}
   rumble: {fileID: 8300000, guid: 37af5a0eeb974c941ae0d8cf004272c9, type: 3}
   safe: {fileID: 8300000, guid: 7f1b7fff44bf53e4d8f8e0ace866dca0, type: 3}

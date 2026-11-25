@@ -14,7 +14,6 @@ namespace DisasterSafety.Game
         Type,
         Toggle,
         Sparkle,
-        Bark,
         Soon,
         Rumble,
         Safe,

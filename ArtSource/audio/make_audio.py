@@ -200,11 +200,6 @@ def make_sfx():
     s["sfx_toggle"] = seq(sweep(880, 880, 0.04, square, 0.3, 0.25), sweep(1320, 1320, 0.05, square, 0.3, 0.25))
     s["sfx_sparkle"] = mix(*[[0.0] * int(k * 0.05 * RATE) + sweep(note_freq(n), note_freq(n), 0.25, triangle, 0.25, decay=0.08)
                              for k, n in enumerate(["E6", "G6", "C7"])])
-    # "arf": quick downward sweep with a little growl
-    arf = sweep(900, 380, 0.12, square, 0.4, 0.4)
-    rnd = random.Random(3)
-    s["sfx_bark"] = seq([v * (0.8 + 0.2 * rnd.random()) for v in arf], silence(0.05),
-                        [v * 0.8 for v in sweep(950, 420, 0.1, square, 0.4, 0.4)])
     s["sfx_soon"] = seq(sweep(note_freq("G5"), note_freq("G5"), 0.08, triangle, 0.4), sweep(note_freq("E5"), note_freq("E5"), 0.14, triangle, 0.4))
 
     # Level sounds -------------------------------------------------------

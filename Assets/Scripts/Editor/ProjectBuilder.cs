@@ -141,7 +141,6 @@ namespace DisasterSafety.EditorTools
             lib.type = Clip("Sfx/sfx_type");
             lib.toggle = Clip("Sfx/sfx_toggle");
             lib.sparkle = Clip("Sfx/sfx_sparkle");
-            lib.bark = Clip("Sfx/sfx_bark");
             lib.soon = Clip("Sfx/sfx_soon");
             lib.rumble = Clip("Sfx/sfx_rumble");
             lib.safe = Clip("Sfx/sfx_safe");
