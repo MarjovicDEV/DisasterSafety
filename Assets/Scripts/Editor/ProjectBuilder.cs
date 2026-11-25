@@ -546,8 +546,8 @@ namespace DisasterSafety.EditorTools
             c.levelBack = BackButton(page);
         }
 
-        // The Learner's Student on the Main Menu, in Bantay's old corner (bottom right). Its speech bubble is
-        // wide enough for the longest menu line in f4, and sits above and to the left, as Bantay's did.
+        // The Learner's Student on the Main Menu, in the bottom right corner. Its speech bubble is
+        // wide enough for the longest menu line in f4, and sits above and to the left.
         static MenuStudent BuildMenuStudent(RectTransform ui)
         {
             const float scale = 1.25f;
@@ -571,55 +571,6 @@ namespace DisasterSafety.EditorTools
             var student = actor.gameObject.AddComponent<MenuStudent>();
             student.actor = actor;
             return student;
-        }
-
-        // Bantay (the card flow in the Level scene only, until the cleanup) ---------------------------
-        static BantayGuide BuildBantay(RectTransform ui)
-        {
-            var frames = Frames("Characters/bantay", 4);
-            var r = Rect("Bantay", ui);
-            r.anchorMin = r.anchorMax = new Vector2(1f, 0f);
-            r.pivot = new Vector2(1f, 0f);
-            r.sizeDelta = new Vector2(frames[0].rect.width * Px, frames[0].rect.height * Px);
-            r.anchoredPosition = new Vector2(-40f, 20f);
-
-            var body = Stretch(Rect("Body", r));
-            var bodyImg = Img(body, frames[0], Color.white, raycast: true);
-
-            var bubbleR = Rect("Bubble", r);
-            bubbleR.anchorMin = bubbleR.anchorMax = new Vector2(0.5f, 1f);
-            bubbleR.pivot = new Vector2(0.9f, 0f);
-            bubbleR.sizeDelta = new Vector2(620f, 120f);
-            bubbleR.anchoredPosition = new Vector2(-10f, 12f);
-            var bubblePanel = Panel(bubbleR, ScreenPanel.Style.Pop);
-            Img(bubbleR, S("UI/bubble"), Color.white, sliced: true);
-            var v = bubbleR.gameObject.AddComponent<VerticalLayoutGroup>();
-            v.padding = new RectOffset(32, 32, 28, 36);
-            v.childControlHeight = v.childControlWidth = true;
-            v.childForceExpandHeight = false;
-            var fit = bubbleR.gameObject.AddComponent<ContentSizeFitter>();
-            fit.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-
-            var textR = Rect("Text", bubbleR);
-            var text = Label(textR, string.Empty, f4, Ink, TextAnchor.MiddleLeft, shadow: false);
-            text.horizontalOverflow = HorizontalWrapMode.Wrap;
-
-            var tail = S("UI/bubble_tail");
-            var tailR = Rect("Tail", bubbleR);
-            var le = tailR.gameObject.AddComponent<LayoutElement>();
-            le.ignoreLayout = true;
-            tailR.anchorMin = tailR.anchorMax = new Vector2(0.9f, 0f);
-            tailR.pivot = new Vector2(0.5f, 1f);
-            tailR.sizeDelta = new Vector2(tail.rect.width * Px, tail.rect.height * Px);
-            tailR.anchoredPosition = new Vector2(0f, 8f);
-            Img(tailR, tail, Color.white);
-
-            var guide = r.gameObject.AddComponent<BantayGuide>();
-            guide.frames = frames;
-            guide.body = bodyImg;
-            guide.bubble = bubblePanel;
-            guide.bubbleText = text;
-            return guide;
         }
 
         // Dialogs ---------------------------------------------------------------------------

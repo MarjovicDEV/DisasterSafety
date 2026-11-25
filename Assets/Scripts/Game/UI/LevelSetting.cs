@@ -23,15 +23,11 @@ namespace DisasterSafety.Game.UI
     {
         public string key;
         public SceneShaker shaker;
-        public bool alignArtTop;
-        [Tooltip("Where the art sits on a screen wider than 16:9: 0 aligns its bottom, 1 its top. Ignored when alignArtTop is set.")]
+        [Tooltip("Where the art sits on a screen wider than 16:9: 0 aligns its bottom, 1 its top.")]
         [Range(0f, 1f)] public float artAnchorY = 0.5f;
-        public bool compactChoicesOnWideScreens;
-        public float guidanceOffsetX;
-        public Vector2 goalPosition = new Vector2(0f, -24f);
         public Font captionGoalFont;
 
-        [Header("Student (the new flow)")]
+        [Header("Student")]
         public StudentActor student;
         [Tooltip("Where the Student starts: the centre x and the height above the floor line, in art pixels.")]
         public float startX;

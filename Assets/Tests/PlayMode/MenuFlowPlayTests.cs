@@ -297,7 +297,7 @@ namespace DisasterSafety.Tests
             Assert.That(student.Frames, Is.SameAs(student.girl));
         }
 
-        // The Student replaces Bantay on the menus (ticket 13) ----------------------------------------
+        // The Student on the menus (ticket 13) -------------------------------------------------------------
 
         static StudentActor Named(string name) =>
             Array.Find(UnityEngine.Object.FindObjectsByType<StudentActor>(FindObjectsInactive.Include, FindObjectsSortMode.None),
@@ -316,7 +316,7 @@ namespace DisasterSafety.Tests
         }
 
         [UnityTest]
-        public IEnumerator MainMenu_FreshInstall_ShowsTheBoyStudentAndNoBantay()
+        public IEnumerator MainMenu_FreshInstall_ShowsTheBoyStudent()
         {
             yield return BootToMenu();
             var student = MenuStudent();
@@ -324,8 +324,6 @@ namespace DisasterSafety.Tests
             Assert.That(student.gameObject.activeInHierarchy, Is.True);
             Assert.That(student.Kind, Is.EqualTo(StudentKind.Boy), "the boy shows until a pick exists");
             Assert.That(student.CurrentSprite.name, Does.StartWith("boy_"));
-            var dogs = UnityEngine.Object.FindObjectsByType<BantayGuide>(FindObjectsSortMode.None);
-            Assert.That(dogs, Is.Empty, "no active Bantay on the Main Menu");
         }
 
         [UnityTest]
@@ -414,15 +412,6 @@ namespace DisasterSafety.Tests
             Assert.That(c.tutorial.frames, Has.Length.EqualTo(14));
             Assert.That(c.tutorial.frames, Has.None.Null, "every page has two frames");
             Assert.That(c.tutorial.dots, Has.Length.EqualTo(7));
-        }
-
-        [UnityTest]
-        public IEnumerator Menus_UseNoBantaySprite()
-        {
-            yield return BootToMenu();
-            var images = UnityEngine.Object.FindObjectsByType<Image>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-            var bantay = Array.FindAll(images, i => i.sprite != null && i.sprite.name.StartsWith("bantay"));
-            Assert.That(Array.ConvertAll(bantay, i => i.name), Is.Empty, "no menu object shows Bantay");
         }
 
         [UnityTest]

@@ -9,7 +9,7 @@ using UnityEngine;
 namespace DisasterSafety.EditorTools
 {
     /// <summary>
-    /// Renders the Level scene's screens (playing, Hint, both Feedback cards, Pause, Level
+    /// Renders the Level scene's screens (the Student's Act-outs, Feedback, Pause, Level
     /// Completed) to PNG without entering Play mode, filled with authored Earthquake Scenarios.
     /// Runs as part of MenuScreenshots.Capture. For layout review only.
     /// </summary>
@@ -26,97 +26,40 @@ namespace DisasterSafety.EditorTools
             canvas.planeDistance = 5f;
 
             var scenarios = GameServices.LoadScenarios();
-            var s = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Easy, 1));
-
-            var all = new[] { c.choicesPanel, c.dimmer, c.feedbackPanel, c.completedPanel, c.pausePanel, c.bantay.bubble, c.cheerBantay.bubble, c.actionBar.panel };
+            var all = new[] { c.dimmer, c.feedbackPanel, c.completedPanel, c.pausePanel, c.actionBar.panel };
 
             void Shot(string name, params ScreenPanel[] show)
             {
                 foreach (var p in all) p.gameObject.SetActive(Array.IndexOf(show, p) >= 0);
                 foreach (var size in MenuScreenshots.Sizes)
-                {
-                    c.choicesLayout?.Apply((float)size.x / size.y);
                     MenuScreenshots.Render(cam, canvas, size, Path.Combine(dir, name + "-" + size.x + "x" + size.y + ".png"));
-                }
             }
 
-            c.bantay.bubbleText.text = s.intro.text;
-            Shot("10-level", c.choicesPanel, c.bantay.bubble);
+            // Easy 1: Pause over the Action Bar, then Level Completed with the Display Name.
+            var s = StartStudentLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Easy, 1), StudentKind.Boy);
+            Shot("14-pause", c.actionBar.panel, c.dimmer, c.pausePanel);
+            CompletedWithStudent(c, s, 2, UIStrings.LevelCompletedHeadline("Niño"));
+            Shot("15-level-completed", c.dimmer, c.completedPanel);
+            c.completedBubble.Hide();
 
-            c.bantay.bubbleText.text = UIStrings.HintLine(s.hint.text);
-            Shot("11-level-hint", c.choicesPanel, c.bantay.bubble);
-
-            // An Unsafe Choice (the window), then the Safe Choice.
-            var window = ChoiceIndex(s, "window");
-            c.choiceCards[window].SetTried(true);
-            Feedback(c, s.choices[window]);
-            Shot("12-feedback-unsafe", c.choicesPanel, c.dimmer, c.feedbackPanel);
-
-            Feedback(c, s.SafeChoice);
-            Shot("13-feedback-safe", c.choicesPanel, c.dimmer, c.feedbackPanel);
-
-            Shot("14-pause", c.choicesPanel, c.dimmer, c.pausePanel);
-
-            c.choiceCards[window].SetTried(false);
-            c.cheerBantay.bubbleText.text = UIStrings.LevelCompletedHeadline("Niño");
-            Completed(c, s, 2);
-            Shot("15-level-completed", c.dimmer, c.completedPanel, c.cheerBantay.bubble);
-
-            var corridor = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Easy, 2));
-            c.bantay.bubbleText.text = corridor.intro.text;
-            Shot("20-level2", c.choicesPanel, c.bantay.bubble);
-
-            Feedback(c, corridor.SafeChoice);
-            Shot("21-level2-feedback-safe", c.choicesPanel, c.dimmer, c.feedbackPanel);
-
-            var normalShots = new[] { "40-normal1", "41-normal2", "42-normal3", "43-normal4", "44-normal5" };
-            Scenario normal = null;
-            for (var i = 0; i < normalShots.Length; i++)
-            {
-                normal = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Normal, i + 1));
-                c.bantay.bubbleText.text = normal.intro.text;
-                Shot(normalShots[i], c.choicesPanel, c.bantay.bubble);
-            }
-
-            // Normal 5 (the beach): an Unsafe Choice, then Level Completed opening Hard.
-            var fish = ChoiceIndex(normal, "fish");
-            c.choiceCards[fish].SetTried(true);
-            Feedback(c, normal.choices[fish]);
-            Shot("45-normal5-feedback-unsafe", c.choicesPanel, c.dimmer, c.feedbackPanel);
-            c.choiceCards[fish].SetTried(false);
-
+            // Normal 5 (the beach): Level Completed opening Hard.
+            var normal = StartStudentLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Normal, 5), StudentKind.Boy);
             var hardName = UIStrings.DifficultyName(Difficulty.Hard);
             c.openedText.text = UIStrings.Opened(hardName);
             c.openedRibbon.SetActive(true);
-            c.cheerBantay.bubbleText.text = LevelController.OpenedLine(hardName, Episode.Earthquake, Difficulty.Hard, scenarios.Playable);
-            Completed(c, normal, 3);
-            Shot("46-level-completed-hard-open", c.dimmer, c.completedPanel, c.cheerBantay.bubble);
+            CompletedWithStudent(c, normal, 3, LevelController.OpenedLine(hardName, Episode.Earthquake, Difficulty.Hard, scenarios.Playable));
+            Shot("46-level-completed-hard-open", c.dimmer, c.completedPanel);
+            c.completedBubble.Hide();
             c.openedRibbon.SetActive(false);
 
-            var hardShots = new[] { "50-hard1", "51-hard2", "52-hard3", "53-hard4", "54-hard5", "55-hard6", "56-hard7" };
-            for (var i = 0; i < hardShots.Length; i++)
-            {
-                var hard = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Hard, i + 1));
-                c.bantay.bubbleText.text = hard.intro.text;
-                Shot(hardShots[i], c.choicesPanel, c.bantay.bubble);
-            }
-
-            // Hard 3 (the mall food court): an Unsafe Choice.
-            var mall = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Hard, 3));
-            var elevator = ChoiceIndex(mall, "elevator");
-            c.choiceCards[elevator].SetTried(true);
-            Feedback(c, mall.choices[elevator]);
-            Shot("57-hard3-feedback-unsafe", c.choicesPanel, c.dimmer, c.feedbackPanel);
-            c.choiceCards[elevator].SetTried(false);
-
             // Hard 7 (the Evacuation Area): Level Completed opening Fire, which has no Playable Level yet.
-            var evacuation = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Hard, 7));
+            var evacuation = StartStudentLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Hard, 7), StudentKind.Boy);
             var fireName = UIStrings.EpisodeName(Episode.Fire);
             c.openedText.text = UIStrings.Opened(fireName);
             c.openedRibbon.SetActive(true);
-            c.cheerBantay.bubbleText.text = LevelController.OpenedLine(fireName, Episode.Fire, Difficulty.Easy, scenarios.Playable);
-            Completed(c, evacuation, 3);
-            Shot("58-level-completed-fire-open", c.dimmer, c.completedPanel, c.cheerBantay.bubble);
+            CompletedWithStudent(c, evacuation, 3, LevelController.OpenedLine(fireName, Episode.Fire, Difficulty.Easy, scenarios.Playable));
+            Shot("58-level-completed-fire-open", c.dimmer, c.completedPanel);
+            c.completedBubble.Hide();
             c.openedRibbon.SetActive(false);
 
             CaptureStudentFlow(c, scenarios, Shot);
@@ -398,6 +341,7 @@ namespace DisasterSafety.EditorTools
             c.UseStudentLayout();
             c.captionGoal.text = s.goal.text;
             c.captionBody.text = s.intro.text;
+            c.FitCaption();
             c.actionBar.Setup(s, _ => { });
 
             var setting = c.ActiveSetting;
@@ -460,7 +404,6 @@ namespace DisasterSafety.EditorTools
         static void Completed(LevelController c, Scenario scenario, int stars)
         {
             var safe = scenario.SafeChoice;
-            c.safePicture.sprite = Picture(c, safe.picture);
             c.safeChoiceText.text = UIStrings.SafeChoiceLine(safe.label);
             c.lessonText.text = scenario.lesson.text;
             c.stars.ShowInstant(stars);
@@ -470,17 +413,32 @@ namespace DisasterSafety.EditorTools
         {
             if (!scenarios.TryGet(level, out var scenario))
                 throw new InvalidOperationException($"Cannot capture Level screenshots. '{level.Key}' has no Playable Level.");
-            c.ShowSetting(scenario.setting);
-
-            c.goalText.text = scenario.goal.text;
+            c.ShowSetting(ScenarioSettings.ActionArtKey(scenario.setting));
             c.levelLabel.text = UIStrings.LevelLabel(level);
-            for (var i = 0; i < c.choiceCards.Length; i++)
-            {
-                var used = i < scenario.choices.Length;
-                c.choiceCards[i].gameObject.SetActive(used);
-                if (used) c.choiceCards[i].Show(scenario.choices[i], Picture(c, scenario.choices[i].picture));
-            }
             return scenario;
+        }
+
+        // A Level at its start in the Student flow: the Caption, the Action Bar and the Student in place.
+        static Scenario StartStudentLevel(LevelController c, ScenarioLibrary scenarios, LevelId level, StudentKind kind)
+        {
+            var s = PrepareLevel(c, scenarios, level);
+            c.UseStudentLayout();
+            c.captionGoal.text = s.goal.text;
+            c.captionBody.text = s.intro.text;
+            c.FitCaption();
+            c.actionBar.Setup(s, _ => { });
+            c.ActiveSetting.PrepareStudentStart(s.level, kind);
+            c.ActiveSetting.student.bubble.Hide();
+            return s;
+        }
+
+        // Level Completed in the Student flow: the happy Student and the cheer line in its bubble.
+        static void CompletedWithStudent(LevelController c, Scenario scenario, int stars, string line)
+        {
+            Completed(c, scenario, stars);
+            c.completedStudent.SetKind(StudentKind.Boy);
+            c.completedStudent.ShowFrame(StudentPose.Happy, 0);
+            c.completedBubble.Say(line, -1f);
         }
 
         static int ChoiceIndex(Scenario scenario, string id)
@@ -489,24 +447,6 @@ namespace DisasterSafety.EditorTools
             if (index < 0)
                 throw new InvalidOperationException($"Cannot capture Level screenshots. Scenario '{scenario.level}' is missing Choice '{id}'.");
             return index;
-        }
-
-        static void Feedback(LevelController c, ScenarioChoice choice)
-        {
-            c.feedbackBanner.sprite = choice.safe ? c.safeBanner : c.unsafeBanner;
-            c.feedbackHeading.text = !string.IsNullOrEmpty(choice.heading) ? choice.heading
-                : choice.safe ? UIStrings.SafeHeading : UIStrings.UnsafeHeading;
-            c.feedbackPicture.sprite = Picture(c, choice.picture);
-            c.feedbackText.text = choice.feedback;
-            c.tryAgainButton.gameObject.SetActive(!choice.safe);
-            c.finishButton.gameObject.SetActive(choice.safe);
-        }
-
-        static Sprite Picture(LevelController c, string key)
-        {
-            foreach (var p in c.pictures)
-                if (p != null && p.name == key) return p;
-            return null;
         }
     }
 }

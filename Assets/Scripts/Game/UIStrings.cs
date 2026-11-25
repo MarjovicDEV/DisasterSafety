@@ -155,8 +155,6 @@ namespace DisasterSafety.Game
             EpisodeName(id.Episode) + " - " + DifficultyName(id.Difficulty) + " - " + id.Number;
 
         public static string HintLine(string hint) => "Hint: " + hint;
-        public const string BantayThinkAgain = "Let's think again together!";
-        public const string BantayHintReady = "Need help? Tap HINT!";
 
         // The Student's Reactions in a Level. They never judge a Choice and never mention Stars.
         public const string ReactionWhoa = "Whoa!";
@@ -168,7 +166,5 @@ namespace DisasterSafety.Game
         public const string ActOutHelp = "Help!";
         /// <summary>The Act-out line of Hard 7's rumor Choice, said to the neighbours (spec item 7).</summary>
         public const string ActOutDidYouHear = "Did you hear...?";
-        public static string BantayCheer(string name) =>
-            string.IsNullOrEmpty(name) ? "Woof woof! Great job!" : "Woof woof! Great job, " + name + "!";
     }
 }

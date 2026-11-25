@@ -19,25 +19,6 @@ namespace DisasterSafety.EditorTools
     {
         public const string LevelScenePath = "Assets/Scenes/Level.unity";
 
-        static readonly string[] ChoicePictureNames =
-        {
-            "choice_desk", "choice_run", "choice_window", "choice_cabinet",
-            "choice_cover", "choice_stairs", "choice_hall_window", "choice_plants",
-            "choice_walk", "choice_push", "choice_stay",
-            "choice_low_shelf", "choice_picture_bed", "choice_bed_window", "choice_books_top",
-            "choice_go_bag", "choice_pack_later", "choice_bag_hidden", "choice_bag_toys",
-            "choice_table", "choice_run_home", "choice_glass_cabinet", "choice_sofa",
-            "choice_open_field", "choice_tree", "choice_post", "choice_building",
-            "choice_high_ground", "choice_fish", "choice_watch_waves", "choice_wait_beach",
-            "choice_meeting_place", "choice_own_way", "choice_meet_home", "choice_phone_numbers",
-            "choice_route_field", "choice_route_post", "choice_route_tree", "choice_route_later",
-            "choice_food_court_table", "choice_run_exit", "choice_elevator_during", "choice_shop_window",
-            "choice_mall_stairs", "choice_elevator_after", "choice_run_push", "choice_mall_wall",
-            "choice_call_adult", "choice_pull_up", "choice_leave_hurt", "choice_fix_pipe",
-            "choice_go_bag_out", "choice_back_for_toys", "choice_no_go_bag", "choice_no_note",
-            "choice_radio", "choice_go_home", "choice_rumor", "choice_phone_all_day",
-        };
-
         static void BuildLevelScene()
         {
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
@@ -69,9 +50,6 @@ namespace DisasterSafety.EditorTools
 
             c.settings = new[]
             {
-                BuildClassroom(world), BuildCorridor(world), BuildClassroomAfter(world),
-                BuildBedroom(world), BuildHome(world), BuildSchoolyard(world), BuildBeach(world),
-                BuildMallA(world), BuildMallB(world), BuildHomeAfter(world), BuildEvacuationArea(world),
                 BuildClassroomV2(world), BuildCorridorV2(world), BuildClassroomAfterV2(world),
                 BuildBedroomV2(world), BuildHomeV2(world), BuildSchoolyardV2(world), BuildBeachV2(world),
                 BuildMallAV2(world), BuildMallBV2(world), BuildHomeAfterV2(world), BuildEvacuationAreaV2(world),
@@ -83,13 +61,9 @@ namespace DisasterSafety.EditorTools
             ui.gameObject.AddComponent<SafeAreaFitter>();
 
             BuildLevelTopBar(ui, c);
-            BuildChoices(ui, c);
             BuildCaption(ui, c);
             BuildActionBar(ui, c);
-            c.guidance = Stretch(Rect("Guidance", ui));
-            c.bantay = BuildBantay(c.guidance);
-            ((RectTransform)c.bantay.transform).anchoredPosition = new Vector2(-40f, 384f);
-            BuildHintButton(c.guidance, c);
+            BuildHintButton(ui, c);
 
             c.dimmer = Panel(Stretch(Rect("Dimmer", ui)), ScreenPanel.Style.Fade);
             Img(c.dimmer.transform, S("UI/solid"), new Color(Ink.r, Ink.g, Ink.b, 0.6f), raycast: true);
@@ -106,162 +80,9 @@ namespace DisasterSafety.EditorTools
             confetti.layer = effects;
             c.confetti = confetti;
 
-            var pictures = new Sprite[ChoicePictureNames.Length];
-            for (var i = 0; i < pictures.Length; i++) pictures[i] = S("Level/" + ChoicePictureNames[i]);
-            c.pictures = pictures;
-
             EditorUtility.SetDirty(c);
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene, LevelScenePath);
-        }
-
-        static LevelSetting BuildClassroom(RectTransform world)
-        {
-            var setting = BuildSetting(world, ScenarioSettings.Classroom, "Classroom", out var shaking);
-            setting.shaker.wobblers = new[]
-            {
-                BuildLevelAnimation(shaking, "Ceiling Fan", Frames("Level/fan", 2), 204, 0, 6f, onlyWhileShaking: true),
-                BuildLevelAnimation(shaking, "Tall Cabinet", Frames("Level/cabinet", 2), 364, 64, 5f, onlyWhileShaking: true),
-            };
-            return setting;
-        }
-
-        static LevelSetting BuildCorridor(RectTransform world)
-        {
-            var setting = BuildSetting(world, ScenarioSettings.Corridor, "Corridor", out var shaking);
-            // Keep the pots in frame on wide screens and the Goal clear of Bantay's bubble.
-            setting.alignArtTop = true;
-            setting.goalPosition = new Vector2(-212f, -252f);
-            var pots = Frames("Level/pots", 2);
-            setting.shaker.wobblers = new[]
-            {
-                BuildLevelAnimation(shaking, "Hanging Pot Left", pots, 116, 12, 4f, onlyWhileShaking: true),
-                BuildLevelAnimation(shaking, "Hanging Pot Right", pots, 236, 12, 4f, onlyWhileShaking: true),
-            };
-            return setting;
-        }
-
-        static LevelSetting BuildClassroomAfter(RectTransform world)
-        {
-            var setting = BuildSetting(world, ScenarioSettings.ClassroomAfter, "Classroom After", out var foreground);
-            // Keep Bantay and the Hint clear of the teacher in the doorway.
-            setting.guidanceOffsetX = -880f;
-            BuildLevelAnimation(foreground, "Teacher", Frames("Level/teacher", 2), 418, 126, 3f, onlyWhileShaking: false);
-            return setting;
-        }
-
-        static LevelSetting BuildBedroom(RectTransform world)
-        {
-            var setting = BuildSetting(world, ScenarioSettings.Bedroom, "Bedroom", out _);
-            // Stand Bantay and the Hint between the bed and the low shelf, clear of the bookcase.
-            setting.guidanceOffsetX = -760f;
-            setting.compactChoicesOnWideScreens = true;
-            return setting;
-        }
-
-        static LevelSetting BuildHome(RectTransform world)
-        {
-            var setting = BuildSetting(world, ScenarioSettings.Home, "Home", out var shaking);
-            // Keep the Goal off the hanging lamp, and Bantay and the Hint in front of the sofa,
-            // clear of the table, the glass cabinet and the door.
-            setting.goalPosition = new Vector2(-490f, -120f);
-            setting.guidanceOffsetX = -1230f;
-            setting.compactChoicesOnWideScreens = true;
-            setting.shaker.wobblers = new[]
-            {
-                BuildLevelAnimation(shaking, "Hanging Lamp", Frames("Level/lamp", 2), 232, 0, 4f, onlyWhileShaking: true),
-                BuildLevelAnimation(shaking, "Glass Cabinet", Frames("Level/glass_cabinet", 2), 330, 64, 5f, onlyWhileShaking: true),
-            };
-            return setting;
-        }
-
-        static LevelSetting BuildSchoolyard(RectTransform world)
-        {
-            var setting = BuildSetting(world, ScenarioSettings.Schoolyard, "Schoolyard", out var shaking);
-            // Keep the tree clear of the Goal, the post clear of Pause, and the field clear of Bantay.
-            // The tree and post fit above the Choices at three UI units per art pixel.
-            setting.alignArtTop = true;
-            setting.guidanceOffsetX = -1212f;
-            setting.shaker.wobblers = new[]
-            {
-                BuildLevelAnimation(shaking, "Big Tree", Frames("Level/tree", 2), 334, 34, 3f, onlyWhileShaking: true, artScale: 0.75f),
-                BuildLevelAnimation(shaking, "Electric Post", Frames("Level/post", 2), 390, 14, 4f, onlyWhileShaking: true, artScale: 0.75f),
-            };
-            return setting;
-        }
-
-        static LevelSetting BuildBeach(RectTransform world)
-        {
-            var setting = BuildSetting(world, ScenarioSettings.Beach, "Beach", out var foreground);
-            // Nudge the Hint right of the last fish on the sand; the hill path stays clear.
-            setting.guidanceOffsetX = 56f;
-            setting.compactChoicesOnWideScreens = true;
-            BuildLevelAnimation(foreground, "Waves", Frames("Level/waves", 2), 140, 128, 2.5f, onlyWhileShaking: false);
-            return setting;
-        }
-
-        static LevelSetting BuildMallA(RectTransform world)
-        {
-            var setting = BuildSetting(world, ScenarioSettings.MallA, "Mall Food Court", out var shaking);
-            // Stand Bantay and the Hint in front of the food stalls, clear of the tables and the exit.
-            setting.guidanceOffsetX = -120f;
-            setting.compactChoicesOnWideScreens = true;
-            setting.shaker.wobblers = new[]
-            {
-                BuildLevelAnimation(shaking, "Hanging Sign", Frames("Level/mall_sign", 2), 380, 0, 4f, onlyWhileShaking: true),
-                BuildLevelAnimation(shaking, "Glass Display", Frames("Level/shop_display", 2), 66, 112, 5f, onlyWhileShaking: true),
-            };
-            return setting;
-        }
-
-        static LevelSetting BuildMallB(RectTransform world)
-        {
-            var setting = BuildSetting(world, ScenarioSettings.MallB, "Mall Outside", out _);
-            // Stand Bantay and the Hint on the pavement left of the stair, clear of the stair,
-            // the parking area and the waiting family; the bubble may hide the top of the doors.
-            setting.guidanceOffsetX = -960f;
-            setting.compactChoicesOnWideScreens = true;
-            return setting;
-        }
-
-        static LevelSetting BuildHomeAfter(RectTransform world)
-        {
-            var setting = BuildSetting(world, ScenarioSettings.HomeAfter, "Home After", out _);
-            // Bantay and the Hint stand in front of the sofa, as in the home. The Goal keeps the top
-            // centre: the still lamp may sit behind it, and two-line Goals stay clear of Bantay's bubble.
-            setting.guidanceOffsetX = -1230f;
-            setting.compactChoicesOnWideScreens = true;
-            return setting;
-        }
-
-        static LevelSetting BuildEvacuationArea(RectTransform world)
-        {
-            var setting = BuildSetting(world, ScenarioSettings.EvacuationArea, "Evacuation Area", out _);
-            // Stand Bantay and the Hint by the tent, clear of the families, the radio and the go bag.
-            setting.guidanceOffsetX = -40f;
-            setting.compactChoicesOnWideScreens = true;
-            return setting;
-        }
-
-        // A still copy behind the foreground keeps the edges covered during shaking.
-        static LevelSetting BuildSetting(RectTransform world, string key, string name, out RectTransform foreground)
-        {
-            var group = Stretch(Rect(name, world));
-            var setting = group.gameObject.AddComponent<LevelSetting>();
-            setting.key = key;
-            var shakes = ScenarioSettings.CanShake(key);
-
-            var background = S("Level/bg_" + key);
-            ArtImage(group, "Backing", background, 0, 0);
-            foreground = Stretch(Rect(shakes ? "Shaking" : "Still", group));
-            ArtImage(foreground, name, background, 0, 0);
-
-            if (shakes)
-            {
-                setting.shaker = foreground.gameObject.AddComponent<SceneShaker>();
-                setting.shaker.target = foreground;
-            }
-            return setting;
         }
 
         static SpriteAnimator BuildLevelAnimation(RectTransform parent, string name, Sprite[] frames, int x, int y, float fps, bool onlyWhileShaking, float artScale = 1f)
@@ -1603,20 +1424,6 @@ namespace DisasterSafety.EditorTools
             chipText.offsetMax = new Vector2(-16f, 0f);
             c.levelLabel = Label(chipText, string.Empty, f3, Ink, TextAnchor.MiddleCenter, shadow: false);
 
-            // Goal banner, top centre
-            var goal = Rect("Goal", ui);
-            c.goalBanner = goal;
-            goal.anchorMin = goal.anchorMax = new Vector2(0.5f, 1f);
-            goal.pivot = new Vector2(0.5f, 1f);
-            goal.sizeDelta = new Vector2(900f, 120f);
-            goal.anchoredPosition = new Vector2(0f, -24f);
-            Img(goal, S("UI/button_teal"), Color.white, sliced: true);
-            var goalText = Stretch(Rect("Text", goal));
-            goalText.offsetMin = new Vector2(24f, 16f);
-            goalText.offsetMax = new Vector2(-24f, 0f);
-            c.goalText = Label(goalText, string.Empty, f4, Color.white, TextAnchor.MiddleCenter);
-            c.goalText.horizontalOverflow = HorizontalWrapMode.Wrap;
-
             // Pause, top right
             c.pauseButton = MakeButton(ui, "Pause", "blue", null, null, S("Icons/icon_pause"), Sfx.Open);
             var pr = (RectTransform)c.pauseButton.transform;
@@ -1640,80 +1447,6 @@ namespace DisasterSafety.EditorTools
             Object.DestroyImmediate(label.GetComponent<Shadow>());
         }
 
-        static void BuildChoices(RectTransform ui, LevelController c)
-        {
-            var holder = Stretch(Rect("Choices", ui));
-            c.choicesPanel = Panel(holder, ScreenPanel.Style.Slide);
-            // Animate a parent so the Choice row can resize without moving the slide's rest position.
-            var slide = Stretch(Rect("Slide", holder));
-            var row = Rect("Row", slide);
-            row.anchorMin = row.anchorMax = new Vector2(0.5f, 0f);
-            row.pivot = new Vector2(0.5f, 0f);
-            row.sizeDelta = new Vector2(1720f, 340f);
-            row.anchoredPosition = new Vector2(0f, 28f);
-            var layout = row.gameObject.AddComponent<HorizontalLayoutGroup>();
-            layout.spacing = 28f;
-            layout.childAlignment = TextAnchor.MiddleCenter;
-            layout.childControlWidth = layout.childControlHeight = false;
-            layout.childForceExpandWidth = layout.childForceExpandHeight = false;
-            c.choicesPanel.content = slide;
-
-            c.choiceCards = new ChoiceCard[4];
-            for (var i = 0; i < 4; i++)
-            {
-                var b = MakeButton(row, "Choice " + (i + 1), "white", null, null, null, Sfx.Click);
-                var r = (RectTransform)b.transform;
-                r.sizeDelta = new Vector2(400f, 340f);
-                var face = b.GetComponent<PressBounce>().face;
-
-                var picR = Rect("Picture", face);
-                picR.anchorMin = picR.anchorMax = new Vector2(0.5f, 1f);
-                picR.pivot = new Vector2(0.5f, 1f);
-                picR.sizeDelta = new Vector2(72f * Px, 52f * Px);
-                picR.anchoredPosition = new Vector2(0f, -20f);
-                var pic = Img(picR, S("Level/choice_desk"), Color.white);
-
-                var labelR = Rect("Label", face);
-                labelR.anchorMin = labelR.anchorMax = new Vector2(0.5f, 0f);
-                labelR.pivot = new Vector2(0.5f, 0f);
-                labelR.sizeDelta = new Vector2(372f, 96f);
-                labelR.anchoredPosition = new Vector2(0f, 4f);
-                var label = Label(labelR, string.Empty, f4, Ink, TextAnchor.MiddleCenter, shadow: false);
-                label.horizontalOverflow = HorizontalWrapMode.Wrap;
-                label.lineSpacing = 0.9f;
-
-                // Soft grey "Tried" chip for an Unsafe Choice already picked (never a red X).
-                var tried = Rect("Tried", face);
-                tried.anchorMin = tried.anchorMax = new Vector2(1f, 1f);
-                tried.pivot = new Vector2(1f, 1f);
-                tried.sizeDelta = new Vector2(150f, 64f);
-                tried.anchoredPosition = new Vector2(-8f, -8f);
-                Img(tried, S("UI/button_gray"), Color.white, sliced: true);
-                var triedText = Stretch(Rect("Text", tried));
-                triedText.offsetMin = new Vector2(0f, 10f);
-                Label(triedText, UIStrings.Tried, f3, Color.white, TextAnchor.MiddleCenter);
-
-                var card = b.gameObject.AddComponent<ChoiceCard>();
-                card.button = b;
-                card.picture = pic;
-                card.label = label;
-                card.compactLabelFont = f3;
-                card.compactLabelWidth = 384f;
-                card.triedMark = tried.gameObject;
-                card.group = b.gameObject.AddComponent<CanvasGroup>();
-                tried.gameObject.SetActive(false);
-                c.choiceCards[i] = card;
-            }
-
-            c.choicesLayout = holder.gameObject.AddComponent<LevelChoicesLayout>();
-            c.choicesLayout.row = row;
-            c.choicesLayout.cards = c.choiceCards;
-            c.choicesLayout.compactHeight = 272f;
-            c.choicesLayout.compactBottomInset = 10f;
-            c.choicesLayout.compactPictureScale = 11f / 16f;
-            c.choicesLayout.compactPictureTopInset = 8f;
-        }
-
         static void BuildFeedback(RectTransform ui, LevelController c)
         {
             var box = Dialog(ui, "Feedback", 1400f, 660f, out c.feedbackPanel);
@@ -1730,17 +1463,9 @@ namespace DisasterSafety.EditorTools
             headingR.offsetMin = new Vector2(0f, 16f);
             c.feedbackHeading = Label(headingR, UIStrings.SafeHeading, f8, Color.white, TextAnchor.MiddleCenter);
 
-            var holder = Rect("Picture", box);
-            c.feedbackPictureHolder = holder.gameObject;
-            Centered(holder, -400f, -10f, 400f, 296f);
-            Img(holder, S("UI/input_box"), Color.white, sliced: true);
-            var pic = Rect("Art", holder);
-            Centered(pic, 0f, 0f, 72f * 5f, 52f * 5f);
-            c.feedbackPicture = Img(pic, S("Level/choice_desk"), Color.white);
-
             var textR = Rect("Text", box);
-            Centered(textR, 250f, -10f, 780f, 290f);
-            c.feedbackText = Label(textR, string.Empty, f4, Ink, TextAnchor.MiddleLeft, shadow: false);
+            Centered(textR, 0f, -10f, 1200f, 290f);
+            c.feedbackText = Label(textR, string.Empty, f4, Ink, TextAnchor.MiddleCenter, shadow: false);
             c.feedbackText.horizontalOverflow = HorizontalWrapMode.Wrap;
             c.feedbackText.lineSpacing = 1.15f;
 
@@ -1764,7 +1489,7 @@ namespace DisasterSafety.EditorTools
             tr.offsetMin = new Vector2(0f, 16f);
             Label(tr, UIStrings.LevelCompletedTitle, f6, Color.white, TextAnchor.MiddleCenter);
 
-            // Big Stars, left of the cheering Bantay
+            // Big Stars, left of the cheer bubble
             var starOn = S("Icons/icon_star");
             var starOff = S("Icons/icon_starEmpty");
             var reveal = box.gameObject.AddComponent<StarReveal>();
@@ -1801,25 +1526,7 @@ namespace DisasterSafety.EditorTools
             c.openedRibbon = opened.gameObject;
             c.openedRibbon.SetActive(false);
 
-            // Leave room for Bantay's two-line bubble below the title.
-            c.cheerBantay = BuildBantay(box);
-            var dog = (RectTransform)c.cheerBantay.transform;
-            dog.anchorMin = dog.anchorMax = new Vector2(1f, 1f);
-            dog.pivot = new Vector2(1f, 0f);
-            dog.anchoredPosition = new Vector2(-150f, -504f);
-
-            // The Safe Choice and its explanation
-            var holder = Rect("Safe Picture", box);
-            holder.anchorMin = holder.anchorMax = new Vector2(0f, 1f);
-            holder.pivot = new Vector2(0f, 1f);
-            holder.sizeDelta = new Vector2(320f, 232f);
-            holder.anchoredPosition = new Vector2(70f, -476f);
-            Img(holder, S("UI/input_box"), Color.white, sliced: true);
-            var pic = Rect("Art", holder);
-            Centered(pic, 0f, 0f, 72f * Px, 52f * Px);
-            c.safePicture = Img(pic, S("Level/choice_desk"), Color.white);
-
-            // The Student flow shows the happy Student here, and a speech bubble where Bantay stands.
+            // The happy Student, left of the Safe Choice, and the speech bubble that cheers with the Display Name.
             var studentHolder = Rect("Student Holder", box);
             studentHolder.anchorMin = studentHolder.anchorMax = new Vector2(0f, 1f);
             studentHolder.pivot = new Vector2(0f, 1f);
@@ -1832,7 +1539,6 @@ namespace DisasterSafety.EditorTools
             happyRect.anchoredPosition = new Vector2(0f, 14f);
             happy.unitsPerPixel = Px;
             c.completedStudent = happy;
-            studentHolder.gameObject.SetActive(false);
 
             var cheer = BuildSpeechBubble(box, 620f, 150f);
             var cheerR = (RectTransform)cheer.transform;

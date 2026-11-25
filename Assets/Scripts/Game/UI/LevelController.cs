@@ -11,8 +11,7 @@ namespace DisasterSafety.Game.UI
     /// <summary>
     /// Connects the Level scene to an Attempt (Part 3 of Chapter III) and to LevelCompletion
     /// (Part 4). All rules live in Core; this class only shows screens and forwards taps.
-    /// A Scenario whose Choices all have an action uses the Student flow (Caption, Action Bar and
-    /// the Student acting out each Choice); every other Scenario keeps the Choice cards and Bantay.
+    /// Every Scenario uses the Student flow: the Caption, the Action Bar and the Student acting out each Choice.
     /// </summary>
     public sealed class LevelController : MonoBehaviour
     {
@@ -22,18 +21,9 @@ namespace DisasterSafety.Game.UI
         [Header("Scene")]
         public LevelSetting[] settings;
         public RectTransform world;
-        public RectTransform goalBanner;
-        public RectTransform guidance;
-        public Text goalText;
         public Text levelLabel;
         public Button pauseButton;
         public Button hintButton;
-        public BantayGuide bantay;
-        public ScreenPanel choicesPanel;
-        public LevelChoicesLayout choicesLayout;
-        public ChoiceCard[] choiceCards;
-        [Tooltip("Choice pictures; matched to a Scenario Choice by sprite name.")]
-        public Sprite[] pictures;
         public ScreenPanel dimmer;
 
         [Header("Student flow")]
@@ -49,23 +39,18 @@ namespace DisasterSafety.Game.UI
         public Sprite safeBanner;
         public Sprite unsafeBanner;
         public Text feedbackHeading;
-        public GameObject feedbackPictureHolder;
-        public Image feedbackPicture;
         public Text feedbackText;
         public Button tryAgainButton;
         public Button finishButton;
 
         [Header("Level Completed")]
         public ScreenPanel completedPanel;
-        [Tooltip("A second Bantay inside Level Completed who cheers with the Display Name.")]
-        public BantayGuide cheerBantay;
-        [Tooltip("The Student who cheers in Level Completed in the Student flow.")]
+        [Tooltip("The Student who cheers in Level Completed.")]
         public StudentActor completedStudent;
         public SpeechBubble completedBubble;
         public StarReveal stars;
         public GameObject openedRibbon;
         public Text openedText;
-        public Image safePicture;
         public Text safeChoiceText;
         public Text lessonText;
         public Button replayButton;
@@ -85,7 +70,6 @@ namespace DisasterSafety.Game.UI
         Attempt attempt;
         LevelId nextLevel;
         bool hasNext;
-        bool studentFlow;
 
         public Attempt Attempt => attempt;
         public LevelId Level => level;
@@ -93,8 +77,6 @@ namespace DisasterSafety.Game.UI
         public CompletionResult LastResult { get; private set; }
         public bool IsPaused => pausePanel != null && pausePanel.IsVisible;
 
-        /// <summary>True when the Student acts out each Choice (every Choice of the Scenario has an action).</summary>
-        public bool UsesStudentFlow => studentFlow;
         public StudentActor Student => ActiveSetting != null ? ActiveSetting.student : null;
 
         void Awake()
@@ -103,10 +85,7 @@ namespace DisasterSafety.Game.UI
             AudioManager.EnsureExists();
             level = GameServices.CurrentLevel;
             if (GameServices.Scenarios.TryGet(level, out scenario))
-            {
                 attempt = new Attempt(scenario);
-                studentFlow = scenario.UsesActions;
-            }
             Wire();
         }
 
@@ -114,7 +93,7 @@ namespace DisasterSafety.Game.UI
 
         IEnumerator Start()
         {
-            foreach (var p in new[] { feedbackPanel, completedPanel, pausePanel, dimmer, choicesPanel, actionBar != null ? actionBar.panel : null })
+            foreach (var p in new[] { feedbackPanel, completedPanel, pausePanel, dimmer, actionBar != null ? actionBar.panel : null })
                 if (p != null) p.SetInstant(false);
 
             if (attempt == null)
@@ -124,37 +103,7 @@ namespace DisasterSafety.Game.UI
                 yield break;
             }
 
-            if (studentFlow)
-            {
-                yield return StartStudentLevel();
-                yield break;
-            }
-
-            ShowSetting(scenario.setting);
-            goalText.text = scenario.goal.text;
-            levelLabel.text = UIStrings.LevelLabel(level);
-            for (var i = 0; i < choiceCards.Length; i++)
-            {
-                var used = i < scenario.choices.Length;
-                choiceCards[i].gameObject.SetActive(used);
-                if (used) choiceCards[i].Show(scenario.choices[i], PictureFor(scenario.choices[i].picture));
-            }
-            bantay.tapLine = () => attempt.HintUsed ? UIStrings.HintLine(scenario.hint.text) : scenario.intro.text;
-
-            if (scenario.Shakes)
-            {
-                ActiveSetting?.shaker?.StartShake();
-                AudioManager.Play(Sfx.Rumble, 0.9f);
-                AudioManager.DuckMusic(ActiveSetting?.shaker != null ? ActiveSetting.shaker.shakeSeconds : 2f);
-                yield return new WaitForSeconds(0.4f);
-            }
-            bantay.Say(scenario.intro.text, true, 5f);
-            yield return new WaitForSeconds(1.1f);
-            choicesPanel.Show();
-            attempt.StartChoosing();
-            yield return new WaitForSeconds(6f);
-            if (attempt.Phase == AttemptPhase.Choosing && !attempt.HintUsed && attempt.UnsafeChoices == 0)
-                bantay.Say(UIStrings.BantayHintReady);
+            yield return StartStudentLevel();
         }
 
         // The Student flow -------------------------------------------------------
@@ -221,12 +170,9 @@ namespace DisasterSafety.Game.UI
             ((RectTransform)hintButton.transform).anchoredPosition = studentHintPosition - new Vector2(0f, extra);
         }
 
-        /// <summary>Hides the Choice cards, the Goal banner and Bantay, and lays out the Caption, the Feedback and Level Completed for the Student.</summary>
+        /// <summary>Shows the Caption in the active Setting's Goal font and puts the Hint under it.</summary>
         public void UseStudentLayout()
         {
-            goalBanner.gameObject.SetActive(false);
-            bantay.gameObject.SetActive(false);
-            choicesPanel.gameObject.SetActive(false);
             caption.gameObject.SetActive(true);
             var settingGoalFont = ActiveSetting?.captionGoalFont;
             if (settingGoalFont != null)
@@ -245,16 +191,6 @@ namespace DisasterSafety.Game.UI
             hint.anchorMin = hint.anchorMax = hint.pivot = new Vector2(0.5f, 1f);
             hint.anchoredPosition = studentHintPosition;
             hint.sizeDelta = new Vector2(260f, 96f);
-
-            feedbackPictureHolder.SetActive(false);
-            var text = (RectTransform)feedbackText.transform;
-            text.anchoredPosition = new Vector2(0f, text.anchoredPosition.y);
-            text.sizeDelta = new Vector2(1200f, text.sizeDelta.y);
-            feedbackText.alignment = TextAnchor.MiddleCenter;
-
-            safePicture.transform.parent.gameObject.SetActive(false);
-            cheerBantay.gameObject.SetActive(false);
-            completedStudent.transform.parent.gameObject.SetActive(true);
         }
 
         void ChooseAction(int index)
@@ -488,21 +424,13 @@ namespace DisasterSafety.Game.UI
 
             if (ActiveSetting == null) return;
 
-            var artAnchor = new Vector2(0.5f, ActiveSetting.alignArtTop ? 1f : ActiveSetting.artAnchorY);
+            var artAnchor = new Vector2(0.5f, ActiveSetting.artAnchorY);
             world.anchorMin = world.anchorMax = world.pivot = artAnchor;
             world.anchoredPosition = Vector2.zero;
-            goalBanner.anchoredPosition = ActiveSetting.goalPosition;
-            guidance.anchoredPosition = new Vector2(ActiveSetting.guidanceOffsetX, 0f);
-            choicesLayout?.UseCompactLayoutOnWideScreens(ActiveSetting.compactChoicesOnWideScreens);
         }
 
         void Wire()
         {
-            for (var i = 0; i < choiceCards.Length; i++)
-            {
-                var n = i;
-                choiceCards[i].button.onClick.AddListener(() => Choose(n));
-            }
             hintButton.onClick.AddListener(ShowHint);
             pauseButton.onClick.AddListener(Pause);
             tryAgainButton.onClick.AddListener(TryAgain);
@@ -528,14 +456,6 @@ namespace DisasterSafety.Game.UI
             else Pause();
         }
 
-        Sprite PictureFor(string key)
-        {
-            if (pictures == null || string.IsNullOrEmpty(key)) return null;
-            foreach (var p in pictures)
-                if (p != null && p.name == key) return p;
-            return null;
-        }
-
         // Taps -------------------------------------------------------------------
         public void ShowHint()
         {
@@ -543,36 +463,8 @@ namespace DisasterSafety.Game.UI
             attempt.UseHint();
             AudioManager.Play(Sfx.Sparkle, 0.6f);
             Juice.Sparkles((RectTransform)hintButton.transform, 10);
-            if (studentFlow)
-            {
-                captionBody.text = UIStrings.HintLine(scenario.hint.text);
-                FitCaption();
-            }
-            else bantay.Say(UIStrings.HintLine(scenario.hint.text), true, 7f);
-        }
-
-        void Choose(int index)
-        {
-            if (attempt == null || IsPaused || !attempt.Choose(index)) return;
-            var choice = scenario.choices[index];
-            if (scenario.Shakes) ActiveSetting?.shaker?.Calm();
-            bantay.HideBubble();
-
-            FillFeedback(choice);
-            feedbackPicture.sprite = PictureFor(choice.picture);
-
-            if (attempt.LastChoiceSafe)
-            {
-                AudioManager.Play(Sfx.Safe);
-                Juice.Sparkles((RectTransform)choiceCards[index].transform, 14);
-            }
-            else
-            {
-                AudioManager.Play(Sfx.Unsafe);
-                choiceCards[index].SetTried(true);
-            }
-            dimmer.Show();
-            feedbackPanel.Show();
+            captionBody.text = UIStrings.HintLine(scenario.hint.text);
+            FitCaption();
         }
 
         void FillFeedback(ScenarioChoice choice)
@@ -592,8 +484,7 @@ namespace DisasterSafety.Game.UI
             feedbackPanel.Hide();
             dimmer.Hide();
             if (scenario.Shakes) ActiveSetting?.shaker?.ResumeWobble();
-            if (studentFlow) StartCoroutine(ReturnToStart());
-            else bantay.Say(UIStrings.BantayThinkAgain, true);
+            StartCoroutine(ReturnToStart());
         }
 
         void Finish()
@@ -620,12 +511,10 @@ namespace DisasterSafety.Game.UI
         void ShowCompleted(bool saved)
         {
             feedbackPanel.Hide();
-            choicesPanel.Hide();
-            if (studentFlow) actionBar.Hide();
+            actionBar.Hide();
             var name = GameServices.Progress.DisplayName;
             var headline = saved ? UIStrings.LevelCompletedHeadline(name) : UIStrings.SaveProblem(name);
             var safe = scenario.SafeChoice;
-            if (!studentFlow) safePicture.sprite = PictureFor(safe.picture);
             safeChoiceText.text = UIStrings.SafeChoiceLine(safe.label);
             lessonText.text = scenario.lesson.text;
 
@@ -639,19 +528,10 @@ namespace DisasterSafety.Game.UI
             AudioManager.Play(Sfx.Complete);
             stars.Play(attempt.Stars);
             if (confetti != null) confetti.Burst();
-            if (studentFlow)
-            {
-                Student.bubble.Hide();
-                completedStudent.SetKind(GameServices.Progress.Student);
-                completedStudent.Play(StudentPose.Happy);
-                completedBubble.Say(headline, -1f);
-            }
-            else
-            {
-                bantay.HideBubble();
-                cheerBantay.tapLine = () => UIStrings.BantayCheer(GameServices.Progress.DisplayName);
-                cheerBantay.Celebrate(headline);
-            }
+            Student.bubble.Hide();
+            completedStudent.SetKind(GameServices.Progress.Student);
+            completedStudent.Play(StudentPose.Happy);
+            completedBubble.Say(headline, -1f);
 
             var openedKey = saved && LastResult.Opened.Count > 0 ? LastResult.Opened[0] : null;
             var openedName = OpenedName(openedKey, out var openedEpisode, out var openedDifficulty);
@@ -680,8 +560,7 @@ namespace DisasterSafety.Game.UI
         {
             yield return new WaitForSecondsRealtime(OpenedLineDelay);
             var line = OpenedLine(openedName, episode, difficulty, GameServices.Content);
-            if (studentFlow) completedBubble.Say(line, -1f);
-            else cheerBantay.Say(line);
+            completedBubble.Say(line, -1f);
         }
 
         public static string OpenedLine(string openedName, Episode episode, Difficulty difficulty, PlayableLevels content) =>

@@ -124,7 +124,6 @@ namespace DisasterSafety.Tests
             yield return ReadyToChoose(Level);
             var c = Level();
             Assert.That(c.Level, Is.EqualTo(First));
-            Assert.That(c.UsesStudentFlow, Is.True, "Easy 1 is acted out by the Student");
             Assert.That(c.captionGoal.text, Is.EqualTo("Stay safe when the ground shakes."));
             Assert.That(c.actionBar.buttons[Desk].label.text, Is.EqualTo("Duck under the desk"));
             Assert.That(c.ActiveSetting.shaker.wobblers, Has.All.Matches<SpriteAnimator>(w => w.enabled), "fan and cabinet wobble while it shakes");
@@ -220,7 +219,6 @@ namespace DisasterSafety.Tests
             Assert.That(c.ActiveSetting.shaker.IsShaking, Is.True);
 
             // Easy 2 is acted out by the Student in the corridor.
-            Assert.That(c.UsesStudentFlow, Is.True);
             const int Stairs = 0, Cover = 2;
             Tap(c, Stairs);
             yield return FeedbackShown(c);
@@ -293,7 +291,6 @@ namespace DisasterSafety.Tests
                 Assert.That(shaking, Is.EqualTo(shakes[n - 1]), "shaking in Normal " + n);
 
                 Assert.That(GameServices.Scenarios.TryGet(level, out var scenario), Is.True);
-                Assert.That(c.UsesStudentFlow, Is.True, "the Student flow in Normal " + n);
                 Tap(c, scenario.SafeChoiceIndex);
                 yield return FeedbackShown(c);
                 Assert.That(c.finishButton.gameObject.activeSelf, Is.True, "the Safe Choice of Normal " + n + " can Finish");
@@ -317,7 +314,6 @@ namespace DisasterSafety.Tests
             const string openedLine = "Hard is open! Let's play!";
             yield return WaitFor(() => c.completedBubble.gameObject.activeInHierarchy && c.completedBubble.Line == openedLine,
                 "the Student to announce that Hard is open", LevelController.OpenedLineDelay + 2f);
-            Assert.That(c.cheerBantay.gameObject.activeInHierarchy, Is.False);
         }
 
         [UnityTest]
@@ -344,7 +340,6 @@ namespace DisasterSafety.Tests
                 Assert.That(shaking, Is.EqualTo(shakes[n - 1]), "shaking in Hard " + n);
 
                 Assert.That(GameServices.Scenarios.TryGet(level, out var scenario), Is.True);
-                Assert.That(c.UsesStudentFlow, Is.True, "the Student flow in Hard " + n);
                 Tap(c, scenario.SafeChoiceIndex);
                 yield return FeedbackShown(c);
                 Assert.That(c.finishButton.gameObject.activeSelf, Is.True, "the Safe Choice of Hard " + n + " can Finish");
@@ -388,7 +383,6 @@ namespace DisasterSafety.Tests
             yield return StartEasyOne();
             var c = Level();
             var student = c.Student;
-            Assert.That(c.UsesStudentFlow, Is.True);
             Assert.That(c.ActiveSetting.key, Is.EqualTo("classroom_v2"));
             Assert.That(c.captionGoal.text, Is.EqualTo("Stay safe when the ground shakes."));
             Assert.That(c.captionBody.text, Is.EqualTo("The ground is shaking! What will you do?"));
@@ -430,7 +424,6 @@ namespace DisasterSafety.Tests
             Assert.That(c.feedbackHeading.text, Is.EqualTo(UIStrings.SafeHeading));
             Assert.That(c.finishButton.gameObject.activeSelf, Is.True);
             Assert.That(c.tryAgainButton.gameObject.activeSelf, Is.False);
-            Assert.That(c.feedbackPictureHolder.activeSelf, Is.False, "Feedback has no picture in this flow");
 
             c.finishButton.onClick.Invoke();
             yield return Wait(0.5f);
@@ -490,7 +483,6 @@ namespace DisasterSafety.Tests
             var c = Level();
             var student = c.Student;
             var setting = c.ActiveSetting;
-            Assert.That(c.UsesStudentFlow, Is.True);
             Assert.That(setting.key, Is.EqualTo("corridor_v2"));
             Assert.That(c.captionGoal.text, Is.EqualTo("Keep your head safe when the ground shakes."));
             Assert.That(setting.shaker.IsShaking, Is.True);
@@ -580,7 +572,6 @@ namespace DisasterSafety.Tests
             GameScenes.PlayLevel(Third);
             yield return WaitFor(() => Level()?.Level.Equals(Third) == true && Level().ActiveSetting != null,
                 "Easy 3 to start");
-            Assert.That(Level().UsesStudentFlow, Is.True, "Easy 3 shows the Action Bar");
         }
 
         [UnityTest]
@@ -590,7 +581,6 @@ namespace DisasterSafety.Tests
             var c = Level();
             var student = c.Student;
             Assert.That(c.ActiveSetting.key, Is.EqualTo("classroom_after_v2"));
-            Assert.That(c.bantay.gameObject.activeInHierarchy, Is.False);
             Assert.That(c.ActiveSetting.shaker == null || !c.ActiveSetting.shaker.IsShaking, Is.True);
             Assert.That(c.captionBody.text, Is.EqualTo("The shaking stopped. Your teacher is at the door."));
             Assert.That(student.Pose, Is.EqualTo(StudentPose.Hold));
@@ -701,7 +691,6 @@ namespace DisasterSafety.Tests
             GameScenes.PlayLevel(NormalOne);
             yield return WaitFor(() => Level()?.Level.Equals(NormalOne) == true && Level().ActiveSetting != null,
                 "Normal 1 to start");
-            Assert.That(Level().UsesStudentFlow, Is.True, "Normal 1 shows the Action Bar");
         }
 
         static readonly LevelId NormalTwo = new LevelId(Episode.Earthquake, Difficulty.Normal, 2);
@@ -725,11 +714,9 @@ namespace DisasterSafety.Tests
             yield return StartRolloutLevel(NormalTwo);
             var c = Level();
             Assert.That(c.ActiveSetting.key, Is.EqualTo("home_v2"));
-            Assert.That(c.UsesStudentFlow, Is.True);
             Assert.That(c.Student.X, Is.EqualTo(281f));
             Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Idle));
             Assert.That(c.ActiveSetting.shaker.IsShaking, Is.False);
-            Assert.That(c.bantay.gameObject.activeInHierarchy, Is.False);
             var props = c.ActiveSetting.GetComponentsInChildren<LevelProp>();
             Assert.That(Array.ConvertAll(props, p => p.key), Is.EquivalentTo(new[]
             {
@@ -844,7 +831,6 @@ namespace DisasterSafety.Tests
         {
             yield return StartRolloutLevel(NormalThree);
             var c = Level();
-            Assert.That(c.UsesStudentFlow, Is.True, "Normal 3 shows the Action Bar");
             Assert.That(c.ActiveSetting.key, Is.EqualTo("home_v2"));
             Assert.That(c.ActiveSetting.GetComponentsInChildren<LevelProp>(), Is.Empty);
             Assert.That(c.ActiveSetting.GetComponentsInChildren<GrownUpActor>(), Is.Empty);
@@ -899,7 +885,6 @@ namespace DisasterSafety.Tests
         {
             yield return StartRolloutLevel(HardOne);
             var c = Level();
-            Assert.That(c.UsesStudentFlow, Is.True, "Hard 1 shows the Action Bar");
             Assert.That(c.ActiveSetting.key, Is.EqualTo("home_v2"));
             Assert.That(c.Student.X, Is.EqualTo(154f));
             Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Idle));
@@ -961,7 +946,6 @@ namespace DisasterSafety.Tests
             {
                 yield return StartRolloutLevel(level);
                 var c = Level();
-                Assert.That(c.UsesStudentFlow, Is.True, level.Key);
                 var setting = c.ActiveSetting;
                 Assert.That(GameServices.Scenarios.TryGet(level, out var scenario), Is.True);
 
@@ -1008,7 +992,6 @@ namespace DisasterSafety.Tests
         {
             yield return StartRolloutLevel(NormalFour);
             var c = Level();
-            Assert.That(c.UsesStudentFlow, Is.True);
             Assert.That(c.ActiveSetting.key, Is.EqualTo("schoolyard_v2"));
             Assert.That(c.Student.X, Is.EqualTo(302f), "Normal 4 starts at the recess spot");
             Assert.That(c.Student.Y, Is.Zero);
@@ -1016,13 +999,11 @@ namespace DisasterSafety.Tests
             Assert.That(c.actionBar.IsVisible, Is.False);
             Assert.That(c.ActiveSetting.GetComponentsInChildren<GrownUpActor>(), Is.Empty);
             Assert.That(c.ActiveSetting.shaker.IsShaking, Is.True);
-            Assert.That(c.bantay.gameObject.activeInHierarchy, Is.False);
             yield return ActionBarShown(c);
             Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Idle));
 
             yield return StartRolloutLevel(HardTwo);
             c = Level();
-            Assert.That(c.UsesStudentFlow, Is.True);
             Assert.That(c.ActiveSetting.key, Is.EqualTo("schoolyard_v2"));
             Assert.That(c.Student.X, Is.EqualTo(306f));
             Assert.That(c.Student.Y, Is.Zero);
@@ -1036,7 +1017,6 @@ namespace DisasterSafety.Tests
             Assert.That(grownUps[0].X, Is.EqualTo(217f), "the Teacher stands in the doorway");
             Assert.That(grownUps[0].Y, Is.Zero);
             Assert.That(grownUps[0].Pose, Is.EqualTo(GrownUpPose.Wave));
-            Assert.That(c.bantay.gameObject.activeInHierarchy, Is.False);
         }
 
         [UnityTest]
@@ -1142,7 +1122,6 @@ namespace DisasterSafety.Tests
                 Is.GreaterThanOrEqualTo(PixelText.Width(c.captionGoal.font, c.captionGoal.text)),
                 "the full Goal fits the Caption");
             Assert.That(c.ActiveSetting.GetComponentsInChildren<GrownUpActor>(), Is.Empty);
-            Assert.That(c.bantay.gameObject.activeInHierarchy, Is.False);
             Assert.That(c.Student.X, Is.EqualTo(260f));
             Assert.That(c.Student.Y, Is.Zero);
             Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Idle));
@@ -1227,7 +1206,6 @@ namespace DisasterSafety.Tests
             Assert.That(student.Pose, Is.EqualTo(StudentPose.Surprised));
             Assert.That(student.bubble.Line, Is.EqualTo(UIStrings.ReactionWhoa));
             Assert.That(setting.ActiveGrownUps, Is.Empty);
-            Assert.That(c.bantay.gameObject.activeInHierarchy, Is.False);
             yield return ActionBarShown(c);
 
             var cover = setting.ActOutFor("table");
@@ -1333,7 +1311,6 @@ namespace DisasterSafety.Tests
             Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Idle));
             Assert.That(setting.shaker, Is.Null);
             Assert.That(setting.ActiveGrownUps, Is.Empty);
-            Assert.That(c.bantay.gameObject.activeInHierarchy, Is.False);
 
             var student = BoundsInSetting(setting, (RectTransform)c.Student.transform);
             Assert.That(student.Overlaps(BoundsInSetting(setting, c.caption)), Is.False);
@@ -1429,7 +1406,6 @@ namespace DisasterSafety.Tests
             yield return StartRolloutLevel(new LevelId(Episode.Earthquake, Difficulty.Hard, 5));
             var c = Level();
             var setting = c.ActiveSetting;
-            Assert.That(c.UsesStudentFlow, Is.True);
             Assert.That(setting.key, Is.EqualTo("home_after_v2"));
             Assert.That(setting.ActiveGrownUps, Has.Length.EqualTo(2), "Hard 5 has Mom and Dad");
             var mom = System.Array.Find(setting.ActiveGrownUps, actor => actor.kind == GrownUpKind.Mom);
@@ -1442,7 +1418,6 @@ namespace DisasterSafety.Tests
             Assert.That(c.Student.Y, Is.Zero);
             Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Idle));
             Assert.That(setting.shaker, Is.Null, "the room does not shake");
-            Assert.That(c.bantay.gameObject.activeInHierarchy, Is.False);
 
             var drip = setting.GetComponentInChildren<SpriteAnimator>();
             Assert.That(drip, Is.Not.Null, "the pipe drips while the room is still");
@@ -1556,7 +1531,6 @@ namespace DisasterSafety.Tests
             yield return StartRolloutLevel(new LevelId(Episode.Earthquake, Difficulty.Hard, 6));
             var c = Level();
             var setting = c.ActiveSetting;
-            Assert.That(c.UsesStudentFlow, Is.True);
             Assert.That(setting.key, Is.EqualTo("home_after_v2"));
             Assert.That(setting.ActiveGrownUps, Has.Length.EqualTo(1), "Hard 6 has Mom at the door");
             var mom = setting.ActiveGrownUps[0];
@@ -1567,7 +1541,6 @@ namespace DisasterSafety.Tests
             Assert.That(c.Student.X, Is.EqualTo(286f));
             Assert.That(c.Student.Y, Is.Zero);
             Assert.That(setting.shaker, Is.Null);
-            Assert.That(c.bantay.gameObject.activeInHierarchy, Is.False);
 
             AssertPropAtArtPoint(setting, PropIn(c, "bag_closed"), 73f, 191f);
             AssertPropAtArtPoint(setting, PropIn(c, "paper"), 232f, 180f);
@@ -1697,10 +1670,8 @@ namespace DisasterSafety.Tests
             yield return StartRolloutLevel(HardSeven);
             var c = Level();
             var setting = c.ActiveSetting;
-            Assert.That(c.UsesStudentFlow, Is.True);
             Assert.That(setting.key, Is.EqualTo("evacuation_area_v2"));
             Assert.That(setting.shaker, Is.Null, "the field does not shake");
-            Assert.That(c.bantay.gameObject.activeInHierarchy, Is.False);
             Assert.That(setting.ActiveGrownUps, Has.Length.EqualTo(1), "Hard 7 has Mom on the mat");
             var mom = setting.ActiveGrownUps[0];
             Assert.That(mom.kind, Is.EqualTo(GrownUpKind.Mom));
@@ -1971,7 +1942,6 @@ namespace DisasterSafety.Tests
             var c = Level();
             var student = c.Student;
             Assert.That(c.ActiveSetting.key, Is.EqualTo("bedroom_v2"));
-            Assert.That(c.bantay.gameObject.activeInHierarchy, Is.False);
             Assert.That(c.ActiveSetting.shaker == null || !c.ActiveSetting.shaker.IsShaking, Is.True, "nothing shakes before an earthquake");
             Assert.That(student.Pose, Is.EqualTo(StudentPose.Idle));
             Assert.That(student.X, Is.EqualTo(306f));

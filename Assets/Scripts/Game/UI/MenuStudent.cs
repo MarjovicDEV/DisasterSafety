@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 namespace DisasterSafety.Game.UI
 {
     /// <summary>
-    /// The Learner's Student on the Main Menu (it replaces Bantay there). It shows the picked kind, the boy
+    /// The Learner's Student on the Main Menu. It shows the picked kind, the boy
     /// until a pick exists, says the menu lines in its speech bubble with the voice blip, and says the next
     /// Tip when tapped. It plays Happy while greeting and Idle otherwise.
     /// </summary>
