@@ -2002,6 +2002,205 @@ namespace DisasterSafety.Tests
             Assert.That(ButtonFor(c, "low_shelf").button.interactable, Is.True);
         }
 
+        // C7: the generic reach-up frames in Normal 1, for the boy and the girl. The picture goes up over the
+        // bed facing right and the books go up at the cabinet facing left. In both 300 ms frames both palms
+        // meet the bottom edge of the prop: no gap under it, and at most 1 art pixel of fingers over its edge.
+        [UnityTest]
+        public IEnumerator NormalLevel1_ReachUp_BothPalmsHoldTheProp([Values(StudentKind.Boy, StudentKind.Girl)] StudentKind kind)
+        {
+            yield return StartNormalOne(kind);
+            var c = Level();
+            var student = c.Student;
+            Assert.That(student.Kind, Is.EqualTo(kind));
+            var name = kind == StudentKind.Girl ? "girl" : "boy";
+            var frames = student.Frames.For(StudentPose.ReachUp);
+            Assert.That(Array.ConvertAll(frames, f => f.name), Is.EqualTo(new[] { name + "_reachup_0", name + "_reachup_1" }));
+            var approved = kind == StudentKind.Girl ? ApprovedGirlHands : ApprovedBoyHands;
+            for (var f = 0; f < frames.Length; f++)
+                Assert.That(HandRegion(frames[f]), Is.EqualTo(approved[f]), "frame " + (f + 1) + "'s hands match the approved art");
+            yield return ReadyToChoose(Level);
+
+            yield return ReachUpHolding(c, "picture", "picture", 140f, facingLeft: false);
+            yield return ResetAfterReach(c, "picture");
+            yield return ReachUpHolding(c, "books_top", "books", 272f, facingLeft: true);
+            yield return ResetAfterReach(c, "books");
+        }
+
+        static IEnumerator ReachUpHolding(LevelController c, string action, string propKey, float x, bool facingLeft)
+        {
+            var student = c.Student;
+            var prop = PropIn(c, propKey);
+            var frames = student.Frames.For(StudentPose.ReachUp);
+            Tap(c, action);
+            yield return WaitFor(() => student.Pose == StudentPose.ReachUp && !prop.transform.IsChildOf(student.transform),
+                "the " + propKey + " held up");
+            Assert.That(student.X, Is.EqualTo(x));
+            Assert.That(student.FacingLeft, Is.EqualTo(facingLeft));
+
+            // The stop plays the reach again from its first frame; the frames then swap every 300 ms, and the
+            // Student keeps reaching until Try Again. Try Again hides the bubble, so a shown "Hmm, wait..." is
+            // this stop and not the last one.
+            yield return WaitFor(() => student.bubble.gameObject.activeSelf && student.bubble.Line == UIStrings.ReactionWait,
+                "the stop");
+            yield return WaitFor(() => student.body.sprite == frames[1], "the peak frame", 1f);
+            var peakShown = Time.time;
+            yield return WaitFor(() => student.body.sprite == frames[0], "the first frame again", 1f);
+            var firstShown = Time.time;
+            yield return WaitFor(() => student.body.sprite == frames[1], "the peak frame again", 1f);
+            Assert.That(firstShown - peakShown, Is.EqualTo(0.3f).Within(0.08f), "the peak frame shows for 300 ms");
+            Assert.That(Time.time - firstShown, Is.EqualTo(0.3f).Within(0.08f), "the first frame shows for 300 ms");
+
+            // Reading the frames is slow, so the palms are checked after the timing.
+            AssertPalmsOn(student, prop, "the " + propKey + " at the peak");
+            yield return WaitFor(() => student.body.sprite == frames[0], "the first frame", 1f);
+            AssertPalmsOn(student, prop, "the " + propKey + " on the first frame");
+            yield return FeedbackShown(c);
+        }
+
+        static IEnumerator ResetAfterReach(LevelController c, string propKey)
+        {
+            c.tryAgainButton.onClick.Invoke();
+            yield return ActionBarShown(c);
+            Assert.That(PropIn(c, propKey).AtStart, Is.True, propKey + " is back at its start");
+            Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Idle));
+            Assert.That(c.Student.body.sprite.name, Does.Not.Contain("reachup"));
+            Assert.That(c.Student.bubble.gameObject.activeSelf, Is.False, "the Reaction is hidden");
+            Assert.That(c.Student.X, Is.EqualTo(306f));
+        }
+
+        // The Student's palette (PAL in ArtSource/scripts/student.lua) as the letters the art script uses.
+        static readonly (char letter, Color32 colour)[] StudentPalette =
+        {
+            ('o', new Color32(40, 28, 44, 255)), ('j', new Color32(92, 70, 98, 255)), ('H', new Color32(52, 38, 60, 255)),
+            ('h', new Color32(30, 22, 40, 255)), ('t', new Color32(246, 192, 150, 255)), ('S', new Color32(228, 156, 116, 255)),
+            ('s', new Color32(186, 112, 86, 255)), ('W', new Color32(250, 252, 255, 255)), ('w', new Color32(220, 228, 240, 255)),
+            ('v', new Color32(160, 176, 206, 255)), ('m', new Color32(72, 98, 160, 255)), ('N', new Color32(42, 58, 114, 255)),
+            ('n', new Color32(26, 36, 76, 255)), ('b', new Color32(80, 70, 90, 255)), ('B', new Color32(46, 38, 54, 255)),
+            ('x', new Color32(66, 44, 40, 255)), ('e', new Color32(30, 22, 38, 255)), ('k', new Color32(255, 255, 255, 255)),
+            ('q', new Color32(128, 40, 52, 255)), ('r', new Color32(240, 130, 126, 255)), ('p', new Color32(214, 64, 64, 255)),
+        };
+
+        // A Student frame as palette letters, row 0 at the top. The import is not readable, so this reads the PNG.
+        static string[] StudentRows(Sprite sprite)
+        {
+            var path = Path.Combine(Application.dataPath, "Art", "Student", sprite.name + ".png");
+            var texture = new Texture2D(2, 2);
+            Assert.That(texture.LoadImage(File.ReadAllBytes(path)), Is.True, "read " + path);
+            var rows = new string[texture.height];
+            for (var r = 0; r < texture.height; r++)
+            {
+                var line = new char[texture.width];
+                for (var x = 0; x < texture.width; x++)
+                {
+                    Color32 p = texture.GetPixel(x, texture.height - 1 - r);
+                    line[x] = p.a == 0 ? '.' : '?';
+                    if (p.a == 0) continue;
+                    foreach (var entry in StudentPalette)
+                        if (entry.colour.r == p.r && entry.colour.g == p.g && entry.colour.b == p.b) line[x] = entry.letter;
+                }
+                rows[r] = new string(line);
+            }
+            UnityEngine.Object.Destroy(texture);
+            return rows;
+        }
+
+        // The hands and forearms of a reach-up frame: rows 0-11, columns 20-31.
+        static string[] HandRegion(Sprite sprite)
+        {
+            var rows = StudentRows(sprite);
+            var region = new string[12];
+            for (var r = 0; r < region.Length; r++) region[r] = rows[r].Substring(20, 12);
+            return region;
+        }
+
+        // The hands of both reach-up frames the researcher approved for C7: two palms on separate wrists with
+        // an outline between them, the far arm bent at the elbow and the near forearm clear of the face. The
+        // fingertips are on row 4 in frame 1 and on row 3 in frame 2, the peak.
+        static readonly string[][] ApprovedBoyHands =
+        {
+            new[]
+            {
+                "............", "............", "............", "o..ooo..ooo.", "hootSsooSsso", "HhotSsooSsso",
+                "HHtSSsoSssso", "Hhotso.oSso.", "Hhotso.oSso.", "ssotso.oSso.", "esotso.oSsso", "esotso..oSso",
+            },
+            new[]
+            {
+                "............", "............", "...ooo..ooo.", "o.otSsooSsso", "hootSsooSsso", "HHtSSsoSssso",
+                "Hhotso.oSso.", "Hhotso.oSso.", "Hhotso.oSso.", "ssotso.oSso.", "esotso.oSsso", "esotso..oSso",
+            },
+        };
+        static readonly string[][] ApprovedGirlHands =
+        {
+            new[]
+            {
+                "............", "............", "............", "...ooo..ooo.", "..otSsooSsso", "..otSsooSsso",
+                "ootSSsoSssso", "hootso.oSso.", "Hhotso.oSso.", "Hhotso.oSso.", "Hhotso.oSsso", "Hhotso..oSso",
+            },
+            new[]
+            {
+                "............", "............", "...ooo..ooo.", "..otSsooSsso", "..otSsooSsso", ".otSSsoSssso",
+                "o.otso.oSso.", "hootso.oSso.", "Hhotso.oSso.", "Hhotso.oSso.", "Hhotso.oSsso", "Hhotso..oSso",
+            },
+        };
+
+        static bool IsSkin(char c) => c == 't' || c == 'S' || c == 's';
+
+        // Both palms (the separate skin shapes in the top 4 rows that hold skin) reach the bottom edge of the
+        // prop inside its width: the top of each palm is 0 or 1 art pixel above the prop's bottom.
+        static void AssertPalmsOn(StudentActor student, LevelProp prop, string what)
+        {
+            var rows = StudentRows(student.body.sprite);
+            var fingertipRow = Array.FindIndex(rows, row => Array.Exists(row.ToCharArray(), IsSkin));
+            Assert.That(fingertipRow, Is.GreaterThanOrEqualTo(0), what + ": " + student.body.sprite.name + " shows skin");
+            var bandEnd = Math.Min(fingertipRow + 4, rows.Length);
+            var seen = new bool[rows.Length, rows[0].Length];
+            var palms = new System.Collections.Generic.List<(int top, int minX, int maxX)>();
+            for (var r = fingertipRow; r < bandEnd; r++)
+                for (var x = 0; x < rows[r].Length; x++)
+                {
+                    if (!IsSkin(rows[r][x]) || seen[r, x]) continue;
+                    var palm = (top: r, minX: x, maxX: x);
+                    var open = new System.Collections.Generic.Stack<(int r, int x)>();
+                    open.Push((r, x));
+                    seen[r, x] = true;
+                    while (open.Count > 0)
+                    {
+                        var (pr, px) = open.Pop();
+                        palm = (Math.Min(palm.top, pr), Math.Min(palm.minX, px), Math.Max(palm.maxX, px));
+                        foreach (var (nr, nx) in new[] { (pr - 1, px), (pr + 1, px), (pr, px - 1), (pr, px + 1) })
+                        {
+                            if (nr < fingertipRow || nr >= bandEnd || nx < 0 || nx >= rows[nr].Length) continue;
+                            if (!IsSkin(rows[nr][nx]) || seen[nr, nx]) continue;
+                            seen[nr, nx] = true;
+                            open.Push((nr, nx));
+                        }
+                    }
+                    palms.Add(palm);
+                }
+            Assert.That(palms.Count, Is.EqualTo(2), what + ": two separate palms in " + student.body.sprite.name);
+
+            // World corners: 0 bottom-left, 1 top-left, 2 top-right, 3 bottom-right. A Student facing left has
+            // its body mirrored, so corner 0 is then on the right; lerping from corner 0 handles both.
+            var bodyCorners = new Vector3[4];
+            student.body.rectTransform.GetWorldCorners(bodyCorners);
+            var artPixel = Mathf.Abs(bodyCorners[3].x - bodyCorners[0].x) / 32f;
+            float ColumnEdgeX(int column) => Mathf.Lerp(bodyCorners[0].x, bodyCorners[3].x, column / 32f);
+            float RowTopY(int row) => Mathf.Lerp(bodyCorners[0].y, bodyCorners[1].y, (50f - row) / 50f);
+            var propCorners = new Vector3[4];
+            ((RectTransform)prop.transform).GetWorldCorners(propCorners);
+            foreach (var palm in palms)
+            {
+                var pixelsOver = (RowTopY(palm.top) - propCorners[0].y) / artPixel;
+                Assert.That(pixelsOver, Is.InRange(-0.01f, 1.01f), what + ": art pixels of palm over the prop's bottom edge");
+                var leftEdge = ColumnEdgeX(palm.minX);
+                var rightEdge = ColumnEdgeX(palm.maxX + 1);
+                Assert.That(Mathf.Min(leftEdge, rightEdge), Is.GreaterThanOrEqualTo(propCorners[0].x - 0.01f),
+                    what + ": the palm is under the prop");
+                Assert.That(Mathf.Max(leftEdge, rightEdge), Is.LessThanOrEqualTo(propCorners[2].x + 0.01f),
+                    what + ": the palm is under the prop");
+            }
+        }
+
         [UnityTest]
         public IEnumerator EasyLevel1_NewFlow_Hint_ShowsInCaption()
         {
