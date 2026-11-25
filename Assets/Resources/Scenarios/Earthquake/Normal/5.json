@@ -31,18 +31,6 @@
     },
     "choices": [
         {
-            "id": "fish",
-            "label": "Pick up the fish on the sand",
-            "icon": "icon_fish",
-            "action": "fish",
-            "safe": false,
-            "feedback": "Never go down the beach for fish. Go to high ground.",
-            "sources": [
-                "EQ-88",
-                "EQ-86"
-            ]
-        },
-        {
             "id": "watch",
             "label": "Stay and watch the waves",
             "icon": "icon_watch_waves",

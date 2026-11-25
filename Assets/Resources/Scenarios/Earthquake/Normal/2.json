@@ -26,19 +26,6 @@
     },
     "choices": [
         {
-            "id": "later",
-            "label": "Pack it later, when it shakes",
-            "icon": "icon_pack_later",
-            "action": "later",
-            "safe": false,
-            "heading": "Not ready yet",
-            "feedback": "Get it ready now. Keep it where you can grab it.",
-            "sources": [
-                "EQ-52",
-                "EQ-68"
-            ]
-        },
-        {
             "id": "hidden",
             "label": "Hide it under the boxes",
             "icon": "icon_bag_hidden",

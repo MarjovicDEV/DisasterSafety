@@ -11,25 +11,6 @@
     },
     "choices": [
         {
-            "id": "stairs",
-            "label": "Run down the stairs",
-            "icon": "icon_stairs",
-            "action": "stairs",
-            "safe": false,
-            "heading": "Not safe yet",
-            "feedback": "Stay where you are while it shakes. Walk out when it stops.",
-            "sources": ["EQ-16", "EQ-19", "EQ-20"]
-        },
-        {
-            "id": "window",
-            "label": "Stand by the window",
-            "icon": "icon_window",
-            "action": "window",
-            "safe": false,
-            "feedback": "Window glass can break. Stay away from windows.",
-            "sources": ["EQ-14", "EQ-21", "EQ-24"]
-        },
-        {
             "id": "cover",
             "label": "Duck and cover your head",
             "icon": "icon_cover",

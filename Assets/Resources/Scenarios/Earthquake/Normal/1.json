@@ -49,18 +49,6 @@
             ]
         },
         {
-            "id": "bed_window",
-            "label": "Move the bed under the window",
-            "icon": "icon_bed",
-            "action": "bed_window",
-            "safe": false,
-            "feedback": "Window glass can break. Keep your bed away from windows.",
-            "sources": [
-                "EQ-62",
-                "EQ-14"
-            ]
-        },
-        {
             "id": "books_top",
             "label": "Put books on top of the tall cabinet",
             "icon": "icon_books",

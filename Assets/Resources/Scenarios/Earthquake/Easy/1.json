@@ -28,24 +28,6 @@
             "safe": true,
             "feedback": "Duck under your desk. Hold on to it. Stay there until the shaking stops.",
             "sources": ["EQ-10", "EQ-11", "EQ-13"]
-        },
-        {
-            "id": "window",
-            "label": "Go to the window",
-            "icon": "icon_window",
-            "action": "window",
-            "safe": false,
-            "feedback": "Window glass can break. Stay away from windows.",
-            "sources": ["EQ-14", "EQ-21", "EQ-24"]
-        },
-        {
-            "id": "cabinet",
-            "label": "Stand by the tall cabinet",
-            "icon": "icon_cabinet",
-            "action": "cabinet",
-            "safe": false,
-            "feedback": "Cabinets and shelves can fall. Stay away from heavy things.",
-            "sources": ["EQ-14", "EQ-31"]
         }
     ]
 }

@@ -28,20 +28,6 @@
     },
     "choices": [
         {
-            "id": "run",
-            "label": "Run out the door",
-            "icon": "icon_door",
-            "action": "run",
-            "safe": false,
-            "heading": "Not safe yet",
-            "feedback": "Do not run while it shakes. Stay inside and take cover.",
-            "sources": [
-                "EQ-77",
-                "EQ-78",
-                "EQ-74"
-            ]
-        },
-        {
             "id": "glass",
             "label": "Stand by the glass cabinet",
             "icon": "icon_glass_cabinet",

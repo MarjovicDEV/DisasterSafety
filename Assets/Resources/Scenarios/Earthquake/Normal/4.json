@@ -62,17 +62,6 @@
                 "EQ-81",
                 "EQ-80"
             ]
-        },
-        {
-            "id": "post",
-            "label": "Stand by the electric post",
-            "icon": "icon_post",
-            "action": "post",
-            "safe": false,
-            "feedback": "Stay away from posts and power lines.",
-            "sources": [
-                "EQ-81"
-            ]
         }
     ]
 }

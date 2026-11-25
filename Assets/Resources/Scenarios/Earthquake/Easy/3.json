@@ -28,15 +28,6 @@
             "safe": true,
             "feedback": "Walk out with your class. Follow your teacher to the evacuation area.",
             "sources": ["EQ-34", "EQ-35", "EQ-37"]
-        },
-        {
-            "id": "push",
-            "label": "Run and push to the door",
-            "icon": "icon_push",
-            "action": "push",
-            "safe": false,
-            "feedback": "Walk. Do not run. Do not push.",
-            "sources": ["EQ-20", "EQ-36"]
         }
     ]
 }
