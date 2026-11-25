@@ -130,6 +130,29 @@ namespace DisasterSafety.Tests
             Assert.That(p.IsOpen(Episode.Fire, Difficulty.Easy), Is.True);
         }
 
+        [TestCase(1)]
+        [TestCase(4)]
+        [TestCase(7)]
+        public void NextEpisode_AppearsOnTheUnlockAndOnHardSevenReplay(int last)
+        {
+            var progress = ProgressState.NewGame();
+            progress.Open(Episode.Earthquake, Difficulty.Hard);
+            for (var n = 7; n >= 1; n--)
+                if (n != last)
+                    Assert.That(LevelCompletion.Record(progress, Hard(n), 2).OffersNextEpisode, Is.False);
+
+            var unlock = LevelCompletion.Record(progress, Hard(last), 2);
+            Assert.That(unlock.Opened, Is.EqualTo(new[] { "Fire/Easy" }));
+            Assert.That(unlock.OffersNextEpisode, Is.True);
+            for (var n = 1; n <= 7; n++)
+            {
+                var replay = LevelCompletion.Record(progress, Hard(n), 1);
+                Assert.That(replay.Opened, Is.Empty);
+                Assert.That(replay.OffersNextEpisode, Is.EqualTo(n == 7));
+                Assert.That(replay.BestStars, Is.EqualTo(2));
+            }
+        }
+
         [Test]
         public void CompletingTheLastEpisode_OpensNothing()
         {
@@ -139,6 +162,8 @@ namespace DisasterSafety.Tests
             for (var n = 1; n <= 7; n++) r = LevelCompletion.Record(p, new LevelId(Episode.Landslide, Difficulty.Hard, n), 3);
             Assert.That(r.EpisodeCompleted, Is.True);
             Assert.That(r.Opened, Is.Empty);
+            Assert.That(r.OffersNextEpisode, Is.False);
+            Assert.That(LevelCompletion.Record(p, r.Level, 3).OffersNextEpisode, Is.False);
         }
 
         [Test]

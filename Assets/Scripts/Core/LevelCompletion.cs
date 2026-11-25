@@ -16,6 +16,8 @@ namespace DisasterSafety.Core
         public bool DifficultyCompleted;
         /// <summary>The Episode's Hard Levels are all completed, which finishes the Episode; a Safety Reminder belongs here.</summary>
         public bool EpisodeCompleted;
+        /// <summary>Show the Fire shortcut on Level Completed in place of the next Level.</summary>
+        public bool OffersNextEpisode;
         /// <summary>What this completion opened, e.g. "Earthquake/Normal" or "Fire/Easy".</summary>
         public List<string> Opened = new List<string>();
     }
@@ -61,6 +63,9 @@ namespace DisasterSafety.Core
             result.BestStars = progress.StarsFor(id);
 
             result.DifficultyCompleted = AllCompleted(progress, id.Episode, id.Difficulty);
+            var earthquakeHard = id.Episode == Episode.Earthquake && id.Difficulty == Difficulty.Hard;
+            result.OffersNextEpisode = earthquakeHard && !result.FirstCompletion
+                && id.Number == Curriculum.LevelCount(Difficulty.Hard) && progress.IsOpen(Episode.Fire);
             if (!result.DifficultyCompleted) return result;
 
             if (id.Difficulty == Difficulty.Easy) OpenIfNew(progress, result, id.Episode, Difficulty.Normal);
@@ -69,7 +74,11 @@ namespace DisasterSafety.Core
             {
                 result.EpisodeCompleted = true;
                 var next = (int)id.Episode + 1;
-                if (next < Curriculum.Episodes.Count) OpenIfNew(progress, result, Curriculum.Episodes[next], Difficulty.Easy);
+                if (next < Curriculum.Episodes.Count)
+                {
+                    OpenIfNew(progress, result, Curriculum.Episodes[next], Difficulty.Easy);
+                    if (earthquakeHard && result.Opened.Count > 0) result.OffersNextEpisode = true;
+                }
             }
             return result;
         }
