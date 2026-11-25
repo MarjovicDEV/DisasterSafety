@@ -49,7 +49,7 @@ return function(L, ST)
       exit = { 261, 144 }, crowd = { { 296, 221 }, { 317, 218 } },
       crowdStop = { 270, 221 }, exitNear = { 279, 235 }, exitFar = { 329, 235 },
       outside = { 352, 230 }, wall = { 333, 131 }, wallStop = { 357, 230 },
-      parkingSign = { 452, 173 }, parking = { 430, 230 },
+      parkingSign = { 452, 173 }, parking = { 430, 230 }, curbY = 195,
     },
   }
   local A, B = M.LAYOUT.mall_a, M.LAYOUT.mall_b
@@ -255,6 +255,9 @@ return function(L, ST)
     return img
   end
 
+  -- C11: a low curb closes the far edge of the lot, and the painted parking lines are two art
+  -- pixels thick, so the Safe ending at (430, 230) reads as open parking. The Student stands in an
+  -- empty stall of the front row, beside the assembly sign.
   local function parkingLot(img)
     L.rect(img, 0, 0, 480, 270, R.glass[1])
     L.poly(img, { 310, 177, 344, 160, 382, 164, 408, 151, 435, 154,
@@ -262,16 +265,45 @@ return function(L, ST)
     L.poly(img, { 343, 187, 363, 180, 387, 183, 404, 173, 431, 177,
       447, 172, 479, 178, 479, 197, 343, 197 }, R.green[2])
     L.rect(img, 0, 194, 480, 76, ROAD)
-    L.hline(img, 381, 479, 196, R.paper[2])
-    for _, x in ipairs({ 403, 430, 458, 479 }) do
-      L.line(img, x, 198, x - 10, 213, R.paper[1])
+    -- The curb: an outline, a lit top face and a front face, 7 art pixels high in all.
+    L.hline(img, 374, 479, B.curbY - 6, O)
+    L.rect(img, 374, B.curbY - 5, 106, 2, R.floor[1])
+    L.rect(img, 374, B.curbY - 3, 106, 3, STONE)
+    L.hline(img, 374, 479, B.curbY, O)
+    -- The dividers lean away from a vanishing point at (240, 0), like the pavement edge.
+    local function divider(x, top, bottom)
+      L.line(img, x, top, x + math.floor((x - 240) * (bottom - top) / top + 0.5), bottom, K.W, 2)
     end
-    L.hline(img, 392, 479, 213, R.paper[2])
+    for _, x in ipairs({ 384, 412, 440 }) do divider(x, B.curbY + 2, 211) end
+    L.rect(img, 380, 213, 100, 2, K.W)
+    -- The Safe ending stands in the empty front stall between these two dividers.
+    for _, x in ipairs({ 398, 452 }) do divider(x, 217, 244) end
+    L.rect(img, 404, 246, 76, 2, K.W)
+    -- A green painted box inside that stall marks where people gather under the assembly-area sign.
+    L.rect(img, 409, 220, 45, 2, SIGN)
+    L.rect(img, 412, 241, 56, 2, SIGN)
+    L.line(img, 409, 220, 412, 241, SIGN, 2)
+    L.line(img, 452, 220, 466, 241, SIGN, 2)
     L.poly(img, { 329, 218, 374, 216, 407, 269, 329, 269 }, R.floor[2])
     L.line(img, 374, 216, 407, 269, R.floor[3])
     L.line(img, 376, 216, 409, 269, R.paper[2])
-    L.hline(img, 448, 479, 245, R.paper[2])
-    L.line(img, 476, 224, 462, 244, R.paper[1])
+  end
+
+  -- C11: the outer wall from (333, 0) is the mall's exterior. Its corner at x 373 runs from the
+  -- cornice down to a stone plinth, so the wall stop at (357, 230) reads as beside the building.
+  local function exteriorCorner(img)
+    L.rect(img, 333, 0, 41, 216, R.wall[3])
+    L.vline(img, 332, 0, 143, O)
+    L.vline(img, 372, 9, 207, R.wall[1])
+    L.vline(img, 373, 9, 208, O)
+    L.rect(img, 333, 0, 44, 7, R.wall[1])
+    L.hline(img, 333, 376, 7, R.wall[2])
+    L.hline(img, 333, 377, 8, O)
+    L.vline(img, 377, 0, 8, O)
+    L.hline(img, 333, 375, 208, O)
+    L.rect(img, 333, 209, 42, 7, STONE)
+    L.hline(img, 333, 374, 209, R.floor[1])
+    L.vline(img, 375, 208, 215, O)
   end
 
   local function stairs(img)
@@ -355,14 +387,12 @@ return function(L, ST)
     pane(img, 93, 82, 60, 36)
     pane(img, 157, 82, 69, 36)
     pane(img, 230, 82, 72, 36)
-    L.rect(img, 333, 118, 41, 98, R.wall[3])
-    L.vline(img, 373, 118, 216, O)
-    L.vline(img, 372, 118, 215, R.wall[1])
     tiledFloor(img, 215, 374)
     L.poly(img, { 328, 216, 374, 216, 407, 269, 328, 269 }, R.floor[2])
     L.hline(img, 329, 385, 229, R.floor[3])
     L.hline(img, 329, 392, 247, R.floor[3])
     L.vline(img, 328, 219, 269, R.floor[3])
+    exteriorCorner(img)
     local x, y = table.unpack(B.exit)
     box(img, x, y, 70, 77, R.metal)
     -- The right side is open to the daylight and the exterior pavement.
