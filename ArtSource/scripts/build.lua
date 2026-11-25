@@ -22,7 +22,7 @@ if want("v1") then
 local BG = dofile(here .. "background.lua")(L)
 local CH = dofile(here .. "characters.lua")(L)
 local UI = dofile(here .. "ui.lua")(L)
-local TU = dofile(here .. "tutorial.lua")(L, CH, UI)
+local TU = dofile(here .. "tutorial.lua")(L, UI)
 
 -- How to Play Tutorial Pages: Tutorial/<name>_0.png and _1.png
 for _, page in ipairs(TU.pages) do
@@ -40,9 +40,6 @@ L.saveFrames(BG.birdFrames(), "Background/bird", "Background/bird", 160)
 -- Characters
 L.saveFrames(CH.studentFrames(false), "Characters/student_boy", "Characters/student_boy", 110)
 L.saveFrames(CH.studentFrames(true), "Characters/student_girl", "Characters/student_girl", 110)
--- Bantay frames: 0 idle, 1 wag, 2 blink, 3 talk
-L.saveFrames({ CH.bantay("idle"), CH.bantay("wag"), CH.bantay("blink"), CH.bantay("talk") },
-  "Characters/bantay", "Characters/bantay", 200)
 
 -- UI kit
 for name, set in pairs(UI.BUTTONS) do
@@ -54,7 +51,6 @@ for name, set in pairs(UI.BUTTONS) do
 end
 L.save(UI.panel(), "UI/panel", "UI/panel")
 L.save(UI.bubble(), "UI/bubble", "UI/bubble")
-L.save(UI.bubbleTail(), "UI/bubble_tail", "UI/bubble_tail")
 L.save(UI.inputBox(), "UI/input_box", "UI/input_box")
 L.save(UI.switch(true), "UI/switch_on", "UI/switch_on")
 L.save(UI.switch(false), "UI/switch_off", "UI/switch_off")

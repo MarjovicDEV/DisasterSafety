@@ -1,4 +1,4 @@
--- Walking students (boy and girl in school uniform) and Bantay, the guide dog.
+-- Walking students (boy and girl in school uniform) for the menu courtyard.
 
 return function(L)
   local P = L.P
@@ -106,74 +106,6 @@ return function(L)
     local frames = {}
     for f = 0, 5 do frames[#frames + 1] = M.student(f, girl) end
     return frames
-  end
-
-  -- Bantay: sitting dog with a yellow hard hat. 44x44.
-  -- pose: "idle", "wag", "blink", "talk"
-  function M.bantay(pose)
-    local img = L.newImage(44, 44)
-    local cx = 21
-    -- tail
-    if pose == "wag" then
-      L.line(img, 30, 34, 38, 31, P.tan2, 3)
-      L.circle(img, 38, 31, 2, P.tan)
-    else
-      L.line(img, 30, 34, 36, 25, P.tan2, 3)
-      L.circle(img, 36, 25, 2, P.tan)
-    end
-    -- body
-    L.ellipse(img, cx, 31, 11, 10, P.tan)
-    L.ellipse(img, cx + 4, 33, 6, 7, P.tan2)
-    L.ellipse(img, cx, 32, 5, 7, P.cream)
-    -- paws
-    L.ellipse(img, cx - 5, 40, 3, 2, P.cream)
-    L.ellipse(img, cx + 5, 40, 3, 2, P.cream)
-    L.px(img, cx - 5, 40, P.paper3); L.px(img, cx + 5, 40, P.paper3)
-    -- collar with tag
-    L.rect(img, cx - 7, 23, 15, 2, P.red)
-    L.circle(img, cx, 26, 1, P.yellow)
-    -- ears
-    L.poly(img, { cx - 9, 9, cx - 5, 9, cx - 6, 22, cx - 11, 19 }, P.brown)
-    L.poly(img, { cx + 5, 9, cx + 9, 9, cx + 11, 19, cx + 6, 22 }, P.brown)
-    -- head
-    L.circle(img, cx, 15, 9, P.tan)
-    L.ellipse(img, cx, 19, 5, 3, P.cream)
-    -- eyes
-    if pose == "blink" then
-      L.hline(img, cx - 5, cx - 3, 14, P.ink)
-      L.hline(img, cx + 3, cx + 5, 14, P.ink)
-    else
-      L.rect(img, cx - 5, 13, 2, 3, P.ink)
-      L.rect(img, cx + 4, 13, 2, 3, P.ink)
-      L.px(img, cx - 5, 13, P.white)
-      L.px(img, cx + 4, 13, P.white)
-    end
-    L.px(img, cx - 7, 17, P.blush); L.px(img, cx + 7, 17, P.blush)
-    -- nose and mouth
-    L.rect(img, cx - 1, 17, 3, 2, P.ink)
-    L.px(img, cx, 17, P.gray3)
-    if pose == "talk" then
-      L.rect(img, cx - 2, 20, 5, 3, P.ink)
-      L.rect(img, cx - 1, 21, 3, 2, P.red3)
-    else
-      L.px(img, cx - 1, 20, P.ink); L.px(img, cx + 1, 20, P.ink)
-      L.px(img, cx - 2, 19, P.ink); L.px(img, cx + 2, 19, P.ink)
-    end
-    -- hard hat
-    for y = 0, 7 do
-      for x = cx - 10, cx + 10 do
-        local dx = (x - cx) / 9.5
-        local dy = (y - 7) / 7.5
-        if dx * dx + dy * dy <= 1 then L.px(img, x, y + 1, P.yellow) end
-      end
-    end
-    L.hline(img, cx - 12, cx + 12, 8, P.yellow2)
-    L.hline(img, cx - 12, cx + 12, 9, P.yellow2)
-    L.rect(img, cx - 1, 1, 3, 7, P.yellow2)
-    L.line(img, cx - 6, 4, cx - 4, 2, P.yellow3)
-    L.px(img, cx - 7, 6, P.yellow3)
-    L.outline(img, P.ink)
-    return img
   end
 
   return M

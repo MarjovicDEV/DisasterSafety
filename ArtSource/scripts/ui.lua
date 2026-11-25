@@ -75,22 +75,6 @@ return function(L)
   end
   M.BUBBLE_BORDER = 7
 
-  function M.bubbleTail()
-    local img = L.newImage(10, 9)
-    L.map(img, 0, 0, {
-      "#########.",
-      "#OOOOOOO#.",
-      ".#OOOOO#..",
-      "..#OOOO#..",
-      "...#OOO#..",
-      "....#OO#..",
-      ".....#O#..",
-      "......##..",
-      "..........",
-    }, { ["#"] = P.ink, ["O"] = P.white })
-    return img
-  end
-
   function M.inputBox()
     local img = L.newImage(20, 20)
     rounded(img, 0, 0, 20, 20, 3, P.ink)
