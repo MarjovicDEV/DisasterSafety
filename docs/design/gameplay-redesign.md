@@ -266,6 +266,12 @@ For the boy and the girl, 32x50, in the v2 style, drawn by `student.lua` as new 
 - **Result:** The researcher approved all seven Hard Levels with no changes requested, so no fixes were made.
 - **Checks before the play-through:** A new EditMode test confirms that all 15 Earthquake Levels use the Student flow and that each Setting has a v2 `LevelSetting` in the Level scene. The build, all 189 EditMode and 82 PlayMode tests passed, and all 180 screenshots matched the previous run byte for byte. Two Reactions overlap scenery slightly and were left as they are: at the Hard 4 stop it touches the top of the mall exit door frame, and at the Hard 6 stop it covers part of the "Meet here" board.
 
+### Earthquake cleanup (ticket 15, R7)
+
+- **Removed:** Bantay (component, sprites, source, drawing, lines and the bark sound), the 59 Choice pictures and the `picture` field of every Scenario, the Choice card flow in `LevelController` and the builder, the 11 v1 Setting backgrounds with their moving parts and scripts, the unused `story` and `choice` Tutorial Page pictures, and the speech bubble tail that only Bantay used. The "Earn Stars" Tutorial Page picture no longer shows Bantay.
+- **Rule:** `ScenarioRules` now requires an icon and an action spot on every Choice.
+- **Checks:** The build passed. EditMode has 186 tests (189 before, three picture tests removed) and PlayMode has 81 (82 before, the Bantay sprite test removed); all pass. The 15 `*_SafeChoice_ActsOutAndCompletes` PlayMode tests still play every Earthquake Level to Level Completed. The card-flow screenshots were removed. The Pause and three Level Completed screenshots now show the Student flow.
+
 ## Open questions
 
 None. Q15 and the voice blip were settled in the rollout interview (R1, R2).

@@ -1,6 +1,6 @@
 # Disaster Safety Game: agent rules
 
-An offline Android safety game for Grade 3-6 learners in the Philippines. It is built with Unity 6000.6.9f1, URP 2D, uGUI legacy `Text` and the Input System. Use the words in `CONTEXT.md` (Level, Scenario, Choice, Safe Choice, Feedback, Hint, Star, Setting, Phase, Bantay ...) in code, tests and docs.
+An offline Android safety game for Grade 3-6 learners in the Philippines. It is built with Unity 6000.6.9f1, URP 2D, uGUI legacy `Text` and the Input System. Use the words in `CONTEXT.md` (Level, Scenario, Choice, Safe Choice, Feedback, Hint, Star, Setting, Phase, Student ...) in code, tests and docs.
 
 ## Batch commands
 
@@ -27,7 +27,7 @@ Close the Unity Editor before any batch run, because a project open in the Edito
 
 - Every safety sentence cites a finding ID (`EQ-xx`) from `docs/research/`. A sentence with no finding stays out of the game, and a missing finding goes back to the user as a question.
 - The earthquake action is always "Duck, Cover, and Hold".
-- Bantay greets, guides, cheers and encourages. The Feedback card explains. Bantay's lines stay free of judging words and of Stars.
+- The Student greets, guides and cheers in the Caption and Reactions. The Feedback panel explains. The Student's lines stay free of judging words and of Stars.
 - Art and sound are finished, committed assets under `Assets/Art` and `Assets/Audio`, made by Claude from `ArtSource/`. Use them as they are. When a picture or sound is missing, ask the user for it.
 
 ## Git

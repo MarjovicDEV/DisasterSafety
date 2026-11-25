@@ -151,5 +151,5 @@ An adult who appears and acts in a Level: the Teacher, Mom or Dad. A Grown-up is
 _Avoid_: NPC, adult character, parent (Mom and Dad are named)
 
 **Bantay** (retired):
-The former guide dog. Removed by docs/adr/0001-v2-art-and-no-bantay.md; the Caption, the Student and Reactions took over its jobs. Its sprites stay in the repo only until every Level uses the new flow.
+The former guide dog. Removed by docs/adr/0001-v2-art-and-no-bantay.md; the Caption, the Student and Reactions took over its jobs. The Earthquake rollout cleanup (ticket 15) removed its code, art, sound and lines from the game.
 _Avoid_: using the name for anything new
