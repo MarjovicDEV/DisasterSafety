@@ -1533,21 +1533,22 @@ namespace DisasterSafety.EditorTools
 
         static void BuildPause(RectTransform ui, LevelController c)
         {
-            var box = Dialog(ui, "Pause", 900f, 720f, out c.pausePanel);
+            var box = Dialog(ui, "Pause", 1008f, 600f, out c.pausePanel);
             DialogTitle(box, UIStrings.PauseTitle, f8);
-            var br = Rect("Body", box);
-            Centered(br, 0f, 170f, 800f, 60f);
-            Label(br, UIStrings.PauseBody, f4, Ink, TextAnchor.MiddleCenter, shadow: false);
+            var identifier = Rect("Level", box);
+            Centered(identifier, 0f, 124f, 880f, 64f);
+            c.pauseLevelLabel = Label(identifier, "", f4, Ink, TextAnchor.MiddleCenter, shadow: false);
 
-            c.resumeButton = PauseButton(box, "Resume", "green", UIStrings.Resume, "icon_play", Sfx.Click, 40f);
-            c.restartButton = PauseButton(box, "Restart", "orange", UIStrings.Restart, "icon_replay", Sfx.Click, -100f);
-            c.quitButton = PauseButton(box, "Quit", "teal", UIStrings.QuitToMenu, "icon_home", Sfx.Back, -240f);
+            c.resumeButton = PauseButton(box, "Resume", "green", UIStrings.Resume, "icon_play", Sfx.Click, -228f, -16f);
+            c.restartButton = PauseButton(box, "Restart", "orange", UIStrings.Restart, "icon_replay", Sfx.Click, 228f, -16f);
+            c.pauseLevelsButton = PauseButton(box, "Levels", "blue", UIStrings.LevelsButton, "icon_levels", Sfx.Back, -228f, -172f);
+            c.pauseMainMenuButton = PauseButton(box, "MainMenu", "teal", UIStrings.PauseMainMenu, "icon_home", Sfx.Back, 228f, -172f);
         }
 
-        static Button PauseButton(RectTransform box, string name, string color, string label, string icon, Sfx sfx, float y)
+        static Button PauseButton(RectTransform box, string name, string color, string label, string icon, Sfx sfx, float x, float y)
         {
             var b = MakeButton(box, name, color, label, f6, S("Icons/" + icon), sfx);
-            Centered((RectTransform)b.transform, 0f, y, 640f, 120f);
+            Centered((RectTransform)b.transform, x, y, 424f, 124f);
             return b;
         }
     }

@@ -64,6 +64,9 @@ namespace DisasterSafety.Game.UI
         public Button resumeButton;
         public Button restartButton;
         public Button quitButton;
+        public Text pauseLevelLabel;
+        public Button pauseLevelsButton;
+        public Button pauseMainMenuButton;
 
         LevelId level;
         Scenario scenario;
