@@ -200,6 +200,21 @@ namespace DisasterSafety.EditorTools
                             break;
                     }
 
+                    // Hard 2's first step ends at the threshold exit. Its third ends at the shared turn.
+                    if (safe && s.SafeChoice.action == "route_field" && (i == 0 || i == 2))
+                    {
+                        bool atCorner = i == 2;
+                        student.PlaceAt(x, y);
+                        student.Face(atCorner);
+                        student.ShowFrame(atCorner ? StudentPose.Walk : StudentPose.Idle, 0);
+                        if (atCorner)
+                        {
+                            step.grownUp.Face(true);
+                            step.grownUp.Play(GrownUpPose.Walk);
+                        }
+                        shot(atCorner ? "h2-clear-corner" : "h2-door-exit", Array.Empty<ScreenPanel>());
+                    }
+
                     // Hard 4's seventh step, (352, 230), is the first point on the pavement outside the exit,
                     // before the parking. The steps are the four stair points, then (279, 235), (329, 235) and it.
                     if (safe && s.SafeChoice.action == "stairs" && i == 6)
@@ -232,6 +247,13 @@ namespace DisasterSafety.EditorTools
 
             Outcome("-safe", setting.ActOutFor(s.SafeChoice.action), true);
             Outcome("-stop", setting.ActOutFor(stopKey), false);
+            if (s.SafeChoice.action == "field")
+                Outcome("-tree-stop", setting.ActOutFor("tree"), false);
+            if (s.SafeChoice.action == "route_field")
+            {
+                Outcome("-tree-stop", setting.ActOutFor("route_tree"), false);
+                Outcome("-later-stop", setting.ActOutFor("route_later"), false);
+            }
             if (s.SafeChoice.action == "stairs")
             {
                 Outcome("-wall-stop", setting.ActOutFor("mall_wall"), false);
