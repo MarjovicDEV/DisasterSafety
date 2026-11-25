@@ -1002,23 +1002,31 @@ return function(L)
     return (sidePose(kind, "stand", { { 13, 22, 19, 23, 25 + f, 23 - f } }, 0.4))
   end
 
-  local function reachingHand(g, x, y)
-    rect(g, x - 1, y - 1, 3, 3, "S")
-    rect(g, x, y - 3, 2, 2, "S")
-    setc(g, x - 2, y - 1, "S")
-  end
-
-  -- Reach in front of the face on lifted heels. Only the forearms and hands stretch in frame 2.
+  -- Reach in front of the face on lifted heels (Normal 1; C7 in docs/specs/earthquake-changes.md).
+  -- The held prop's bottom edge sits at frame row 3 (art y 183 in the bedroom), for the picture over
+  -- the bed and the books on the cabinet. Both palms meet that edge: the fingertips touch it on frame
+  -- 1 and rise at most 1 pixel over it on frame 2, the peak, so neither prop floats. The head leans
+  -- back 2 pixels to make room; the near forearm rises straight in front of the face with the palm
+  -- over the wrist, and the far arm bends at the elbow. An outline separates the two palms, and the
+  -- face keeps its outline beside the near forearm.
   local TIPTOE = {
     boy = { down = 0, far = { 35, rep(10, 12) }, near = { 35, rep(15, 12) } },
     girl = { down = 0, far = { 40, rep(10, 7) }, near = { 40, rep(15, 7) } },
   }
+  -- A 3-pixel palm over the 2-pixel wrist that ends at (x, y): fingertips 4 rows above the wrist end,
+  -- thumb toward the face.
+  local function palmUp(g, x, y)
+    rect(g, x - 1, y - 4, 3, 3, "S")
+    rect(g, x - 1, y - 1, 2, 1, "S")
+    setc(g, x - 2, y - 2, "S")
+  end
   function M.reachup(kind, f)
     local shoulder = 22 + FH - heightOf(kind)
-    return actPose(kind, TIPTOE[kind], 0,
-      { 18, shoulder, 29, 19, 29, 5 - f },
-      { 15, shoulder + 1, 25, 22, 26, 8 - f },
-      { sleeveTo = 0.36, width = 2, hand = reachingHand, farTiptoe = true, nearTiptoe = true })
+    local wrist = 8 - f
+    return actPose(kind, TIPTOE[kind], -2,
+      { 18, shoulder, 30, 14, 29, wrist },
+      { 15, shoulder + 1, 24, 15, 24, wrist },
+      { sleeveTo = 0.36, width = 2, hand = palmUp, farTiptoe = true, nearTiptoe = true })
   end
 
   -- The Home card is pinned with the near hand. The far arm stays bent below the card.
