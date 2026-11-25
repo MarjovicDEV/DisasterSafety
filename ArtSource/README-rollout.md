@@ -148,7 +148,7 @@ All values are art pixels from the top left; one art pixel is four UI units. The
 | Box placed in the shelf | (397, 193) |
 | Calendar, star poster, clock | (398, 80), (432, 86), clock centre (259, 64) |
 
-Act-out points use the centre of the Student's feet (`BuildBedroomV2` in `ProjectBuilder.Level.cs`). A held prop is a child of the Student's body, so it mirrors with the Student. Its `holdOffset` puts its centre on the carry pose's hands at about (23, 30) in the 32x50 frame. The reach-up hands are about (28, 3).
+Act-out points use the centre of the Student's feet (`BuildBedroomV2` in `ProjectBuilder.Level.cs`). A held prop is a child of the Student's body, so it mirrors with the Student. Its `holdOffset` puts its centre on the carry pose's hands at about (23, 30) in the 32x50 frame. The reach-up palms are columns 22-25 and 27-30, with the fingertips on row 4 in frame 1 and row 3 in frame 2. The picture and the books are put up with their bottom row on frame row 3 (art y 183), so both palms touch its bottom edge and the fingertips rise at most 1 pixel over it at the peak.
 
 | Choice (`action`) | Steps and points | Stop |
 |---|---|---|
@@ -160,7 +160,7 @@ Act-out points use the centre of the Student's feet (`BuildBedroomV2` in `Projec
 
 Only the walk to the box passes a prop (the books beside the start). With three floor props and a bed on one floor line, one prop always sits between the start and something else, so the smallest prop takes that place.
 
-The Student's `carry`, `reachup` and `push` poses were redrawn for this slice (`student.lua`, "Action poses"): `carry` holds the load on level forearms and leans back; `reachup` raises both arms in front of the face on tiptoe; `push` leans forward with flat palms and the back foot pushing off. Frame counts stay 4, 2 and 2.
+The Student's `carry`, `reachup` and `push` poses were redrawn for this slice (`student.lua`, "Action poses"): `carry` holds the load on level forearms and leans back; `reachup` raises both arms in front of the face on tiptoe; `push` leans forward with flat palms and the back foot pushing off. Frame counts stay 4, 2 and 2. After the rollout (C7) the `reachup` hands were redrawn: the head leans back 2 pixels, the near forearm rises in front of the face with the palm over the wrist, and the far arm bends at the elbow. An outline separates the two palms, and the face keeps its outline beside the near forearm. Hard 1 keeps its own `home_reachup` frames.
 
 ## Home (`ArtSource/scripts/home_v2.lua`, part `home_v2`)
 
