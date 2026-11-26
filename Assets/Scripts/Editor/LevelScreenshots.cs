@@ -65,7 +65,7 @@ namespace DisasterSafety.EditorTools
             CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 3, "h3", "shop_window", StudentKind.Boy);
             CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 4, "h4", "run_push", StudentKind.Girl);
             CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 5, "h5", "pull_up", StudentKind.Boy);
-            CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 6, "h6", "no_note", StudentKind.Girl);
+            CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 6, "h6", "push_past_mom", StudentKind.Girl);
             CaptureSharedSettingLevel(c, scenarios, Shot, Difficulty.Hard, 7, "h7", "rumor", StudentKind.Boy);
         }
 
@@ -149,10 +149,21 @@ namespace DisasterSafety.EditorTools
                 var facingLeft = false;
                 var x = setting.StartX;
                 var y = setting.startY;
+                var capturedDadEntry = false;
                 var last = act.LastStep(!safe);
                 for (var i = 0; i <= last; i++)
                 {
                     var step = act.steps[i];
+                    // The Hard 6 aisle crosses the front leg at x 260. Render the walk at that point.
+                    const float tableLegX = 260f;
+                    if (act.key == "go_bag" && step.kind == ActOutStepKind.Walk && x > tableLegX && step.x <= tableLegX)
+                    {
+                        var fraction = Mathf.InverseLerp(x, step.x, tableLegX);
+                        student.PlaceAt(tableLegX, Mathf.Lerp(y, step.y, fraction));
+                        student.Face(true);
+                        student.ShowFrame(StudentPose.Walk, 1);
+                        shot("h6-table-crossing", Array.Empty<ScreenPanel>());
+                    }
                     if (step.Moves)
                     {
                         var carrying = step.kind == ActOutStepKind.Carry || step.kind == ActOutStepKind.CarryTo;
@@ -198,6 +209,24 @@ namespace DisasterSafety.EditorTools
                         case ActOutStepKind.GrownUp when step.grownUpAction == GrownUpAction.Pose:
                             step.grownUp.Play(step.grownUpPose);
                             break;
+                    }
+
+                    if (act.key == "call_adult" && step.kind == ActOutStepKind.Say && step.line == UIStrings.ActOutHelp)
+                    {
+                        student.PlaceAt(x, y);
+                        student.Face(facingLeft);
+                        student.ShowFrame(StudentPose.Call, 0);
+                        setting.PositionReaction();
+                        student.bubble.Say(step.line);
+                        shot("h5-doorway-call", Array.Empty<ScreenPanel>());
+                        student.bubble.Hide();
+                    }
+                    if (act.key == "call_adult" && step.kind == ActOutStepKind.GrownUp &&
+                        step.grownUpAction == GrownUpAction.Walk && !capturedDadEntry)
+                    {
+                        capturedDadEntry = true;
+                        step.grownUp.Play(GrownUpPose.Walk);
+                        shot("h5-dad-entry", Array.Empty<ScreenPanel>());
                     }
 
                     // Hard 2's first step ends at the threshold exit. Its third ends at the shared turn.
@@ -247,6 +276,8 @@ namespace DisasterSafety.EditorTools
 
             Outcome("-safe", setting.ActOutFor(s.SafeChoice.action), true);
             Outcome("-stop", setting.ActOutFor(stopKey), false);
+            if (s.SafeChoice.action == "call_adult")
+                Outcome("-wait-stop", setting.ActOutFor("wait_for_mom"), false);
             if (s.SafeChoice.action == "field")
                 Outcome("-tree-stop", setting.ActOutFor("tree"), false);
             if (s.SafeChoice.action == "route_field")
