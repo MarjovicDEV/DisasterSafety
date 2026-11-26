@@ -900,17 +900,13 @@ namespace DisasterSafety.EditorTools
             leavingMom.startY = floorY - 215f;
             leavingMom.PlaceAtStart();
             var bag = BuildHomeProp(leavingCast, "bag_closed", 73, 191, 20, 23);
-            var paper = BuildProp(leavingCast, "paper", "Level/v2/home_after_paper", 232, 180, Vector2.zero);
             var pen = BuildProp(leavingCast, "pen", "Level/v2/home_after_pen", 245, 181, Vector2.zero);
-            var note = BuildProp(leavingCast, "note", "Level/v2/home_after_note", 232, 180, Vector2.zero, visible: false);
+            var note = BuildProp(leavingCast, "note", "Level/v2/home_after_note", 232, 180, Vector2.zero);
 
+            setting.student = BuildStudent(group, withBubble: true);
             // Dad crosses the foreground while the Student stays in the doorway.
             injuredCast.SetAsLastSibling();
-            setting.student = BuildStudent(group, withBubble: true);
             ((RectTransform)setting.student.bubble.transform).sizeDelta = new Vector2(268f, 104f);
-            // This prop draws in front of the Student only while writing behind the table.
-            var tableFront = BuildProp(group, "table_front", "Level/v2/table_front",
-                174, 188, Vector2.zero, visible: false);
             setting.levelStarts = new[]
             {
                 new LevelStart
@@ -924,7 +920,7 @@ namespace DisasterSafety.EditorTools
                     level = "Earthquake/Hard/6", x = 286f, cast = leavingCast.gameObject,
                     reactionPosition = new Vector2(220f, 8f),
                     mirrorReactionAtRightEdge = true,
-                    props = new[] { bag, paper, pen, note, tableFront },
+                    props = new[] { bag, pen, note },
                     grownUps = new[] { leavingMom },
                 },
             };
@@ -934,12 +930,11 @@ namespace DisasterSafety.EditorTools
                 ActOutStep.Walk(282f, floorY - 236f),
                 ActOutStep.Walk(162f, floorY - 236f),
             };
-            var pickUpBag = crossRoom.Concat(new[]
+            var pickUpBag = new[]
             {
-                ActOutStep.Walk(106f, floorY - 225f),
                 ActOutStep.Pose(StudentPose.Crouch, 0.2f),
                 ActOutStep.PropPickUp(bag.gameObject),
-            });
+            };
 
             setting.actOuts = new[]
             {
@@ -994,21 +989,12 @@ namespace DisasterSafety.EditorTools
                 new ActOut
                 {
                     key = "go_bag",
-                    steps = new[]
+                    steps = crossRoom.Append(
+                        ActOutStep.WalkWith(leavingMom, 106f, floorY - 225f, new Vector2(32f, floorY - 183f))
+                    ).Concat(pickUpBag).Concat(new[]
                     {
-                        ActOutStep.Walk(282f, floorY - 208f),
-                        ActOutStep.PropShow(tableFront.gameObject),
-                        ActOutStep.Walk(238f, floorY - 208f),
-                        ActOutStep.Pose(StudentPose.Pack, 0.8f),
-                        ActOutStep.PropHide(paper.gameObject),
-                        ActOutStep.PropShow(note.gameObject),
-                        ActOutStep.Wait(0.3f),
-                        ActOutStep.Walk(282f, floorY - 208f),
-                        ActOutStep.PropHide(tableFront.gameObject),
-                    }.Concat(pickUpBag).Concat(new[]
-                    {
-                        ActOutStep.CarryWith(leavingMom, 56f, floorY - 212f, new Vector2(35f, floorY - 204f)),
-                        ActOutStep.CarryWith(leavingMom, 56f, floorY - 206f, new Vector2(40f, floorY - 175f)),
+                        ActOutStep.CarryWith(leavingMom, 56f, floorY - 212f, new Vector2(35f, floorY - 178f)),
+                        ActOutStep.CarryWith(leavingMom, 56f, floorY - 206f, new Vector2(40f, floorY - 171f)),
                         ActOutStep.Pose(StudentPose.Carry),
                     }).ToArray(),
                 },
@@ -1028,8 +1014,9 @@ namespace DisasterSafety.EditorTools
                 },
                 new ActOut
                 {
-                    key = "no_note", stopAfter = 5, stopPose = StudentPose.Carry,
-                    steps = pickUpBag.Append(ActOutStep.CarryTo(91f, floorY - 232f)).ToArray(),
+                    key = "push_past_mom", stopPose = StudentPose.Carry,
+                    steps = crossRoom.Append(ActOutStep.Walk(106f, floorY - 225f)).Concat(pickUpBag)
+                            .Append(ActOutStep.CarryTo(91f, floorY - 232f)).ToArray(),
                 },
             };
             return setting;
