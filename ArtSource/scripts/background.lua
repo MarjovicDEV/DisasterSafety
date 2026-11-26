@@ -249,7 +249,7 @@ return function(L, ST)
   -- wall with its blue top edge runs to the right and carries the pale school sign above the
   -- greeting. Palms rise against the sky; the schoolyard shows through the gate bars.
   M.GATE = { x0 = 176, x1 = 296, top = 128, groundY = 206, wallTop = 112,
-    sign = { 316, 124, 150, 20 }, tricycle = { 330, 199 } }
+    sign = { 316, 124, 150, 20 }, tricycle = { 330, 177 } }
 
   function M.gate()
     local G = M.GATE
@@ -382,13 +382,13 @@ return function(L, ST)
     return frames
   end
 
-  -- The parked blue tricycle (76x44, top-left at x, y), facing right as on the street photo: the
+  -- The parked blue tricycle (114x66, top-left at x, y), facing right as on the street photo: the
   -- covered blue sidecar with its oval window in front, the red motorcycle behind it, one roof
   -- over both and a windshield at the front.
   function M.tricycle(img, x, y)
     local blue = R.blue
     -- its shadow on the road
-    L.ellipse(img, x + 38, y + 42, 36, 2, R.road[3])
+    L.ellipse(img, x + 57, y + 63, 54, 3, R.road[3])
     local t = L.newImage(76, 44)
     -- the motorcycle behind the sidecar: rear wheel, tank, seat, fork, front wheel, lamp
     L.circle(t, 50, 37, 5, O); L.circle(t, 50, 37, 2, R.metal[2])
@@ -422,6 +422,7 @@ return function(L, ST)
     -- a white painted script line on the side
     for i = 0, 14, 2 do L.px(t, 9 + i, 24 + (i % 4 == 0 and 0 or 1), P.white) end
     L.outline(t, O)
+    t:resize(114, 66)
     L.blit(img, t, x, y)
   end
 
