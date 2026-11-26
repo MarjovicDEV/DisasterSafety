@@ -22,6 +22,28 @@ namespace DisasterSafety.Game
         public const string SettingsTitle = "Settings";
         public const string Music = "Music";
         public const string Sounds = "Sounds";
+        public const string MusicCredits = "Music Credits";
+        public const string MusicCreator = "Kevin MacLeod (incompetech.com)";
+        public const string MusicLicence = "Licensed under Creative Commons: By Attribution 4.0";
+        public const string MusicLicenceLink = "https://creativecommons.org/licenses/by/4.0/";
+        public const string MusicFormatCredit = "All tracks were loudness matched and converted to WAV.";
+        public const string MusicTrimCredit = "Cherry Blossom, Prelude and Action, Machinations and Piano Between were trimmed.";
+        public const string MusicFadeCredit = "Loops have short edge fades. Piano Between fades at the end.";
+        public const string MusicSourceLink = "https://incompetech.com/music/royalty-free/index.html?isrc=";
+
+        public static readonly (MusicTrack Track, string Title, string Isrc)[] MusicRecordings =
+        {
+            (MusicTrack.SomewhereSunny, "Somewhere Sunny", "USUAN1100493"),
+            (MusicTrack.EasyLemon, "Easy Lemon (60 second)", "USUAN1200077"),
+            (MusicTrack.CherryBlossom, "Cherry Blossom", "USUAN1100382"),
+            (MusicTrack.HappyAlley, "Happy Alley", "USUAN1100482"),
+            (MusicTrack.PreludeAndAction, "Prelude and Action", "USUAN1100887"),
+            (MusicTrack.LightSting, "Light Sting", "USUAN1100433"),
+            (MusicTrack.CheeryMonday, "Cheery Monday", "USUAN1700065"),
+            (MusicTrack.BRoll, "B-Roll", "USUAN1100315"),
+            (MusicTrack.Machinations, "Machinations", "USUAN1100510"),
+            (MusicTrack.PianoBetween, "Piano Between", "USUAN1100490")
+        };
 
         public const string Done = "DONE";
         public static string TutorialPageTitle(int index, string title) => "Step " + (index + 1) + ": " + title;

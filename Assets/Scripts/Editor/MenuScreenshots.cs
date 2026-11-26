@@ -74,6 +74,7 @@ namespace DisasterSafety.EditorTools
                 ("03-difficulty", new[] { c.difficultyPanel }, MenuBackground.DrillGround),
                 ("04-levels", new[] { c.levelPanel }, MenuBackground.Classroom),
                 ("05-settings", new[] { c.mainPanel, c.dimmer, c.settingsPanel }, gate),
+                ("05-music-credits", new[] { c.mainPanel, c.dimmer, c.musicCreditsPanel }, gate),
                 ("06-howtoplay", new[] { c.mainPanel, c.dimmer, c.howToPlayPanel }, gate),
                 ("07-exit", new[] { c.mainPanel, c.dimmer, c.exitPanel }, gate),
                 ("08-name", new[] { c.mainPanel, c.dimmer, c.namePanel }, gate),
@@ -81,7 +82,8 @@ namespace DisasterSafety.EditorTools
             };
             var all = new[]
             {
-                c.mainPanel, c.settingsPanel, c.howToPlayPanel, c.exitPanel, c.namePanel, c.studentPanel, c.episodePanel,
+                c.mainPanel, c.settingsPanel, c.musicCreditsPanel, c.howToPlayPanel, c.exitPanel,
+                c.namePanel, c.studentPanel, c.episodePanel,
                 c.difficultyPanel, c.levelPanel, c.dimmer
             };
 

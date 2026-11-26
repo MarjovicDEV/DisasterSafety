@@ -17,6 +17,7 @@ namespace DisasterSafety.Game.UI
         [Header("Screens")]
         public ScreenPanel mainPanel;
         public ScreenPanel settingsPanel;
+        public ScreenPanel musicCreditsPanel;
         public ScreenPanel howToPlayPanel;
         public ScreenPanel exitPanel;
         public ScreenPanel namePanel;
@@ -37,6 +38,8 @@ namespace DisasterSafety.Game.UI
         public SwitchButton musicSwitch;
         public SwitchButton soundSwitch;
         public Button settingsBack;
+        public Button musicCreditsButton;
+        public Button musicCreditsBack;
 
         [Header("How to Play")]
         public Button howToPlayBack;
@@ -145,7 +148,8 @@ namespace DisasterSafety.Game.UI
 
         ScreenPanel[] AllPanels() => new[]
         {
-            mainPanel, settingsPanel, howToPlayPanel, exitPanel, namePanel, studentPanel, episodePanel, difficultyPanel, levelPanel, dimmer
+            mainPanel, settingsPanel, musicCreditsPanel, howToPlayPanel, exitPanel, namePanel, studentPanel,
+            episodePanel, difficultyPanel, levelPanel, dimmer
         };
 
         void Wire()
@@ -172,6 +176,8 @@ namespace DisasterSafety.Game.UI
             exitButton.onClick.AddListener(nav.RequestExit);
 
             settingsBack.onClick.AddListener(nav.Back);
+            musicCreditsButton.onClick.AddListener(nav.OpenMusicCredits);
+            musicCreditsBack.onClick.AddListener(nav.Back);
             musicSwitch.button.onClick.AddListener(() =>
             {
                 GameServices.Audio.MusicOn = !GameServices.Audio.MusicOn;
@@ -230,7 +236,7 @@ namespace DisasterSafety.Game.UI
         // Screen changes ---------------------------------------------------------
         static bool IsDialog(MenuScreen s) =>
             s == MenuScreen.Settings || s == MenuScreen.HowToPlay || s == MenuScreen.ExitConfirm || s == MenuScreen.NameEntry
-            || s == MenuScreen.StudentPick;
+            || s == MenuScreen.StudentPick || s == MenuScreen.MusicCredits;
 
         ScreenPanel PanelFor(MenuScreen s)
         {
@@ -238,6 +244,7 @@ namespace DisasterSafety.Game.UI
             {
                 case MenuScreen.Main: return mainPanel;
                 case MenuScreen.Settings: return settingsPanel;
+                case MenuScreen.MusicCredits: return musicCreditsPanel;
                 case MenuScreen.HowToPlay: return howToPlayPanel;
                 case MenuScreen.ExitConfirm: return exitPanel;
                 case MenuScreen.NameEntry: return namePanel;

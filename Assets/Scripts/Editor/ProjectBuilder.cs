@@ -132,8 +132,14 @@ namespace DisasterSafety.EditorTools
                 lib = ScriptableObject.CreateInstance<AudioLibrary>();
                 AssetDatabase.CreateAsset(lib, path);
             }
-            lib.menuMusic = Clip("Music/bgm_menu");
-            lib.levelMusic = Clip("Music/bgm_level");
+            var playable = GameServices.LoadScenarios().Playable;
+            var required = Curriculum.AllLevels().Where(playable.IsPlayable)
+                .SelectMany(level => new[] { EpisodeMusic.ForLevel(level), EpisodeMusic.ForCompletion(level.Episode) })
+                .Concat(EpisodeMusic.MenuPlaylist).ToHashSet();
+            lib.music = new AudioClip[Enum.GetValues(typeof(MusicTrack)).Length];
+            foreach (var (track, title, _) in UIStrings.MusicRecordings)
+                if (required.Contains(track))
+                    lib.music[(int)track] = ImportMusic(title);
             lib.click = Clip("Sfx/sfx_click");
             lib.back = Clip("Sfx/sfx_back");
             lib.open = Clip("Sfx/sfx_open");
@@ -151,6 +157,28 @@ namespace DisasterSafety.EditorTools
             lib.opened = Clip("Sfx/sfx_opened");
             lib.blip = Clip("Sfx/sfx_blip");
             EditorUtility.SetDirty(lib);
+        }
+
+        static AudioClip ImportMusic(string title)
+        {
+            var path = AudioRoot + "Music/" + title + ".wav";
+            if (!(AssetImporter.GetAtPath(path) is AudioImporter importer))
+                throw new FileNotFoundException("Missing approved music for playable content.", path);
+
+            var settings = new AudioImporterSampleSettings
+            {
+                loadType = AudioClipLoadType.CompressedInMemory,
+                compressionFormat = AudioCompressionFormat.Vorbis,
+                sampleRateSetting = AudioSampleRateSetting.PreserveSampleRate,
+                quality = 0.22f,
+                preloadAudioData = true
+            };
+            if (!importer.defaultSampleSettings.Equals(settings))
+            {
+                importer.defaultSampleSettings = settings;
+                importer.SaveAndReimport();
+            }
+            return AssetDatabase.LoadAssetAtPath<AudioClip>(path);
         }
 
         static AudioClip Clip(string rel)
@@ -230,6 +258,7 @@ namespace DisasterSafety.EditorTools
             c.dimmer = Panel(Stretch(Rect("Dimmer", ui)), ScreenPanel.Style.Fade);
             Img(c.dimmer.transform, S("UI/solid"), new Color(Ink.r, Ink.g, Ink.b, 0.72f), raycast: true);
             BuildSettings(ui, c);
+            BuildMusicCredits(ui, c);
             BuildHowToPlay(ui, c);
             BuildExit(ui, c);
             BuildNameEntry(ui, c);
@@ -633,7 +662,37 @@ namespace DisasterSafety.EditorTools
             DialogTitle(box, UIStrings.SettingsTitle, f8);
             c.musicSwitch = SettingRow(box, "Music", UIStrings.Music, S("Icons/icon_music"), 110f);
             c.soundSwitch = SettingRow(box, "Sounds", UIStrings.Sounds, S("Icons/icon_sound"), -40f);
-            c.settingsBack = DialogButton(box, "Back", "orange", UIStrings.Back, S("Icons/icon_back"), Sfx.Back, 0f, 320f);
+            c.settingsBack = DialogButton(box, "Back", "orange", UIStrings.Back, S("Icons/icon_back"), Sfx.Back, -225f, 320f);
+            c.musicCreditsButton = DialogButton(box, "MusicCredits", "teal", UIStrings.MusicCredits, null, Sfx.Open, 170f, 460f);
+        }
+
+        static void BuildMusicCredits(RectTransform ui, MainMenuController c)
+        {
+            var box = Dialog(ui, "MusicCredits", 1720f, 960f, out c.musicCreditsPanel);
+            DialogTitle(box, UIStrings.MusicCredits, f6);
+            CreditLine(box, "Creator", UIStrings.MusicCreator, 44f, 125f, 1632f);
+            CreditLine(box, "Licence", UIStrings.MusicLicence, 44f, 164f, 1632f);
+            CreditLine(box, "LicenceLink", UIStrings.MusicLicenceLink, 44f, 203f, 1632f);
+
+            var top = 254f;
+            foreach (var (_, title, isrc) in UIStrings.MusicRecordings)
+            {
+                CreditLine(box, title, title, 44f, top, 420f);
+                CreditLine(box, isrc, UIStrings.MusicSourceLink + isrc, 476f, top, 1200f);
+                top += 41f;
+            }
+
+            CreditLine(box, "Formats", UIStrings.MusicFormatCredit, 44f, 680f, 1632f);
+            CreditLine(box, "Trims", UIStrings.MusicTrimCredit, 44f, 718f, 1632f);
+            CreditLine(box, "Fades", UIStrings.MusicFadeCredit, 44f, 756f, 1632f);
+            c.musicCreditsBack = DialogButton(box, "Back", "orange", UIStrings.Back, S("Icons/icon_back"), Sfx.Back, 0f, 320f);
+        }
+
+        static void CreditLine(RectTransform box, string name, string copy, float x, float top, float width)
+        {
+            var row = Rect(name, box);
+            TopLeft(row, x, -top, width, 40f);
+            Label(row, copy, f3, Ink, TextAnchor.MiddleLeft, shadow: false);
         }
 
         static SwitchButton SettingRow(RectTransform box, string name, string text, Sprite icon, float y)
