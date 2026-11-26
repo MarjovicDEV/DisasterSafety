@@ -12,7 +12,8 @@ namespace DisasterSafety.Core
         StudentPick,
         EpisodeSelect,
         DifficultySelect,
-        LevelSelect
+        LevelSelect,
+        MusicCredits
     }
 
     /// <summary>What the navigator needs to know about the Learner record.</summary>
@@ -99,6 +100,10 @@ namespace DisasterSafety.Core
         }
 
         public void OpenSettings() => GoTo(MenuScreen.Settings);
+        public void OpenMusicCredits()
+        {
+            if (Current == MenuScreen.Settings) GoTo(MenuScreen.MusicCredits);
+        }
         public void OpenHowToPlay() => GoTo(MenuScreen.HowToPlay);
         public void RequestExit() => GoTo(MenuScreen.ExitConfirm);
         public void CancelExit() => GoTo(MenuScreen.Main);
@@ -128,6 +133,7 @@ namespace DisasterSafety.Core
             switch (Current)
             {
                 case MenuScreen.Main: GoTo(MenuScreen.ExitConfirm); break;
+                case MenuScreen.MusicCredits: GoTo(MenuScreen.Settings); break;
                 case MenuScreen.LevelSelect: GoTo(MenuScreen.DifficultySelect); break;
                 case MenuScreen.DifficultySelect: GoTo(MenuScreen.EpisodeSelect); break;
                 default: GoTo(MenuScreen.Main); break;
