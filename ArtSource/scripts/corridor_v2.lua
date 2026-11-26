@@ -2,9 +2,8 @@
 -- docs/adr/0001-v2-art-and-no-bantay.md and the same ramps as classroom_v2.lua: one dark outline
 -- around each object, three shades per colour with light from the left. The Student's feet stand
 -- on y = 230, as in the classroom.
--- Left to right: two hanging plant pots, the hall window, the start spot, the plain inner wall
--- (where the Student takes cover), and the stairs going down on the right.
--- The pots are a separate sprite with 2 sway frames. Placements (top-left, art pixels) are in
+-- Left to right: the hall window, the start spot, the plain inner wall (where the Student takes
+-- cover), and the stairs going down on the right. Placements (top-left, art pixels) are in
 -- M.LAYOUT and ArtSource/README-rollout.md.
 
 return function(L, ST)
@@ -21,21 +20,18 @@ return function(L, ST)
     metal = { rgb(214, 218, 228), rgb(170, 176, 192), rgb(124, 128, 146) },
     paper = { ST.KEY.W, ST.KEY.w, ST.KEY.v },
     leaf = { rgb(120, 196, 104), rgb(84, 160, 80), rgb(56, 118, 62) },
-    pot = { rgb(232, 140, 96), rgb(200, 104, 70), rgb(156, 72, 52) },
     step = { rgb(226, 220, 206), rgb(200, 192, 176), rgb(160, 150, 134) },
   }
   local CEIL = rgb(232, 216, 178)
 
   M.LAYOUT = {
     floorY = 230,
-    pots = { 6, 15 },          -- the pot sprite, 72x110
     window = { 84, 66, 92, 92 },
     innerWall = { 240, 15, 92, 192 },
     stairsX = 404,             -- the top step starts here
     start = 214,
     -- Act-out points (the Student's centre x): the cover spot at the inner wall, and the stops
-    spots = { cover = 286, stairs = 394, window = 190, plants = 82 },
-    underPots = 38,            -- the spot right under the pots
+    spots = { cover = 286, stairs = 394, window = 190 },
   }
 
   local function box(img, x, y, w, h, ramp)
@@ -103,7 +99,7 @@ return function(L, ST)
       box(img, lx, 14, 40, 5, R.paper)
     end
 
-    -- the hall window (the pots hang left of it)
+    -- the hall window
     local w = M.LAYOUT.window
     hallWindow(img, w[1], w[2], w[3], w[4])
 
@@ -187,37 +183,6 @@ return function(L, ST)
     box(img, 439, 128, 14, 12, R.paper)
     L.poly(img, { 442, 131, 450, 131, 446, 137 }, R.leaf[3])
     return img
-  end
-
-  -- Two hanging plant pots on chains, 72x110, 2 sway frames (the pots swing 1 pixel) --------------
-  function M.potFrames()
-    local frames = {}
-    for f = 0, 1 do
-      local img = L.newImage(72, 110)
-      for i, cx in ipairs({ 18, 46 }) do
-        local sway = ((f + i) % 2 == 0) and 1 or -1
-        -- the hook in the ceiling and the chain
-        L.rect(img, cx - 2, 0, 5, 2, R.metal[3])
-        L.line(img, cx, 2, cx + sway, 84, R.metal[3])
-        L.line(img, cx + sway - 7, 92, cx + sway, 84, R.metal[3])
-        L.line(img, cx + sway + 7, 92, cx + sway, 84, R.metal[3])
-        local px = cx + sway - 9
-        -- leaves over the rim, then the pot
-        L.circle(img, px + 4, 89, 4, R.leaf[2]); L.circle(img, px + 14, 88, 4, R.leaf[2])
-        L.circle(img, px + 9, 86, 4, R.leaf[2])
-        L.circle(img, px + 3, 88, 2, R.leaf[1]); L.circle(img, px + 8, 85, 2, R.leaf[1])
-        L.rect(img, px + 1, 92, 18, 4, R.pot[2])      -- rim
-        L.hline(img, px + 1, px + 18, 92, R.pot[1])
-        L.poly(img, { px + 2, 96, px + 17, 96, px + 14, 106, px + 5, 106 }, R.pot[2])
-        L.vline(img, px + 3, 96, 99, R.pot[1]); L.vline(img, px + 5, 97, 105, R.pot[1])
-        L.vline(img, px + 14, 97, 105, R.pot[3]); L.vline(img, px + 15, 96, 102, R.pot[3])
-        -- trailing leaves down the left side
-        L.rect(img, px - 1, 96, 2, 6, R.leaf[3]); L.rect(img, px, 102, 2, 3, R.leaf[2])
-      end
-      L.outline(img, O)
-      frames[#frames + 1] = img
-    end
-    return frames
   end
 
   return M

@@ -375,7 +375,7 @@ namespace DisasterSafety.EditorTools
         }
 
         // Easy 2 in the corridor (e2-*): the Action Bar, the last Safe step (cover at the inner wall) and
-        // an Unsafe stop before the hanging pots. The girl acts here, so both Students are seen in the shots.
+        // an Unsafe stop at the top of the stairs. The girl acts here, so both Students are seen in the shots.
         static void CaptureCorridor(LevelController c, ScenarioLibrary scenarios, Action<string, ScreenPanel[]> shot)
         {
             var s = PrepareLevel(c, scenarios, new LevelId(Episode.Earthquake, Difficulty.Easy, 2));
@@ -406,8 +406,8 @@ namespace DisasterSafety.EditorTools
             student.bubble.Say(UIStrings.ReactionSafe);
             shot("e2-safe", new ScreenPanel[0]);
 
-            var plants = setting.ActOutFor("plants");
-            Stand(plants.StopX(setting.startX), plants.stopPose);
+            var stairs = setting.ActOutFor("stairs");
+            Stand(stairs.StopX(setting.startX), stairs.stopPose);
             student.bubble.Say(UIStrings.ReactionWait);
             shot("e2-stop", new ScreenPanel[0]);
             student.bubble.Hide();

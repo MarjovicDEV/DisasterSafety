@@ -146,7 +146,7 @@ namespace DisasterSafety.EditorTools
             return setting;
         }
 
-        // Easy 2's corridor in the v2 art: hanging pots (left), the hall window, the start spot by the
+        // Easy 2's corridor in the v2 art: the hall window (left), the start spot by the
         // Grade 4 door, the plain inner wall (x 240-331) and the stairs going down (top step at x 404).
         // Placements and Act-out points are in ArtSource/README-rollout.md (corridor).
         static LevelSetting BuildCorridorV2(RectTransform world)
@@ -164,16 +164,13 @@ namespace DisasterSafety.EditorTools
             setting.shaker = shaking.gameObject.AddComponent<SceneShaker>();
             setting.shaker.target = shaking;
             setting.shaker.shakeSeconds = 2.5f;
-            setting.shaker.wobblers = new[]
-            {
-                BuildLevelAnimation(shaking, "Hanging Pots", Frames("Level/v2/corridor_pots", 2), 6, 15, 4f, onlyWhileShaking: true),
-            };
+            setting.shaker.wobblers = new SpriteAnimator[0];
 
             setting.student = BuildStudent(shaking, withBubble: true);
             setting.startX = 214f;
             setting.actOuts = new[]
             {
-                // The Safe Choice: walk to the inner wall, away from the glass and the pots, crouch low,
+                // The Safe Choice: walk to the inner wall, away from the glass, crouch low,
                 // then kneel and cover the head and neck with both arms, and hold until the shaking calms.
                 new ActOut
                 {
@@ -186,8 +183,8 @@ namespace DisasterSafety.EditorTools
                         ActOutStep.Calm(),
                     },
                 },
-                // Walk toward the spot under the pots (x 38) and stop just before it (the right pot ends at x 63).
-                new ActOut { key = "plants", stopAfter = 0, steps = new[] { ActOutStep.Walk(82f) } },
+                // The Unsafe Choice: run toward the stairs while it shakes, and stop at the top step (x 404).
+                new ActOut { key = "stairs", stopAfter = 0, steps = new[] { ActOutStep.Run(394f) } },
             };
             return setting;
         }

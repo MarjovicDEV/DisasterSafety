@@ -81,7 +81,7 @@ namespace DisasterSafety.Tests
         }
 
         [TestCase("Easy/1", "run desk", "Find something strong to hide under.", "EQ-10")]
-        [TestCase("Easy/2", "cover plants", "There is no desk here. What can cover your head?", "EQ-47 EQ-48")]
+        [TestCase("Easy/2", "cover stairs", "There is no desk here. What can cover your head?", "EQ-47 EQ-48")]
         [TestCase("Easy/3", "stay walk", "Follow your teacher, one step at a time.", "EQ-35 EQ-36")]
         [TestCase("Hard/1", "own_way meeting_place meet_home phone_numbers", "Where will your family meet after it shakes?", "EQ-64")]
         [TestCase("Hard/2", "route_post route_tree route_field route_later", "Which way has nothing that can fall?", "EQ-56")]
@@ -107,7 +107,7 @@ namespace DisasterSafety.Tests
         [TestCase("Easy/1", "run", "icon_door", "door", "EQ-16 EQ-19 EQ-20 EQ-35")]
         [TestCase("Easy/1", "desk", "icon_desk", "desk", "EQ-10 EQ-11 EQ-13")]
         [TestCase("Easy/2", "cover", "icon_cover", "cover", "EQ-47 EQ-48 EQ-49")]
-        [TestCase("Easy/2", "plants", "icon_plants", "plants", "EQ-30 EQ-31")]
+        [TestCase("Easy/2", "stairs", "icon_stairs", "stairs", "EQ-77 EQ-18")]
         public void ClassroomAndCorridorChoices_KeepTheirIconActionAndFeedbackSources(
             string level, string id, string icon, string action, string sources)
         {
@@ -153,20 +153,20 @@ namespace DisasterSafety.Tests
             Assert.That(s.UsesActions, Is.True);
             Assert.That(s.setting, Is.EqualTo(ScenarioSettings.Corridor));
             Assert.That(ScenarioSettings.ActionSpots(ScenarioSettings.Corridor),
-                Is.EquivalentTo(new[] { "cover", "plants" }));
-            Assert.That(s.choices.Select(c => c.action), Is.EqualTo(new[] { "cover", "plants" }));
+                Is.EquivalentTo(new[] { "cover", "stairs" }));
+            Assert.That(s.choices.Select(c => c.action), Is.EqualTo(new[] { "cover", "stairs" }));
             Assert.That(s.choices.Select(c => c.icon),
-                Is.EqualTo(new[] { "icon_cover", "icon_plants" }));
+                Is.EqualTo(new[] { "icon_cover", "icon_stairs" }));
             // The rollout changes no Scenario text (docs/specs/earthquake-rollout.md, Data).
             Assert.That(s.choices.Select(c => c.label), Is.EqualTo(new[]
             {
                 "Duck and cover your head",
-                "Stand under the hanging plants",
+                "Run to the stairs",
             }));
             Assert.That(s.choices.Select(c => c.feedback), Is.EqualTo(new[]
             {
                 "Duck down low. Cover your head with your arms or a book.",
-                "Hanging pots can swing and fall. Stay away from them.",
+                "Do not run while it shakes. Stay where you are and cover your head.",
             }));
         }
 

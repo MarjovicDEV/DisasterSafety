@@ -14,7 +14,7 @@ return function(L, ST)
   M.GLASS = { rgb(196, 232, 248), rgb(150, 204, 232), rgb(108, 164, 204) }
   M.GREEN = { rgb(120, 196, 104), rgb(84, 160, 80), rgb(56, 118, 62) }
   M.RED = { rgb(240, 130, 126), rgb(214, 64, 64), rgb(128, 40, 52) }
-  M.POT = { rgb(232, 140, 96), rgb(200, 104, 70), rgb(156, 72, 52) }   -- the v2 plant pots
+  M.POT = { rgb(232, 140, 96), rgb(200, 104, 70), rgb(156, 72, 52) }   -- terracotta, as on the old v2 plant pots
   M.METAL = { rgb(214, 218, 228), rgb(170, 176, 192), rgb(124, 128, 146) }
   M.SAGE = { rgb(156, 204, 176), rgb(124, 180, 150), rgb(96, 152, 126) }
   M.NAVY = { K.m, K.N, K.n }
@@ -397,18 +397,6 @@ return function(L, ST)
       ".ooooo.ooooo....",
     }, K)
     out.cover = c
-
-    -- plants: a pot hanging on its chains
-    local p = L.newImage(16, 16)
-    L.vline(p, 8, 0, 4, M.NAVY[3])
-    L.line(p, 3, 8, 8, 4, M.NAVY[3]); L.line(p, 13, 8, 8, 4, M.NAVY[3])
-    L.circle(p, 5, 7, 2, M.GREEN[2]); L.circle(p, 11, 7, 2, M.GREEN[2]); L.circle(p, 8, 6, 2, M.GREEN[1])
-    M.box(p, 2, 9, 12, 3, M.POT)
-    L.poly(p, { 3, 12, 12, 12, 11, 15, 4, 15 }, M.POT[2])
-    L.vline(p, 4, 12, 14, M.POT[1]); L.vline(p, 11, 12, 14, M.POT[3])
-    L.rect(p, 1, 9, 1, 4, M.GREEN[3])
-    L.outline(p, O)
-    out.plants = p
 
     -- Easy 3, classroom after the shaking --------------------------------------------------
     -- stay: the Student stays low behind the top and the front legs of the desk.

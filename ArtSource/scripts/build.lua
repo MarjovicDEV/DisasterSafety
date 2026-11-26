@@ -161,11 +161,10 @@ if want("icons_v2") then
   end
 end
 
--- The v2 corridor (Easy 2): Level/v2/bg_corridor and the hanging pots, corridor_pots_0/1
+-- The v2 corridor (Easy 2): Level/v2/bg_corridor
 if want("corridor_v2") then
   local CO = dofile(here .. "corridor_v2.lua")(L, ST)
   L.save(CO.background(), "Level/v2/bg_corridor", "Level/v2/bg_corridor")
-  L.saveFrames(CO.potFrames(), "Level/v2/corridor_pots", "Level/v2/corridor_pots", 160)
 end
 
 -- The v2 bedroom (Normal 1): Level/v2/bg_bedroom and its moving parts, bedroom_bed, bedroom_box,

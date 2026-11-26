@@ -20,13 +20,13 @@
             "sources": ["EQ-47", "EQ-48", "EQ-49"]
         },
         {
-            "id": "plants",
-            "label": "Stand under the hanging plants",
-            "icon": "icon_plants",
-            "action": "plants",
+            "id": "stairs",
+            "label": "Run to the stairs",
+            "icon": "icon_stairs",
+            "action": "stairs",
             "safe": false,
-            "feedback": "Hanging pots can swing and fall. Stay away from them.",
-            "sources": ["EQ-30", "EQ-31"]
+            "feedback": "Do not run while it shakes. Stay where you are and cover your head.",
+            "sources": ["EQ-77", "EQ-18"]
         }
     ]
 }

@@ -54,7 +54,7 @@ namespace DisasterSafety.Core
         public static bool HasActionSpot(string setting, string action) => ActionSpots(setting).Contains(action);
 
         static readonly string[] ClassroomSpots = { "door", "desk" };
-        static readonly string[] CorridorSpots = { "cover", "plants" };
+        static readonly string[] CorridorSpots = { "cover", "stairs" };
         static readonly string[] ClassroomAfterSpots = { "stay", "walk" };
         static readonly string[] BedroomSpots = { "picture", "low_shelf", "books_top" };
 

@@ -9,6 +9,7 @@ Claude made the design, the art, the sounds and the Scenario files. ChatGPT/Code
 - Q1: Level 2 happens in a school **corridor** (Setting key `corridor`). It has windows on one side, hanging flower pots, a bulletin board, classroom doors and stairs at the end. There is no desk (EQ-47). The Learner-facing word is "corridor" (Philippine school usage; EQ-30 says "corridors").
 - Q2: The Level 2 Safe Choice is "Duck and cover your head". The Feedback names "arms or a book" (EQ-47, EQ-48, EQ-49). The picture shows a child crouched low with both arms over the head.
 - Q3: Level 2 has 4 Choices. The Unsafe Choices are run down the stairs, stand by the window (this repeats Level 1 on purpose, to reinforce it) and stand under the hanging plants. The hanging pots are the corridor's wobble part.
+- Update 2026-11-26: the hanging pots looked out of place in the corridor and were removed. Easy 2 now has 2 Choices: Duck and cover your head (Safe) and Run to the stairs (Unsafe, EQ-77, EQ-18). The Student runs toward the stairs and stops at the top step.
 - Q4: Level 3 happens in the same classroom after the shaking (Setting key `classroom_after`). The door is open and the teacher waves from it. There are 3 Choices. No primary source supports a 4th classroom Choice, for example "get your bag", so there is none. The teacher is a new sprite: a woman teacher, because most Philippine elementary teachers are women.
 - Q5: `Scenario.setting` selects the scene art. There are exactly three Settings:
 

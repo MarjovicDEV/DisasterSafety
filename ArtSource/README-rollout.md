@@ -29,7 +29,6 @@ The `icons=` filter writes only the named icons, so each slice adds its icons wi
 | Icon | Choice | Slice |
 |---|---|---|
 | `icon_cover` | Duck and cover your head | Easy 2 |
-| `icon_plants` | Stand under the hanging plants | Easy 2 |
 | `icon_picture` | Hang a big picture over the bed | Normal 1 |
 | `icon_low_shelf` | Put heavy things on a low shelf | Normal 1 |
 | `icon_books` | Put books on top of the tall cabinet | Normal 1 |
@@ -57,7 +56,7 @@ The `icons=` filter writes only the named icons, so each slice adds its icons wi
 | `icon_elevator` | Ride the elevator down | Hard 3 |
 | `icon_shop_window` | Stand by the glass shop window | Hard 3 |
 | `icon_strong_table` (reused) | Duck under the food court table | Hard 3 |
-| `icon_stairs` (reused) | Walk down the stairs and out | Hard 4 |
+| `icon_stairs` (reused) | Walk down the stairs and out; Run to the stairs | Hard 4, Easy 2 |
 | `icon_elevator` (reused) | Take the elevator down | Hard 4 |
 | `icon_run_push` | Run and push to get out | Hard 4 |
 | `icon_mall_wall` | Wait by the mall wall outside | Hard 4 |
@@ -73,13 +72,12 @@ The `icons=` filter writes only the named icons, so each slice adds its icons wi
 ## Corridor (`ArtSource/scripts/corridor_v2.lua`, part `corridor_v2`)
 
 Run: `aseprite.exe -b --script-param root=<project> --script-param only=corridor_v2 --script ArtSource/scripts/build.lua`.
-Writes `Level/v2/bg_corridor` (480x270) and `Level/v2/corridor_pots_0/1` (72x110, 160 ms, the pots sway while the ground shakes).
+Writes `Level/v2/bg_corridor` (480x270). It has no hanging pots: the Unsafe Choice is running to the stairs.
 
 All values are art pixels; one art pixel is four UI units. The floor line (the Student's feet) is y 230, as in the v2 classroom.
 
 | Part | Place (top-left) or x |
 |---|---|
-| Hanging pots sprite | (6, 15); pot bodies about x 15-34 and 44-62, y 107-121; the spot under the pots is x 38 |
 | Hall window | (84, 66), 92x92; its sill ends at x 180 |
 | Grade 4 door and sign | door (184, 112), 50x92; sign (191, 96) |
 | Plain inner wall | (240, 15), 92x192; its shadow falls on x 332-335 |
@@ -94,7 +92,7 @@ Act-out points (the Student's centre x, `BuildCorridorV2` in `ProjectBuilder.Lev
 |---|---|---|
 | Start | `idle` | 214, in front of the Grade 4 door |
 | Safe: `cover` | walk to 270, crouch to 286, `cover` for 1.5 s, calm the shaking | 286, the middle of the inner wall |
-| `plants` | walk to 82, stop | 82, just short of the spot under the pots |
+| `stairs` | run to 394, stop | 394, at the top step (x 404) |
 
 ## Classroom after (`ArtSource/scripts/classroom_after_v2.lua`, part `classroom_after_v2`)
 
