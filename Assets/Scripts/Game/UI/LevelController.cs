@@ -533,6 +533,7 @@ namespace DisasterSafety.Game.UI
 
             dimmer.Show();
             completedPanel.Show();
+            AudioManager.PlayCompletionMusic(level.Episode);
             AudioManager.Play(Sfx.Complete);
             stars.Play(attempt.Stars);
             if (confetti != null) confetti.Burst();

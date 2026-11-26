@@ -1,3 +1,5 @@
+using System;
+using DisasterSafety.Core;
 using UnityEngine;
 
 namespace DisasterSafety.Game
@@ -8,9 +10,8 @@ namespace DisasterSafety.Game
     {
         public const string ResourcePath = "AudioLibrary";
 
-        public AudioClip menuMusic;
-        /// <summary>The calmer loop for the Level scene.</summary>
-        public AudioClip levelMusic;
+        // Indexed by MusicTrack. Unused Episodes can leave their clips out of the build.
+        public AudioClip[] music = Array.Empty<AudioClip>();
         public AudioClip click;
         public AudioClip back;
         public AudioClip open;
@@ -29,9 +30,7 @@ namespace DisasterSafety.Game
         /// <summary>The Student's voice blip under a Reaction.</summary>
         public AudioClip blip;
 
-        /// <summary>The music for a scene: the Level loop in the Level scene (when it exists), else the menu loop.</summary>
-        public AudioClip MusicFor(string sceneName) =>
-            sceneName == GameScenes.Level && levelMusic != null ? levelMusic : menuMusic;
+        public AudioClip Get(MusicTrack track) => (int)track < music.Length ? music[(int)track] : null;
 
         public AudioClip Get(Sfx sfx)
         {

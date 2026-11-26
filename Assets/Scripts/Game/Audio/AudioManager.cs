@@ -1,4 +1,5 @@
 using System.Collections;
+using DisasterSafety.Core;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -33,9 +34,14 @@ namespace DisasterSafety.Game
         /// <summary>The share of the music volume left while the ground shakes.</summary>
         const float DuckedShare = 0.35f;
 
+        enum MusicMode { Menu, Gameplay, Completed }
+
         static AudioManager instance;
 
         AudioLibrary library;
+        AudioPreferences preferences;
+        MusicMode mode;
+        int menuTrack;
         AudioSource music;
         AudioSource effects;
         AudioSource pitched;
@@ -46,7 +52,11 @@ namespace DisasterSafety.Game
 
         public static void EnsureExists()
         {
-            if (instance != null) return;
+            if (instance != null)
+            {
+                instance.BindPreferences();
+                return;
+            }
             GameServices.Initialize();
             var go = new GameObject("AudioManager");
             DontDestroyOnLoad(go);
@@ -56,6 +66,13 @@ namespace DisasterSafety.Game
 
         /// <summary>The song playing now (or fading in), for tests.</summary>
         public static AudioClip CurrentMusic => instance != null ? instance.music.clip : null;
+
+        public static void PlayCompletionMusic(Episode episode)
+        {
+            EnsureExists();
+            var clip = instance.library?.Get(EpisodeMusic.ForCompletion(episode));
+            instance.SelectMusic(clip, MusicMode.Completed);
+        }
 
         public static void Play(Sfx sfx, float volume = 1f) => Play(sfx, volume, 1f);
 
@@ -73,7 +90,7 @@ namespace DisasterSafety.Game
         public static void PlayBlip(float pitch)
         {
             EnsureExists();
-            if (!GameServices.Audio.SoundOn || instance.library == null || instance.library.Get(Sfx.Blip) == null) return;
+            if (GameServices.Audio?.SoundOn != true || instance.library == null || instance.library.Get(Sfx.Blip) == null) return;
             BlipsPlayed++;
             instance.PlayOneShot(Sfx.Blip, 0.45f, pitch);
         }
@@ -86,7 +103,6 @@ namespace DisasterSafety.Game
         {
             library = Resources.Load<AudioLibrary>(AudioLibrary.ResourcePath);
             music = gameObject.AddComponent<AudioSource>();
-            music.loop = true;
             music.playOnAwake = false;
             music.volume = 0f;
             effects = gameObject.AddComponent<AudioSource>();
@@ -94,14 +110,9 @@ namespace DisasterSafety.Game
             pitched = gameObject.AddComponent<AudioSource>();
             pitched.playOnAwake = false;
 
-            if (library != null)
-            {
-                music.clip = library.MusicFor(SceneManager.GetActiveScene().name);
-                if (music.clip != null) music.Play();
-            }
             SceneManager.activeSceneChanged += OnSceneChanged;
-            GameServices.Audio.Changed += ApplyPreferences;
-            ApplyPreferences();
+            BindPreferences();
+            OnSceneChanged(default, SceneManager.GetActiveScene());
         }
 
         /// <summary>Lowers the music for a while (the earthquake rumble), then brings it back.</summary>
@@ -109,75 +120,120 @@ namespace DisasterSafety.Game
         {
             EnsureExists();
             instance.duckUntil = Time.unscaledTime + seconds;
+            instance.ducked = true;
             instance.ApplyPreferences();
         }
 
         void OnDestroy()
         {
             SceneManager.activeSceneChanged -= OnSceneChanged;
-            if (GameServices.Audio != null) GameServices.Audio.Changed -= ApplyPreferences;
+            if (preferences != null) preferences.Changed -= ApplyPreferences;
             if (instance == this) instance = null;
         }
 
-        // The menu and the Level have their own songs: fade out, swap, fade back in.
+        void BindPreferences()
+        {
+            if (preferences == GameServices.Audio) return;
+            if (preferences != null) preferences.Changed -= ApplyPreferences;
+            preferences = GameServices.Audio;
+            if (preferences != null) preferences.Changed += ApplyPreferences;
+            ApplyPreferences();
+        }
+
         void OnSceneChanged(Scene from, Scene to)
         {
+            BindPreferences();
             if (library == null) return;
-            var clip = library.MusicFor(to.name);
-            if (clip == null || clip == music.clip) return;
+
+            if (to.name == GameScenes.Level)
+                SelectMusic(library.Get(EpisodeMusic.ForLevel(GameServices.CurrentLevel)), MusicMode.Gameplay);
+            else if (mode != MusicMode.Menu || music.clip == null)
+                SelectMusic(MenuClip, MusicMode.Menu);
+        }
+
+        AudioClip MenuClip => library.Get(EpisodeMusic.MenuPlaylist[menuTrack]);
+
+        void SelectMusic(AudioClip clip, MusicMode next)
+        {
+            if (next == mode && clip == music.clip && !swapping) return;
+            var canFadeOut = mode != MusicMode.Completed && next != MusicMode.Completed
+                && music.clip != null && clip != null;
+            mode = next;
             duckUntil = 0f;
+            ducked = false;
             if (fade != null) StopCoroutine(fade);
-            fade = StartCoroutine(SwapMusic(clip));
+
+            if (canFadeOut)
+            {
+                swapping = true;
+                fade = StartCoroutine(SwapMusic(clip));
+            }
+            else
+            {
+                swapping = false;
+                // A completion cue belongs to its panel. Stop it immediately when leaving or replaying.
+                music.volume = 0f;
+                PlayMusic(clip);
+                fade = StartCoroutine(FadeMusic(0.6f));
+            }
         }
 
         IEnumerator SwapMusic(AudioClip clip)
         {
-            swapping = true;
-            yield return FadeMusic(0f, 0.4f);
-            music.clip = clip;
-            music.Play();
-            yield return FadeMusic(TargetVolume, 0.8f);
+            yield return FadeMusic(0.4f, fadeOut: true);
+            PlayMusic(clip);
+            yield return FadeMusic(0.8f);
             swapping = false;
             fade = null;
-            ApplyPreferences();
         }
 
-        // A missing preference (GameServices reset while a music swap is still fading) counts as music off.
-        float TargetVolume => GameServices.Audio == null || !GameServices.Audio.MusicOn ? 0f
+        void PlayMusic(AudioClip clip)
+        {
+            music.Stop();
+            music.clip = clip;
+            music.loop = mode == MusicMode.Gameplay;
+            if (clip != null) music.Play();
+        }
+
+        float TargetVolume => GameServices.Audio?.MusicOn != true ? 0f
             : Time.unscaledTime < duckUntil ? MusicVolume * DuckedShare : MusicVolume;
 
         void ApplyPreferences()
         {
-            if (swapping) return; // the swap fades to the current target when it ends
+            if (swapping) return; // The swap reads the latest preference as it fades in.
             if (fade != null) StopCoroutine(fade);
-            fade = StartCoroutine(FadeMusic(TargetVolume, 0.6f));
+            fade = StartCoroutine(FadeMusic(0.6f));
         }
 
         void Update()
         {
-            // The duck ends on its own: fade back up once its time is over.
             if (ducked && Time.unscaledTime >= duckUntil)
             {
                 ducked = false;
                 ApplyPreferences();
             }
-            else if (!ducked && Time.unscaledTime < duckUntil) ducked = true;
+
+            if (mode == MusicMode.Menu && !swapping && music.clip != null && !music.isPlaying)
+            {
+                menuTrack = (menuTrack + 1) % EpisodeMusic.MenuPlaylist.Count;
+                PlayMusic(MenuClip);
+            }
         }
 
-        IEnumerator FadeMusic(float target, float seconds)
+        IEnumerator FadeMusic(float seconds, bool fadeOut = false)
         {
             var start = music.volume;
             for (var t = 0f; t < seconds; t += Time.unscaledDeltaTime)
             {
-                music.volume = Mathf.Lerp(start, target, t / seconds);
+                music.volume = Mathf.Lerp(start, fadeOut ? 0f : TargetVolume, t / seconds);
                 yield return null;
             }
-            music.volume = target;
+            music.volume = fadeOut ? 0f : TargetVolume;
         }
 
         void PlayOneShot(Sfx sfx, float volume, float pitch)
         {
-            if (!GameServices.Audio.SoundOn || library == null) return;
+            if (GameServices.Audio?.SoundOn != true || library == null) return;
             var clip = library.Get(sfx);
             if (clip == null) return;
             // PlayOneShot follows the source's pitch, so a pitched sound gets its own source.
