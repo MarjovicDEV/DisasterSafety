@@ -358,15 +358,14 @@ At 2400 by 1080 the art fills the width and is anchored at the bottom, so the to
 | Roof and trusses | The roof's underside fills rows 0 to 63 from the left edge to its end at x 438. A zigzag truss runs below it, with the bottom chord at row 80. The sky shows beyond the end of the roof. |
 | Columns | Five pale columns, 10 pixels wide, stand at x 12, 108, 204, 300 and 396 from the chord to the back of the slab at row 154. Trees, hills and grass show between them. |
 | Sign | The plain "EVACUATION CENTER" sign hangs from the chord on two wires at (14, 86), 88 by 26. It has dark letters on a pale board, below the Level label and left of the Caption at both sizes. |
-| Hoop | The backboard is at (24, 116). The orange rim is on row 141, and the pole stands on the court at x 41. |
-| Court | A concrete slab runs from row 154 to the bottom. Its right edge runs from (466, 155) to (430, 269). The green court has white lines, a centre circle and a key in front of the hoop. Its right baseline runs from (430, 162) to (410, 269), so the go home stop stands inside the paint. |
+| Hoop | The poles stand at (28, 207) and (414, 207). Slim orange rims face inward on row 153. |
+| Court | The side-view court has a centre circle and a painted free-throw lane at each end. |
 | Tents and people | A blue tent stands at the back from x 118 to 168 and an orange tent from x 310 to 362. Both bases are on row 158. An adult and a child stand at the blue tent's opening, with feet at (128, 160) and (140, 161). They stay left of the Reaction at the Safe ending. Another adult and child stand at the back on the right, at (374, 156) and (388, 157). |
 | Mat | The woven mat runs from x 96 to 208 at row 226 and from x 86 to 218 at row 246. |
 | Mom | Mom sits on the mat in `Sit` with her feet at (118, 236). She is a Grown-up actor, not part of the background. |
 | Radio | The radio is two props at (136, 208), both 28 by 30: `evacuation_area_radio` (off) and `evacuation_area_radio_on` (two frames of 260 milliseconds, with yellow sound arcs above the radio). The sound arcs stay inside the mat's x range. |
 | Neighbours | Three neighbours chat at (272, 164), 86 by 62, in two frames of 600 milliseconds: a nod and a hand gesture. They reuse the v2 Grown-up frames, with new clothes below the shoulders and grey hair on the older neighbour. |
-| Path and houses | Through the open right side, a sandy earth path starts just outside the slab at x 432 on the bottom row. It climbs the grass beside the slab to the door of the right-hand house and flares to the right edge at the bottom. Its colour sets it apart from the concrete slab. |
-| After the earthquake | A road sign at the right edge, beside the path, leans to the left. There is no fire, smoke or hurt person. |
+| Court edge | Grass borders the open right edge of the concrete slab. |
 
 ### Hard 7, listen to the radio
 
@@ -375,7 +374,7 @@ The Student starts in Idle at (228, 230). Mom sits on the mat and stays there in
 | Choice | Act-out points |
 |---|---|
 | radio | Walk to (182, 236) and sit beside Mom. The radio then turns on beside her, because Mom has no reaching pose. |
-| go_home | Walk to (376, 248) and stop on the court, right of the neighbours, at the open side. The Student stands inside the court paint, and the right edge (x 392) stays well left of the path start (x 432). The Reaction sits 20 art pixels to the right of the Student. |
+| go_home | Walk to (376, 248) and stop on the court, right of the neighbours, at the open side. The Student stands inside the court paint, and the right edge (x 392) stays well left of the grass border (x 432). The Reaction sits 20 art pixels to the right of the Student. |
 | rumor | Walk to (254, 228), face the neighbours, take the `Call` pose and say "Did you hear...?" The Student's right edge (x 270) stays left of the first neighbour. The Reaction sits 18 art pixels to the left of the Student. |
 | phone_all_day | Take the `Phone` pose in place at the start. |
 

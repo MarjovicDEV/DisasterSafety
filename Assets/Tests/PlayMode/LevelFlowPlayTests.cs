@@ -2148,8 +2148,8 @@ namespace DisasterSafety.Tests
                 for (var row = 87; row < 111; row++)
                     if (SameColour(art[x, row], ArtSignLetters)) letters++;
             Assert.That(letters, Is.GreaterThanOrEqualTo(60), "the sign reads EVACUATION CENTER in dark letters");
-            for (var x = 33; x <= 49; x++)
-                Assert.That(SameColour(art[x, 141], ArtOrange), Is.True, "the hoop's orange rim at x " + x);
+            foreach (var x in new[] { 33, 40, 403, 408 })
+                Assert.That(SameColour(art[x, 153], ArtOrange), Is.True, "the hoop's orange rim at x " + x);
 
             int Count(Color32 colour, int x0, int x1)
             {
@@ -2192,12 +2192,8 @@ namespace DisasterSafety.Tests
             for (var x = 376 - 14; x <= 376 + 14; x++)
                 Assert.That(IsAny(art[x, 249], ArtCourtPaint), Is.True, "the go home stop stands on the court paint at x " + x);
 
-            // The earth path toward home starts outside the slab at x 432 on the bottom row and leaves the
-            // right edge. It is a different colour from the concrete slab, so it reads as a way out.
             for (var x = HardSevenPathStart; x < 480; x++)
-                Assert.That(IsAny(art[x, 269], ArtPath), Is.True, "the path toward home leaves the right edge at x " + x);
-            for (var x = 0; x < HardSevenPathStart - 4; x++)
-                Assert.That(IsAny(art[x, 269], ArtPath), Is.False, "no path on the court at x " + x);
+                Assert.That(IsAny(art[x, 269], ArtOutsideGrass), Is.True, "grass beyond the slab at x " + x);
             Assert.That(IsAny(art[476, 180], ArtOutsideGrass), Is.True, "grass outside the open right side of the court");
         }
 
@@ -2206,7 +2202,7 @@ namespace DisasterSafety.Tests
         [Test]
         public void HardLevel7_CourtArt_IsTheApprovedPicture()
         {
-            Assert.That(ArtHash("bg_evacuation_area"), Is.EqualTo("59c7364333628074942d75538db58c791606051c7590f207cbe9f0dad99ec3b4"));
+            Assert.That(ArtHash("bg_evacuation_area"), Is.EqualTo("4a8794734d0bfd1ff6a0dc7189342ff1836e7e3cf02054b00652a1859207189a"));
             Assert.That(ArtHash("evacuation_area_neighbours_0"), Is.EqualTo("d605f2c40343e399d5a80bbb5763eaacf90a5324642d14862caeb8ed88678eb6"));
             Assert.That(ArtHash("evacuation_area_neighbours_1"), Is.EqualTo("f13d9c09745f1a72f2ddf11a6dcfa5ac70c4beee5b639e5b6ddf2865a846fdb2"));
             Assert.That(ArtHash("evacuation_area_radio"), Is.EqualTo("09609f3a56884d5753bf9fc23f0ea03032636594ffb5e462844fb2b4931ee5b2"));
@@ -2230,8 +2226,6 @@ namespace DisasterSafety.Tests
         };
         static readonly Color32[] ArtCourtPaint =
             { new Color32(170, 214, 190, 255), new Color32(142, 192, 168, 255), new Color32(112, 160, 140, 255) };
-        static readonly Color32[] ArtPath =
-            { new Color32(214, 186, 140, 255), new Color32(190, 158, 110, 255), new Color32(152, 122, 84, 255) };
         static readonly Color32[] ArtOutsideGrass =
             { new Color32(158, 224, 112, 255), new Color32(124, 204, 90, 255), new Color32(100, 180, 72, 255) };
         static readonly Color32[] ArtMat =

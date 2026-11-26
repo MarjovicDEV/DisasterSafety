@@ -5,9 +5,7 @@
 -- truss above the hoop, the family's woven mat (Mom sits on it as a Grown-up actor, and the radio
 -- is a prop on it), two tents at the back of the court with an adult and a child at the first
 -- tent's opening, the open court where the Student starts, the neighbours chatting (a two-frame
--- moving part), two more people at the back, and the open right side, where the path
--- leaves the court and climbs toward the houses. A single leaning road sign beside the path shows
--- that the earthquake has happened; there is no fire, smoke or hurt person.
+-- moving part), two more people at the back, and grass beyond the court.
 -- Settings are 480x270 art pixels. Positions are art pixels from the top left, and character
 -- points are at the feet. The Act-out points are recorded in ArtSource/README-rollout.md.
 return function(L, ST, GU)
@@ -29,7 +27,6 @@ return function(L, ST, GU)
     rust = { rgb(196, 102, 78), rgb(160, 72, 58), rgb(116, 48, 44) },
     column = { rgb(252, 242, 216), rgb(232, 218, 186), rgb(198, 182, 148) },
     floor = { P.concrete, P.concrete2, P.concrete3 },
-    path = { rgb(214, 186, 140), rgb(190, 158, 110), rgb(152, 122, 84) },
     court = { rgb(170, 214, 190), rgb(142, 192, 168), rgb(112, 160, 140) },
     grass = { P.green4, P.grass, P.grass2 },
     board = { rgb(252, 252, 248), rgb(228, 232, 238), rgb(190, 196, 210) },
@@ -46,7 +43,6 @@ return function(L, ST, GU)
     columns = { 12, 108, 204, 300, 396 }, columnWidth = 10,
     slabEdge = { 466, 155, 430, 269 },
     sign = { 14, 86, 88, 26 },
-    hoop = { 24, 116 }, hoopBaseY = 168,
     -- Each tent is { left x, base row, width }. People stand with their feet at { x, row }.
     tents = { blue = { 118, 158, 50 }, orange = { 310, 158, 52 } },
     tentPeople = { adult = { 128, 160 }, child = { 140, 161 } },
@@ -55,7 +51,6 @@ return function(L, ST, GU)
     mom = { 118, 236 },
     radio = { 136, 208 }, radioSize = { 28, 30 }, radioMs = 260,
     neighbours = { 272, 164 }, neighboursSize = { 86, 62 }, neighboursMs = 600,
-    pathStartX = 432,
     hard7 = {
       start = { 228, 230 },
       sit = { 182, 236 },
@@ -110,22 +105,8 @@ return function(L, ST, GU)
     noise(img, 0, 141, 479, A.backEdgeY - 1, R.grass[2], R.grass[1], 160, 1210)
   end
 
-  -- The houses outside the open right side.
-  local function houses(img)
-    local function house(x, y, w, ramp)
-      box(img, x, y, w, 20, R.wall)
-      L.poly(img, { x - 4, y + 1, x + math.floor(w / 2), y - 12, x + w + 3, y + 1 }, O)
-      L.poly(img, { x - 2, y, x + math.floor(w / 2), y - 10, x + w + 1, y }, ramp[2])
-      L.line(img, x - 1, y - 1, x + math.floor(w / 2), y - 9, ramp[1])
-      box(img, x + 4, y + 6, 8, 7, R.glass)
-      L.rect(img, x + w - 10, y + 8, 6, 12, R.wood[3])
-    end
-    house(414, 118, 26, R.roof)
-    house(448, 112, 30, R.lower)
-  end
-
   -- The court floor: a concrete slab under the roof with a painted court and white lines. The
-  -- slab's right edge runs from (466, 155) down to (430, 269); outside it is grass and the path.
+  -- slab's right edge runs from (466, 155) down to (430, 269); outside it is grass.
   local function floor(img)
     local y0 = A.backEdgeY
     L.rect(img, 0, y0, 480, 270 - y0, R.grass[2])
@@ -137,49 +118,17 @@ return function(L, ST, GU)
     L.hline(img, 0, ex0 - 1, y0 + 1, R.floor[3])
     noise(img, 0, y0 + 2, 464, 269, R.floor[2], R.floor[3], 260, 1213)
     noise(img, 0, y0 + 2, 464, 269, R.floor[2], R.floor[1], 200, 1214)
-    -- The painted court inside its white boundary: the back sideline, the left baseline and the
-    -- right baseline lean with the floor, and the front sideline is below the screen. The right
-    -- baseline runs from (430, 162) to (410, 269), so the go home stop stands inside the paint.
-    L.poly(img, { 34, 162, 430, 162, 410, 269, 0, 269, 0, 196 }, P.white)
-    L.poly(img, { 36, 164, 428, 164, 408, 269, 0, 269, 0, 199 }, R.court[2])
-    noise(img, 0, 165, 426, 269, R.court[2], R.court[3], 240, 1215)
-    noise(img, 0, 165, 426, 269, R.court[2], R.court[1], 180, 1216)
-    -- The centre line and centre circle, and the key in front of the hoop at the left end.
-    L.ellipse(img, 230, 205, 26, 9, P.white)
-    L.ellipse(img, 230, 205, 25, 8, R.court[2])
-    L.line(img, 236, 164, 222, 269, P.white)
-    L.ellipse(img, 70, 187, 10, 16, P.white)
-    L.ellipse(img, 70, 187, 9, 15, R.court[2])
-    L.poly(img, { 28, 170, 76, 170, 60, 204, 0, 204, 0, 190 }, P.white)
-    L.poly(img, { 29, 171, 75, 171, 59, 203, 0, 203, 0, 192 }, R.court[3])
-  end
-
-  -- The earth path back toward the houses: it starts on the bottom row at x 432, just outside the
-  -- court's slab, and climbs the grass beside the slab to the houses, flaring to the right edge at
-  -- the bottom. Its sandy colour sets it apart from the concrete slab.
-  local function path(img)
-    local side, fill, light = R.path[3], R.path[2], R.path[1]
-    L.poly(img, { A.pathStartX, 270, 446, 232, 457, 194, 464, 132, 475, 132, 471, 194, 467, 232,
-      480, 250, 480, 270 }, side)
-    L.poly(img, { A.pathStartX + 3, 269, 448, 232, 459, 194, 466, 133, 473, 133, 469, 194, 465, 232,
-      479, 252, 479, 269 }, fill)
-    L.line(img, 451, 226, 460, 196, light)
-    L.line(img, 461, 192, 467, 140, light)
-    L.line(img, 440, 262, 449, 238, light)
-    L.seed(1208)
-    for _ = 1, 50 do
-      local x, y = L.randi(436, 478), L.randi(140, 269)
-      if L.get(img, x, y) == fill then L.px(img, x, y, light) end
+    -- Both lanes face inward across the side-view court.
+    L.rect(img, 23, 164, 395, 106, P.white)
+    L.rect(img, 25, 166, 391, 104, R.court[2])
+    noise(img, 25, 166, 415, 269, R.court[2], R.court[3], 230, 1215)
+    L.ellipse(img, 220, 209, 26, 8, P.white)
+    L.ellipse(img, 220, 209, 24, 7, R.court[2])
+    L.vline(img, 220, 166, 269, P.white)
+    for _, x in ipairs({25, 370}) do
+      L.rect(img, x, 195, 46, 25, P.white)
+      L.rect(img, x + 1, 196, 44, 23, R.court[3])
     end
-  end
-
-  -- The leaning road sign beside the path: a short post tilted to the left, a blank yellow board.
-  local function roadSign(img)
-    L.line(img, 477, 228, 472, 208, O, 3)
-    L.line(img, 477, 227, 473, 209, R.metal[2])
-    L.poly(img, { 465, 196, 479, 198, 478, 211, 463, 209 }, O)
-    L.poly(img, { 466, 198, 478, 199, 477, 210, 464, 208 }, P.yellow)
-    L.line(img, 466, 198, 464, 207, P.yellow3)
   end
 
   -- A pale column from the bottom chord to the back of the slab, with a small concrete base.
@@ -239,24 +188,21 @@ return function(L, ST, GU)
     end
   end
 
-  -- The hoop at the left end of the court: a pole, a pale backboard, an orange rim and a net. The
-  -- pole stands on the court at row hoopBaseY.
+  -- Side-view hoops stand at opposite ends of the court.
   local function hoop(img)
-    local x, y = table.unpack(A.hoop)
-    local base = A.hoopBaseY
-    L.rect(img, x + 15, y + 22, 5, base - (y + 22), O)
-    L.vline(img, x + 16, y + 23, base - 2, R.metal[1])
-    L.vline(img, x + 17, y + 23, base - 2, R.metal[2])
-    L.vline(img, x + 18, y + 23, base - 2, R.metal[3])
-    L.ellipse(img, x + 17, base, 6, 2, R.court[3])
-    box(img, x, y, 34, 24, R.board)
-    L.rect(img, x + 10, y + 8, 14, 10, O)
-    L.rect(img, x + 11, y + 9, 12, 8, R.board[1])
-    L.hline(img, x + 9, x + 25, y + 24, O)
-    L.hline(img, x + 9, x + 25, y + 25, P.orange)
-    L.hline(img, x + 10, x + 24, y + 26, P.orange2)
-    for nx = x + 11, x + 23, 3 do L.line(img, nx, y + 27, nx + 1, y + 33, R.board[3]) end
-    L.hline(img, x + 12, x + 23, y + 33, R.board[3])
+    for _, x in ipairs({28, 414}) do
+      local dir = x == 28 and 1 or -1
+      local rim = x + 17 * dir
+      L.ellipse(img, x, 207, 6, 2, R.court[3])
+      box(img, x - 2, 148, 5, 59, R.metal)
+      box(img, x - 2, 130, 5, 25, R.board)
+      L.line(img, x, 153, rim, 153, O, 3)
+      L.line(img, x, 153, rim, 153, P.orange)
+      for i = 3, 15, 4 do
+        L.line(img, x + i * dir, 155, x + (3 + math.floor(i * 0.65)) * dir, 161, R.board[2])
+      end
+      L.line(img, x + 5 * dir, 161, x + 13 * dir, 161, R.board[2])
+    end
   end
 
   -- A dome tent with a dark opening, seen from the front, at { left x, base row, width }.
@@ -361,10 +307,7 @@ return function(L, ST, GU)
   function M.background()
     local img = L.newImage(480, 270)
     outdoors(img)
-    houses(img)
     floor(img)
-    path(img)
-    roadSign(img)
     for _, x in ipairs(A.columns) do column(img, x) end
     roof(img)
     evacuationSign(img)
