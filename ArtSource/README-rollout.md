@@ -349,18 +349,26 @@ Try Again returns the Student to the starting pose and position and restores the
 
 ## Evacuation area (`ArtSource/scripts/evacuation_area_v2.lua`, part `evacuation_area_v2`)
 
-The Setting is an open, grassy field near the school in daylight, after the earthquake. It is 480 by 270 art pixels and does not shake. Sprite points refer to their top-left corners. Actor points give the centre of the feet, measured from the top left of the art. Row 230 is the floor reference, so actor height in the builder is 230 minus the art row. The positions are also in `M.LAYOUT` in the script.
+The Setting shows a later gathering at a fictional evacuation centre: an open-sided covered basketball court in daylight, after the earthquake. It is 480 by 270 art pixels and does not shake. Sprite points refer to their top-left corners. Actor points give the centre of the feet, measured from the top left of the art. Row 230 is the floor reference, so actor height in the builder is 230 minus the art row. The positions are also in `M.LAYOUT` in the script.
+
+The court uses `school-covered-court.jpg` for its architecture only: a broad rust-red metal roof, exposed trusses and pale columns with open sides. The roof and column colours match the Hard menu court. The photo does not show that the real court is an evacuation centre. The figures are original, and the photographed people, vehicles and map controls are left out. The researcher approved the preview on 2026-11-26.
+
+At 2400 by 1080 the art fills the width and is anchored at the bottom, so the top 54 rows are cut off. The roof therefore comes down to row 64, with the trusses and bottom chord down to row 80. The HINT button covers x 212 to 268 on rows 120 to 138 at that size, so nothing sits at the back between the columns at x 204 and 300.
 
 | Item | Placement |
 |---|---|
-| School | The small school stands far back on the left, with its wall from (14, 112). A flagpole stands beside it. |
-| Teacher in the distance | A small Teacher, about 30 pixels tall and holding a clipboard, is drawn into the background with her feet at (140, 170). |
+| Roof and trusses | The roof's underside fills rows 0 to 63 from the left edge to its end at x 438. A zigzag truss runs below it, with the bottom chord at row 80. The sky shows beyond the end of the roof. |
+| Columns | Five pale columns, 10 pixels wide, stand at x 12, 108, 204, 300 and 396 from the chord to the back of the slab at row 154. Trees, hills and grass show between them. |
+| Sign | The plain "EVACUATION CENTER" sign hangs from the chord on two wires at (14, 86), 88 by 26. It has dark letters on a pale board, below the Level label and left of the Caption at both sizes. |
+| Hoop | The backboard is at (24, 116). The orange rim is on row 141, and the pole stands on the court at x 41. |
+| Court | A concrete slab runs from row 154 to the bottom. Its right edge runs from (452, 155) to (394, 269). The green court has white lines, a centre circle and a key in front of the hoop. |
+| Tents and people | A blue tent stands at the back from x 118 to 168 and an orange tent from x 310 to 362. Both bases are on row 158. An adult and a child stand at the blue tent's opening, with feet at (128, 160) and (140, 161). They stay left of the Reaction at the Safe ending. Another adult and child stand at the back on the right, at (374, 156) and (388, 157). |
 | Mat | The woven mat runs from x 96 to 208 at row 226 and from x 86 to 218 at row 246. |
 | Mom | Mom sits on the mat in `Sit` with her feet at (118, 236). She is a Grown-up actor, not part of the background. |
 | Radio | The radio is two props at (136, 208), both 28 by 30: `evacuation_area_radio` (off) and `evacuation_area_radio_on` (two frames of 260 milliseconds, with yellow sound arcs above the radio). The sound arcs stay inside the mat's x range. |
 | Neighbours | Three neighbours chat at (272, 164), 86 by 62, in two frames of 600 milliseconds: a nod and a hand gesture. They reuse the v2 Grown-up frames, with new clothes below the shoulders and grey hair on the older neighbour. |
-| Path and houses | The path starts on the field at x 395 on the bottom row and leaves the right edge. A far stretch climbs to two houses on the right. |
-| After the earthquake | A road sign near the houses leans to the left. There is no fire, smoke or hurt person. |
+| Path and houses | Through the open right side, the path starts just outside the slab at x 395 on the bottom row and leaves the right edge. A far stretch climbs to two houses on the right. |
+| After the earthquake | A road sign beside the path leans to the left. There is no fire, smoke or hurt person. |
 
 ### Hard 7, listen to the radio
 
@@ -369,7 +377,7 @@ The Student starts in Idle at (228, 230). Mom sits on the mat and stays there in
 | Choice | Act-out points |
 |---|---|
 | radio | Walk to (182, 236) and sit beside Mom. The radio then turns on beside her, because Mom has no reaching pose. |
-| go_home | Walk to (376, 248) and stop on the field in front of the neighbours. The Student's right edge (x 392) stays left of the path start (x 395). The Reaction sits 20 art pixels to the right of the Student. |
+| go_home | Walk to (376, 248) and stop on the court, right of the neighbours, at the open side. The Student's right edge (x 392) stays left of the path start (x 395). The Reaction sits 20 art pixels to the right of the Student. |
 | rumor | Walk to (254, 228), face the neighbours, take the `Call` pose and say "Did you hear...?" The Student's right edge (x 270) stays left of the first neighbour. The Reaction sits 18 art pixels to the left of the Student. |
 | phone_all_day | Take the `Phone` pose in place at the start. |
 
