@@ -39,13 +39,15 @@ Scale rule: one art pixel is four UI units at 1920x1080. Unity imports everythin
 
 ## Audio (Python)
 
-`audio/make_audio.py` synthesises the menu music loop and the UI sound effects with the Python standard library only, so there are no third-party licences:
+The Python standard library synthesises the UI and Level sound effects in Assets/Audio/Sfx.
 
 ```
-python -I ArtSource/audio/make_audio.py D:/GameDEV/DisasterSafety
+python -I ArtSource/audio/make_audio.py D:/GameDEV/DisasterSafety-redesign
 ```
 
-It writes `Assets/Audio/Music/bgm_menu.wav` (the menus), `Assets/Audio/Music/bgm_level.wav` (the Level: calmer, 88 BPM, no drums) and `Assets/Audio/Sfx/*.wav`. Add `--only-level-music` to write just `bgm_level.wav`. The Level sounds are `sfx_rumble` (a soft, low earthquake rumble, kept quiet on purpose), `sfx_safe`, `sfx_unsafe` (a kind two-note "hmm", never a buzzer), `sfx_star` (the game raises its pitch for each Star), `sfx_complete`, and `sfx_opened` (a soft rising jingle for "Normal is open!", quieter and shorter than `sfx_complete`).
+Add `--only-blip` to regenerate just the Student's speech sound. The licensed recordings are listed in [Music licences](../Assets/Audio/Music/LICENSES.md) and are prepared separately.
+
+The Level sounds are `sfx_rumble` (a soft, low earthquake rumble, kept quiet on purpose), `sfx_safe`, `sfx_unsafe` (a kind two-note "hmm", never a buzzer), `sfx_star` (the game raises its pitch for each Star), `sfx_complete`, and `sfx_opened` (a soft rising jingle for "Normal is open!", quieter and shorter than `sfx_complete`).
 
 ## After rebuilding
 
