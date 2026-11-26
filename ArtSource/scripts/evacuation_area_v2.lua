@@ -29,6 +29,7 @@ return function(L, ST, GU)
     rust = { rgb(196, 102, 78), rgb(160, 72, 58), rgb(116, 48, 44) },
     column = { rgb(252, 242, 216), rgb(232, 218, 186), rgb(198, 182, 148) },
     floor = { P.concrete, P.concrete2, P.concrete3 },
+    path = { rgb(214, 186, 140), rgb(190, 158, 110), rgb(152, 122, 84) },
     court = { rgb(170, 214, 190), rgb(142, 192, 168), rgb(112, 160, 140) },
     grass = { P.green4, P.grass, P.grass2 },
     board = { rgb(252, 252, 248), rgb(228, 232, 238), rgb(190, 196, 210) },
@@ -43,7 +44,7 @@ return function(L, ST, GU)
     floorY = 230,
     roofBottom = 64, chordY = 80, backEdgeY = 154, roofEndX = 438,
     columns = { 12, 108, 204, 300, 396 }, columnWidth = 10,
-    slabEdge = { 452, 155, 394, 269 },
+    slabEdge = { 466, 155, 430, 269 },
     sign = { 14, 86, 88, 26 },
     hoop = { 24, 116 }, hoopBaseY = 168,
     -- Each tent is { left x, base row, width }. People stand with their feet at { x, row }.
@@ -54,7 +55,7 @@ return function(L, ST, GU)
     mom = { 118, 236 },
     radio = { 136, 208 }, radioSize = { 28, 30 }, radioMs = 260,
     neighbours = { 272, 164 }, neighboursSize = { 86, 62 }, neighboursMs = 600,
-    pathStartX = 395,
+    pathStartX = 432,
     hard7 = {
       start = { 228, 230 },
       sit = { 182, 236 },
@@ -124,24 +125,25 @@ return function(L, ST, GU)
   end
 
   -- The court floor: a concrete slab under the roof with a painted court and white lines. The
-  -- slab's right edge runs from (452, 155) down to (394, 269); outside it is grass and the path.
+  -- slab's right edge runs from (466, 155) down to (430, 269); outside it is grass and the path.
   local function floor(img)
     local y0 = A.backEdgeY
     L.rect(img, 0, y0, 480, 270 - y0, R.grass[2])
-    noise(img, 380, y0, 479, 269, R.grass[2], R.grass[1], 260, 1211)
-    noise(img, 380, y0, 479, 269, R.grass[2], R.grass[3], 160, 1212)
+    noise(img, 420, y0, 479, 269, R.grass[2], R.grass[1], 200, 1211)
+    noise(img, 420, y0, 479, 269, R.grass[2], R.grass[3], 120, 1212)
     local ex0, ey0, ex1, ey1 = table.unpack(A.slabEdge)
     L.poly(img, { 0, y0, ex0 + 1, y0, ex1 + 1, 270, 0, 270 }, O)
     L.poly(img, { 0, y0 + 1, ex0, ey0, ex1, ey1, 0, 269 }, R.floor[2])
     L.hline(img, 0, ex0 - 1, y0 + 1, R.floor[3])
-    noise(img, 0, y0 + 2, 450, 269, R.floor[2], R.floor[3], 260, 1213)
-    noise(img, 0, y0 + 2, 450, 269, R.floor[2], R.floor[1], 200, 1214)
+    noise(img, 0, y0 + 2, 464, 269, R.floor[2], R.floor[3], 260, 1213)
+    noise(img, 0, y0 + 2, 464, 269, R.floor[2], R.floor[1], 200, 1214)
     -- The painted court inside its white boundary: the back sideline, the left baseline and the
-    -- right baseline lean with the floor, and the front sideline is below the screen.
-    L.poly(img, { 34, 162, 404, 162, 372, 269, 0, 269, 0, 196 }, P.white)
-    L.poly(img, { 36, 164, 402, 164, 370, 269, 0, 269, 0, 199 }, R.court[2])
-    noise(img, 0, 165, 400, 269, R.court[2], R.court[3], 220, 1215)
-    noise(img, 0, 165, 400, 269, R.court[2], R.court[1], 160, 1216)
+    -- right baseline lean with the floor, and the front sideline is below the screen. The right
+    -- baseline runs from (430, 162) to (410, 269), so the go home stop stands inside the paint.
+    L.poly(img, { 34, 162, 430, 162, 410, 269, 0, 269, 0, 196 }, P.white)
+    L.poly(img, { 36, 164, 428, 164, 408, 269, 0, 269, 0, 199 }, R.court[2])
+    noise(img, 0, 165, 426, 269, R.court[2], R.court[3], 240, 1215)
+    noise(img, 0, 165, 426, 269, R.court[2], R.court[1], 180, 1216)
     -- The centre line and centre circle, and the key in front of the hoop at the left end.
     L.ellipse(img, 230, 205, 26, 9, P.white)
     L.ellipse(img, 230, 205, 25, 8, R.court[2])
@@ -152,31 +154,32 @@ return function(L, ST, GU)
     L.poly(img, { 29, 171, 75, 171, 59, 203, 0, 203, 0, 192 }, R.court[3])
   end
 
-  -- The path back toward the houses: it starts on the bottom row at about x 395, just outside the
-  -- court's slab, leaves the right edge, and a far stretch climbs to the houses. It is concrete,
-  -- like the slab.
+  -- The earth path back toward the houses: it starts on the bottom row at x 432, just outside the
+  -- court's slab, and climbs the grass beside the slab to the houses, flaring to the right edge at
+  -- the bottom. Its sandy colour sets it apart from the concrete slab.
   local function path(img)
-    local side, fill, light = R.floor[3], R.floor[2], R.floor[1]
-    L.poly(img, { 448, 138, 456, 138, 462, 158, 480, 178, 480, 188, 470, 182, 452, 160 }, side)
-    L.poly(img, { 449, 139, 455, 139, 460, 158, 480, 180, 480, 185, 469, 180, 453, 159 }, fill)
-    L.poly(img, { A.pathStartX, 270, 404, 256, 424, 240, 450, 226, 480, 216, 480, 270 }, side)
-    L.poly(img, { A.pathStartX + 3, 270, 407, 257, 426, 242, 452, 228, 480, 219, 480, 270 }, fill)
-    L.line(img, 408, 262, 428, 245, light)
-    L.line(img, 430, 243, 478, 222, light)
+    local side, fill, light = R.path[3], R.path[2], R.path[1]
+    L.poly(img, { A.pathStartX, 270, 446, 232, 457, 194, 464, 132, 475, 132, 471, 194, 467, 232,
+      480, 250, 480, 270 }, side)
+    L.poly(img, { A.pathStartX + 3, 269, 448, 232, 459, 194, 466, 133, 473, 133, 469, 194, 465, 232,
+      479, 252, 479, 269 }, fill)
+    L.line(img, 451, 226, 460, 196, light)
+    L.line(img, 461, 192, 467, 140, light)
+    L.line(img, 440, 262, 449, 238, light)
     L.seed(1208)
-    for _ = 1, 60 do
-      local x, y = L.randi(400, 478), L.randi(222, 269)
+    for _ = 1, 50 do
+      local x, y = L.randi(436, 478), L.randi(140, 269)
       if L.get(img, x, y) == fill then L.px(img, x, y, light) end
     end
   end
 
   -- The leaning road sign beside the path: a short post tilted to the left, a blank yellow board.
   local function roadSign(img)
-    L.line(img, 474, 204, 466, 180, O, 3)
-    L.line(img, 474, 203, 467, 181, R.metal[2])
-    L.poly(img, { 457, 170, 472, 172, 470, 185, 455, 183 }, O)
-    L.poly(img, { 458, 172, 471, 173, 469, 184, 456, 182 }, P.yellow)
-    L.line(img, 458, 172, 456, 181, P.yellow3)
+    L.line(img, 477, 228, 472, 208, O, 3)
+    L.line(img, 477, 227, 473, 209, R.metal[2])
+    L.poly(img, { 465, 196, 479, 198, 478, 211, 463, 209 }, O)
+    L.poly(img, { 466, 198, 478, 199, 477, 210, 464, 208 }, P.yellow)
+    L.line(img, 466, 198, 464, 207, P.yellow3)
   end
 
   -- A pale column from the bottom chord to the back of the slab, with a small concrete base.
