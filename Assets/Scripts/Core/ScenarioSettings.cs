@@ -79,8 +79,8 @@ namespace DisasterSafety.Core
 
         static readonly string[] HomeAfterSpots =
         {
-            "pull_up", "call_adult", "fix_pipe", "leave",
-            "no_go_bag", "toys", "no_note", "go_bag",
+            "pull_up", "call_adult", "wait_for_mom", "leave",
+            "no_go_bag", "toys", "push_past_mom", "go_bag",
         };
 
         static readonly string[] EvacuationAreaSpots = { "go_home", "radio", "rumor", "phone_all_day" };

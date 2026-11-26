@@ -50,15 +50,14 @@
             ]
         },
         {
-            "id": "fix_pipe",
-            "label": "Fix the broken pipe yourself",
-            "icon": "icon_fix_pipe",
-            "action": "fix_pipe",
+            "id": "wait_for_mom",
+            "label": "Wait for Mom to get up.",
+            "icon": "icon_wait_for_mom",
+            "action": "wait_for_mom",
             "safe": false,
-            "feedback": "Adults check water and electric lines. Help them first.",
+            "feedback": "Keep Mom still and get help.",
             "sources": [
-                "EQ-91",
-                "EQ-72"
+                "EQ-90"
             ]
         },
         {

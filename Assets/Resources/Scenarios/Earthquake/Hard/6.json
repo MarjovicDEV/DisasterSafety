@@ -56,15 +56,15 @@
             ]
         },
         {
-            "id": "no_note",
-            "label": "Leave without a note",
-            "icon": "icon_no_note",
-            "action": "no_note",
+            "id": "push_past_mom",
+            "label": "Push past Mom at the door.",
+            "icon": "icon_push_past_mom",
+            "action": "push_past_mom",
             "safe": false,
             "heading": "Not ready yet",
-            "feedback": "Leave a message so others know where you went.",
+            "feedback": "Walk out. Do not run or push.",
             "sources": [
-                "EQ-93"
+                "EQ-92"
             ]
         },
         {
@@ -73,9 +73,10 @@
             "icon": "icon_go_bag",
             "action": "go_bag",
             "safe": true,
-            "feedback": "Bring the go bag. Leave a note saying where you went.",
+            "feedback": "Your family left a note. Bring your go bag and walk out.",
             "sources": [
-                "EQ-93"
+                "EQ-93",
+                "EQ-92"
             ]
         }
     ]
