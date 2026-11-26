@@ -1,10 +1,13 @@
--- The v2 evacuation area for Earthquake Hard 7 (phase after, nothing shakes): an open, grassy
--- field near the school in daylight, calm after the earthquake. Left to right: the school in the
--- distance with a small Teacher holding a clipboard, the family's woven mat (Mom sits on it as a
--- Grown-up actor, and the radio is a prop on it), the open field where the Student starts, the
--- neighbours chatting (a two-frame moving part), and the path back toward the houses, which
--- leaves the right edge. A single leaning sign near the houses shows that the earthquake has
--- happened; there is no fire, smoke or hurt person.
+-- The v2 evacuation area for Earthquake Hard 7 (phase after, nothing shakes): a later gathering
+-- at a fictional evacuation centre in an open-sided covered basketball court, in daylight. The
+-- court follows the school court reference (a broad rust-red metal roof, exposed trusses and pale
+-- columns with open sides). Left to right: the plain "EVACUATION CENTER" sign hanging from the
+-- truss above the hoop, the family's woven mat (Mom sits on it as a Grown-up actor, and the radio
+-- is a prop on it), two tents at the back of the court with an adult and a child at the first
+-- tent's opening, the open court where the Student starts, the neighbours chatting (a two-frame
+-- moving part), two more people at the back, and the open right side, where the path
+-- leaves the court and climbs toward the houses. A single leaning road sign beside the path shows
+-- that the earthquake has happened; there is no fire, smoke or hurt person.
 -- Settings are 480x270 art pixels. Positions are art pixels from the top left, and character
 -- points are at the feet. The Act-out points are recorded in ArtSource/README-rollout.md.
 return function(L, ST, GU)
@@ -14,7 +17,7 @@ return function(L, ST, GU)
   local O = K.o
   local function rgb(r, g, b) return app.pixelColor.rgba(r, g, b, 255) end
 
-  -- The same ramps as the v2 schoolyard (light, base, shadow), plus the mat and the radio.
+  -- Ramps (light, base, shadow). The roof and columns use the Hard menu court's colours.
   local R = {
     wall = { rgb(252, 240, 208), rgb(240, 224, 184), rgb(218, 196, 152) },
     lower = { rgb(156, 204, 176), rgb(124, 180, 150), rgb(96, 152, 126) },
@@ -22,18 +25,31 @@ return function(L, ST, GU)
     glass = { rgb(196, 232, 248), rgb(150, 204, 232), rgb(108, 164, 204) },
     metal = { rgb(214, 218, 228), rgb(170, 176, 192), rgb(124, 128, 146) },
     leaf = { rgb(120, 196, 104), rgb(84, 160, 80), rgb(56, 118, 62) },
-    sign = { rgb(88, 138, 104), rgb(64, 112, 84), rgb(48, 90, 68) },
     roof = { P.roof3, P.roof, P.roof2 },
-    path = { P.concrete, P.concrete2, P.concrete3 },
+    rust = { rgb(196, 102, 78), rgb(160, 72, 58), rgb(116, 48, 44) },
+    column = { rgb(252, 242, 216), rgb(232, 218, 186), rgb(198, 182, 148) },
+    floor = { P.concrete, P.concrete2, P.concrete3 },
+    court = { rgb(170, 214, 190), rgb(142, 192, 168), rgb(112, 160, 140) },
     grass = { P.green4, P.grass, P.grass2 },
+    board = { rgb(252, 252, 248), rgb(228, 232, 238), rgb(190, 196, 210) },
+    tentBlue = { P.blue3, P.blue, P.blue2 },
+    tentOrange = { rgb(255, 190, 120), P.orange, P.orange2 },
     mat = { rgb(244, 214, 150), rgb(222, 182, 112), rgb(184, 140, 80) },
     radio = { rgb(240, 130, 126), rgb(214, 64, 64), rgb(128, 40, 52) },
     wave = rgb(252, 209, 22),
   }
 
   M.LAYOUT = {
-    floorY = 230, horizonY = 132,
-    school = { 14, 112 }, teacher = { 140, 170 },
+    floorY = 230,
+    roofBottom = 64, chordY = 80, backEdgeY = 154, roofEndX = 438,
+    columns = { 12, 108, 204, 300, 396 }, columnWidth = 10,
+    slabEdge = { 452, 155, 394, 269 },
+    sign = { 14, 86, 88, 26 },
+    hoop = { 24, 116 }, hoopBaseY = 168,
+    -- Each tent is { left x, base row, width }. People stand with their feet at { x, row }.
+    tents = { blue = { 118, 158, 50 }, orange = { 310, 158, 52 } },
+    tentPeople = { adult = { 128, 160 }, child = { 140, 161 } },
+    backPeople = { adult = { 374, 156 }, child = { 388, 157 } },
     mat = { top = 226, bottom = 246, x0 = 96, x1 = 208 },
     mom = { 118, 236 },
     radio = { 136, 208 }, radioSize = { 28, 30 }, radioMs = 260,
@@ -57,111 +73,43 @@ return function(L, ST, GU)
     L.vline(img, x + w - 2, y + 2, y + h - 2, ramp[3])
   end
 
-  local function sky(img)
-    L.rect(img, 0, 0, 480, A.horizonY, P.sky4)
-    for y = 57, A.horizonY - 1 do
-      local fade = math.min(1, (y - 57) / 29)
-      for x = 0, 479 do
-        if L.bayer(x, y) < fade then L.px(img, x, y, P.sky5) end
-      end
-    end
-    L.poly(img, { 196, 80, 220, 80, 227, 75, 243, 75, 251, 80, 270, 80, 279, 85,
-      292, 85, 292, 88, 196, 88 }, P.white)
-    L.poly(img, { 371, 70, 383, 70, 389, 65, 408, 65, 415, 70, 427, 70, 437, 75,
-      454, 75, 454, 78, 371, 78 }, P.white)
-    L.poly(img, { 0, 120, 30, 108, 60, 104, 92, 112, 130, 114, 170, 124, 214, 121,
-      250, 130, 0, 138 }, P.hill)
-    L.poly(img, { 240, 132, 286, 118, 322, 110, 352, 112, 380, 118, 418, 108,
-      450, 104, 479, 110, 479, 139, 240, 139 }, P.hill)
-    L.poly(img, { 0, 130, 40, 125, 90, 128, 140, 134, 190, 131, 230, 138, 0, 146 }, P.hill2)
-    L.poly(img, { 260, 138, 300, 130, 350, 128, 400, 131, 440, 126, 479, 124,
-      479, 147, 260, 147 }, P.hill2)
-  end
-
-  local function ground(img)
-    local y = A.horizonY
-    L.rect(img, 0, y, 480, 270 - y, R.grass[2])
-    L.poly(img, { 0, y, 480, y, 480, 143, 430, 145, 380, 142, 330, 148, 270, 144,
-      210, 147, 150, 142, 90, 149, 30, 143, 0, 147 }, P.hill2)
-    L.poly(img, { 0, 186, 60, 182, 120, 188, 150, 198, 120, 206, 40, 204, 0, 208 }, R.leaf[1])
-    L.poly(img, { 0, 258, 70, 249, 140, 252, 220, 262, 300, 258, 390, 264, 479, 256,
-      479, 270, 0, 270 }, R.grass[3])
-
-    L.seed(1207)
-    for i = 1, 560 do
-      local x, py = L.randi(2, 477), L.randi(y + 3, 269)
-      local base = L.get(img, x, py)
-      local tuft = base == R.leaf[1] and R.grass[2] or R.grass[1]
-      L.px(img, x, py, i % 3 == 0 and R.grass[3] or tuft)
-      if i % 14 == 0 then
-        L.px(img, x + 1, py - 1, tuft)
-        L.px(img, x + 2, py, R.leaf[2])
-      end
+  local function noise(img, x0, y0, x1, y1, from, to, count, seed)
+    L.seed(seed)
+    for _ = 1, count do
+      local x, y = L.randi(x0, x1), L.randi(y0, y1)
+      if L.get(img, x, y) == from then L.px(img, x, y, to) end
     end
   end
 
-  local function window(img, x, y)
-    box(img, x, y, 12, 11, R.wood)
-    L.rect(img, x + 2, y + 2, 8, 7, R.glass[2])
-    L.hline(img, x + 2, x + 9, y + 2, R.glass[1])
-    L.vline(img, x + 6, y + 2, y + 8, R.wood[3])
+  -- Draws into a clear layer, outlines the layer once and copies it onto the image.
+  local function outlined(img, draw)
+    local layer = L.newImage(img.width, img.height)
+    draw(layer)
+    L.outline(layer, O)
+    L.blit(img, layer, 0, 0)
   end
 
-  -- The school stands far back on the left, so it is small and sits on the far grass.
-  local function school(img)
-    local x, y = table.unpack(A.school)
-    box(img, x, y, 104, 48, R.wall)
-    L.rect(img, x + 1, y + 30, 102, 16, R.lower[2])
-    L.hline(img, x + 1, x + 102, y + 30, R.lower[1])
-    L.hline(img, x + 2, x + 101, y + 46, R.lower[3])
-    for _, wx in ipairs({ 8, 26, 66, 84 }) do window(img, x + wx, y + 10) end
-    -- The doorway faces the field, with the flagpole beside it.
-    box(img, x + 45, y + 22, 16, 26, R.wood)
-    L.rect(img, x + 48, y + 25, 10, 22, R.sign[3])
-    L.poly(img, { x - 6, y + 2, x + 10, y - 14, x + 94, y - 14, x + 110, y + 2,
-      x + 110, y + 6, x - 6, y + 6 }, O)
-    L.poly(img, { x - 4, y + 2, x + 11, y - 13, x + 93, y - 13, x + 108, y + 2,
-      x + 108, y + 5, x - 4, y + 5 }, R.roof[2])
-    L.line(img, x - 2, y + 1, x + 12, y - 12, R.roof[1])
-    L.hline(img, x + 12, x + 92, y - 12, R.roof[1])
-    L.hline(img, x - 3, x + 107, y + 4, R.roof[3])
-    L.vline(img, x + 120, y - 6, y + 48, R.metal[3])
-    L.vline(img, x + 119, y - 6, y + 48, R.metal[1])
-    L.rect(img, x + 121, y - 6, 10, 6, P.blue)
-    L.rect(img, x + 121, y - 3, 10, 3, P.red)
-    L.ellipse(img, x + 52, y + 50, 50, 3, R.grass[3])
+  -- The outdoors seen through the open sides: sky, hills, a tree line and the far grass.
+  local function outdoors(img)
+    L.vgrad(img, 0, 0, 480, 140, { P.sky3, P.sky4, P.sky4, P.sky5 })
+    L.poly(img, { 0, 128, 60, 116, 130, 112, 200, 120, 270, 110, 340, 114, 420, 104,
+      479, 110, 479, 140, 0, 140 }, P.hill)
+    outlined(img, function(layer)
+      L.seed(1209)
+      for x = -6, 486, 12 do
+        local cx, cy, r = x + L.randi(-2, 2), 128 + L.randi(-3, 2), L.randi(7, 10)
+        L.circle(layer, cx + 1, cy + 2, r, R.leaf[3])
+        L.circle(layer, cx, cy, r - 1, R.leaf[2])
+        L.circle(layer, cx - 2, cy - 2, math.max(1, math.floor(r * 0.5)), R.leaf[1])
+      end
+      L.rect(layer, 0, 128, 480, 14, R.leaf[3])
+    end)
+    L.rect(img, 0, 140, 480, A.backEdgeY - 140, R.grass[2])
+    L.hline(img, 0, 479, 140, R.grass[3])
+    noise(img, 0, 141, 479, A.backEdgeY - 1, R.grass[2], R.grass[1], 160, 1210)
   end
 
-  -- The Teacher in the distance: about half the Grown-ups' height, holding a clipboard.
-  local function distantTeacher(img)
-    local t = L.newImage(16, 30)
-    L.rect(t, 6, 0, 4, 3, K.H)                -- the bun
-    L.rect(t, 4, 2, 8, 6, K.H)                -- the hair
-    L.rect(t, 5, 4, 6, 5, K.S)                -- the face
-    L.hline(t, 5, 10, 4, K.t)
-    L.px(t, 6, 6, K.e); L.px(t, 9, 6, K.e)
-    L.rect(t, 3, 9, 10, 9, K.N)               -- the blazer
-    L.vline(t, 3, 9, 17, K.m)
-    L.rect(t, 7, 9, 2, 3, K.W)                -- the blouse
-    L.px(t, 7, 11, K.p)
-    L.rect(t, 4, 18, 8, 5, K.N)               -- the skirt
-    L.vline(t, 12, 10, 16, K.n)
-    L.rect(t, 5, 23, 2, 4, K.S)               -- the legs
-    L.rect(t, 9, 23, 2, 4, K.S)
-    L.rect(t, 4, 27, 3, 2, K.B)
-    L.rect(t, 9, 27, 3, 2, K.B)
-    L.rect(t, 9, 11, 6, 7, R.wood[2])         -- the clipboard
-    L.rect(t, 10, 12, 4, 5, K.W)
-    L.hline(t, 11, 13, 13, K.v)
-    L.hline(t, 11, 13, 15, K.v)
-    L.px(t, 8, 14, K.S)
-    L.outline(t, O)
-    local x, y = table.unpack(A.teacher)
-    L.ellipse(img, x, y, 8, 2, R.grass[3])
-    L.blit(img, t, x - 8, y - 29)
-  end
-
-  -- The houses beyond the path, with one road sign leaning after the earthquake.
+  -- The houses outside the open right side.
   local function houses(img)
     local function house(x, y, w, ramp)
       box(img, x, y, w, 20, R.wall)
@@ -171,23 +119,46 @@ return function(L, ST, GU)
       box(img, x + 4, y + 6, 8, 7, R.glass)
       L.rect(img, x + w - 10, y + 8, 6, 12, R.wood[3])
     end
-    house(408, 120, 30, R.roof)
-    house(446, 116, 30, R.lower)
-    L.ellipse(img, 442, 141, 40, 2, R.grass[3])
-    -- The leaning sign: a short post tilted to the left, with a blank yellow board.
-    L.line(img, 393, 158, 386, 136, O, 3)
-    L.line(img, 393, 157, 387, 137, R.metal[2])
-    L.poly(img, { 378, 126, 392, 128, 390, 140, 376, 138 }, O)
-    L.poly(img, { 379, 128, 391, 129, 389, 139, 377, 137 }, P.yellow)
-    L.line(img, 379, 128, 377, 136, P.yellow3)
+    house(414, 118, 26, R.roof)
+    house(448, 112, 30, R.lower)
   end
 
-  -- The path back toward the houses: it starts on the field at about x 395 and leaves the
-  -- right edge, then a far stretch climbs to the houses.
+  -- The court floor: a concrete slab under the roof with a painted court and white lines. The
+  -- slab's right edge runs from (452, 155) down to (394, 269); outside it is grass and the path.
+  local function floor(img)
+    local y0 = A.backEdgeY
+    L.rect(img, 0, y0, 480, 270 - y0, R.grass[2])
+    noise(img, 380, y0, 479, 269, R.grass[2], R.grass[1], 260, 1211)
+    noise(img, 380, y0, 479, 269, R.grass[2], R.grass[3], 160, 1212)
+    local ex0, ey0, ex1, ey1 = table.unpack(A.slabEdge)
+    L.poly(img, { 0, y0, ex0 + 1, y0, ex1 + 1, 270, 0, 270 }, O)
+    L.poly(img, { 0, y0 + 1, ex0, ey0, ex1, ey1, 0, 269 }, R.floor[2])
+    L.hline(img, 0, ex0 - 1, y0 + 1, R.floor[3])
+    noise(img, 0, y0 + 2, 450, 269, R.floor[2], R.floor[3], 260, 1213)
+    noise(img, 0, y0 + 2, 450, 269, R.floor[2], R.floor[1], 200, 1214)
+    -- The painted court inside its white boundary: the back sideline, the left baseline and the
+    -- right baseline lean with the floor, and the front sideline is below the screen.
+    L.poly(img, { 34, 162, 404, 162, 372, 269, 0, 269, 0, 196 }, P.white)
+    L.poly(img, { 36, 164, 402, 164, 370, 269, 0, 269, 0, 199 }, R.court[2])
+    noise(img, 0, 165, 400, 269, R.court[2], R.court[3], 220, 1215)
+    noise(img, 0, 165, 400, 269, R.court[2], R.court[1], 160, 1216)
+    -- The centre line and centre circle, and the key in front of the hoop at the left end.
+    L.ellipse(img, 230, 205, 26, 9, P.white)
+    L.ellipse(img, 230, 205, 25, 8, R.court[2])
+    L.line(img, 236, 164, 222, 269, P.white)
+    L.ellipse(img, 70, 187, 10, 16, P.white)
+    L.ellipse(img, 70, 187, 9, 15, R.court[2])
+    L.poly(img, { 28, 170, 76, 170, 60, 204, 0, 204, 0, 190 }, P.white)
+    L.poly(img, { 29, 171, 75, 171, 59, 203, 0, 203, 0, 192 }, R.court[3])
+  end
+
+  -- The path back toward the houses: it starts on the bottom row at about x 395, just outside the
+  -- court's slab, leaves the right edge, and a far stretch climbs to the houses. It is concrete,
+  -- like the slab.
   local function path(img)
-    local side, fill, light = R.path[3], R.path[2], R.path[1]
-    L.poly(img, { 430, 160, 440, 142, 448, 142, 444, 162, 470, 200, 480, 204, 480, 214, 460, 206 }, side)
-    L.poly(img, { 432, 159, 441, 143, 446, 143, 442, 161, 469, 199, 480, 206, 480, 210, 461, 204 }, fill)
+    local side, fill, light = R.floor[3], R.floor[2], R.floor[1]
+    L.poly(img, { 448, 138, 456, 138, 462, 158, 480, 178, 480, 188, 470, 182, 452, 160 }, side)
+    L.poly(img, { 449, 139, 455, 139, 460, 158, 480, 180, 480, 185, 469, 180, 453, 159 }, fill)
     L.poly(img, { A.pathStartX, 270, 404, 256, 424, 240, 450, 226, 480, 216, 480, 270 }, side)
     L.poly(img, { A.pathStartX + 3, 270, 407, 257, 426, 242, 452, 228, 480, 219, 480, 270 }, fill)
     L.line(img, 408, 262, 428, 245, light)
@@ -199,11 +170,172 @@ return function(L, ST, GU)
     end
   end
 
-  -- The family's woven mat on the grass, left of centre.
+  -- The leaning road sign beside the path: a short post tilted to the left, a blank yellow board.
+  local function roadSign(img)
+    L.line(img, 474, 204, 466, 180, O, 3)
+    L.line(img, 474, 203, 467, 181, R.metal[2])
+    L.poly(img, { 457, 170, 472, 172, 470, 185, 455, 183 }, O)
+    L.poly(img, { 458, 172, 471, 173, 469, 184, 456, 182 }, P.yellow)
+    L.line(img, 458, 172, 456, 181, P.yellow3)
+  end
+
+  -- A pale column from the bottom chord to the back of the slab, with a small concrete base.
+  local function column(img, x)
+    local w = A.columnWidth
+    box(img, x, A.chordY, w, A.backEdgeY - A.chordY + 2, R.column)
+    box(img, x - 2, A.backEdgeY - 3, w + 4, 6, R.floor)
+  end
+
+  -- The broad rust-red metal roof seen from below, the end of the roof on the right with the
+  -- open sky beyond it, and the exposed trusses with a bottom chord at row 80. The roof comes
+  -- this low so that it still shows at 2400 x 1080, where the top 54 rows are cut off.
+  local function roof(img)
+    local e = A.roofEndX
+    L.rect(img, 0, 0, e + 1, A.roofBottom + 2, O)
+    L.rect(img, 0, 0, e, A.roofBottom, R.rust[2])
+    -- The ribs of the corrugated sheets run toward the back of the court, each lit on its left.
+    -- They are drawn on their own layer, so none spill past the end of the roof into the sky.
+    local ribs = L.newImage(e, A.roofBottom)
+    for x = -40, e + 40, 5 do
+      local dx = math.floor((x - 220) * 0.16)
+      L.line(ribs, x, 0, x + dx, A.roofBottom - 1, R.rust[3])
+      L.line(ribs, x + 1, 0, x + 1 + dx, A.roofBottom - 1, R.rust[1])
+    end
+    L.blit(img, ribs, 0, 0)
+    -- Dark purlins cross under the sheets.
+    for _, y in ipairs({ 14, 30, 46 }) do
+      L.hline(img, 0, e - 1, y, O)
+      L.hline(img, 0, e - 1, y + 1, R.rust[3])
+    end
+    L.rect(img, 0, A.roofBottom - 3, e, 3, R.rust[1])
+    L.hline(img, 0, e - 1, A.roofBottom - 1, R.rust[3])
+    L.vline(img, e - 1, 0, A.roofBottom - 1, R.rust[3])
+    -- Trusses: a zigzag web under the eave and a bottom chord.
+    local top, chord = A.roofBottom + 1, A.chordY
+    for x = 0, e - 16, 16 do
+      L.line(img, x, top, x + 8, chord - 2, O, 2)
+      L.line(img, x + 8, chord - 2, x + 16, top, O, 2)
+      L.line(img, x + 1, top, x + 8, chord - 3, R.rust[1])
+      L.line(img, x + 8, chord - 3, x + 15, top, R.rust[3])
+    end
+    L.rect(img, 0, chord - 2, e + 1, 4, O)
+    L.hline(img, 0, e - 1, chord - 1, R.rust[1])
+    L.hline(img, 0, e - 1, chord, R.rust[3])
+    L.vline(img, e, top, chord + 1, O)
+  end
+
+  -- The plain sign hanging from the bottom chord on two wires: "EVACUATION CENTER" in dark
+  -- letters on a pale board, left of the Caption and below the Level label at both screen sizes.
+  local function evacuationSign(img)
+    local x, y, w, h = table.unpack(A.sign)
+    for _, off in ipairs({ 10, w - 11 }) do L.vline(img, x + off, A.chordY + 2, y - 1, O) end
+    box(img, x, y, w, h, R.board)
+    for i, label in ipairs({ "EVACUATION", "CENTER" }) do
+      local left = x + math.floor((w - L.F.width(label, 1)) / 2)
+      L.text(img, left, y + 5 + (i - 1) * 10, label, P.navy2)
+    end
+  end
+
+  -- The hoop at the left end of the court: a pole, a pale backboard, an orange rim and a net. The
+  -- pole stands on the court at row hoopBaseY.
+  local function hoop(img)
+    local x, y = table.unpack(A.hoop)
+    local base = A.hoopBaseY
+    L.rect(img, x + 15, y + 22, 5, base - (y + 22), O)
+    L.vline(img, x + 16, y + 23, base - 2, R.metal[1])
+    L.vline(img, x + 17, y + 23, base - 2, R.metal[2])
+    L.vline(img, x + 18, y + 23, base - 2, R.metal[3])
+    L.ellipse(img, x + 17, base, 6, 2, R.court[3])
+    box(img, x, y, 34, 24, R.board)
+    L.rect(img, x + 10, y + 8, 14, 10, O)
+    L.rect(img, x + 11, y + 9, 12, 8, R.board[1])
+    L.hline(img, x + 9, x + 25, y + 24, O)
+    L.hline(img, x + 9, x + 25, y + 25, P.orange)
+    L.hline(img, x + 10, x + 24, y + 26, P.orange2)
+    for nx = x + 11, x + 23, 3 do L.line(img, nx, y + 27, nx + 1, y + 33, R.board[3]) end
+    L.hline(img, x + 12, x + 23, y + 33, R.board[3])
+  end
+
+  -- A dome tent with a dark opening, seen from the front, at { left x, base row, width }.
+  local function tent(img, at, ramp)
+    local x, base, w = table.unpack(at)
+    local h = math.floor(w * 0.62)
+    local cx = x + math.floor(w / 2)
+    local shoulder = base - math.floor(h * 0.6)
+    L.ellipse(img, cx, base + 1, math.floor(w / 2) + 2, 2, R.floor[3])
+    outlined(img, function(layer)
+      L.poly(layer, { x, base, x + 4, shoulder, cx - 6, base - h, cx + 6, base - h,
+        x + w - 4, shoulder, x + w, base }, ramp[2])
+      L.poly(layer, { x + 2, base - 1, x + 5, shoulder, cx - 6, base - h + 1,
+        cx - 3, base - h + 1, x + 9, shoulder + 2, x + 7, base - 1 }, ramp[1])
+      L.poly(layer, { x + w - 7, base - 1, x + w - 6, shoulder + 2, cx + 6, base - h + 1,
+        x + w - 3, shoulder, x + w - 1, base - 1 }, ramp[3])
+      -- The poles cross over the top.
+      L.line(layer, x + 3, base - 2, cx, base - h + 1, ramp[3])
+      L.line(layer, x + w - 3, base - 2, cx, base - h + 1, ramp[3])
+      -- The opening, with its flap tied back on the right.
+      local top = base - math.floor(h * 0.7)
+      L.poly(layer, { cx - 9, base, cx, top, cx + 9, base }, O)
+      L.poly(layer, { cx - 7, base - 1, cx, top + 2, cx + 7, base - 1 }, P.ink2)
+      L.poly(layer, { cx + 1, top + 1, cx + 10, base - 1, cx + 12, base - 6 }, ramp[1])
+    end)
+  end
+
+  -- A small person in the background, seen from the front, with feet at { x, row }. An adult is 28
+  -- pixels tall and a child 20. The outfit names the shirt, trousers and skin ramps and the hair
+  -- colour. Original figures, not the photographed people.
+  local function person(img, at, child, outfit)
+    local x, y = table.unpack(at)
+    local shirt, pants, hair, skin = outfit.shirt, outfit.pants, outfit.hair, outfit.skin
+    local h = child and 20 or 28
+    local t = L.newImage(14, h + 1)
+    local head = child and 6 or 7
+    local hx = 7 - math.floor(head / 2)
+    L.rect(t, hx, 0, head, 3, hair)                     -- the hair
+    L.rect(t, hx, 2, head, head - 1, skin[1])           -- the face
+    L.vline(t, hx + head - 1, 2, head, skin[2])
+    L.vline(t, hx, 2, 3, hair)
+    L.vline(t, hx + head - 1, 2, 3, hair)
+    L.px(t, hx + 1, 4, K.e); L.px(t, hx + head - 2, 4, K.e)
+    local body = head + 1
+    local legs = child and 6 or 9
+    local torso = h - body - legs
+    L.rect(t, 3, body, 8, torso, shirt[2])              -- the shirt
+    L.vline(t, 3, body, body + torso - 1, shirt[1])
+    L.vline(t, 10, body, body + torso - 1, shirt[3])
+    L.rect(t, 1, body + 1, 2, torso - 2, skin[1])       -- the arms
+    L.rect(t, 11, body + 1, 2, torso - 2, skin[2])
+    L.rect(t, 4, body + torso, 6, legs - 2, pants[2])   -- the trousers or skirt
+    L.vline(t, 4, body + torso, body + torso + legs - 3, pants[1])
+    L.vline(t, 7, body + torso + 2, body + torso + legs - 3, pants[3])
+    L.rect(t, 4, h - 2, 3, 2, K.B)                      -- the shoes
+    L.rect(t, 8, h - 2, 3, 2, K.B)
+    L.outline(t, O)
+    L.ellipse(img, x, y, 7, 1, R.floor[3])
+    L.blit(img, t, x - 7, y - h)
+  end
+
+  local LIGHT = { P.skin1, P.skin2 }
+  local TAN = { P.tan, P.tan2 }
+
+  -- The adult and child at the blue tent's opening, and two more people at the back on the right.
+  -- Nothing sits between x 204 and 300 at the back, where the HINT button covers it at 2400 x 1080.
+  local function people(img)
+    person(img, A.tentPeople.adult, false, { shirt = { P.teal3, P.teal, P.teal2 },
+      pants = { P.blue3, P.navy, P.navy2 }, hair = P.hair, skin = TAN })
+    person(img, A.tentPeople.child, true, { shirt = { P.yellow3, P.yellow, P.yellow2 },
+      pants = { P.red3, P.red, P.red2 }, hair = P.hair2, skin = LIGHT })
+    person(img, A.backPeople.adult, false, { shirt = { P.red3, P.red, P.red2 },
+      pants = { P.gray1, P.gray3, P.gray4 }, hair = P.hair2, skin = LIGHT })
+    person(img, A.backPeople.child, true, { shirt = R.leaf,
+      pants = { P.blue3, P.blue, P.blue2 }, hair = P.hair, skin = TAN })
+  end
+
+  -- The family's woven mat on the court floor, left of centre.
   local function mat(img)
     local m = A.mat
     local pts = { m.x0, m.top, m.x1, m.top, m.x1 + 10, m.bottom, m.x0 - 10, m.bottom }
-    L.ellipse(img, (m.x0 + m.x1) / 2, m.bottom + 1, (m.x1 - m.x0) / 2 + 12, 3, R.grass[3])
+    L.ellipse(img, (m.x0 + m.x1) / 2, m.bottom + 1, (m.x1 - m.x0) / 2 + 12, 3, R.court[3])
     L.poly(img, { pts[1] - 1, pts[2] - 1, pts[3] + 1, pts[4] - 1, pts[5] + 2, pts[6] + 1,
       pts[7] - 2, pts[8] + 1 }, O)
     L.poly(img, pts, R.mat[2])
@@ -225,12 +357,18 @@ return function(L, ST, GU)
 
   function M.background()
     local img = L.newImage(480, 270)
-    sky(img)
-    ground(img)
+    outdoors(img)
     houses(img)
+    floor(img)
     path(img)
-    school(img)
-    distantTeacher(img)
+    roadSign(img)
+    for _, x in ipairs(A.columns) do column(img, x) end
+    roof(img)
+    evacuationSign(img)
+    hoop(img)
+    tent(img, A.tents.blue, R.tentBlue)
+    tent(img, A.tents.orange, R.tentOrange)
+    people(img)
     mat(img)
     return img
   end
@@ -307,7 +445,8 @@ return function(L, ST, GU)
     local w, h = table.unpack(A.neighboursSize)
     local img = L.newImage(w, h)
     -- An older neighbour with grey hair and glasses, a neighbour in green, and one in yellow.
-    L.ellipse(img, 43, 61, 42, 1, R.grass[3])
+    -- Their shadow falls on the painted court.
+    L.ellipse(img, 43, 61, 42, 1, R.court[3])
     L.blit(img, neighbour("teacher", "idle", f, { PURPLE }, GRAY), 0, 0)
     L.blit(img, neighbour("dad", "idle", f, { YELLOW, BROWN }), 50, 0)
     L.blit(img, neighbour("mom", f == 1 and "wave" or "idle", f, { GREEN }), 25, 0)

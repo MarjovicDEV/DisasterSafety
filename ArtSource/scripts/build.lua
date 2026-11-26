@@ -241,8 +241,8 @@ if want("mall_v2") then
     MA.LAYOUT.mall_a.swayMs)
 end
 
--- The v2 evacuation area (Hard 7): the field, the radio prop (off and two "on" frames with sound
--- waves) and the chatting neighbours (two frames).
+-- The v2 evacuation area (Hard 7): the covered court, the radio prop (off and two "on" frames with
+-- sound waves) and the chatting neighbours (two frames).
 if want("evacuation_area_v2") then
   local GU = dofile(here .. "grownups_v2.lua")(L, ST)
   local EA = dofile(here .. "evacuation_area_v2.lua")(L, ST, GU)
