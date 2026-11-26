@@ -885,9 +885,6 @@ namespace DisasterSafety.EditorTools
             setting.artAnchorY = 0f;
             ArtImage(group, "Living Room After the Earthquake", S("Level/v2/bg_home_after"), 0, 0);
             const float floorY = 230f;
-            BuildLevelAnimation(group, "Pipe Drip", Frames("Level/v2/home_after_drip", 2),
-                134, 204, 1f / 0.42f, onlyWhileShaking: false);
-
             var injuredCast = Stretch(Rect("Hard 5 Cast", group));
             var injuredMom = BuildMom(injuredCast, 322f);
             injuredMom.startY = floorY - 233f;
@@ -907,6 +904,8 @@ namespace DisasterSafety.EditorTools
             var pen = BuildProp(leavingCast, "pen", "Level/v2/home_after_pen", 245, 181, Vector2.zero);
             var note = BuildProp(leavingCast, "note", "Level/v2/home_after_note", 232, 180, Vector2.zero, visible: false);
 
+            // Dad crosses the foreground while the Student stays in the doorway.
+            injuredCast.SetAsLastSibling();
             setting.student = BuildStudent(group, withBubble: true);
             ((RectTransform)setting.student.bubble.transform).sizeDelta = new Vector2(268f, 104f);
             // This prop draws in front of the Student only while writing behind the table.
@@ -946,7 +945,7 @@ namespace DisasterSafety.EditorTools
             {
                 new ActOut
                 {
-                    key = "call_adult",
+                    key = "call_adult", placeReaction = true, reactionPosition = new Vector2(204f, 56f),
                     steps = new[]
                     {
                         // Convert art rows measured from the top to height above the floor line.
@@ -954,11 +953,11 @@ namespace DisasterSafety.EditorTools
                         ActOutStep.Pose(StudentPose.Crouch),
                         ActOutStep.Say(UIStrings.ActOutStayStill),
                         ActOutStep.Walk(269f, floorY - 242f),
-                        ActOutStep.Walk(79f, floorY - 216f),
+                        ActOutStep.Walk(56f, floorY - 212f),
                         ActOutStep.Face(left: true),
                         ActOutStep.Pose(StudentPose.Call),
                         ActOutStep.Say(UIStrings.ActOutHelp),
-                        ActOutStep.GrownUpWalk(dad, 42f, floorY - 239f),
+                        ActOutStep.GrownUpWalk(dad, 56f, floorY - 249f),
                         ActOutStep.GrownUpWalk(dad, 265f, floorY - 241f),
                         ActOutStep.GrownUpWalk(dad, 286f, floorY - 244f),
                         ActOutStep.GrownUpPoseStep(dad, GrownUpPose.Kneel, 0.4f),
@@ -976,14 +975,11 @@ namespace DisasterSafety.EditorTools
                 },
                 new ActOut
                 {
-                    key = "fix_pipe", stopAfter = 4, stopPose = StudentPose.Reach,
+                    key = "wait_for_mom", stopPose = StudentPose.Idle,
                     steps = new[]
                     {
-                        ActOutStep.Walk(269f, floorY - 242f),
-                        ActOutStep.Walk(167f, floorY - 236f),
-                        ActOutStep.Face(left: true),
-                        ActOutStep.Pose(StudentPose.Reach),
-                        ActOutStep.Wait(0.2f),
+                        ActOutStep.Walk(284f, floorY - 234f),
+                        ActOutStep.Pose(StudentPose.Idle, 0.5f),
                     },
                 },
                 new ActOut
