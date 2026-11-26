@@ -44,23 +44,21 @@ return function(L, ST)
     homeAfter = {
       innerDoor = { 429, 113 }, lamp = { 384, 14 },
       picture = { 208, 144 }, books = { 394, 217 }, chair = { 187, 248 },
-      pipe = { 123, 195 }, drip = { 134, 204 }, dripMs = 420,
-      puddle = { 137, 215 }, paper = { 232, 180 }, pen = { 245, 181 },
-      note = { 232, 180 },
+      pen = { 245, 181 }, note = { 232, 180 },
       -- Actor points are the centre of the feet, measured from the top of the art.
       hard5 = {
         start = { 286, 230 }, mom = { 322, 233 }, crouch = { 284, 242 },
-        pullUp = { 284, 234 }, aisle = { 269, 242 }, pipeStop = { 167, 236 },
-        doorStop = { 100, 232 }, call = { 79, 216 },
-        dadOffscreen = { -24, 238 }, dadEntry = { 42, 239 }, dadAisle = { 265, 241 }, dadKneel = { 286, 244 },
+        pullUp = { 284, 234 }, aisle = { 269, 242 }, wait = { 284, 234 },
+        doorStop = { 100, 232 }, call = { 56, 212 },
+        dadOffscreen = { -24, 238 }, dadEntry = { 56, 249 }, dadAisle = { 265, 241 }, dadKneel = { 286, 244 },
       },
       hard6 = {
-        start = { 286, 230 }, mom = { 38, 215 }, pack = { 238, 208 },
-        tableApproach = { 282, 208 }, aisle = { 282, 236 }, crossRoom = { 162, 236 }, bagPickUp = { 106, 225 },
+        start = { 286, 230 }, mom = { 38, 215 },
+        aisle = { 282, 236 }, crossRoom = { 162, 236 }, bagPickUp = { 106, 225 },
         emptyStop = { 114, 232 }, carryingStop = { 91, 232 },
         runBend = { 363, 241 }, innerStop = { 441, 235 },
-        studentThreshold = { 56, 212 }, momThreshold = { 35, 204 },
-        studentOutside = { 56, 206 }, momOutside = { 40, 175 },
+        studentThreshold = { 56, 212 }, momLead = { 32, 183 }, momThreshold = { 35, 178 },
+        studentOutside = { 56, 206 }, momOutside = { 40, 171 },
       },
     },
   }
@@ -351,16 +349,6 @@ return function(L, ST)
     box(img, x + 21, y + 1, 5, 17, R.wood)
   end
 
-  local function brokenPipe(img, x, y)
-    box(img, x, y, 28, 8, R.metal)
-    box(img, x + 1, y - 2, 5, 12, R.metal)
-    box(img, x + 24, y - 2, 5, 12, R.metal)
-    L.line(img, x + 17, y + 1, x + 13, y + 4, O)
-    L.line(img, x + 13, y + 4, x + 16, y + 4, O)
-    L.line(img, x + 16, y + 4, x + 14, y + 7, O)
-    L.px(img, x + 14, y + 8, R.glass[2])
-  end
-
   function M.backgroundAfter()
     local B = A.homeAfter
     local img = room(openFrontDoor, innerDoor, B.innerDoor)
@@ -369,36 +357,18 @@ return function(L, ST)
     tiltedPicture(img, table.unpack(B.picture))
     fallenBooks(img, table.unpack(B.books))
     toppledChair(img, table.unpack(B.chair))
-    brokenPipe(img, table.unpack(B.pipe))
-    local x, y = table.unpack(B.puddle)
-    L.ellipse(img, x, y, 10, 2, R.glass[3])
-    L.ellipse(img, x - 1, y, 7, 1, R.glass[2])
-    L.hline(img, x - 6, x - 2, y - 1, R.glass[1])
     return img
   end
 
-  function M.dripFrames()
-    local frames = {}
-    for _, y in ipairs({ 1, 6 }) do
-      local img = L.newImage(7, 10)
-      L.poly(img, { 3, y, 4, y + 2, 3, y + 3, 2, y + 2 }, R.glass[3])
-      L.px(img, 3, y + 1, R.glass[1])
-      frames[#frames + 1] = img
-    end
-    return frames
-  end
-
-  function M.paper(written)
+  function M.note()
     local img = L.newImage(12, 8)
     L.poly(img, { 2, 0, 11, 0, 10, 7, 0, 7 }, O)
     L.poly(img, { 3, 1, 10, 1, 9, 6, 1, 6 }, R.paper[1])
     L.hline(img, 2, 9, 6, R.paper[3])
     L.px(img, 9, 5, R.paper[2])
-    if written then
-      L.hline(img, 4, 8, 2, R.navy[2])
-      L.hline(img, 3, 8, 4, R.navy[2])
-      L.hline(img, 3, 6, 5, R.navy[1])
-    end
+    L.hline(img, 4, 8, 2, R.navy[2])
+    L.hline(img, 3, 8, 4, R.navy[2])
+    L.hline(img, 3, 6, 5, R.navy[1])
     return img
   end
 

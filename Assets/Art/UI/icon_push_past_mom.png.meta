@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 9ca30267dd78bad449b9b2cac843ddda
+guid: b890599147b075446a420ca3b1b6967e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2739730274441633157
-    second: home_after_drip_1_0
+      213: 4736754187580510087
+    second: icon_push_past_mom_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -115,13 +115,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: home_after_drip_1_0
+      name: icon_push_past_mom_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 7
-        height: 10
+        width: 16
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,8 +130,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 58d1a7c3b2a750620800000000000000
-      internalID: 2739730274441633157
+      spriteID: 78f841356d45cb140800000000000000
+      internalID: 4736754187580510087
       vertices: []
       indices: 
       edges: []

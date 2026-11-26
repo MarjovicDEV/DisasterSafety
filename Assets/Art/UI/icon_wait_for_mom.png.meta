@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: 7f1ed4b4c979cba44843e0fa5ef4c704
+guid: e83e815daa59a7944ae71b7b7cc19799
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1283896600717126051
-    second: icon_fix_pipe_0
-  - first:
-      213: 3602428765536130764
-    second: icon_fix_pipe_1
+      213: 6562988491456611577
+    second: icon_wait_for_mom_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -118,35 +115,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: icon_fix_pipe_0
+      name: icon_wait_for_mom_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 5
-        width: 16
-        height: 10
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d569ce118deae2ee0800000000000000
-      internalID: -1283896600717126051
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: icon_fix_pipe_1
-      rect:
-        serializedVersion: 2
-        x: 5
         y: 0
-        width: 6
-        height: 6
+        width: 16
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -155,8 +130,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: cc61e6230e56ef130800000000000000
-      internalID: 3602428765536130764
+      spriteID: 9f48f32c24b641b50800000000000000
+      internalID: 6562988491456611577
       vertices: []
       indices: 
       edges: []

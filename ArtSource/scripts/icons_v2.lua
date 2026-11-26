@@ -238,17 +238,21 @@ return function(L, ST)
     L.line(call, 12, 11, 14, 13, M.NAVY[3])
     out.call_adult = call
 
-    local pipe = L.newImage(16, 16)
-    M.box(pipe, 1, 3, 14, 6, M.METAL)
-    M.box(pipe, 1, 2, 4, 8, M.METAL)
-    M.box(pipe, 12, 2, 3, 8, M.METAL)
-    L.line(pipe, 9, 4, 7, 6, O)
-    L.line(pipe, 7, 6, 9, 7, O)
-    L.px(pipe, 8, 8, O)
-    L.poly(pipe, { 8, 10, 10, 13, 8, 15, 6, 13 }, M.GLASS[3])
-    L.px(pipe, 8, 12, M.GLASS[1])
-    L.px(pipe, 8, 13, M.GLASS[2])
-    out.fix_pipe = pipe
+    -- A little sandglass marks time passing while Mom waits for help.
+    local wait = L.newImage(16, 16)
+    L.poly(wait, { 3, 3, 12, 3, 11, 6, 9, 8, 11, 10, 12, 13,
+      3, 13, 4, 10, 6, 8, 4, 6 }, M.GLASS[2])
+    L.line(wait, 4, 4, 7, 7, M.GLASS[1])
+    L.hline(wait, 5, 10, 5, M.WOOD[2])
+    L.line(wait, 6, 6, 8, 7, M.WOOD[3])
+    L.line(wait, 8, 8, 8, 10, M.WOOD[1])
+    L.poly(wait, { 4, 12, 8, 10, 11, 12 }, M.WOOD[2])
+    L.rect(wait, 2, 1, 12, 2, M.WOOD[2])
+    L.hline(wait, 2, 12, 1, M.WOOD[1])
+    L.rect(wait, 2, 13, 12, 2, M.WOOD[3])
+    L.hline(wait, 2, 11, 13, M.WOOD[1])
+    L.outline(wait, O)
+    out.wait_for_mom = wait
 
     local empty = L.newImage(16, 16)
     -- Keep the crossed-out bag separate from the red go bag used for the Safe Choice.
@@ -264,14 +268,22 @@ return function(L, ST)
     L.line(empty, 2, 13, 13, 2, M.RED[1])
     out.no_go_bag = empty
 
-    local note = L.newImage(16, 16)
-    M.box(note, 2, 1, 12, 14, M.WHITE)
-    L.hline(note, 5, 10, 4, M.NAVY[2])
-    L.hline(note, 5, 10, 6, M.NAVY[2])
-    L.hline(note, 5, 8, 8, M.NAVY[1])
-    L.line(note, 2, 13, 13, 2, M.RED[3], 3)
-    L.line(note, 2, 13, 13, 2, M.RED[1])
-    out.no_note = note
+    -- The arrow points toward an occupied doorway and stops before Mom.
+    local push = L.newImage(16, 16)
+    L.rect(push, 1, 1, 9, 14, M.WOOD[3])
+    L.rect(push, 2, 2, 7, 12, M.GREEN[3])
+    L.vline(push, 1, 1, 14, M.WOOD[1])
+    L.hline(push, 2, 9, 1, M.WOOD[2])
+    L.rect(push, 3, 4, 4, 4, M.NAVY[3])
+    L.rect(push, 4, 5, 3, 3, M.SKIN[2])
+    L.px(push, 4, 5, M.SKIN[1])
+    L.rect(push, 3, 8, 5, 4, M.RED[2])
+    L.vline(push, 3, 8, 11, M.RED[1])
+    L.rect(push, 4, 12, 3, 2, M.NAVY[2])
+    L.outline(push, O)
+    L.poly(push, { 9, 8, 12, 5, 12, 7, 15, 7, 15, 10, 12, 10, 12, 12 }, O)
+    L.poly(push, { 10, 8, 12, 6, 12, 8, 14, 8, 14, 9, 12, 9, 12, 10 }, M.WHITE[1])
+    out.push_past_mom = push
 
     local toy = L.newImage(16, 16)
     L.poly(toy, { 1, 8, 4, 8, 6, 4, 10, 4, 13, 8, 14, 8,
