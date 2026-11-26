@@ -22,6 +22,27 @@ namespace DisasterSafety.Tests
             Assert.That(prefs.SoundOn, Is.True);
         }
 
+
+        [TestCase(Episode.Earthquake, MusicTrack.CherryBlossom, MusicTrack.HappyAlley, MusicTrack.PreludeAndAction, MusicTrack.LightSting)]
+        [TestCase(Episode.Fire, MusicTrack.CheeryMonday, MusicTrack.BRoll, MusicTrack.Machinations, MusicTrack.PianoBetween)]
+        [TestCase(Episode.Typhoon, MusicTrack.CherryBlossom, MusicTrack.HappyAlley, MusicTrack.PreludeAndAction, MusicTrack.LightSting)]
+        [TestCase(Episode.Flood, MusicTrack.CheeryMonday, MusicTrack.BRoll, MusicTrack.Machinations, MusicTrack.PianoBetween)]
+        [TestCase(Episode.Landslide, MusicTrack.CherryBlossom, MusicTrack.HappyAlley, MusicTrack.PreludeAndAction, MusicTrack.LightSting)]
+        public void Episodes_SelectTracksByDifficultyAndCompletion(Episode episode,
+            MusicTrack easy, MusicTrack normal, MusicTrack hard, MusicTrack completed)
+        {
+            Assert.That(EpisodeMusic.ForLevel(new LevelId(episode, Difficulty.Easy, 1)), Is.EqualTo(easy));
+            Assert.That(EpisodeMusic.ForLevel(new LevelId(episode, Difficulty.Normal, 1)), Is.EqualTo(normal));
+            Assert.That(EpisodeMusic.ForLevel(new LevelId(episode, Difficulty.Hard, 1)), Is.EqualTo(hard));
+            Assert.That(EpisodeMusic.ForCompletion(episode), Is.EqualTo(completed));
+        }
+
+        [Test]
+        public void MenuPlaylist_PutsSomewhereSunnyBeforeEasyLemon()
+        {
+            Assert.That(EpisodeMusic.MenuPlaylist, Is.EqualTo(new[] { MusicTrack.SomewhereSunny, MusicTrack.EasyLemon }));
+        }
+
         [Test]
         public void Changes_AreStoredImmediately()
         {

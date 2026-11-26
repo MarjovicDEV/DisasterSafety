@@ -433,10 +433,12 @@ namespace DisasterSafety.Tests
             var labelCentre = buttonRect.InverseTransformPoint(label.rectTransform.TransformPoint(label.rectTransform.rect.center));
             var rightEdge = labelCentre.x + PixelText.Width(label.font, label.text) / 2f;
             Assert.That(rightEdge, Is.LessThan(buttonRect.rect.xMax - 8f), "the label stays inside the button face");
+            yield return WaitFor(() => AudioManager.CurrentMusic?.name == "Light Sting", "the Hard completion cue");
             nextEpisode.onClick.Invoke();
             yield return WaitForScene(GameScenes.MainMenu);
             var menu = Menu();
             yield return WaitFor(() => menu.episodePanel.IsVisible, "Episode selection");
+            yield return WaitFor(MenuMusicSelected, "menu music after Next Episode");
             var fire = Array.Find(menu.episodeCards, card => card.episode == Episode.Fire);
             Assert.That(fire.gameObject.activeInHierarchy && !fire.lockBadge.activeSelf, Is.True);
             fire.button.onClick.Invoke();
@@ -2753,20 +2755,130 @@ namespace DisasterSafety.Tests
             }
         }
 
-        [UnityTest]
-        public IEnumerator Level_PlaysItsOwnMusic_AndTheMenuMusicComesBack()
+        static readonly Difficulty[] MusicDifficulties =
         {
-            var library = Resources.Load<AudioLibrary>(AudioLibrary.ResourcePath);
-            Assert.That(library.levelMusic, Is.Not.Null, "bgm_level is in the Audio Library");
-            Assert.That(library.levelMusic, Is.Not.SameAs(library.menuMusic));
+            Difficulty.Easy, Difficulty.Normal, Difficulty.Hard
+        };
+
+        [UnityTest]
+        public IEnumerator EarthquakeMusic_UsesDifficultyAndPlaysACompletionCueOnce(
+            [ValueSource(nameof(MusicDifficulties))] Difficulty difficulty)
+        {
+            var expected = new[] { "Cherry Blossom", "Happy Alley", "Prelude and Action" };
+            yield return StartRolloutLevel(new LevelId(Episode.Earthquake, difficulty, 1));
+            yield return ReadyToChoose(Level);
+            Assert.That(AudioManager.CurrentMusic?.name, Is.EqualTo(expected[Array.IndexOf(MusicDifficulties, difficulty)]),
+                $"gameplay music for Earthquake {difficulty}");
+            Assert.That(MusicSource().loop, Is.True);
+
+            var controller = Level();
+            Tap(controller, controller.Attempt.Scenario.SafeChoiceIndex);
+            yield return FeedbackShown(controller);
+            controller.finishButton.onClick.Invoke();
+            Assert.That(controller.completedPanel.IsVisible, Is.True);
+            yield return Wait(0.6f);
+            Assert.That(AudioManager.CurrentMusic?.name, Is.EqualTo("Light Sting"));
+            Assert.That(MusicSource().loop, Is.False);
+        }
+
+        static AudioSource MusicSource() =>
+            Array.Find(UnityEngine.Object.FindAnyObjectByType<AudioManager>().GetComponents<AudioSource>(),
+                source => source.clip != null && source.clip == AudioManager.CurrentMusic);
+
+
+        static bool MenuMusicSelected() =>
+            AudioManager.CurrentMusic?.name == "Somewhere Sunny" ||
+            AudioManager.CurrentMusic?.name == "Easy Lemon (60 second)";
+
+        static IEnumerator FinishForMusic(LevelController controller)
+        {
+            yield return ReadyToChoose(() => controller);
+            Tap(controller, controller.Attempt.Scenario.SafeChoiceIndex);
+            yield return FeedbackShown(controller);
+            controller.finishButton.onClick.Invoke();
+            Assert.That(controller.completedPanel.IsVisible, Is.True);
+            yield return WaitFor(() => AudioManager.CurrentMusic?.name == "Light Sting", "the completion cue");
+            Assert.That(MusicSource().loop, Is.False);
+        }
+
+        [UnityTest]
+        public IEnumerator Music_DucksDuringShakeAndKeepsSoundsIndependent()
+        {
+            GameServices.Initialize(dir);
+            var preferences = GameServices.Audio;
+            var musicWasOn = preferences.MusicOn;
+            var soundWasOn = preferences.SoundOn;
+            try
+            {
+                preferences.MusicOn = true;
+                preferences.SoundOn = true;
+                GameScenes.ToMainMenu();
+                yield return WaitFor(MenuMusicSelected, "music in the Main Menu");
+                yield return StartEasyOne();
+
+                var controller = Level();
+                yield return WaitFor(() => AudioManager.CurrentMusic?.name == "Cherry Blossom", "Easy gameplay music");
+                yield return Wait(0.8f);
+                Assert.That(controller.ActiveSetting.shaker.IsShaking, Is.True);
+                var music = MusicSource();
+                Assert.That(music.volume, Is.InRange(0.10f, 0.18f), "music volume during the shake");
+                yield return ReadyToChoose(Level);
+                yield return WaitFor(() => music.volume > 0.40f, "music recovery after the shake");
+
+                preferences.MusicOn = false;
+                yield return WaitFor(() => music.volume == 0f, "muted music");
+                var blips = AudioManager.BlipsPlayed;
+                AudioManager.PlayBlip(1f);
+                Assert.That(AudioManager.BlipsPlayed, Is.EqualTo(blips + 1), "Sounds still play with Music off");
+
+                preferences.SoundOn = false;
+                preferences.MusicOn = true;
+                yield return WaitFor(() => music.volume > 0.40f, "unmuted music");
+                AudioManager.PlayBlip(1f);
+                Assert.That(AudioManager.BlipsPlayed, Is.EqualTo(blips + 1), "Music stays on with Sounds off");
+            }
+            finally
+            {
+                preferences.MusicOn = musicWasOn;
+                preferences.SoundOn = soundWasOn;
+            }
+        }
+
+        [UnityTest]
+        public IEnumerator CompletionMusic_EndsInSilenceAndReplayRestoresGameplayMusic()
+        {
+            yield return StartEasyOne();
+            var controller = Level();
+            yield return FinishForMusic(controller);
+            var music = MusicSource();
+            Assert.That(music.isPlaying, Is.True);
+            yield return WaitFor(() => !music.isPlaying, "the cue to finish", 20f);
+            yield return Wait(0.5f);
+            Assert.That(controller.completedPanel.IsVisible, Is.True);
+            Assert.That(music.isPlaying, Is.False, "no music restarts on the Level Completed panel");
+
+            controller.replayButton.onClick.Invoke();
+            yield return WaitFor(() => Level() != null && Level() != controller &&
+                AudioManager.CurrentMusic?.name == "Cherry Blossom", "Easy gameplay music on Replay");
+            Assert.That(MusicSource().loop, Is.True);
+        }
+
+        [UnityTest]
+        public IEnumerator CompletionMusic_DoesNotFollowLevelsOrMenu()
+        {
+            yield return StartEasyOne();
+            var controller = Level();
+            yield return FinishForMusic(controller);
+            controller.levelsButton.onClick.Invoke();
+            yield return WaitFor(() => Menu()?.levelPanel.IsVisible == true, "Level selection after Levels");
+            yield return WaitFor(MenuMusicSelected, "menu playlist after Levels");
 
             yield return StartEasyOne();
-            yield return ReadyToChoose(Level);
-            yield return WaitFor(() => AudioManager.CurrentMusic == library.levelMusic, "the Level music");
-
-            GameScenes.ToMainMenu();
-            yield return WaitForScene(GameScenes.MainMenu);
-            yield return WaitFor(() => AudioManager.CurrentMusic == library.menuMusic, "the menu music");
+            controller = Level();
+            yield return FinishForMusic(controller);
+            controller.menuButton.onClick.Invoke();
+            yield return WaitFor(() => Menu()?.mainPanel.IsVisible == true, "Main Menu after Menu");
+            yield return WaitFor(MenuMusicSelected, "menu playlist after Menu");
         }
 
         [UnityTest]

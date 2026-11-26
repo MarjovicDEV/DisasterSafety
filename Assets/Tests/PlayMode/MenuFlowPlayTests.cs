@@ -68,6 +68,75 @@ namespace DisasterSafety.Tests
         }
 
         [UnityTest]
+        public IEnumerator Settings_OpensOfflineMusicCreditsAndReturns()
+        {
+            yield return BootToMenu();
+            var menu = UnityEngine.Object.FindAnyObjectByType<MainMenuController>();
+            menu.settingsButton.onClick.Invoke();
+            yield return Wait(0.4f);
+
+            var credits = Array.Find(menu.settingsPanel.GetComponentsInChildren<Button>(),
+                button => button.GetComponentInChildren<Text>()?.text == "Music Credits");
+            Assert.That(credits, Is.Not.Null, "Settings has a Music Credits button");
+            Assert.That(credits.IsInteractable(), Is.True);
+            credits.onClick.Invoke();
+            yield return Wait(0.4f);
+
+            var panel = menu.musicCreditsPanel;
+            Assert.That(panel.IsVisible, Is.True, "Music credits view opens within the Main Menu scene");
+            var copy = Array.ConvertAll(panel.GetComponentsInChildren<Text>(), label => label.text);
+            Assert.That(copy, Does.Contain("Kevin MacLeod (incompetech.com)"));
+            Assert.That(copy, Does.Contain("Licensed under Creative Commons: By Attribution 4.0"));
+            Assert.That(copy, Does.Contain("https://creativecommons.org/licenses/by/4.0/"));
+            foreach (var title in new[]
+            {
+                "Somewhere Sunny", "Easy Lemon (60 second)", "Cherry Blossom", "Happy Alley", "Prelude and Action",
+                "Light Sting", "Cheery Monday", "B-Roll", "Machinations", "Piano Between"
+            })
+                Assert.That(copy, Does.Contain(title));
+            Assert.That(copy, Does.Contain("https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100315"));
+
+            foreach (var label in panel.GetComponentsInChildren<Text>())
+            {
+                foreach (var glyph in label.text)
+                    Assert.That(label.font.HasCharacter(glyph), Is.True, $"Missing '{glyph}' in {label.text}");
+                Assert.That(label.preferredWidth, Is.LessThanOrEqualTo(label.rectTransform.rect.width + 1f), label.text);
+            }
+
+            var back = Array.Find(panel.GetComponentsInChildren<Button>(),
+                button => button.GetComponentInChildren<Text>()?.text == "BACK");
+            Assert.That(back, Is.Not.Null);
+            back.onClick.Invoke();
+            yield return Wait(0.4f);
+            Assert.That(menu.settingsPanel.IsVisible, Is.True);
+        }
+
+
+        [UnityTest]
+        public IEnumerator MenuMusic_AlternatesWhenEachTrackEnds()
+        {
+            var oldAudio = UnityEngine.Object.FindAnyObjectByType<AudioManager>();
+            if (oldAudio != null)
+            {
+                UnityEngine.Object.Destroy(oldAudio.gameObject);
+                yield return null;
+            }
+            yield return BootToMenu();
+            var audio = UnityEngine.Object.FindAnyObjectByType<AudioManager>();
+            var music = Array.Find(audio.GetComponents<AudioSource>(), source => source.clip == AudioManager.CurrentMusic);
+
+            foreach (var title in new[] { "Somewhere Sunny", "Easy Lemon (60 second)", "Somewhere Sunny" })
+            {
+                for (var elapsed = 0f; elapsed < 3f && music.clip.name != title; elapsed += Time.unscaledDeltaTime)
+                    yield return null;
+                Assert.That(music.clip.name, Is.EqualTo(title));
+                Assert.That(music.isPlaying, Is.True);
+                Assert.That(music.loop, Is.False);
+                music.timeSamples = music.clip.samples - music.clip.frequency / 5;
+            }
+        }
+
+        [UnityTest]
         public IEnumerator FreshInstall_WalksEveryRouteAndBack()
         {
             yield return BootToMenu();
