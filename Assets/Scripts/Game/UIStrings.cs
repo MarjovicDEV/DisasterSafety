@@ -38,12 +38,20 @@ namespace DisasterSafety.Game
             (MusicTrack.CherryBlossom, "Cherry Blossom", "USUAN1100382"),
             (MusicTrack.HappyAlley, "Happy Alley", "USUAN1100482"),
             (MusicTrack.PreludeAndAction, "Prelude and Action", "USUAN1100887"),
-            (MusicTrack.LightSting, "Light Sting", "USUAN1100433"),
             (MusicTrack.CheeryMonday, "Cheery Monday", "USUAN1700065"),
             (MusicTrack.BRoll, "B-Roll", "USUAN1100315"),
             (MusicTrack.Machinations, "Machinations", "USUAN1100510"),
             (MusicTrack.PianoBetween, "Piano Between", "USUAN1100490")
         };
+
+        /// <summary>The CC0 recordings the game plays as music besides the Kevin MacLeod tracks.</summary>
+        public static readonly (MusicTrack Track, string Title)[] OtherMusicRecordings =
+        {
+            (MusicTrack.UkuleleShortTheme, "Ukulele Short Theme")
+        };
+
+        public const string SoundCredit = "Button sounds: Kenney (kenney.nl), CC0.";
+        public const string CompletedCredit = "Level Completed: ukulele by Tetoszka (freesound.org), CC0.";
 
         public const string Done = "DONE";
         public static string TutorialPageTitle(int index, string title) => "Step " + (index + 1) + ": " + title;

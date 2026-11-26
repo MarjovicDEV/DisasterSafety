@@ -10,7 +10,7 @@ namespace DisasterSafety.Core
         CherryBlossom,
         HappyAlley,
         PreludeAndAction,
-        LightSting,
+        UkuleleShortTheme,
         CheeryMonday,
         BRoll,
         Machinations,
@@ -21,7 +21,7 @@ namespace DisasterSafety.Core
     public static class EpisodeMusic
     {
         static readonly (MusicTrack Easy, MusicTrack Normal, MusicTrack Hard, MusicTrack Completion) SetA =
-            (MusicTrack.CherryBlossom, MusicTrack.HappyAlley, MusicTrack.PreludeAndAction, MusicTrack.LightSting);
+            (MusicTrack.CherryBlossom, MusicTrack.HappyAlley, MusicTrack.PreludeAndAction, MusicTrack.UkuleleShortTheme);
         static readonly (MusicTrack Easy, MusicTrack Normal, MusicTrack Hard, MusicTrack Completion) SetB =
             (MusicTrack.CheeryMonday, MusicTrack.BRoll, MusicTrack.Machinations, MusicTrack.PianoBetween);
 

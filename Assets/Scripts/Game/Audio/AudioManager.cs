@@ -20,7 +20,6 @@ namespace DisasterSafety.Game
         Safe,
         Unsafe,
         Star,
-        Complete,
         Opened,
         /// <summary>The Student's short voice blip under a Reaction or an Act-out line.</summary>
         Blip

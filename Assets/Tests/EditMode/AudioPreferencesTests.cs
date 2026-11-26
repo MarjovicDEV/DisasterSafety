@@ -23,11 +23,11 @@ namespace DisasterSafety.Tests
         }
 
 
-        [TestCase(Episode.Earthquake, MusicTrack.CherryBlossom, MusicTrack.HappyAlley, MusicTrack.PreludeAndAction, MusicTrack.LightSting)]
+        [TestCase(Episode.Earthquake, MusicTrack.CherryBlossom, MusicTrack.HappyAlley, MusicTrack.PreludeAndAction, MusicTrack.UkuleleShortTheme)]
         [TestCase(Episode.Fire, MusicTrack.CheeryMonday, MusicTrack.BRoll, MusicTrack.Machinations, MusicTrack.PianoBetween)]
-        [TestCase(Episode.Typhoon, MusicTrack.CherryBlossom, MusicTrack.HappyAlley, MusicTrack.PreludeAndAction, MusicTrack.LightSting)]
+        [TestCase(Episode.Typhoon, MusicTrack.CherryBlossom, MusicTrack.HappyAlley, MusicTrack.PreludeAndAction, MusicTrack.UkuleleShortTheme)]
         [TestCase(Episode.Flood, MusicTrack.CheeryMonday, MusicTrack.BRoll, MusicTrack.Machinations, MusicTrack.PianoBetween)]
-        [TestCase(Episode.Landslide, MusicTrack.CherryBlossom, MusicTrack.HappyAlley, MusicTrack.PreludeAndAction, MusicTrack.LightSting)]
+        [TestCase(Episode.Landslide, MusicTrack.CherryBlossom, MusicTrack.HappyAlley, MusicTrack.PreludeAndAction, MusicTrack.UkuleleShortTheme)]
         public void Episodes_SelectTracksByDifficultyAndCompletion(Episode episode,
             MusicTrack easy, MusicTrack normal, MusicTrack hard, MusicTrack completed)
         {

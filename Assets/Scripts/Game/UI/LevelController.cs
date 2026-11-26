@@ -533,8 +533,8 @@ namespace DisasterSafety.Game.UI
 
             dimmer.Show();
             completedPanel.Show();
+            // The ukulele cue is the whole Level Completed sound; no voice plays over it.
             AudioManager.PlayCompletionMusic(level.Episode);
-            AudioManager.Play(Sfx.Complete);
             stars.Play(attempt.Stars);
             if (confetti != null) confetti.Burst();
             Student.bubble.Hide();

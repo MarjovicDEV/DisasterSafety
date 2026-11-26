@@ -25,7 +25,6 @@ namespace DisasterSafety.Game
         public AudioClip safe;
         public AudioClip unsafeChoice;
         public AudioClip star;
-        public AudioClip complete;
         public AudioClip opened;
         /// <summary>The Student's voice blip under a Reaction.</summary>
         public AudioClip blip;
@@ -49,7 +48,6 @@ namespace DisasterSafety.Game
                 case Sfx.Safe: return safe;
                 case Sfx.Unsafe: return unsafeChoice;
                 case Sfx.Star: return star;
-                case Sfx.Complete: return complete;
                 case Sfx.Opened: return opened;
                 case Sfx.Blip: return blip;
                 default: return null;

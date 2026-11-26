@@ -91,9 +91,12 @@ namespace DisasterSafety.Tests
             foreach (var title in new[]
             {
                 "Somewhere Sunny", "Easy Lemon (60 second)", "Cherry Blossom", "Happy Alley", "Prelude and Action",
-                "Light Sting", "Cheery Monday", "B-Roll", "Machinations", "Piano Between"
+                "Cheery Monday", "B-Roll", "Machinations", "Piano Between"
             })
                 Assert.That(copy, Does.Contain(title));
+            Assert.That(copy, Does.Not.Contain("Light Sting"), "Level Completed no longer plays Light Sting");
+            Assert.That(copy, Does.Contain("Button sounds: Kenney (kenney.nl), CC0."));
+            Assert.That(copy, Does.Contain("Level Completed: ukulele by Tetoszka (freesound.org), CC0."));
             Assert.That(copy, Does.Contain("https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100315"));
 
             foreach (var label in panel.GetComponentsInChildren<Text>())
@@ -106,6 +109,15 @@ namespace DisasterSafety.Tests
             var back = Array.Find(panel.GetComponentsInChildren<Button>(),
                 button => button.GetComponentInChildren<Text>()?.text == "BACK");
             Assert.That(back, Is.Not.Null);
+            var backCorners = new Vector3[4];
+            ((RectTransform)back.transform).GetWorldCorners(backCorners);
+            foreach (var label in panel.GetComponentsInChildren<Text>())
+            {
+                if (label.transform.IsChildOf(back.transform)) continue;
+                var corners = new Vector3[4];
+                label.rectTransform.GetWorldCorners(corners);
+                Assert.That(corners[0].y, Is.GreaterThan(backCorners[1].y), label.text + " stays clear of BACK");
+            }
             back.onClick.Invoke();
             yield return Wait(0.4f);
             Assert.That(menu.settingsPanel.IsVisible, Is.True);

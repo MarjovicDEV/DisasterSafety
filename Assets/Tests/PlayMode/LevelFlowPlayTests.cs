@@ -433,7 +433,7 @@ namespace DisasterSafety.Tests
             var labelCentre = buttonRect.InverseTransformPoint(label.rectTransform.TransformPoint(label.rectTransform.rect.center));
             var rightEdge = labelCentre.x + PixelText.Width(label.font, label.text) / 2f;
             Assert.That(rightEdge, Is.LessThan(buttonRect.rect.xMax - 8f), "the label stays inside the button face");
-            yield return WaitFor(() => AudioManager.CurrentMusic?.name == "Light Sting", "the Hard completion cue");
+            yield return WaitFor(() => AudioManager.CurrentMusic?.name == "Ukulele Short Theme", "the Hard completion cue");
             nextEpisode.onClick.Invoke();
             yield return WaitForScene(GameScenes.MainMenu);
             var menu = Menu();
@@ -2777,7 +2777,7 @@ namespace DisasterSafety.Tests
             controller.finishButton.onClick.Invoke();
             Assert.That(controller.completedPanel.IsVisible, Is.True);
             yield return Wait(0.6f);
-            Assert.That(AudioManager.CurrentMusic?.name, Is.EqualTo("Light Sting"));
+            Assert.That(AudioManager.CurrentMusic?.name, Is.EqualTo("Ukulele Short Theme"));
             Assert.That(MusicSource().loop, Is.False);
         }
 
@@ -2797,7 +2797,7 @@ namespace DisasterSafety.Tests
             yield return FeedbackShown(controller);
             controller.finishButton.onClick.Invoke();
             Assert.That(controller.completedPanel.IsVisible, Is.True);
-            yield return WaitFor(() => AudioManager.CurrentMusic?.name == "Light Sting", "the completion cue");
+            yield return WaitFor(() => AudioManager.CurrentMusic?.name == "Ukulele Short Theme", "the completion cue");
             Assert.That(MusicSource().loop, Is.False);
         }
 

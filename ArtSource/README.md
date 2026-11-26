@@ -39,15 +39,21 @@ Scale rule: one art pixel is four UI units at 1920x1080. Unity imports everythin
 
 ## Audio (Python)
 
-The Python standard library synthesises the UI and Level sound effects in Assets/Audio/Sfx.
+The button, menu, Star and Level Completed sounds are recorded sounds made by people, not synthesised. Their sources are in `ArtSource/audio/recorded/` (listed in [SOURCES.md](audio/recorded/SOURCES.md), all CC0). `prepare_recorded.py` trims them, sets their levels and writes them to Assets/Audio (it needs ffmpeg):
 
 ```
-python -I ArtSource/audio/make_audio.py D:/GameDEV/DisasterSafety-redesign
+python -I ArtSource/audio/prepare_recorded.py D:/GameDEV/DisasterSafety
 ```
 
-Add `--only-blip` to regenerate just the Student's speech sound. The licensed recordings are listed in [Music licences](../Assets/Audio/Music/LICENSES.md) and are prepared separately.
+It writes `sfx_click`, `sfx_type`, `sfx_back`, `sfx_open`, `sfx_confirm`, `sfx_locked`, `sfx_toggle`, `sfx_sparkle` and `sfx_soon` (Kenney's recorded UI clicks and switches), `sfx_star` (a recorded tick; the game raises its pitch for each Star), `sfx_opened` (a soft recorded switch for "Normal is open!") and the Level Completed music `Music/Ukulele Short Theme.wav` (a real ukulele, matched to the other music at -20 LUFS). Level Completed plays only the ukulele: no voice or fanfare plays over it.
 
-The Level sounds are `sfx_rumble` (a soft, low earthquake rumble, kept quiet on purpose), `sfx_safe`, `sfx_unsafe` (a kind two-note "hmm", never a buzzer), `sfx_star` (the game raises its pitch for each Star), `sfx_complete`, and `sfx_opened` (a soft rising jingle for "Normal is open!", quieter and shorter than `sfx_complete`).
+The Python standard library still synthesises the other Level sounds in Assets/Audio/Sfx: `sfx_rumble` (a soft, low earthquake rumble, kept quiet on purpose), `sfx_safe`, `sfx_unsafe` (a kind two-note "hmm", never a buzzer) and `sfx_blip` (the Student's voice).
+
+```
+python -I ArtSource/audio/make_audio.py D:/GameDEV/DisasterSafety
+```
+
+Add `--only-blip` to regenerate just the Student's speech sound. The licensed music is listed in [Music licences](../Assets/Audio/Music/LICENSES.md) and is prepared separately.
 
 ## After rebuilding
 

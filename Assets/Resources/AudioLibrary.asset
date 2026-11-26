@@ -18,7 +18,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: c861b47255dc7b043858b6025bd9991d, type: 3}
   - {fileID: 8300000, guid: b48bc0b28ead192439928a4f0ccb0359, type: 3}
   - {fileID: 8300000, guid: 107766cbb3ef03c4a816052d165d4231, type: 3}
-  - {fileID: 8300000, guid: b6001835763e83c40a97d2164233367b, type: 3}
+  - {fileID: 8300000, guid: 4395c119a44799c4fa467cf4fed12728, type: 3}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -36,6 +36,5 @@ MonoBehaviour:
   safe: {fileID: 8300000, guid: 7f1b7fff44bf53e4d8f8e0ace866dca0, type: 3}
   unsafeChoice: {fileID: 8300000, guid: b5eb281d8aa0d3146a7e5a46d71ddd5e, type: 3}
   star: {fileID: 8300000, guid: 860ef8e36422c804ca86e5e8c195ed82, type: 3}
-  complete: {fileID: 8300000, guid: 0f9975ee472911645a5717a2444dc353, type: 3}
   opened: {fileID: 8300000, guid: fbb4ef22a9da78f4a84ca89d1d0b0ed9, type: 3}
   blip: {fileID: 8300000, guid: f056921414e21e24295c3312ad303f4c, type: 3}

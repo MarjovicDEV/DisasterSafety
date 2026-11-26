@@ -137,7 +137,8 @@ namespace DisasterSafety.EditorTools
                 .SelectMany(level => new[] { EpisodeMusic.ForLevel(level), EpisodeMusic.ForCompletion(level.Episode) })
                 .Concat(EpisodeMusic.MenuPlaylist).ToHashSet();
             lib.music = new AudioClip[Enum.GetValues(typeof(MusicTrack)).Length];
-            foreach (var (track, title, _) in UIStrings.MusicRecordings)
+            var recordings = UIStrings.MusicRecordings.Select(r => (r.Track, r.Title)).Concat(UIStrings.OtherMusicRecordings);
+            foreach (var (track, title) in recordings)
                 if (required.Contains(track))
                     lib.music[(int)track] = ImportMusic(title);
             lib.click = Clip("Sfx/sfx_click");
@@ -153,7 +154,6 @@ namespace DisasterSafety.EditorTools
             lib.safe = Clip("Sfx/sfx_safe");
             lib.unsafeChoice = Clip("Sfx/sfx_unsafe");
             lib.star = Clip("Sfx/sfx_star");
-            lib.complete = Clip("Sfx/sfx_complete");
             lib.opened = Clip("Sfx/sfx_opened");
             lib.blip = Clip("Sfx/sfx_blip");
             EditorUtility.SetDirty(lib);
@@ -723,12 +723,21 @@ namespace DisasterSafety.EditorTools
             {
                 CreditLine(box, title, title, 44f, top, 420f);
                 CreditLine(box, isrc, UIStrings.MusicSourceLink + isrc, 476f, top, 1200f);
-                top += 41f;
+                top += 38f;
             }
 
-            CreditLine(box, "Formats", UIStrings.MusicFormatCredit, 44f, 680f, 1632f);
-            CreditLine(box, "Trims", UIStrings.MusicTrimCredit, 44f, 718f, 1632f);
-            CreditLine(box, "Fades", UIStrings.MusicFadeCredit, 44f, 756f, 1632f);
+            // Five footer lines, all above the BACK button (its top is about 798 below the box top).
+            top += 14f;
+            foreach (var (name, copy) in new[]
+            {
+                ("Formats", UIStrings.MusicFormatCredit), ("Trims", UIStrings.MusicTrimCredit),
+                ("Fades", UIStrings.MusicFadeCredit), ("Sounds", UIStrings.SoundCredit),
+                ("Completed", UIStrings.CompletedCredit),
+            })
+            {
+                CreditLine(box, name, copy, 44f, top, 1632f);
+                top += 34f;
+            }
             c.musicCreditsBack = DialogButton(box, "Back", "orange", UIStrings.Back, S("Icons/icon_back"), Sfx.Back, 0f, 320f);
         }
 

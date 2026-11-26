@@ -1,11 +1,14 @@
-"""Generate the UI and Level sound effects for Disaster Safety.
+"""Generate the synthesized Level sound effects for Disaster Safety: the rumble, the Safe and Unsafe
+Choice sounds and the Student's voice blip.
 
 Run from the project root:
-    python -I ArtSource/audio/make_audio.py D:/GameDEV/DisasterSafety-redesign
+    python -I ArtSource/audio/make_audio.py D:/GameDEV/DisasterSafety
 Add --only-blip to write just Assets/Audio/Sfx/sfx_blip.wav.
 
 This script writes 16-bit mono WAV files to Assets/Audio/Sfx using the standard library.
-The licensed soundtrack is prepared separately. See Assets/Audio/Music/LICENSES.md.
+The button, menu, Star and Level Completed sounds are recorded sounds, prepared by
+prepare_recorded.py. The licensed soundtrack is prepared separately. See
+Assets/Audio/Music/LICENSES.md.
 """
 import math
 import os
@@ -63,23 +66,6 @@ def envelope(i, n, attack=0.005, release=0.06):
     return a * r
 
 
-def render_voice(notes, beat, wave_fn, volume, duty=0.5, staccato=0.85):
-    out = []
-    for name, beats in notes:
-        n = int(beats * beat * RATE)
-        f = note_freq(name)
-        sounding = int(n * staccato)
-        phase = 0.0
-        for i in range(n):
-            if f > 0 and i < sounding:
-                phase += f / RATE
-                v = wave_fn(phase, duty) if wave_fn is square else wave_fn(phase)
-                out.append(v * volume * envelope(i, sounding, 0.004, 0.03))
-            else:
-                out.append(0.0)
-    return out
-
-
 def mix(*tracks):
     n = max(len(t) for t in tracks)
     return [sum(t[i] if i < len(t) else 0.0 for t in tracks) for i in range(n)]
@@ -112,17 +98,7 @@ def silence(dur):
 
 def make_sfx():
     s = {}
-    s["sfx_click"] = sweep(660, 990, 0.06, square, 0.35, 0.25)
-    s["sfx_back"] = sweep(700, 420, 0.08, square, 0.35, 0.25)
-    s["sfx_open"] = seq(sweep(523, 523, 0.05, square, 0.3, 0.25), sweep(784, 784, 0.07, square, 0.3, 0.25))
-    s["sfx_confirm"] = seq(*[sweep(note_freq(n), note_freq(n), 0.07, square, 0.3, 0.25) for n in ["C5", "E5", "G5"]],
-                           sweep(note_freq("C6"), note_freq("C6"), 0.16, square, 0.3, 0.25))
-    s["sfx_locked"] = seq(sweep(180, 160, 0.09, square, 0.35, 0.5), silence(0.03), sweep(150, 130, 0.12, square, 0.35, 0.5))
-    s["sfx_type"] = sweep(1400, 1200, 0.025, square, 0.2, 0.5)
-    s["sfx_toggle"] = seq(sweep(880, 880, 0.04, square, 0.3, 0.25), sweep(1320, 1320, 0.05, square, 0.3, 0.25))
-    s["sfx_sparkle"] = mix(*[[0.0] * int(k * 0.05 * RATE) + sweep(note_freq(n), note_freq(n), 0.25, triangle, 0.25, decay=0.08)
-                             for k, n in enumerate(["E6", "G6", "C7"])])
-    s["sfx_soon"] = seq(sweep(note_freq("G5"), note_freq("G5"), 0.08, triangle, 0.4), sweep(note_freq("E5"), note_freq("E5"), 0.14, triangle, 0.4))
+    # The button and menu sounds are recorded sounds now (prepare_recorded.py).
 
     # Level sounds -------------------------------------------------------
     s["sfx_rumble"] = make_rumble()
@@ -135,21 +111,7 @@ def make_sfx():
     # Unsafe Choice: a soft, kind "hmm" (two low triangle notes, never a buzzer)
     s["sfx_unsafe"] = seq(sweep(note_freq("A4"), note_freq("A4"), 0.14, triangle, 0.32),
                           sweep(note_freq("F4"), note_freq("F4"), 0.24, triangle, 0.32, decay=0.1))
-    # One Star landing: a bell chime (the game raises its pitch for each Star)
-    s["sfx_star"] = mix(sweep(note_freq("E6"), note_freq("E6"), 0.5, triangle, 0.3, decay=0.12),
-                        sweep(note_freq("B6"), note_freq("B6"), 0.4, triangle, 0.12, decay=0.08))
-    # Level Completed: a short fanfare
-    lead = [("G4", 0.5), ("C5", 0.5), ("E5", 0.5), ("G5", 1), ("E5", 0.5), ("G5", 2)]
-    bass = [("C3", 1), ("G3", 1), ("C3", 1.5), ("C4", 1.5)]
-    beat = 0.15
-    s["sfx_complete"] = mix(render_voice(lead, beat, square, 0.24, duty=0.25, staccato=0.92),
-                            render_voice(bass, beat, triangle, 0.34, staccato=0.9))
-    # A Difficulty or Episode is now Open ("Normal is open!"): a soft rising 4-note jingle,
-    # shorter and quieter than sfx_complete, with a triangle echo for sparkle.
-    opened = [("C5", 0.1), ("E5", 0.1), ("G5", 0.1), ("C6", 0.35)]
-    s["sfx_opened"] = mix(
-        seq(*[sweep(note_freq(n), note_freq(n), d, triangle, 0.3, decay=0.1 if n == "C6" else None) for n, d in opened]),
-        seq(silence(0.05), *[sweep(note_freq(n) * 2, note_freq(n) * 2, d, triangle, 0.08, decay=0.08) for n, d in opened]))
+    # The Star, Level Completed and "Normal is open!" sounds are recorded sounds now (prepare_recorded.py).
     s["sfx_blip"] = make_blip()
     return s
 
