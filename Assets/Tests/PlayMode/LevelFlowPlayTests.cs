@@ -1925,7 +1925,7 @@ namespace DisasterSafety.Tests
             var c = Level();
             var setting = c.ActiveSetting;
             Assert.That(setting.key, Is.EqualTo("evacuation_area_v2"));
-            Assert.That(setting.shaker, Is.Null, "the field does not shake");
+            Assert.That(setting.shaker, Is.Null, "the court does not shake");
             Assert.That(setting.ActiveGrownUps, Has.Length.EqualTo(1), "Hard 7 has Mom on the mat");
             var mom = setting.ActiveGrownUps[0];
             Assert.That(mom.kind, Is.EqualTo(GrownUpKind.Mom));
@@ -1937,6 +1937,12 @@ namespace DisasterSafety.Tests
             Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Idle));
             AssertPropAtArtPoint(setting, PropIn(c, "radio"), 136f, 208f);
             Assert.That(PropIn(c, "radio_on").gameObject.activeSelf, Is.False, "the radio starts off");
+
+            // The woven mat runs from x 96 to 208 under Mom and the radio, on the court floor.
+            var art = LevelArt("bg_evacuation_area");
+            for (var x = 96; x <= 208; x++)
+                foreach (var row in new[] { 227, 236, 245 })
+                    Assert.That(IsAny(art[x, row], ArtMat), Is.True, "the family's mat at " + x + ", " + row);
 
             var neighbours = Neighbours(setting);
             Assert.That(neighbours, Is.Not.Null, "the neighbours chat in the background");
@@ -1975,6 +1981,8 @@ namespace DisasterSafety.Tests
             var reaction = BoundsInSetting(setting, (RectTransform)student.bubble.transform);
             Assert.That(reaction.Overlaps(BoundsInSetting(setting, (RectTransform)radioOn.transform)), Is.False,
                 "the Reaction leaves the radio in view");
+            Assert.That(reaction.Overlaps(TentPeople), Is.False, "the Reaction leaves the tent opening in view");
+            Assert.That(reaction.Overlaps(CourtSign), Is.False, "the Reaction leaves the sign in view");
             FinishWithThreeStars(c);
         }
 
@@ -2017,7 +2025,7 @@ namespace DisasterSafety.Tests
                 Assert.That(radioOn.gameObject.activeSelf, Is.False, "the radio stays off");
                 var studentBounds = BoundsInSetting(setting, (RectTransform)student.transform);
                 if (stop.Key == "go_home")
-                    Assert.That(student.X + 16f, Is.LessThan(pathStart), "the Student stops on the field, before the path");
+                    Assert.That(student.X + 16f, Is.LessThan(pathStart), "the Student stops on the court, before the path");
                 if (stop.Key == "rumor")
                 {
                     Assert.That(studentBounds.Overlaps(BoundsInSetting(setting, neighbours)), Is.False,
@@ -2029,6 +2037,8 @@ namespace DisasterSafety.Tests
                     "the Reaction at " + stop.Key + " leaves the neighbours in view");
                 Assert.That(reaction.xMax, Is.LessThanOrEqualTo(480f * 4f), "the Reaction stays inside the screen");
                 Assert.That(reaction.xMin, Is.GreaterThanOrEqualTo(0f), "the Reaction stays inside the screen");
+                Assert.That(reaction.Overlaps(TentPeople), Is.False, "the Reaction at " + stop.Key + " leaves the tent opening in view");
+                Assert.That(reaction.Overlaps(CourtSign), Is.False, "the Reaction at " + stop.Key + " leaves the sign in view");
 
                 yield return FeedbackShown(c);
                 Assert.That(c.feedbackHeading.text, Is.EqualTo(stop.Heading));
@@ -2044,6 +2054,135 @@ namespace DisasterSafety.Tests
                 Assert.That(c.actionBar.buttons[stop.Index].button.interactable, Is.False);
             }
         }
+
+        // C14: Hard 7 is a later gathering at an evacuation centre in an open-sided covered basketball
+        // court. The rust-red roof and its trusses come down to row 80, so the roof still shows at
+        // 2400 x 1080, where the top 54 art rows are cut off. Pale columns hold it up, the right side
+        // is open toward the houses, and the Student stands on the court floor at the start and at the
+        // rumor and go home stops. Two adults and two children stand at the back.
+        [UnityTest]
+        public IEnumerator HardLevel7_Court_ShowsTheRoofColumnsSignTentsAndRouteHome()
+        {
+            yield return StartRolloutLevel(HardSeven);
+            var setting = Level().ActiveSetting;
+            Assert.That(setting.key, Is.EqualTo("evacuation_area_v2"));
+            var art = LevelArt("bg_evacuation_area");
+
+            // The roof spans the court from the left edge to its end at x 438, on rows both sizes show.
+            for (var x = 0; x < 438; x++)
+            {
+                var roof = false;
+                for (var row = 54; row <= 63; row++) roof |= IsAny(art[x, row], ArtRust);
+                Assert.That(roof, Is.True, "the rust-red roof shows at x " + x + " below row 54");
+            }
+            for (var x = 445; x < 480; x++)
+                for (var row = 0; row <= 80; row++)
+                    Assert.That(IsAny(art[x, row], ArtRust), Is.False, "open sky beyond the roof at " + x + ", " + row);
+
+            foreach (var x in new[] { 17, 113, 209, 305, 401 })
+                for (var row = 112; row <= 148; row++)
+                    Assert.That(IsAny(art[x, row], ArtColumn), Is.True, "a pale column at " + x + ", " + row);
+
+            // The plain sign hangs left of the Caption and below the Level label at both sizes.
+            var letters = 0;
+            for (var x = 15; x < 101; x++)
+                for (var row = 87; row < 111; row++)
+                    if (SameColour(art[x, row], ArtSignLetters)) letters++;
+            Assert.That(letters, Is.GreaterThanOrEqualTo(60), "the sign reads EVACUATION CENTER in dark letters");
+            for (var x = 33; x <= 49; x++)
+                Assert.That(SameColour(art[x, 141], ArtOrange), Is.True, "the hoop's orange rim at x " + x);
+
+            int Count(Color32 colour, int x0, int x1)
+            {
+                var n = 0;
+                for (var x = x0; x <= x1; x++)
+                    for (var row = 120; row <= 160; row++)
+                        if (SameColour(art[x, row], colour)) n++;
+                return n;
+            }
+            Assert.That(Count(ArtTentBlue, 118, 168), Is.GreaterThanOrEqualTo(300), "the blue tent at the back");
+            Assert.That(Count(ArtOrange, 310, 362), Is.GreaterThanOrEqualTo(300), "the orange tent at the back");
+
+            // Each background person is a 14-pixel-wide figure with feet at (x, row): an adult is 28
+            // pixels tall and a child 20, so a child has no face or arms in the 8 rows above its head.
+            int Skin(int x, int row0, int row1)
+            {
+                var n = 0;
+                for (var px = x - 7; px < x + 7; px++)
+                    for (var row = row0; row <= row1; row++)
+                        if (IsAny(art[px, row], ArtSkin)) n++;
+                return n;
+            }
+            foreach (var (x, feet, child, who) in new[]
+            {
+                (128, 160, false, "the adult at the blue tent"), (140, 161, true, "the child at the blue tent's opening"),
+                (374, 156, false, "the adult at the back"), (388, 157, true, "the child at the back"),
+            })
+            {
+                Assert.That(Skin(x, feet - 28, feet), Is.GreaterThanOrEqualTo(30), who + " has a face and arms");
+                if (child) Assert.That(Skin(x, feet - 28, feet - 21), Is.Zero, who + " is a child, shorter than the adults");
+            }
+
+            // The row below the Student's feet at the start and at the rumor and go home stops is court floor.
+            foreach (var (x, row) in new[] { (228, 231), (254, 229), (376, 249) })
+                Assert.That(IsAny(art[x, row], ArtCourtFloor), Is.True, "the court floor under the Student at " + x + ", " + row);
+            for (var x = 400; x < 480; x++)
+                Assert.That(IsAny(art[x, 269], ArtCourtFloor), Is.True, "the path toward home leaves the right edge at x " + x);
+            Assert.That(IsAny(art[440, 200], ArtOutsideGrass), Is.True, "grass outside the open right side of the court");
+        }
+
+        // The Hard 7 court the researcher approved for C14. The neighbours' shadow now falls on the court
+        // paint, and the radio is unchanged.
+        [Test]
+        public void HardLevel7_CourtArt_IsTheApprovedPicture()
+        {
+            Assert.That(ArtHash("bg_evacuation_area"), Is.EqualTo("e6230656c806d51d562463fb5ceb79f21fad447a647f435020ac5be2c9c04553"));
+            Assert.That(ArtHash("evacuation_area_neighbours_0"), Is.EqualTo("d605f2c40343e399d5a80bbb5763eaacf90a5324642d14862caeb8ed88678eb6"));
+            Assert.That(ArtHash("evacuation_area_neighbours_1"), Is.EqualTo("f13d9c09745f1a72f2ddf11a6dcfa5ac70c4beee5b639e5b6ddf2865a846fdb2"));
+            Assert.That(ArtHash("evacuation_area_radio"), Is.EqualTo("09609f3a56884d5753bf9fc23f0ea03032636594ffb5e462844fb2b4931ee5b2"));
+            Assert.That(ArtHash("evacuation_area_radio_on_0"), Is.EqualTo("553db31bd7870d0b5b6dd96bb2bab5ed78b47289609dc55041c3cbfab1612b88"));
+            Assert.That(ArtHash("evacuation_area_radio_on_1"), Is.EqualTo("501db498d4730f2849270cc562331469fab9a0f3869c19306094bec172694b5e"));
+        }
+
+        // Colours from ArtSource/scripts/evacuation_area_v2.lua: the rust-red roof and the pale columns
+        // (the Hard menu court's ramps), the court paint, its white lines and the concrete, the grass
+        // outside, the mat, the sign's letters, the orange of the hoop's rim and the second tent, the blue
+        // tent, and the light and tan skin of the background people.
+        static readonly Color32[] ArtRust =
+            { new Color32(196, 102, 78, 255), new Color32(160, 72, 58, 255), new Color32(116, 48, 44, 255) };
+        static readonly Color32[] ArtColumn =
+            { new Color32(252, 242, 216, 255), new Color32(232, 218, 186, 255), new Color32(198, 182, 148, 255) };
+        static readonly Color32[] ArtCourtFloor =
+        {
+            new Color32(170, 214, 190, 255), new Color32(142, 192, 168, 255), new Color32(112, 160, 140, 255),
+            new Color32(255, 250, 240, 255),
+            new Color32(220, 212, 196, 255), new Color32(196, 186, 166, 255), new Color32(168, 156, 134, 255),
+        };
+        static readonly Color32[] ArtOutsideGrass =
+            { new Color32(158, 224, 112, 255), new Color32(124, 204, 90, 255), new Color32(100, 180, 72, 255) };
+        static readonly Color32[] ArtMat =
+            { new Color32(244, 214, 150, 255), new Color32(222, 182, 112, 255), new Color32(184, 140, 80, 255) };
+        static readonly Color32 ArtSignLetters = new Color32(35, 44, 94, 255);
+        static readonly Color32 ArtOrange = new Color32(245, 144, 46, 255);
+        static readonly Color32 ArtTentBlue = new Color32(63, 143, 224, 255);
+        static readonly Color32[] ArtSkin =
+        {
+            new Color32(246, 201, 160, 255), new Color32(220, 154, 108, 255),
+            new Color32(226, 168, 104, 255), new Color32(192, 128, 72, 255),
+        };
+
+        static bool IsAny(Color32 c, Color32[] colours) => Array.Exists(colours, k => SameColour(c, k));
+
+        // An art rectangle (left, top, right, bottom, inclusive) in the Setting's units.
+        static Rect ArtRect(float x0, float row0, float x1, float row1) =>
+            Rect.MinMaxRect(x0 * 4f, (270f - row1 - 1f) * 4f, (x1 + 1f) * 4f, (270f - row0) * 4f);
+
+        // The adult and child at the blue tent's opening, and the EVACUATION CENTER sign. The people come
+        // from M.LAYOUT.tentPeople in evacuation_area_v2.lua: each figure spans 7 pixels left and 6 right
+        // of its feet, so the adult at x 128 starts at 121 and the child at x 140 ends at 146, with its
+        // shadow to 147. The adult is 28 pixels tall with feet on row 160, so the top is row 132.
+        static readonly Rect TentPeople = ArtRect(121, 132, 147, 161);
+        static readonly Rect CourtSign = ArtRect(14, 86, 101, 111);
 
         [UnityTest]
         public IEnumerator HardLevel2_SafeChoice_ActsOutAndCompletes()
