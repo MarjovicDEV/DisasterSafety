@@ -5,7 +5,10 @@ using UnityEngine.UI;
 
 namespace DisasterSafety.Game.UI
 {
-    /// <summary>A student who walks across the courtyard, waits off-screen, and walks again.</summary>
+    /// <summary>
+    /// A student who walks across the courtyard, waits off-screen, and walks again. When the menu
+    /// hides the walkers and shows them again, the student carries on from where they were.
+    /// </summary>
     public sealed class Walker : MonoBehaviour
     {
         public float fromX = -120f;
@@ -16,23 +19,35 @@ namespace DisasterSafety.Game.UI
         public float startDelay;
 
         RectTransform rect;
+        bool started;
+        float x;
 
-        IEnumerator Start()
+        // A coroutine stops when its object is turned off, and Start never runs again, so the walk
+        // starts from OnEnable each time and resumes at the saved x.
+        void OnEnable() => StartCoroutine(Walk());
+
+        IEnumerator Walk()
         {
             rect = (RectTransform)transform;
             var direction = Mathf.Sign(toX - fromX);
             rect.localScale = new Vector3(direction * Mathf.Abs(rect.localScale.x), rect.localScale.y, 1f);
-            SetX(fromX);
-            yield return new WaitForSeconds(startDelay);
+            if (!started)
+            {
+                started = true;
+                x = fromX;
+                SetX(fromX);
+                yield return new WaitForSeconds(startDelay);
+            }
             while (true)
             {
-                for (var x = fromX; direction > 0 ? x < toX : x > toX; x += direction * speed * Time.deltaTime)
+                for (; direction > 0 ? x < toX : x > toX; x += direction * speed * Time.deltaTime)
                 {
                     SetX(x);
                     yield return null;
                 }
                 SetX(toX);
                 yield return new WaitForSeconds(Random.Range(minWait, maxWait));
+                x = fromX;
                 SetX(fromX);
             }
         }

@@ -5,7 +5,8 @@
 -- Canvas is 480x270 art pixels (1920x1080 at 4x). v2 style (docs/adr/0001-v2-art-and-no-bantay.md):
 -- one dark outline around each object, three shades per colour, light from the left.
 -- Details come from the school photo inventory (earthquake-changes-scratch/photo-facts.md);
--- no photographed people, vehicles, seals or fine print are drawn.
+-- no photographed people, seals or fine print are drawn. The one vehicle is the parked blue
+-- tricycle in front of the school wall, as on the street photo of the gate.
 --
 -- Screen-safe areas, from ProjectBuilder.BuildMain and BuildMenuStudent:
 --   * the title and buttons cover x 22..165, y 7..235 on the left;
@@ -248,7 +249,7 @@ return function(L, ST)
   -- wall with its blue top edge runs to the right and carries the pale school sign above the
   -- greeting. Palms rise against the sky; the schoolyard shows through the gate bars.
   M.GATE = { x0 = 176, x1 = 296, top = 128, groundY = 206, wallTop = 112,
-    sign = { 316, 124, 150, 20 } }
+    sign = { 316, 124, 150, 20 }, tricycle = { 330, 199 } }
 
   function M.gate()
     local G = M.GATE
@@ -310,24 +311,8 @@ return function(L, ST)
     pillar(G.x0 - 12)
     pillar(G.x1)
 
-    -- The gate: two leaves of horizontal bars in a dark frame, with gaps onto the yard.
-    local gx0, gx1, top, bot = G.x0, G.x1 - 1, G.top, G.groundY - 2
-    L.rect(img, gx0, top, gx1 - gx0 + 1, 3, O)
-    L.hline(img, gx0 + 1, gx1 - 1, top + 1, R.gate[1])
-    for y = top + 5, bot - 1, 5 do
-      L.hline(img, gx0, gx1, y - 1, O)
-      L.hline(img, gx0, gx1, y, R.gate[2])
-      L.hline(img, gx0, gx1, y + 1, R.gate[3])
-      L.hline(img, gx0, gx1, y + 2, O)
-      L.hline(img, gx0, gx0 + 30, y, R.gate[1])
-    end
-    for _, x in ipairs({ gx0, gx0 + 30, (gx0 + gx1) // 2 - 1, gx1 - 30, gx1 - 2 }) do
-      L.rect(img, x, top, 3, bot - top + 1, O)
-      L.vline(img, x + 1, top + 1, bot - 1, R.gate[2])
-    end
-    L.rect(img, gx0, bot - 1, gx1 - gx0 + 1, 3, O)
-    L.px(img, (gx0 + gx1) // 2 - 3, (top + bot) // 2, R.metal[1])
-    L.px(img, (gx0 + gx1) // 2 + 3, (top + bot) // 2, R.metal[1])
+    -- The gate leaves are their own sprite (M.gateFrames), so the guard can open them; the
+    -- yard shows through the opening behind them.
 
     -- The pale school sign on the right wall.
     local sx, sy, sw, sh = M.GATE.sign[1], M.GATE.sign[2], M.GATE.sign[3], M.GATE.sign[4]
@@ -351,7 +336,93 @@ return function(L, ST)
     end
     bush(img, 30, G.groundY - 2, 10, 6, P.pink)
     bush(img, 470, G.groundY - 2, 12, 6, P.yellow)
+    M.tricycle(img, M.GATE.tricycle[1], M.GATE.tricycle[2])
     return img
+  end
+
+  -- The gate leaves, 120x78 at (G.x0, G.top), in M.GATE_OPEN order: closed first, then each leaf
+  -- swings in on its hinge at the pillar and looks narrower, until the gate stands open.
+  M.GATE_OPEN = { 1.0, 0.72, 0.46, 0.24, 0.1 }
+  function M.gateFrames()
+    local G = M.GATE
+    local W, top, bot = G.x1 - G.x0, 0, G.groundY - 2 - G.top
+    local frames = {}
+    for _, open in ipairs(M.GATE_OPEN) do
+      local img = L.newImage(W, bot + 2)
+      local half = W // 2
+      local w = math.max(4, math.floor(half * open + 0.5))
+      -- one leaf: x0..x0 + w - 1, lit on the left; the hinge post is at the pillar side
+      local function leaf(x0, lit)
+        local x1 = x0 + w - 1
+        L.rect(img, x0, top, w, 3, O)
+        L.hline(img, x0 + 1, x1 - 1, top + 1, R.gate[1])
+        for y = top + 5, bot - 1, 5 do
+          L.hline(img, x0, x1, y - 1, O)
+          L.hline(img, x0, x1, y, R.gate[2])
+          L.hline(img, x0, x1, y + 1, R.gate[3])
+          L.hline(img, x0, x1, y + 2, O)
+          if lit then L.hline(img, x0, x0 + math.min(30, w) * w // half, y, R.gate[1]) end
+        end
+        local posts = { x0, x1 - 2 }
+        if w >= 20 then posts[#posts + 1] = x0 + w // 2 - 1 end
+        for _, x in ipairs(posts) do
+          L.rect(img, x, top, 3, bot - top + 1, O)
+          L.vline(img, x + 1, top + 1, bot - 1, R.gate[2])
+        end
+        L.rect(img, x0, bot - 1, w, 3, O)
+      end
+      leaf(0, true)
+      leaf(W - w, false)
+      if open >= 1 then
+        L.px(img, half - 3, (top + bot) // 2, R.metal[1])
+        L.px(img, half + 2, (top + bot) // 2, R.metal[1])
+      end
+      frames[#frames + 1] = img
+    end
+    return frames
+  end
+
+  -- The parked blue tricycle (76x44, top-left at x, y), facing right as on the street photo: the
+  -- covered blue sidecar with its oval window in front, the red motorcycle behind it, one roof
+  -- over both and a windshield at the front.
+  function M.tricycle(img, x, y)
+    local blue = R.blue
+    -- its shadow on the road
+    L.ellipse(img, x + 38, y + 42, 36, 2, R.road[3])
+    local t = L.newImage(76, 44)
+    -- the motorcycle behind the sidecar: rear wheel, tank, seat, fork, front wheel, lamp
+    L.circle(t, 50, 37, 5, O); L.circle(t, 50, 37, 2, R.metal[2])
+    L.circle(t, 67, 37, 5, O); L.circle(t, 67, 37, 2, R.metal[2]); L.px(t, 66, 36, R.metal[1])
+    L.line(t, 63, 20, 67, 36, R.metal[3], 2)
+    L.poly(t, { 54, 20, 64, 18, 66, 24, 56, 26 }, P.red)
+    L.hline(t, 56, 63, 19, P.red3)
+    L.poly(t, { 64, 24, 72, 30, 70, 32, 62, 28 }, P.red2)
+    L.line(t, 62, 15, 66, 14, O)
+    L.rect(t, 68, 20, 2, 3, P.yellow)
+    -- the roof over both, on a post at the back and the windshield at the front
+    L.rect(t, 3, 0, 64, 6, blue[2])
+    L.hline(t, 3, 66, 0, blue[1]); L.hline(t, 3, 66, 5, blue[3])
+    L.poly(t, { 62, 6, 67, 6, 70, 17, 64, 17 }, R.glass[1])
+    L.line(t, 64, 8, 66, 16, R.glass[2]); L.line(t, 66, 7, 68, 15, P.white)
+    -- the sidecar wheel, mostly under the body
+    L.circle(t, 14, 37, 5, O); L.circle(t, 14, 37, 2, R.metal[2])
+    -- the covered sidecar body, rounded at the back
+    L.poly(t, { 4, 6, 56, 6, 58, 12, 58, 35, 6, 35, 2, 30, 2, 10 }, blue[2])
+    L.vline(t, 3, 10, 30, blue[1]); L.hline(t, 5, 55, 7, blue[1])
+    L.rect(t, 4, 30, 54, 5, blue[3])
+    L.hline(t, 4, 57, 29, blue[1])
+    -- the oval window and the open side where the rider sits, with the red tank seen inside
+    L.ellipse(t, 16, 14, 8, 4, O)
+    L.ellipse(t, 16, 14, 7, 3, R.glass[3])
+    L.hline(t, 12, 18, 12, R.glass[2])
+    L.rect(t, 30, 9, 22, 17, O)
+    L.rect(t, 31, 10, 20, 15, R.navy[3])
+    L.poly(t, { 38, 17, 50, 15, 50, 21, 40, 22 }, P.red)
+    L.hline(t, 31, 50, 10, R.navy[2])
+    -- a white painted script line on the side
+    for i = 0, 14, 2 do L.px(t, 9 + i, 24 + (i % 4 == 0 and 0 or 1), P.white) end
+    L.outline(t, O)
+    L.blit(img, t, x, y)
   end
 
   -- Episode selection (C4): a neutral school noticeboard ---------------------------------

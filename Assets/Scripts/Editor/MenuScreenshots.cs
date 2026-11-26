@@ -101,6 +101,7 @@ namespace DisasterSafety.EditorTools
                 }
             }
 
+            CaptureGateOpen(dir, c, cam, canvas, all);
             CaptureBackgrounds(dir, c, cam, canvas, all);
 
             // Every How to Play Tutorial Page, at both sizes.
@@ -123,6 +124,33 @@ namespace DisasterSafety.EditorTools
             }
             LevelScreenshots.Capture(dir);
             Debug.Log("Screenshots written to " + dir);
+        }
+
+        /// <summary>
+        /// The Main Menu while the gate stands open: the guard waves, one Student is on the driveway
+        /// and the other is stepping through the gate.
+        /// </summary>
+        static void CaptureGateOpen(string dir, MainMenuController c, Camera cam, Canvas canvas, ScreenPanel[] all)
+        {
+            foreach (var p in all) p.gameObject.SetActive(p == c.mainPanel);
+            c.world.Show(MenuBackground.SchoolGate);
+            var scene = c.world.gateScene.GetComponent<SchoolGateScene>();
+            scene.gate.sprite = scene.gateFrames[scene.gateFrames.Length - 1];
+            scene.guard.GetComponent<Image>().sprite = scene.guardWave[0];
+            var feet = new[] { scene.gateY + 8f, 120f };
+            for (var i = 0; i < scene.students.Length; i++)
+            {
+                var s = scene.students[i];
+                s.anchoredPosition = new Vector2(s.anchoredPosition.x, feet[i]);
+                s.GetComponent<Image>().color = Color.white;
+            }
+            c.student.actor.ShowFrame(StudentPose.Idle, 0);
+            c.student.Bubble.Hide();
+            foreach (var size in Sizes)
+                Render(cam, canvas, size, Path.Combine(dir, "01-main-gate-open-" + size.x + "x" + size.y + ".png"));
+            scene.gate.sprite = scene.gateFrames[0];
+            scene.guard.GetComponent<Image>().sprite = scene.guardIdle[0];
+            foreach (var s in scene.students) s.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0f);
         }
 
         /// <summary>

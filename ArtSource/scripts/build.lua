@@ -88,6 +88,19 @@ if want("menu") then
   end
 end
 
+-- The school gate scene on the Main Menu: the gate leaves (closed to open), the guard, and the
+-- Students walking in seen from behind.
+if want("menu_gate") then
+  local MB = dofile(here .. "background.lua")(L, ST)
+  local CH = dofile(here .. "characters.lua")(L)
+  L.saveFrames(MB.gateFrames(), "Background/gate", "Background/gate", 120)
+  L.saveFrames({ CH.guard("idle", 0), CH.guard("blink", 0) }, "Characters/guard_idle", "Characters/guard_idle", 400)
+  L.save(CH.guard("reach", 0), "Characters/guard_reach", "Characters/guard_reach")
+  L.saveFrames({ CH.guard("wave", 0), CH.guard("wave", 1) }, "Characters/guard_wave", "Characters/guard_wave", 250)
+  L.saveFrames(CH.studentBackFrames(false), "Characters/student_boy_back", "Characters/student_boy_back", 140)
+  L.saveFrames(CH.studentBackFrames(true), "Characters/student_girl_back", "Characters/student_girl_back", 140)
+end
+
 -- The Student, boy and girl: Student/<kind>_<pose>_<n>.png and Student/<kind>_portrait.png
 -- Optional: --script-param poses=carry,reach writes only those poses (and not the portrait), so
 -- new poses can be drawn without rewriting the committed ones.

@@ -326,6 +326,7 @@ namespace DisasterSafety.EditorTools
             menuWorld.flag = flag.gameObject;
             menuWorld.leaves = leaves.gameObject;
             menuWorld.walkers = walkers.gameObject;
+            menuWorld.gateScene = BuildGateScene(world).gameObject;
             menuWorld.Show(MenuBackground.SchoolGate);
             return menuWorld;
         }
@@ -340,6 +341,49 @@ namespace DisasterSafety.EditorTools
             r.sizeDelta = new Vector2(w, h);
             r.anchoredPosition = new Vector2(artX * Px, 1080f - artY * Px - h);
             Img(r, sprite, Color.white);
+            return r;
+        }
+
+        // The school gate scene (Main Menu): the Students walk up the driveway (x 228 and 248) and
+        // through the gate, the gate leaves sit between the pillars at (176, 128), and the guard
+        // stands in the opening by the right pillar with his feet on y 212, clear of the greeting.
+        static SchoolGateScene BuildGateScene(RectTransform world)
+        {
+            var group = Stretch(Rect("Gate Scene", world));
+            var scene = group.gameObject.AddComponent<SchoolGateScene>();
+            scene.students = new[]
+            {
+                AddEnteringStudent(group, "Student Girl Entering", Frames("Characters/student_girl_back", 4), 228),
+                AddEnteringStudent(group, "Student Boy Entering", Frames("Characters/student_boy_back", 4), 248),
+            };
+            scene.gateFrames = Frames("Background/gate", 5);
+            scene.gate = ArtImage(group, "Gate", scene.gateFrames[0], 176, 128).GetComponent<Image>();
+            scene.guardIdle = new[]
+            {
+                S("Characters/guard_idle_0"), S("Characters/guard_idle_0"), S("Characters/guard_idle_0"),
+                S("Characters/guard_idle_1"),
+            };
+            scene.guardReach = S("Characters/guard_reach");
+            scene.guardWave = Frames("Characters/guard_wave", 2);
+            var guard = ArtImage(group, "Guard", scene.guardIdle[0], 270, 166);
+            scene.guard = guard.gameObject.AddComponent<SpriteAnimator>();
+            scene.guard.frames = scene.guardIdle;
+            scene.guard.framesPerSecond = 2.5f;
+            return scene;
+        }
+
+        static RectTransform AddEnteringStudent(RectTransform parent, string name, Sprite[] frames, int artCentreX)
+        {
+            var r = Rect(name, parent);
+            r.anchorMin = r.anchorMax = Vector2.zero;
+            r.pivot = new Vector2(0.5f, 0f);
+            r.sizeDelta = new Vector2(frames[0].rect.width * Px, frames[0].rect.height * Px);
+            r.anchoredPosition = new Vector2(artCentreX * Px, -196f);
+            Img(r, frames[0], new Color(1f, 1f, 1f, 0f));
+            var anim = r.gameObject.AddComponent<SpriteAnimator>();
+            anim.frames = frames;
+            anim.framesPerSecond = 7f;
+            anim.enabled = false;
             return r;
         }
 

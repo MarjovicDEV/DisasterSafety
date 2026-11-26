@@ -522,8 +522,8 @@ namespace DisasterSafety.Tests
             MenuBackground.CoveredCourt
         };
         static readonly MenuBackground[] WithTrees = { MenuBackground.DrillGround, MenuBackground.Schoolyard };
-        static readonly MenuBackground[] WithWalkers =
-            { MenuBackground.SchoolGate, MenuBackground.DrillGround, MenuBackground.Schoolyard };
+        static readonly MenuBackground[] WithWalkers = { MenuBackground.DrillGround, MenuBackground.Schoolyard };
+        static readonly MenuBackground[] WithGateScene = { MenuBackground.SchoolGate };
 
         static void AssertBackground(MainMenuController c, MenuBackground expected, string sprite, string why)
         {
@@ -534,6 +534,71 @@ namespace DisasterSafety.Tests
             Assert.That(c.world.birds.activeSelf, Is.EqualTo(Array.IndexOf(Outdoors, expected) >= 0), why + ": birds");
             Assert.That(c.world.leaves.activeSelf, Is.EqualTo(Array.IndexOf(WithTrees, expected) >= 0), why + ": leaves");
             Assert.That(c.world.walkers.activeSelf, Is.EqualTo(Array.IndexOf(WithWalkers, expected) >= 0), why + ": walkers");
+            Assert.That(c.world.gateScene.activeSelf, Is.EqualTo(Array.IndexOf(WithGateScene, expected) >= 0), why + ": gate scene");
+        }
+
+        static IEnumerator WaitUntil(Func<bool> done, string what, float seconds)
+        {
+            for (var t = 0f; t < seconds; t += Time.unscaledDeltaTime)
+            {
+                if (done()) yield break;
+                yield return null;
+            }
+            Assert.Fail("Timed out waiting for " + what);
+        }
+
+        [UnityTest]
+        public IEnumerator MainMenu_GateScene_GuardOpensTheGate_StudentsWalkIn_ThenItCloses()
+        {
+            yield return BootToMenu();
+            var c = UnityEngine.Object.FindAnyObjectByType<MainMenuController>();
+            var scene = c.world.gateScene.GetComponent<SchoolGateScene>();
+            Assert.That(scene, Is.Not.Null, "the school gate has its scene");
+            Assert.That(scene.Phase, Is.EqualTo(GatePhase.Closed));
+            Assert.That(scene.gate.sprite, Is.SameAs(scene.gateFrames[0]), "the gate starts closed");
+            foreach (var student in scene.students)
+                Assert.That(student.GetComponent<Image>().color.a, Is.EqualTo(0f), "no Student waits in view");
+
+            yield return WaitUntil(() => scene.Phase == GatePhase.Opening, "the guard to open the gate", 6f);
+            Assert.That(scene.guard.frames, Is.EqualTo(new[] { scene.guardReach }), "the guard reaches for the gate");
+
+            yield return WaitUntil(() => scene.Phase == GatePhase.Entering, "the gate to stand open", 4f);
+            Assert.That(scene.gate.sprite, Is.SameAs(scene.gateFrames[scene.gateFrames.Length - 1]), "the gate is open");
+            Assert.That(scene.guard.frames, Is.EqualTo(scene.guardWave), "the guard waves the Students in");
+
+            var first = scene.students[0];
+            yield return WaitUntil(() => first.GetComponent<Image>().color.a > 0f, "the first Student to walk up", 3f);
+            var y = first.anchoredPosition.y;
+            yield return Wait(1f);
+            Assert.That(first.anchoredPosition.y, Is.GreaterThan(y), "the Student walks up the driveway toward the gate");
+            Assert.That(Mathf.Repeat(first.anchoredPosition.x, 4f), Is.EqualTo(0f), "the Students stay on the art pixel grid");
+
+            yield return WaitUntil(() => scene.StudentsInside == scene.students.Length, "every Student to go in", 15f);
+            foreach (var student in scene.students)
+                Assert.That(student.GetComponent<Image>().color.a, Is.EqualTo(0f), "the Students are inside the school");
+
+            yield return WaitUntil(() => scene.Phase == GatePhase.Closed, "the guard to close the gate", 4f);
+            Assert.That(scene.gate.sprite, Is.SameAs(scene.gateFrames[0]), "the gate is closed again");
+            Assert.That(scene.guard.frames, Is.EqualTo(scene.guardIdle));
+        }
+
+        [UnityTest]
+        public IEnumerator Walkers_KeepWalking_WhenTheirBackgroundComesBack()
+        {
+            yield return BootToMenu();
+            var c = UnityEngine.Object.FindAnyObjectByType<MainMenuController>();
+            c.world.Show(MenuBackground.DrillGround);
+            var girl = (RectTransform)c.world.walkers.transform.Find("Student Girl");
+            var walker = girl.GetComponent<Walker>();
+            yield return Wait(walker.startDelay + 0.5f);
+            var x = girl.anchoredPosition.x;
+
+            // Another screen hides the walkers; coming back must not leave them walking on the spot.
+            c.world.Show(MenuBackground.Noticeboard);
+            yield return Wait(0.3f);
+            c.world.Show(MenuBackground.DrillGround);
+            yield return Wait(0.6f);
+            Assert.That(girl.anchoredPosition.x, Is.LessThan(x), "the girl walks on to the left");
         }
 
         [UnityTest]
