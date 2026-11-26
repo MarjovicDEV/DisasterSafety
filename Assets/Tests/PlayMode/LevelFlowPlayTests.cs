@@ -1983,6 +1983,7 @@ namespace DisasterSafety.Tests
                 "the Reaction leaves the radio in view");
             Assert.That(reaction.Overlaps(TentPeople), Is.False, "the Reaction leaves the tent opening in view");
             Assert.That(reaction.Overlaps(CourtSign), Is.False, "the Reaction leaves the sign in view");
+            Assert.That(reaction.Overlaps(BlueTent), Is.False, "the Reaction leaves the blue tent in view");
             FinishWithThreeStars(c);
         }
 
@@ -1997,7 +1998,7 @@ namespace DisasterSafety.Tests
             var radio = PropIn(c, "radio");
             var radioOn = PropIn(c, "radio_on");
             var neighbours = (RectTransform)Neighbours(setting).transform;
-            const float pathStart = 395f;
+            const float pathStart = HardSevenPathStart;
             yield return ActionBarShown(c);
 
             foreach (var stop in new[]
@@ -2126,17 +2127,28 @@ namespace DisasterSafety.Tests
             // The row below the Student's feet at the start and at the rumor and go home stops is court floor.
             foreach (var (x, row) in new[] { (228, 231), (254, 229), (376, 249) })
                 Assert.That(IsAny(art[x, row], ArtCourtFloor), Is.True, "the court floor under the Student at " + x + ", " + row);
-            for (var x = 400; x < 480; x++)
-                Assert.That(IsAny(art[x, 269], ArtCourtFloor), Is.True, "the path toward home leaves the right edge at x " + x);
-            Assert.That(IsAny(art[440, 200], ArtOutsideGrass), Is.True, "grass outside the open right side of the court");
+
+            // The go home stop (376, 248) stands inside the painted court, clear of its white right
+            // baseline, so the Student has not started to leave. The check covers 14 of the 16 pixels
+            // each side of the feet, the width of the Student's body.
+            for (var x = 376 - 14; x <= 376 + 14; x++)
+                Assert.That(IsAny(art[x, 249], ArtCourtPaint), Is.True, "the go home stop stands on the court paint at x " + x);
+
+            // The earth path toward home starts outside the slab at x 432 on the bottom row and leaves the
+            // right edge. It is a different colour from the concrete slab, so it reads as a way out.
+            for (var x = HardSevenPathStart; x < 480; x++)
+                Assert.That(IsAny(art[x, 269], ArtPath), Is.True, "the path toward home leaves the right edge at x " + x);
+            for (var x = 0; x < HardSevenPathStart - 4; x++)
+                Assert.That(IsAny(art[x, 269], ArtPath), Is.False, "no path on the court at x " + x);
+            Assert.That(IsAny(art[476, 180], ArtOutsideGrass), Is.True, "grass outside the open right side of the court");
         }
 
-        // The Hard 7 court the researcher approved for C14. The neighbours' shadow now falls on the court
-        // paint, and the radio is unchanged.
+        // The Hard 7 court the researcher approved for C14, with the earth path and the wider court paint
+        // approved after review. The neighbours' shadow falls on the court paint, and the radio is unchanged.
         [Test]
         public void HardLevel7_CourtArt_IsTheApprovedPicture()
         {
-            Assert.That(ArtHash("bg_evacuation_area"), Is.EqualTo("e6230656c806d51d562463fb5ceb79f21fad447a647f435020ac5be2c9c04553"));
+            Assert.That(ArtHash("bg_evacuation_area"), Is.EqualTo("59c7364333628074942d75538db58c791606051c7590f207cbe9f0dad99ec3b4"));
             Assert.That(ArtHash("evacuation_area_neighbours_0"), Is.EqualTo("d605f2c40343e399d5a80bbb5763eaacf90a5324642d14862caeb8ed88678eb6"));
             Assert.That(ArtHash("evacuation_area_neighbours_1"), Is.EqualTo("f13d9c09745f1a72f2ddf11a6dcfa5ac70c4beee5b639e5b6ddf2865a846fdb2"));
             Assert.That(ArtHash("evacuation_area_radio"), Is.EqualTo("09609f3a56884d5753bf9fc23f0ea03032636594ffb5e462844fb2b4931ee5b2"));
@@ -2158,6 +2170,10 @@ namespace DisasterSafety.Tests
             new Color32(255, 250, 240, 255),
             new Color32(220, 212, 196, 255), new Color32(196, 186, 166, 255), new Color32(168, 156, 134, 255),
         };
+        static readonly Color32[] ArtCourtPaint =
+            { new Color32(170, 214, 190, 255), new Color32(142, 192, 168, 255), new Color32(112, 160, 140, 255) };
+        static readonly Color32[] ArtPath =
+            { new Color32(214, 186, 140, 255), new Color32(190, 158, 110, 255), new Color32(152, 122, 84, 255) };
         static readonly Color32[] ArtOutsideGrass =
             { new Color32(158, 224, 112, 255), new Color32(124, 204, 90, 255), new Color32(100, 180, 72, 255) };
         static readonly Color32[] ArtMat =
@@ -2183,6 +2199,12 @@ namespace DisasterSafety.Tests
         // shadow to 147. The adult is 28 pixels tall with feet on row 160, so the top is row 132.
         static readonly Rect TentPeople = ArtRect(121, 132, 147, 161);
         static readonly Rect CourtSign = ArtRect(14, 86, 101, 111);
+
+        // The blue tent (M.LAYOUT.tents.blue: x 118, base row 158, 50 wide and 31 tall) with its outline.
+        static readonly Rect BlueTent = ArtRect(117, 126, 169, 159);
+
+        // The bottom-row x where the earth path toward home starts, outside the court's slab.
+        const int HardSevenPathStart = 432;
 
         [UnityTest]
         public IEnumerator HardLevel2_SafeChoice_ActsOutAndCompletes()
