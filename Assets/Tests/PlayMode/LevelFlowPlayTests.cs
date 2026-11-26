@@ -1649,10 +1649,7 @@ namespace DisasterSafety.Tests
             Assert.That(c.Student.Pose, Is.EqualTo(StudentPose.Idle));
             Assert.That(setting.shaker, Is.Null, "the room does not shake");
 
-            var drip = setting.GetComponentInChildren<SpriteAnimator>();
-            Assert.That(drip, Is.Not.Null, "the pipe drips while the room is still");
-            var firstFrame = drip.GetComponent<Image>().sprite;
-            yield return WaitFor(() => drip.GetComponent<Image>().sprite != firstFrame, "the pipe drip to advance");
+            Assert.That(setting.transform.Find("Pipe Drip"), Is.Null);
         }
 
         [UnityTest]
@@ -1667,19 +1664,39 @@ namespace DisasterSafety.Tests
             yield return ActionBarShown(c);
             Assert.That(setting.ActOutFor("call_adult"), Is.Not.Null, "calling a grown-up has an Act-out");
 
-            Tap(c, 1);
-            yield return WaitFor(() => student.bubble.gameObject.activeSelf && student.bubble.Line == "Stay still, Mom.",
-                "the Student to speak to Mom");
-            Assert.That(student.Pose, Is.EqualTo(StudentPose.Crouch));
-            Assert.That(student.X, Is.EqualTo(284f));
-            Assert.That(dad.AtStart, Is.True);
-            yield return WaitFor(() => student.IsWalking && student.Pose == StudentPose.Walk && student.FacingLeft,
-                "the Student to stand and walk to the door");
-            yield return WaitFor(() => student.bubble.Line == "Help!", "the Student to call for help");
-            Assert.That(student.Pose, Is.EqualTo(StudentPose.Call));
-            Assert.That(student.X, Is.EqualTo(79f));
-            Assert.That(dad.AtStart, Is.True, "Dad stays away until the Student calls");
+            var soundWas = GameServices.Audio.SoundOn;
+            try
+            {
+                GameServices.Audio.SoundOn = true;
+                var blips = AudioManager.BlipsPlayed;
+                Tap(c, 1);
+                yield return WaitFor(() => student.bubble.gameObject.activeSelf && student.bubble.Line == "Stay still, Mom.",
+                    "the Student to speak to Mom");
+                Assert.That(AudioManager.BlipsPlayed, Is.EqualTo(blips + 1), "one blip when speaking to Mom");
+                Assert.That(student.Pose, Is.EqualTo(StudentPose.Crouch));
+                Assert.That(student.X, Is.EqualTo(284f));
+                Assert.That(dad.AtStart, Is.True);
+                yield return WaitFor(() => student.IsWalking && student.Pose == StudentPose.Walk && student.FacingLeft,
+                    "the Student to stand and walk to the door");
+                yield return WaitFor(() => student.bubble.Line == "Help!", "the Student to call for help");
+                Assert.That(AudioManager.BlipsPlayed, Is.EqualTo(blips + 2), "one more blip when calling outside");
+                Assert.That(student.Pose, Is.EqualTo(StudentPose.Call));
+                Assert.That(student.X, Is.EqualTo(56f), "Help is called from the threshold");
+                Assert.That(student.Y, Is.EqualTo(18f));
+                Assert.That(student.FacingLeft, Is.True);
+                Assert.That(dad.AtStart, Is.True, "Dad stays away until the Student calls");
+            }
+            finally
+            {
+                GameServices.Audio.SoundOn = soundWas;
+            }
             yield return WaitFor(() => dad.IsWalking && dad.X > 0f, "Dad to enter after the call");
+            yield return WaitFor(() => dad.X >= student.X, "Dad to cross in front of the Student");
+            Assert.That(student.X, Is.EqualTo(56f));
+            Assert.That(230f - dad.Y, Is.GreaterThanOrEqualTo(247f), "Dad uses the foreground aisle");
+            Canvas.ForceUpdateCanvases();
+            Assert.That(dad.body.depth, Is.GreaterThan(student.body.depth),
+                "Dad remains visible when his route crosses the Student at the threshold");
 
             yield return FeedbackShown(c);
             Assert.That(dad.Pose, Is.EqualTo(GrownUpPose.Kneel));
@@ -1699,9 +1716,7 @@ namespace DisasterSafety.Tests
             const float artHeight = 270f;
             var reaction = BoundsInSetting(setting, (RectTransform)setting.student.bubble.transform);
             var frontDoor = new Rect(16f * px, (artHeight - 212f) * px, 56f * px, 105f * px);
-            var pipe = new Rect(123f * px, (artHeight - 217f) * px, 29f * px, 24f * px);
             Assert.That(reaction.Overlaps(frontDoor), Is.False, "the Reaction leaves the front door in view");
-            Assert.That(reaction.Overlaps(pipe), Is.False, "the Reaction leaves the pipe and puddle in view");
             Assert.That(reaction.Overlaps(BoundsInSetting(setting, (RectTransform)mom.transform)), Is.False,
                 "the Reaction leaves Mom in view");
         }
@@ -1720,7 +1735,7 @@ namespace DisasterSafety.Tests
             foreach (var stop in new[]
             {
                 (Index: 0, Key: "pull_up", X: 284f, Y: -4f, Pose: StudentPose.Reach, Heading: "Not safe yet"),
-                (Index: 2, Key: "fix_pipe", X: 167f, Y: -6f, Pose: StudentPose.Reach, Heading: UIStrings.UnsafeHeading),
+                (Index: 2, Key: "wait_for_mom", X: 284f, Y: -4f, Pose: StudentPose.Idle, Heading: UIStrings.UnsafeHeading),
                 (Index: 3, Key: "leave", X: 100f, Y: -2f, Pose: StudentPose.Wait, Heading: UIStrings.UnsafeHeading),
             })
             {
@@ -1733,10 +1748,8 @@ namespace DisasterSafety.Tests
                 Assert.That(student.Pose, Is.EqualTo(stop.Pose));
                 Assert.That(mom.AtStart, Is.True);
                 Assert.That(dad.AtStart, Is.True);
-                if (stop.Key == "pull_up")
+                if (stop.Key == "pull_up" || stop.Key == "wait_for_mom")
                     Assert.That(student.X + 16f, Is.LessThan(mom.X - 18f), "the Student stops short of Mom's hand");
-                if (stop.Key == "fix_pipe")
-                    Assert.That(student.X - 15f, Is.GreaterThan(151f), "the Student stops short of the pipe");
                 if (stop.Key == "leave")
                     Assert.That(student.X - 16f, Is.GreaterThan(72f), "the Student stops inside the room");
                 AssertHomeAfterReactionClear(setting, mom);
@@ -1773,9 +1786,8 @@ namespace DisasterSafety.Tests
             Assert.That(setting.shaker, Is.Null);
 
             AssertPropAtArtPoint(setting, PropIn(c, "bag_closed"), 73f, 191f);
-            AssertPropAtArtPoint(setting, PropIn(c, "paper"), 232f, 180f);
+            AssertPropAtArtPoint(setting, PropIn(c, "note"), 232f, 180f);
             AssertPropAtArtPoint(setting, PropIn(c, "pen"), 245f, 181f);
-            Assert.That(PropIn(c, "note").gameObject.activeSelf, Is.False);
         }
 
         static void AssertPropAtArtPoint(LevelSetting setting, LevelProp prop, float x, float row)
@@ -1795,31 +1807,41 @@ namespace DisasterSafety.Tests
             var student = c.Student;
             var mom = setting.ActiveGrownUps[0];
             var bag = PropIn(c, "bag_closed");
-            var paper = PropIn(c, "paper");
             var note = PropIn(c, "note");
             yield return ActionBarShown(c);
             Assert.That(setting.ActOutFor("go_bag"), Is.Not.Null, "taking the go bag has an Act-out");
 
             Tap(c, 3);
-            yield return WaitFor(() => student.Pose == StudentPose.Pack, "the Student to write at the table");
-            Assert.That(note.gameObject.activeSelf, Is.False, "the note follows the writing");
-            Assert.That(student.X, Is.EqualTo(238f));
-            Assert.That(student.Y, Is.EqualTo(22f));
-            yield return WaitFor(() => note.gameObject.activeSelf, "the written note to appear");
+            yield return WaitFor(() => student.X <= 264f, "the Student to cross the right table leg");
+            Assert.That(230f - student.Y, Is.GreaterThanOrEqualTo(235f),
+                "the Student's feet cross in the foreground below the leg");
             AssertPropAtArtPoint(setting, note, 232f, 180f);
-            Assert.That(paper.gameObject.activeSelf, Is.False);
-            Assert.That(bag.AtStart, Is.True, "writing comes before picking up the bag");
+            Assert.That(bag.AtStart, Is.True);
+            yield return WaitFor(() => student.Pose == StudentPose.Crouch, "the Student to collect the Go Bag");
+            Assert.That(student.X, Is.EqualTo(106f));
+            Assert.That(230f - student.Y, Is.EqualTo(225f));
             yield return WaitFor(() => student.Pose == StudentPose.Carry && student.IsWalking && mom.IsWalking,
                 "Mom and the Student to walk out together with the bag");
             Assert.That(bag.transform.parent, Is.SameAs(student.Hands));
             Assert.That(student.FacingLeft, Is.True);
+            yield return WaitFor(() =>
+            {
+                // Once their tracks meet, the entire bag must pass below Mom's feet.
+                if (student.X - mom.X < 34f)
+                {
+                    var heldBag = BoundsInSetting(setting, (RectTransform)bag.transform);
+                    var momBody = BoundsInSetting(setting, (RectTransform)mom.transform);
+                    Assert.That(heldBag.yMax, Is.LessThan(momBody.yMin), "the Go Bag clears Mom");
+                }
+                return student.Y == 24f;
+            }, "the Student to carry the Go Bag through the threshold");
 
             yield return FeedbackShown(c);
             Assert.That(student.Pose, Is.EqualTo(StudentPose.Carry));
             Assert.That(student.X, Is.EqualTo(56f));
             Assert.That(student.Y, Is.EqualTo(24f));
             Assert.That(mom.X, Is.EqualTo(40f));
-            Assert.That(mom.Y, Is.EqualTo(55f));
+            Assert.That(mom.Y, Is.EqualTo(59f));
             Assert.That(note.gameObject.activeSelf, Is.True);
             Assert.That(bag.transform.parent, Is.SameAs(student.Hands));
             AssertHomeAfterReactionClear(setting, mom);
@@ -1842,7 +1864,7 @@ namespace DisasterSafety.Tests
             {
                 (Index: 0, Key: "no_go_bag", X: 114f, Y: -2f, Pose: StudentPose.Wait, Heading: "Not ready yet"),
                 (Index: 1, Key: "toys", X: 441f, Y: -5f, Pose: StudentPose.Wait, Heading: "Not safe yet"),
-                (Index: 2, Key: "no_note", X: 91f, Y: -2f, Pose: StudentPose.Carry, Heading: "Not ready yet"),
+                (Index: 2, Key: "push_past_mom", X: 91f, Y: -2f, Pose: StudentPose.Carry, Heading: "Not ready yet"),
             })
             {
                 Assert.That(setting.ActOutFor(stop.Key), Is.Not.Null, stop.Key + " has an Unsafe Act-out");
@@ -1855,10 +1877,12 @@ namespace DisasterSafety.Tests
                 Assert.That(student.Y, Is.EqualTo(stop.Y));
                 Assert.That(student.Pose, Is.EqualTo(stop.Pose));
                 Assert.That(mom.AtStart, Is.True);
-                Assert.That(note.gameObject.activeSelf, Is.False);
-                if (stop.Key == "no_note")
+                Assert.That(note.gameObject.activeSelf, Is.True);
+                if (stop.Key == "push_past_mom")
                 {
                     Assert.That(bag.transform.parent, Is.SameAs(student.Hands));
+                    Assert.That(student.X - 16f, Is.GreaterThan(72f), "the Student stops before the doorway");
+                    Assert.That(student.X - 16f, Is.GreaterThan(mom.X + 18f), "the Student stops before Mom");
                     Assert.That(230f - student.Y, Is.GreaterThan(212f), "the Student stays inside the threshold");
                 }
                 else
@@ -1881,7 +1905,7 @@ namespace DisasterSafety.Tests
                 Assert.That(student.X, Is.EqualTo(286f));
                 Assert.That(student.Y, Is.Zero);
                 Assert.That(student.Pose, Is.EqualTo(StudentPose.Idle));
-                Assert.That(note.gameObject.activeSelf, Is.False);
+                Assert.That(note.gameObject.activeSelf, Is.True);
                 Assert.That(mom.AtStart, Is.True);
                 Assert.That(bag.AtStart, Is.True);
                 AssertPropAtArtPoint(setting, bag, 73f, 191f);

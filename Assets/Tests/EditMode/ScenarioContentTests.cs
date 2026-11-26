@@ -87,8 +87,8 @@ namespace DisasterSafety.Tests
         [TestCase("Hard/2", "route_post route_tree route_field route_later", "Which way has nothing that can fall?", "EQ-56")]
         [TestCase("Hard/3", "run_exit elevator shop_window table", "Is there a strong table near you?", "EQ-75")]
         [TestCase("Hard/4", "stairs elevator run_push mall_wall", "What is the safe way down after an earthquake?", "EQ-92")]
-        [TestCase("Hard/5", "pull_up call_adult fix_pipe leave", "Who can help them the right way?", "EQ-90")]
-        [TestCase("Hard/6", "no_go_bag toys no_note go_bag", "What did your family pack for 3 days?", "EQ-68 EQ-93")]
+        [TestCase("Hard/5", "pull_up call_adult wait_for_mom leave", "Who can help them the right way?", "EQ-90")]
+        [TestCase("Hard/6", "no_go_bag toys push_past_mom go_bag", "What did your family pack for 3 days?", "EQ-68 EQ-93")]
         [TestCase("Hard/7", "go_home radio rumor phone", "Where can you get true news?", "EQ-95")]
         [TestCase("Normal/1", "picture low_shelf books_top", "Heavy things can fall. Where are they safest?", "EQ-61")]
         [TestCase("Normal/2", "hidden go_bag toys", "Think of what you need for 3 days.", "EQ-68")]
@@ -601,7 +601,7 @@ namespace DisasterSafety.Tests
         }
 
         [Test]
-        public void HardLevel5_UsesTheStudentFlow_InTheHomeAfter_WithItsTextUnchanged()
+        public void HardLevel5_OffersWaitingBesideMomAndCallingForHelp()
         {
             var s = Load(Path.Combine(ScenarioFolder, "Earthquake/Hard/5.json"));
             Assert.That(s.UsesActions, Is.True, "Hard 5 uses the Student flow");
@@ -609,19 +609,20 @@ namespace DisasterSafety.Tests
             Assert.That(s.setting, Is.EqualTo(ScenarioSettings.HomeAfter));
             Assert.That(s.phase, Is.EqualTo(ScenarioPhases.After));
             Assert.That(s.Shakes, Is.False);
-            var ids = new[] { "pull_up", "call_adult", "fix_pipe", "leave" };
+            Assert.That(s.choices[2].id, Is.EqualTo("wait_for_mom"));
+            var ids = new[] { "pull_up", "call_adult", "wait_for_mom", "leave" };
             Assert.That(ScenarioSettings.ActionSpots(s.setting),
                 Is.EqualTo(new[]
                 {
-                    "pull_up", "call_adult", "fix_pipe", "leave",
-                    "no_go_bag", "toys", "no_note", "go_bag",
+                    "pull_up", "call_adult", "wait_for_mom", "leave",
+                    "no_go_bag", "toys", "push_past_mom", "go_bag",
                 }));
             Assert.That(s.choices.Select(c => c.id), Is.EqualTo(ids));
             Assert.That(s.choices.Select(c => c.action), Is.EqualTo(ids));
             Assert.That(s.SafeChoice.id, Is.EqualTo("call_adult"));
             Assert.That(s.choices.Select(c => c.icon), Is.Unique);
             Assert.That(s.choices.Select(c => c.icon),
-                Is.EqualTo(new[] { "icon_pull_up", "icon_call_adult", "icon_fix_pipe", "icon_door" }));
+                Is.EqualTo(new[] { "icon_pull_up", "icon_call_adult", "icon_wait_for_mom", "icon_door" }));
             Assert.That(s.goal.text, Is.EqualTo("Help when someone is hurt after an earthquake."));
             Assert.That(s.goal.sources, Is.EqualTo(new[] { "EQ-90" }));
             Assert.That(s.intro.text, Is.EqualTo("The shaking stopped. Someone in your family hurt their leg."));
@@ -634,7 +635,7 @@ namespace DisasterSafety.Tests
             {
                 "Pull them up to walk",
                 "Call a grown-up for help",
-                "Fix the broken pipe yourself",
+                "Wait for Mom to get up.",
                 "Leave them and go outside",
             }));
             Assert.That(s.choices.Select(c => c.heading ?? ""), Is.EqualTo(new[]
@@ -648,12 +649,12 @@ namespace DisasterSafety.Tests
             {
                 "Do not move them. Keep them still and get help.",
                 "Good. Keep them still and get help from an adult.",
-                "Adults check water and electric lines. Help them first.",
+                "Keep Mom still and get help.",
                 "Stay and call for help. They need an adult.",
             }));
             Assert.That(s.choices[0].sources, Is.EqualTo(new[] { "EQ-90" }));
             Assert.That(s.choices[1].sources, Is.EqualTo(new[] { "EQ-90", "EQ-72" }));
-            Assert.That(s.choices[2].sources, Is.EqualTo(new[] { "EQ-91", "EQ-72" }));
+            Assert.That(s.choices[2].sources, Is.EqualTo(new[] { "EQ-90" }));
             Assert.That(s.choices[3].sources, Is.EqualTo(new[] { "EQ-90" }));
         }
 
@@ -668,7 +669,7 @@ namespace DisasterSafety.Tests
         }
 
         [Test]
-        public void HardLevel6_UsesTheStudentFlow_InTheHomeAfter_WithItsTextUnchanged()
+        public void HardLevel6_OffersWalkingOutWithTheGoBag()
         {
             var s = Load(Path.Combine(ScenarioFolder, "Earthquake/Hard/6.json"));
             Assert.That(s.UsesActions, Is.True, "Hard 6 uses the Student flow");
@@ -676,19 +677,19 @@ namespace DisasterSafety.Tests
             Assert.That(s.setting, Is.EqualTo(ScenarioSettings.HomeAfter));
             Assert.That(s.phase, Is.EqualTo(ScenarioPhases.After));
             Assert.That(s.Shakes, Is.False);
-            var ids = new[] { "no_go_bag", "toys", "no_note", "go_bag" };
+            var ids = new[] { "no_go_bag", "toys", "push_past_mom", "go_bag" };
             Assert.That(ScenarioSettings.ActionSpots(s.setting),
                 Is.EqualTo(new[]
                 {
-                    "pull_up", "call_adult", "fix_pipe", "leave",
-                    "no_go_bag", "toys", "no_note", "go_bag",
+                    "pull_up", "call_adult", "wait_for_mom", "leave",
+                    "no_go_bag", "toys", "push_past_mom", "go_bag",
                 }));
             Assert.That(s.choices.Select(c => c.id), Is.EqualTo(ids));
             Assert.That(s.choices.Select(c => c.action), Is.EqualTo(ids));
             Assert.That(s.SafeChoice.id, Is.EqualTo("go_bag"));
             Assert.That(s.choices.Select(c => c.icon), Is.Unique);
             Assert.That(s.choices.Select(c => c.icon),
-                Is.EqualTo(new[] { "icon_no_go_bag", "icon_toy_car", "icon_no_note", "icon_go_bag" }));
+                Is.EqualTo(new[] { "icon_no_go_bag", "icon_toy_car", "icon_push_past_mom", "icon_go_bag" }));
             Assert.That(s.goal.text, Is.EqualTo("Leave home safely after the earthquake."));
             Assert.That(s.goal.sources, Is.EqualTo(new[] { "EQ-92" }));
             Assert.That(s.intro.text, Is.EqualTo("Your family must leave the house. What do you bring?"));
@@ -701,7 +702,7 @@ namespace DisasterSafety.Tests
             {
                 "Leave without the go bag",
                 "Run back in for your toys",
-                "Leave without a note",
+                "Push past Mom at the door.",
                 "Grab the go bag and walk out",
             }));
             Assert.That(s.choices.Select(c => c.heading ?? ""), Is.EqualTo(new[]
@@ -715,13 +716,13 @@ namespace DisasterSafety.Tests
             {
                 "Your go bag has what you need. Bring it with you.",
                 "Do not go back in. Aftershocks can come. Walk out now.",
-                "Leave a message so others know where you went.",
-                "Bring the go bag. Leave a note saying where you went.",
+                "Walk out. Do not run or push.",
+                "Your family left a note. Bring your go bag and walk out.",
             }));
             Assert.That(s.choices[0].sources, Is.EqualTo(new[] { "EQ-93", "EQ-68" }));
             Assert.That(s.choices[1].sources, Is.EqualTo(new[] { "EQ-43", "EQ-42", "EQ-92" }));
-            Assert.That(s.choices[2].sources, Is.EqualTo(new[] { "EQ-93" }));
-            Assert.That(s.choices[3].sources, Is.EqualTo(new[] { "EQ-93" }));
+            Assert.That(s.choices[2].sources, Is.EqualTo(new[] { "EQ-92" }));
+            Assert.That(s.choices[3].sources, Is.EqualTo(new[] { "EQ-93", "EQ-92" }));
         }
 
         [Test]
