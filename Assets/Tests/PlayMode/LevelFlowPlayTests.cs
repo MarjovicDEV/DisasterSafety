@@ -460,6 +460,60 @@ namespace DisasterSafety.Tests
         }
 
         [UnityTest]
+        public IEnumerator LastNormalLevel_OffersHard_AndOpensItsLevelSelection()
+        {
+            GameServices.Initialize(dir);
+            for (var n = 1; n <= 3; n++)
+                LevelCompletion.Record(GameServices.Progress, new LevelId(Episode.Earthquake, Difficulty.Easy, n), 3);
+            for (var n = 1; n <= 4; n++)
+                LevelCompletion.Record(GameServices.Progress, new LevelId(Episode.Earthquake, Difficulty.Normal, n), 3);
+            yield return StartRolloutLevel(NormalFive);
+            var controller = Level();
+            yield return ReadyToChoose(Level);
+            Tap(controller, controller.Attempt.Scenario.SafeChoiceIndex);
+            yield return FeedbackShown(controller);
+            controller.finishButton.onClick.Invoke();
+            Assert.That(controller.LastResult.Opened, Does.Contain("Earthquake/Hard"));
+
+            var nextDifficulty = controller.nextDifficultyButton;
+            Assert.That(nextDifficulty.gameObject.activeInHierarchy, Is.True, "Normal 5 offers Hard");
+            Assert.That(controller.nextButton.gameObject.activeSelf, Is.False, "Normal 5 has no Next Level");
+            Assert.That(controller.nextEpisodeButton.gameObject.activeSelf, Is.False);
+            Assert.That(nextDifficulty.GetComponentInChildren<Text>().text, Is.EqualTo("Next: Hard"));
+            yield return Wait(0.4f);
+            var row = nextDifficulty.transform.parent;
+            var replayBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(row, controller.replayButton.transform);
+            var nextBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(row, nextDifficulty.transform);
+            var levelsBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(row, controller.levelsButton.transform);
+            Assert.That(nextBounds.min.x, Is.GreaterThan(replayBounds.max.x), "the button takes the Next slot");
+            Assert.That(nextBounds.max.x, Is.LessThan(levelsBounds.min.x));
+            var label = nextDifficulty.GetComponentInChildren<Text>();
+            Assert.That(PixelText.Width(label.font, label.text), Is.LessThan(label.rectTransform.rect.width + 1f),
+                "the label fits its button");
+
+            nextDifficulty.onClick.Invoke();
+            yield return WaitForScene(GameScenes.MainMenu);
+            var menu = Menu();
+            yield return WaitFor(() => menu.levelPanel.IsVisible, "Hard Level Selection");
+            Assert.That(menu.levelHeader.text, Is.EqualTo("Earthquake - Hard"));
+        }
+
+        [UnityTest]
+        public IEnumerator LastEasyLevel_WithNormalStillClosed_OffersNoNextDifficulty()
+        {
+            yield return StartRolloutLevel(Third);
+            var controller = Level();
+            yield return ReadyToChoose(Level);
+            Tap(controller, controller.Attempt.Scenario.SafeChoiceIndex);
+            yield return FeedbackShown(controller);
+            controller.finishButton.onClick.Invoke();
+            Assert.That(GameServices.Progress.IsOpen(Episode.Earthquake, Difficulty.Normal), Is.False,
+                "Easy 1 and 2 are not done, so Normal stays closed");
+            Assert.That(controller.nextDifficultyButton.gameObject.activeSelf, Is.False);
+            Assert.That(controller.nextButton.gameObject.activeSelf, Is.False);
+        }
+
+        [UnityTest]
         public IEnumerator HardSevenEarlyAndAfterReload_OfferDifferentCompletionActions()
         {
             yield return StartRolloutLevel(HardSeven);
@@ -470,6 +524,7 @@ namespace DisasterSafety.Tests
             controller.finishButton.onClick.Invoke();
             Assert.That(controller.nextEpisodeButton.gameObject.activeSelf, Is.False);
             Assert.That(controller.nextButton.gameObject.activeSelf, Is.False);
+            Assert.That(controller.nextDifficultyButton.gameObject.activeSelf, Is.False, "Hard has no next Difficulty");
             Assert.That(SavedOnDisk().IsOpen(Episode.Fire), Is.False);
 
             for (var n = 1; n <= 6; n++)

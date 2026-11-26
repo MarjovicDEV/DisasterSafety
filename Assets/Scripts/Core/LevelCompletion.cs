@@ -92,6 +92,22 @@ namespace DisasterSafety.Core
             return true;
         }
 
+        /// <summary>
+        /// After the last Level of a Difficulty, the next Difficulty of the same Episode, if it is Open and
+        /// has a Playable Level. Hard is the last Difficulty, so it never has one.
+        /// </summary>
+        public static bool TryNextDifficulty(LevelId completed, ProgressState progress, PlayableLevels content, out Difficulty next)
+        {
+            next = default;
+            if (completed.Number < Curriculum.LevelCount(completed.Difficulty)) return false;
+            var index = -1;
+            for (var i = 0; i < Curriculum.Difficulties.Count; i++)
+                if (Curriculum.Difficulties[i] == completed.Difficulty) index = i;
+            if (index < 0 || index + 1 >= Curriculum.Difficulties.Count) return false;
+            next = Curriculum.Difficulties[index + 1];
+            return progress.IsOpen(completed.Episode, next) && content.AnyIn(completed.Episode, next);
+        }
+
         static bool AllCompleted(ProgressState progress, Episode e, Difficulty d)
         {
             for (var n = 1; n <= Curriculum.LevelCount(d); n++)

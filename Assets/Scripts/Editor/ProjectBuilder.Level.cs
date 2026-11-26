@@ -1514,6 +1514,11 @@ namespace DisasterSafety.EditorTools
             var emblem = c.nextEpisodeButton.GetComponentInChildren<LayoutElement>();
             emblem.preferredWidth = emblem.preferredHeight = 56f;
             c.nextEpisodeButton.gameObject.SetActive(false);
+            // Sized for the longest label, "Next: Normal"; SetCompletionNavigation writes the real one.
+            c.nextDifficultyButton = MakeButton(row, "Next Difficulty", "green", UIStrings.NextDifficulty(Difficulty.Normal), f4,
+                S("Icons/icon_play"), Sfx.Confirm);
+            ((RectTransform)c.nextDifficultyButton.transform).sizeDelta = new Vector2(396f, 124f);
+            c.nextDifficultyButton.gameObject.SetActive(false);
             c.levelsButton = RowButton(row, "Levels", "orange", UIStrings.LevelsButton, "icon_levels", Sfx.Back);
             c.menuButton = RowButton(row, "Menu", "teal", UIStrings.MainMenuButton, "icon_home", Sfx.Back);
             c.nextButton.gameObject.SetActive(false);

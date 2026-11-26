@@ -180,6 +180,8 @@ namespace DisasterSafety.Game
         public const string Replay = "REPLAY";
         public const string NextLevel = "NEXT";
         public const string NextEpisode = "Next Episode";
+        /// <summary>The Level Completed button after the last Level of a Difficulty, e.g. "Next: Hard".</summary>
+        public static string NextDifficulty(Difficulty d) => "Next: " + DifficultyName(d);
         public const string LevelsButton = "LEVELS";
         public const string MainMenuButton = "MENU";
 

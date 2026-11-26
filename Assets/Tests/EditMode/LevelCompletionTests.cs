@@ -212,5 +212,28 @@ namespace DisasterSafety.Tests
             Assert.That(next, Is.EqualTo(Easy(2)));
             Assert.That(LevelCompletion.TryNext(Easy(3), out _), Is.False, "the last Easy Level has no Next");
         }
+
+        static readonly PlayableLevels Earthquake = new PlayableLevels(
+            Easy(1), Easy(2), Easy(3), Normal(1), Normal(2), Normal(3), Normal(4), Normal(5), Hard(1));
+
+        [Test]
+        public void LastLevelOfADifficulty_LeadsToTheNextDifficulty_OnlyWhenItIsOpenAndPlayable()
+        {
+            var p = ProgressState.NewGame();
+            Assert.That(LevelCompletion.TryNextDifficulty(Easy(3), p, Earthquake, out _), Is.False, "Normal is not open yet");
+
+            p.Open(Episode.Earthquake, Difficulty.Normal);
+            Assert.That(LevelCompletion.TryNextDifficulty(Easy(3), p, Earthquake, out var next), Is.True);
+            Assert.That(next, Is.EqualTo(Difficulty.Normal));
+            Assert.That(LevelCompletion.TryNextDifficulty(Easy(2), p, Earthquake, out _), Is.False,
+                "only the last Level of a Difficulty offers the next one; the others offer the Next Level");
+
+            p.Open(Episode.Earthquake, Difficulty.Hard);
+            Assert.That(LevelCompletion.TryNextDifficulty(Normal(5), p, Earthquake, out next), Is.True);
+            Assert.That(next, Is.EqualTo(Difficulty.Hard));
+            Assert.That(LevelCompletion.TryNextDifficulty(Normal(5), p, new PlayableLevels(Normal(5)), out _), Is.False,
+                "a Difficulty with no Playable Level is not offered");
+            Assert.That(LevelCompletion.TryNextDifficulty(Hard(7), p, Earthquake, out _), Is.False, "Hard is the last Difficulty");
+        }
     }
 }

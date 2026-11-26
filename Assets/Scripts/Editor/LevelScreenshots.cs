@@ -102,6 +102,20 @@ namespace DisasterSafety.EditorTools
             for (var n = 1; n <= 6; n++) LevelCompletion.Record(progress, Hard(n), 3);
             Finish(progress, 7, "58-level-completed-fire-open");
             c.nextEpisodeButton.gameObject.SetActive(false);
+
+            // Normal 5 is the last Normal Level: finishing it opens Hard and offers "Next: Hard".
+            progress = ProgressState.NewGame();
+            for (var n = 1; n <= 3; n++) LevelCompletion.Record(progress, new LevelId(Episode.Earthquake, Difficulty.Easy, n), 3);
+            for (var n = 1; n <= 4; n++) LevelCompletion.Record(progress, new LevelId(Episode.Earthquake, Difficulty.Normal, n), 3);
+            var normalFive = new LevelId(Episode.Earthquake, Difficulty.Normal, 5);
+            var lastNormal = StartStudentLevel(c, scenarios, normalFive, StudentKind.Girl);
+            var hardOpened = LevelCompletion.Record(progress, normalFive, 3);
+            c.openedText.text = UIStrings.Opened(UIStrings.DifficultyName(Difficulty.Hard));
+            c.openedRibbon.SetActive(hardOpened.Opened.Count > 0);
+            c.SetCompletionNavigation(normalFive, hardOpened.OffersNextEpisode, progress, scenarios.Playable);
+            CompletedWithStudent(c, lastNormal, 3, UIStrings.LevelCompletedHeadline("Niño"));
+            shot("58-normal5-next-hard", new[] { c.dimmer, c.completedPanel });
+            c.nextDifficultyButton.gameObject.SetActive(false);
             c.completedBubble.Hide();
             c.openedRibbon.SetActive(false);
         }

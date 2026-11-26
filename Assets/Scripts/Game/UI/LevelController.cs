@@ -56,6 +56,8 @@ namespace DisasterSafety.Game.UI
         public Button replayButton;
         public Button nextButton;
         public Button nextEpisodeButton;
+        [Tooltip("After the last Level of a Difficulty: opens Level Selection for the next Open Difficulty.")]
+        public Button nextDifficultyButton;
         public Button levelsButton;
         public Button menuButton;
         public Confetti confetti;
@@ -73,6 +75,8 @@ namespace DisasterSafety.Game.UI
         Attempt attempt;
         LevelId nextLevel;
         bool hasNext;
+        Difficulty nextDifficulty;
+        bool hasNextDifficulty;
 
         public Attempt Attempt => attempt;
         public LevelId Level => level;
@@ -448,6 +452,10 @@ namespace DisasterSafety.Game.UI
             replayButton.onClick.AddListener(() => GameScenes.PlayLevel(level));
             nextButton.onClick.AddListener(() => { if (hasNext) GameScenes.PlayLevel(nextLevel); });
             nextEpisodeButton.onClick.AddListener(() => GameScenes.ToEpisodeSelect(Episode.Fire));
+            nextDifficultyButton.onClick.AddListener(() =>
+            {
+                if (hasNextDifficulty) GameScenes.ToLevelSelect(level.Episode, nextDifficulty);
+            });
             levelsButton.onClick.AddListener(() => GameScenes.ToLevelSelect(level.Episode, level.Difficulty));
             menuButton.onClick.AddListener(GameScenes.ToMainMenu);
 
@@ -558,6 +566,9 @@ namespace DisasterSafety.Game.UI
                       && progress.IsOpen(nextLevel.Episode, nextLevel.Difficulty) && content.IsPlayable(nextLevel);
             nextButton.gameObject.SetActive(hasNext);
             nextEpisodeButton.gameObject.SetActive(offerNextEpisode);
+            hasNextDifficulty = !offerNextEpisode && LevelCompletion.TryNextDifficulty(completed, progress, content, out nextDifficulty);
+            nextDifficultyButton.gameObject.SetActive(hasNextDifficulty);
+            if (hasNextDifficulty) nextDifficultyButton.GetComponentInChildren<Text>().text = UIStrings.NextDifficulty(nextDifficulty);
         }
 
         static string OpenedName(string key, out Episode episode, out Difficulty difficulty)
