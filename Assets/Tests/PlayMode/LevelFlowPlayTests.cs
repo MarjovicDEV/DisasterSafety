@@ -1485,6 +1485,7 @@ namespace DisasterSafety.Tests
             yield return WaitFor(() => student.IsWalking && student.X >= 240f, "the Student to reach the foot of the stairs");
             Assert.That(student.X, Is.GreaterThan(earlierX));
             Assert.That(student.Y, Is.LessThan(higherY));
+            yield return WaitFor(() => student.IsWalking && Mathf.Abs(student.X - 305f) <= 3f && Mathf.Abs(student.Y - 9f) <= 3f, "the Student to cross the open threshold");
             yield return WaitFor(() => student.IsWalking && student.X > 331f, "the Student to leave through the exit");
             yield return FeedbackShown(c);
             Assert.That(student.X, Is.EqualTo(430f));
@@ -1620,7 +1621,7 @@ namespace DisasterSafety.Tests
         [Test]
         public void HardLevel4_ExteriorArt_IsTheApprovedPicture()
         {
-            Assert.That(ArtHash("bg_mall_b"), Is.EqualTo("2837ece26b9ff19bf5f04381100c06f4be852f839d1049a6b259357802b55384"));
+            Assert.That(ArtHash("bg_mall_b"), Is.EqualTo("6ae8754b58d413aaaf8a044b99edc7892a86d5e3daf720d49fbba0525d78790e"));
         }
 
         // C11 changes only mall_b. Hard 3's food court and its overlays come from the same script and stay

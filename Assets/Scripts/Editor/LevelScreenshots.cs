@@ -259,7 +259,7 @@ namespace DisasterSafety.EditorTools
                     }
 
                     // Hard 4's seventh step, (352, 230), is the first point on the pavement outside the exit,
-                    // before the parking. The steps are the four stair points, then (279, 235), (329, 235) and it.
+                    // before the parking. The steps are the four stair points, then (305, 221), (317, 233) and it.
                     if (safe && s.SafeChoice.action == "stairs" && i == 6)
                     {
                         student.PlaceAt(x, y);

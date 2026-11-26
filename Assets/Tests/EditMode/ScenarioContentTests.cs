@@ -575,7 +575,7 @@ namespace DisasterSafety.Tests
             Assert.That(s.lesson.sources, Is.EqualTo(new[] { "EQ-92", "EQ-38" }));
             Assert.That(s.choices.Select(c => c.label), Is.EqualTo(new[]
             {
-                "Walk down the stairs and out",
+                "Take the stairs to the assembly area",
                 "Take the elevator down",
                 "Run and push to get out",
                 "Wait by the mall wall outside",

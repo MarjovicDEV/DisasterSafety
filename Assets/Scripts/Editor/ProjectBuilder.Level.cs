@@ -835,9 +835,9 @@ namespace DisasterSafety.EditorTools
                 System.Array.ConvertAll(stairs, point => move(point.x, floorY - point.y));
             var outside = DownStairs(ActOutStep.Walk).Concat(new[]
             {
-                // Use the open lane in front of the still crowd at the exit.
-                ActOutStep.Walk(279f, floorY - 235f),
-                ActOutStep.Walk(329f, floorY - 235f),
+                // Cross the open threshold, then turn onto the pavement.
+                ActOutStep.Walk(305f, floorY - 221f),
+                ActOutStep.Walk(317f, floorY - 233f),
                 ActOutStep.Walk(352f),
             });
             setting.actOuts = new[]

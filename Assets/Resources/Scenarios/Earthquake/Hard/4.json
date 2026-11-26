@@ -28,7 +28,7 @@
     "choices": [
         {
             "id": "stairs",
-            "label": "Walk down the stairs and out",
+            "label": "Take the stairs to the assembly area",
             "icon": "icon_stairs",
             "action": "stairs",
             "safe": true,

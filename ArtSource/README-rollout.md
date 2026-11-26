@@ -56,7 +56,7 @@ The `icons=` filter writes only the named icons, so each slice adds its icons wi
 | `icon_elevator` | Ride the elevator down | Hard 3 |
 | `icon_shop_window` | Stand by the glass shop window | Hard 3 |
 | `icon_strong_table` (reused) | Duck under the food court table | Hard 3 |
-| `icon_stairs` (reused) | Walk down the stairs and out; Run to the stairs | Hard 4, Easy 2 |
+| `icon_stairs` (reused) | Take the stairs to the assembly area; Run to the stairs | Hard 4, Easy 2 |
 | `icon_elevator` (reused) | Take the elevator down | Hard 4 |
 | `icon_run_push` | Run and push to get out | Hard 4 |
 | `icon_mall_wall` | Wait by the mall wall outside | Hard 4 |
@@ -286,7 +286,7 @@ The exit run and its direct Try Again return use the foreground aisle in front o
 |---|---|
 | Upper landing and stairs | The upper landing is at row 178. The stairs descend to row 230. The Student's `startY` is 52 art pixels above the ground-floor line. |
 | Elevator | Closed doors at (21, 99), with the floor indicator below the Level label. The call button is centred at (84, 154). |
-| Exit and crowd | Exit at (261, 144), with the exit symbol at (281, 129). The two still figures are drawn into the background with feet at (296, 221) and (317, 218). |
+| Exit and crowd | Exit at (261, 144), with the EXIT sign above the opening. The two still figures are drawn into the background with feet at (342, 212) and (361, 210). |
 | Mall wall and open parking | The outer wall sign and glass are at (333, 131). The outer wall ends at x 373. The assembly-area sign stands at (452, 173), out in the open parking area. |
 | Exterior corner (C11) | The exterior wall runs from (333, 0) to the pavement in the darker wall shade. Its corner at x 373 is outlined from the cornice (rows 0 to 8, out to x 377) down to a stone plinth (rows 208 to 215, out to x 375). |
 | Curb and parking lines (C11) | A low curb closes the far edge of the lot from x 374: an outline on rows 189 and 195, a lit top face and a stone front face. The asphalt starts on row 196. The painted lines are 2 art pixels thick and lean away from a vanishing point at (240, 0), like the pavement edge. The back stalls have dividers from x 384, 412 and 440 and end on rows 213 and 214. The front stall around the Safe ending lies between dividers from (398, 217) and (452, 217) and ends on rows 246 and 247. |
@@ -300,7 +300,7 @@ The exit run and its direct Try Again return use the foreground aisle in front o
 | `run_push` | Run down the stair route and stop at (270, 221), short of the nearest person. |
 | `mall_wall` | Walk through the shared stair and exit route to (357, 230), on the pavement against the outer wall's plinth. |
 
-The stair route uses (155, 178), (191, 196), (239, 224), and (251, 230) as its slope changes. The straight sections between those points follow the intervening treads. The shared exit route continues through (279, 235), (329, 235), and (352, 230). This foreground lane passes in front of the still crowd and continues past the mall frontage. The Safe Choice crosses the curb into the open parking area.
+The stair route uses (155, 178), (191, 196), (239, 224), and (251, 230) as its slope changes. The straight sections between those points follow the intervening treads. The shared exit route continues through (305, 221), (317, 233), and (352, 230). The route crosses the open threshold and continues past the mall frontage. The Safe Choice crosses the curb into the open parking area.
 
 Try Again retraces the chosen Act-out's walk or run destinations in reverse at walking speed. It climbs the stairs from the crowd and wall stops and ends on the upper landing at (129, 178).
 

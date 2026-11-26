@@ -46,8 +46,8 @@ return function(L, ST)
       callButton = { 84, 154 }, elevatorStop = { 96, 178 },
       stairs = { { 155, 178 }, { 167, 184 }, { 179, 190 }, { 191, 196 },
         { 203, 203 }, { 215, 210 }, { 227, 217 }, { 239, 224 }, { 251, 230 } },
-      exit = { 261, 144 }, crowd = { { 296, 221 }, { 317, 218 } },
-      crowdStop = { 270, 221 }, exitNear = { 279, 235 }, exitFar = { 329, 235 },
+      exit = { 261, 144 }, crowd = { { 342, 212 }, { 361, 210 } },
+      crowdStop = { 270, 221 }, exitNear = { 305, 221 }, exitFar = { 317, 233 },
       outside = { 352, 230 }, wall = { 333, 131 }, wallStop = { 357, 230 },
       parkingSign = { 452, 173 }, parking = { 430, 230 }, curbY = 195,
     },
@@ -405,10 +405,13 @@ return function(L, ST)
     L.line(img, x + 6, y + 36, x + 25, y + 13, R.glass[1])
     L.vline(img, x + 27, y + 5, y + 75, O)
     L.vline(img, x + 28, y + 5, y + 75, R.metal[1])
+    L.poly(img, {x + 64,y + 5,x + 68,y + 2,x + 68,y + 77,x + 64,y + 74}, R.metal[2])
     L.hline(img, x + 7, x + 23, y + 53, R.metal[1])
     L.hline(img, x + 29, x + 65, y + 76, R.floor[1])
     L.hline(img, x + 29, x + 65, y + 77, R.floor[3])
-    exitSymbol(img, x + 20, y - 15)
+    box(img, x + 18, y - 16, 37, 13, R.green)
+    L.rect(img, x + 20, y - 14, 33, 9, SIGN)
+    L.text(img, x + 24, y - 13, "EXIT", K.W)
     stairs(img)
     elevator(img, B.elevator, B.callButton, B.landingY - 2)
     local wx, wy = table.unpack(B.wall)
