@@ -1022,10 +1022,12 @@ namespace DisasterSafety.EditorTools
             return setting;
         }
 
-        // Hard 7's evacuation area in the v2 art (phase after, nothing shakes). Left to right: the school in
-        // the distance, the family's mat with Mom sitting and the radio beside her, the Student's start on
-        // the open field, the chatting neighbours and the path back to the houses. Placements and Act-out
-        // points are in ArtSource/README-rollout.md (Evacuation area) and evacuation_area_v2.lua (M.LAYOUT).
+        // Hard 7's evacuation area in the v2 art (phase after, nothing shakes): a later gathering at an
+        // evacuation centre in an open-sided covered basketball court. Left to right: the sign and the
+        // hoop, the family's mat with Mom sitting and the radio beside her, the tents at the back, the
+        // Student's start on the court, the chatting neighbours and, through the open right side, the path
+        // back to the houses. Placements and Act-out points are in ArtSource/README-rollout.md (Evacuation
+        // area) and evacuation_area_v2.lua (M.LAYOUT).
         static LevelSetting BuildEvacuationAreaV2(RectTransform world)
         {
             var group = Stretch(Rect("Evacuation Area V2", world));
@@ -1081,7 +1083,7 @@ namespace DisasterSafety.EditorTools
                 },
                 new ActOut
                 {
-                    // The stop is on the open field in front of the neighbours, before the path starts (x 395).
+                    // The stop is on the court at its open right side, before the path starts (x 395).
                     // The Reaction sits 20 art pixels to the right, clear of the neighbours.
                     key = "go_home", stopAfter = 0,
                     placeReaction = true, reactionPosition = new Vector2(80f, 8f),
