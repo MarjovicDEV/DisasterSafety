@@ -285,6 +285,12 @@ namespace DisasterSafety.EditorTools
                 Outcome("-tree-stop", setting.ActOutFor("route_tree"), false);
                 Outcome("-later-stop", setting.ActOutFor("route_later"), false);
             }
+            // Hard 7's court: the stop at the open side toward home, and the phone pose at the start.
+            if (s.SafeChoice.action == "radio")
+            {
+                Outcome("-home-stop", setting.ActOutFor("go_home"), false);
+                Outcome("-phone-stop", setting.ActOutFor("phone_all_day"), false);
+            }
             if (s.SafeChoice.action == "stairs")
             {
                 Outcome("-wall-stop", setting.ActOutFor("mall_wall"), false);
