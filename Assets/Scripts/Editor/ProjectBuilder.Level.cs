@@ -1071,7 +1071,9 @@ namespace DisasterSafety.EditorTools
                 new ActOut
                 {
                     // Mom has no reaching pose, so the radio turns on beside her once the Student sits.
+                    // The Reaction sits 24 art pixels to the right, so the blue tent stays in view.
                     key = "radio",
+                    placeReaction = true, reactionPosition = new Vector2(96f, 8f),
                     steps = new[]
                     {
                         ActOutStep.Walk(182f, floorY - 236f),
@@ -1083,7 +1085,7 @@ namespace DisasterSafety.EditorTools
                 },
                 new ActOut
                 {
-                    // The stop is on the court at its open right side, before the path starts (x 395).
+                    // The stop is inside the court paint at its open right side, well before the path (x 432).
                     // The Reaction sits 20 art pixels to the right, clear of the neighbours.
                     key = "go_home", stopAfter = 0,
                     placeReaction = true, reactionPosition = new Vector2(80f, 8f),
