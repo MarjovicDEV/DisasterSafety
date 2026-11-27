@@ -12,6 +12,12 @@ _Avoid_: Chapter, world, stage, module
 One of three tiers inside an Episode: Easy (3 Levels), Normal (5 Levels), Hard (7 Levels).
 _Avoid_: Mode, tier, grade level
 
+**Episode background**:
+The picture behind Difficulty selection for a particular Episode. For example, Earthquake uses a school drill ground.
+
+**Difficulty background**:
+The picture behind Level selection for a particular Episode and Difficulty. For example, Earthquake Easy uses a classroom with green chairs.
+
 **Level**:
 One numbered scenario inside a Difficulty of an Episode. The game has 75 Levels in total.
 _Avoid_: Stage, round, mission, question
@@ -27,7 +33,7 @@ _Avoid_: Cleared, passed, done
 ## Gameplay
 
 **Scenario**:
-The situation one Level presents: a Setting, a goal, a short intro, an optional Hint, and three or four Choices that the Student acts out. Each Level has exactly one Scenario.
+The situation one Level presents: a Setting, a goal, a short intro, an optional Hint, and Choices that the Student acts out. Each Level has exactly one Scenario. In every Episode, the approved design gives each Easy Scenario two Choices, each Normal Scenario three, and each Hard Scenario four.
 _Avoid_: Question, quiz, puzzle
 
 **Setting**:
@@ -39,7 +45,7 @@ When a Scenario happens compared with the disaster: before, during, or after. In
 _Avoid_: Stage, step, timing
 
 **Evacuation Area**:
-The open space near the school building where classes gather after the shaking stops, so teachers can count every learner.
+In the school drill, the open space near the school building where classes gather after the shaking stops so teachers can count every Learner. In Earthquake Hard 7, the family later gathers at a fictional designated evacuation centre depicted as a covered basketball court.
 _Avoid_: Safe zone, assembly point
 
 **Evacuation Center**:
@@ -55,7 +61,7 @@ One action the Learner can pick in a Scenario, shown as a short command in the A
 _Avoid_: Answer, option, Action (the game says Choice; "action" is only the animation)
 
 **Action Bar**:
-The bar at the bottom of a Level that lists the Scenario's Choices as short commands, each with a small icon. In a "during" Scenario it slides up after the first shake.
+The bar at the bottom of a Level that lists the Scenario's Choices as short commands, each with a small icon. In the approved Earthquake design, Easy and Normal center their Choice buttons in one row. In a "during" Scenario it slides up after the first shake.
 _Avoid_: Choice cards, menu, answer panel
 
 **Act-out**:
@@ -83,7 +89,7 @@ Optional in-level help the Learner may ask for during a Scenario, shown in the C
 _Avoid_: Tip (reserved for How to Play and Main Menu lines), clue
 
 **Attempt**:
-One play of a Level, from its start until Level Completed, Restart, or Quit to Menu. Nothing about an unfinished Attempt is saved.
+One play of a Level, from its start until Level Completed, Restart, or departure from the Level. In the approved Pause design, choosing Levels or Main Menu ends the Attempt. Resume continues it. Nothing about an unfinished Attempt is saved.
 _Avoid_: Try, run, session
 
 **Star**:
@@ -91,7 +97,7 @@ The 1 to 3 mark a Completed Level earns. Each Unsafe Choice and using the Hint c
 _Avoid_: Score, points, grade
 
 **Level Completed**:
-The screen shown after the Safe Choice, once completion and Stars are saved. It shows the Stars, the Safe Choice, its explanation, and the Display Name.
+The screen shown after the Safe Choice, once completion and Stars are saved. It shows the Stars, the Safe Choice, its explanation, and the Display Name. In the approved Earthquake design, it also offers Next Episode when Fire opens and on subsequent completions of Earthquake Hard 7. The button opens Episode selection.
 _Avoid_: Results screen, victory screen, game over
 
 **Smoke**:
@@ -211,7 +217,7 @@ _Avoid_: Ending, credits, certificate, game over
 ## Characters
 
 **Student**:
-The Learner's character: a boy or a girl in the school uniform, picked once with the Display Name. The Student acts out every Choice in the Level, greets the Learner on the Main Menu and gives the Tips in How to Play.
+The Learner's character: a boy or a girl in the school uniform, picked once with the Display Name. The Student acts out every Choice in the Level, greets the Learner on the Main Menu and gives the Tips in How to Play. In the approved Main Menu design, the Student greets the Learner in front of the Baluan Elementary School gate.
 _Avoid_: Avatar, player, hero
 
 **Reaction**:

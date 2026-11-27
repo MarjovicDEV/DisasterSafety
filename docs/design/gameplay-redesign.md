@@ -245,6 +245,108 @@ For the boy and the girl, 32x50, in the v2 style, drawn by `student.lua` as new 
 - **Props**, small sprites that show, hide or move with the Student's hands: box, books, picture, go bag (open and closed), water, can, flashlight, whistle, toy, snack, the park card, the house card, the note, the radio (2 frames) and fish (2-frame flop). Furniture that moves (the bed) is a prop too.
 - **Icons:** one 16x16 icon per Choice, about 35 new ones, reusing `icon_door`, `icon_window`, `icon_desk` and `icon_cabinet` where a Choice matches.
 
+## Earthquake changes after the rollout
+
+### C5. Choice counts and retained Choices
+
+On November 25, 2026, the researcher approved the Choice list for all 15 Earthquake Levels. Each Easy Level will have two Choices, each Normal Level three, and each Hard Level four. Each Level keeps one Safe Choice. The researcher approved these counts for every Episode, including future Episodes. ScenarioRules must reject a Scenario whose Choice count differs from the count for its Difficulty. This revises the Choice counts in R1. The rollout build still uses the earlier counts. See [ADR 0002](../adr/0002-choice-counts-per-difficulty.md).
+
+| Level | Retained Choice IDs in Action Bar order |
+|---|---|
+| Easy 1 | `run`, `desk` (Safe Choice) |
+| Easy 2 | `cover` (Safe Choice), `plants` |
+| Easy 3 | `stay`, `walk` (Safe Choice) |
+| Normal 1 | `picture`, `low_shelf` (Safe Choice), `books_top` |
+| Normal 2 | `hidden`, `go_bag` (Safe Choice), `toys` |
+| Normal 3 | `glass`, `sofa`, `table` (Safe Choice) |
+| Normal 4 | `tree`, `field` (Safe Choice), `building` |
+| Normal 5 | `watch`, `high_ground` (Safe Choice), `wait` |
+| Hard 1 | `own_way`, `meeting_place` (Safe Choice), `meet_home`, `phone_numbers` |
+| Hard 2 | `route_post`, `route_tree`, `route_field` (Safe Choice), `route_later` |
+| Hard 3 | `run_exit`, `elevator`, `shop_window`, `table` (Safe Choice) |
+| Hard 4 | `stairs` (Safe Choice), `elevator`, `run_push`, `mall_wall` |
+| Hard 5 | `pull_up`, `call_adult` (Safe Choice), `wait_for_mom` (replaces `fix_pipe` under C12), `leave` |
+| Hard 6 | `no_go_bag`, `toys`, `push_past_mom` (replaces `no_note` under C13), `go_bag` (Safe Choice) |
+| Hard 7 | `go_home`, `radio` (Safe Choice), `rumor`, `phone` |
+
+Hard 5 keeps four positions. C12 replaces the broken-pipe Choice with “Wait for Mom to get up.” C13 keeps the Hard 6 Safe Choice and replaces “Leave without a note” with “Push past Mom at the door.”
+
+The Easy Action Bar centers two buttons in one row. The Normal Action Bar centers three. Each button keeps its current size of 430 by 124 UI units, with a 20-unit gap between adjacent buttons.
+
+The C5 changes will follow rollout ticket 15 because that cleanup changes the same Scenario files and removes the old Choice cards. Tutorial Page 3 will show the two Easy 1 Choices in Action Bar order: “Run outside” followed by “Duck under the desk.” During C5, check uses in other Levels, Tutorial Pages, screens and art generators before deleting a retired Choice’s v2 art and its source. Keep every shared asset.
+
+### C1. Next Episode on Level Completed
+
+When the Learner completes the last outstanding Earthquake Hard Level, Fire opens. Level Completed will show the Fire emblem and a button labelled “Next Episode” in the Next position between Replay and Levels. The Learner may finish the seven Hard Levels in any order. Completing Hard 7 early does not open Fire. Once Fire is Open, completing Hard 7 again will also show the button.
+
+Tapping Next Episode will open Episode selection with Fire visible. While Fire has no Playable Level, the existing message will tell the Learner that new Levels are coming soon. C1 follows rollout ticket 15 so that its visual checks use the Student screen.
+
+### C2. Music by Episode and Difficulty
+
+On November 26, 2026, the researcher chose two music sets and two menu tracks instead of three tracks. Each set has a light Easy track, a moderate Normal track, an intense Hard track and a calm Level Completed cue. Set A plays in Earthquake, Typhoon and Landslide: Cherry Blossom on Easy, Happy Alley on Normal, Prelude and Action on Hard and Light Sting on Level Completed. Set B plays in Fire and Flood: Cheery Monday on Easy, B-Roll on Normal, Machinations on Hard and Piano Between on Level Completed. The menus play Somewhere Sunny and Easy Lemon (60 second) in turn, one after the other. The sets alternate between Episodes so the music stays new to the Learner. All ten recordings are by Kevin MacLeod under CC BY 4.0. The music ticket records every source and provides in-game credits. See [ADR 0003](../adr/0003-licensed-music.md).
+
+C2 follows rollout ticket 15. Choose natural-sounding instrumentals. Sampled performances are acceptable. The menu and gameplay tracks each loop after 45 to 90 seconds, trimmed where a recording is longer. The calm Level Completed cue plays once for 10 to 20 seconds. Prefer lossless WAV or FLAC originals and prepare 44.1 kHz WAV files for Unity. Match loudness near −20 LUFS integrated and keep true peaks at or below −1 dBTP. Lower the music during shaking so the rumble remains clear. The target maximum APK size for C2 is 50,000,000 bytes. The reference pilot APK measured 44,848,235 bytes.
+
+### C3. Baluan Elementary School gate on the Main Menu
+
+The researcher approved displaying “Baluan Elementary School” on the red entrance wall. Draw the dark horizontal metal gate near the centre, with the pale school sign to its right, blue trim on the wall and palms against the sky. Keep the title and buttons on the left and the selected Student at lower right. Place the sign above the greeting and check it at both target widths with a long Display Name. Draw the entrance in the v2 style from the background details in the references. Omit photographed people, vehicles, map markings, seals and fine print. C3 follows rollout ticket 15.
+
+### C4. Selection screen backgrounds
+
+Episode selection will use a school noticeboard with the existing Episode emblems and locks. Difficulty selection will show an Episode background. Earthquake will show the school drill ground. Fire will show a fire station forecourt with a parked engine.
+
+Level selection will show a Difficulty background specific to the Episode. Earthquake Easy will use a classroom with green chairs, Normal a schoolyard path, and Hard a covered court. Keep these illustrations distinct from the playable Settings. Draw the Fire station in this release. Use a simple station noticeboard for empty Fire Level selection and draw its Difficulty variations when its Levels are playable. C4 follows rollout ticket 15 alongside C3.
+
+### C6. A shorter walk to the open field in Earthquake Normal 4
+
+Move the Student’s starting point closer to the existing open-grass ending at (110, 230). Aim for a walk of about one second at the current speed of 80 art pixels per second. The Student then crouches and covers in the same place. Choose the exact starting point during the schoolyard preview. Check that both retained Unsafe routes still stop clearly apart from the Safe ending, that Try Again returns to the new start, and that the Action Bar leaves the Student visible at both screen sizes. Review the walk in motion in the Editor. Schedule C6 after rollout ticket 15 and coordinate it with the schoolyard work in C9 and C10.
+
+### C7. Reach-up hands in Earthquake Normal 1
+
+Redraw both reach-up frames for the boy and girl Students after ticket 15. Bend the far elbow so the forearms read separately. Align the nearer wrist with the palm and keep the hand in contact with the object in both frames. Preserve the timing and contact points. Preview the reach toward the picture over the bed and check the mirrored reach with the books at the cabinet. Review both Students at game size and enlarged, including the highest reach in motion. This decision covers the Normal 1 frames. Hard 1 uses separate artwork for holding a card.
+
+### C8. Pause screen
+
+Under “Paused,” show the current Episode, Difficulty and Level number. For example, Earthquake Hard Level 4 displays “Earthquake - Hard 4.” This line replaces “Stars you earned are kept.” Arrange four labeled buttons in two rows. Resume (play triangle) and Restart (replay arrow) occupy the top row. Levels (grid) and Main Menu (home) occupy the bottom row.
+
+Resume continues the current Attempt. Restart immediately begins a fresh Attempt with no confirmation or Star penalty. Previously saved Stars are preserved. Levels returns to Level selection for the current Episode and Difficulty. Main Menu returns to the title screen. C8 follows rollout ticket 15. Verify Pause over the Student flow at both target screen sizes.
+
+### C9. Landmarks in the shared schoolyard
+
+After rollout ticket 15, redraw the tree, electric post and Evacuation Area landmarks in the schoolyard shared by Earthquake Normal 4 and Hard 2. Give the tree a distinct trunk and branches. Make the electric post’s crossarm and wires recognizable, and make the path and sign stand out from the grass. Review the landmarks while they sway in Normal 4 and while they are still in Hard 2 at both supported screen sizes. Coordinate the redraw with the Normal 4 field walk. The Hard 7 evacuation centre belongs to C14.
+
+### C10. The Teacher leads the Student around the school in Hard 2
+
+The Teacher will step forward out of the doorway and lead the Student along a continuous path in front of the school. Leave enough room between the characters to see both walk. Turn toward the Evacuation Area sign once both have cleared the left corner of the building. Set the exact bends in the schoolyard preview. Check the full walk in motion, including the turn, at both supported screen sizes. Build this change with C6 and C9 after rollout ticket 15.
+
+### C11. Define the outdoor assembly point in Earthquake Hard 4
+
+Redraw the exterior corner of the mall, add a low curb at the far edge of the parking area and strengthen the painted parking lines. These landmarks should make it clear where the Student has stepped outdoors. Keep the sky open and the assembly sign visible from the Safe ending at (430, 230). The Unsafe stop beside the mall wall remains at (357, 230). Preserve the stair and exit route. Review the exit, both endings and the return up the stairs at both screen sizes. This art change follows rollout ticket 15.
+
+### C12. Call for help at the door in Earthquake Hard 5
+
+Remove the broken pipe, dripping water and puddle from the room shared by Hard 5 and Hard 6. In the third Hard 5 Choice position, replace “Fix the broken pipe yourself” with “Wait for Mom to get up.” The Student pauses near Mom on clear floor, hands down. The Feedback reads “Keep Mom still and get help.” (EQ-90).
+
+The Safe Choice remains “Call a grown-up for help” (EQ-90, EQ-72). The Student crouches beside Mom, walks to the open doorway, faces outside and calls “Help!” from the threshold near (56, 212). Dad then enters and kneels beside Mom. Check their crossing in motion. The Unsafe exit stop stays inside on open floor, clearly apart from the Safe ending. Build C12 after rollout ticket 15 alongside the Hard 6 changes in the shared room.
+
+### C13. Walk around the table with the Go Bag in Earthquake Hard 6
+
+Show the family’s written note on the table from the start. For “Grab the go bag and walk out,” the Student follows the foreground aisle past the table, picks up the bag near (106, 225), and leaves with Mom at the threshold near (56, 206). Use the Safe Feedback “Your family left a note. Bring your go bag and walk out.” (EQ-93, EQ-92).
+
+Replace the Unsafe Choice “Leave without a note” with “Push past Mom at the door.” Stop the Student on clear indoor floor before contact with Mom or entry into the doorway. Use the Feedback “Walk out. Do not run or push.” (EQ-92). Check the full walk at both supported sizes, including the bag clearing the table leg, the two characters at the threshold, and Try Again restoring the starting positions and written note. Implement C12 and C13 in one shared-room ticket after rollout ticket 15.
+
+### C14. A covered basketball court for the family in Earthquake Hard 7
+
+In the existing Hard 7 Setting, show the family later at a fictional designated evacuation centre. Replace the grassy field with an open-sided basketball court. Use the school photo for its metal roof and pale columns. Add a hoop, court lines and a plain sign reading “EVACUATION CENTER”. Show two tents and four additional background figures, including two children. Place an adult and a child at one tent entrance.
+
+Keep the foreground clear for the Student, Mom, the family mat and the radio. Keep the neighbours and a visible route toward home beyond the court. Retain all four Choices, including the Safe Choice to listen to the radio, and preserve their findings. Check the sign, figures, route stops and Reactions at both supported sizes. Hard 2 continues to show the immediate outdoor assembly. The real court's designation is unverified. Schedule C14 after rollout ticket 15.
+
+### C15. Baluan school reference details
+
+Use the fourteen supplied photos as visual references for the artwork scheduled after rollout ticket 15. The Main Menu uses the horizontal gate, palms, pale school sign and red perimeter wall with blue trim. The separate green sign is an optional reference for planting and colours. In the Easy classroom menu illustration, show bright green slatted chairs, a dark board, cream walls and green window frames. Use the shaded concrete walkway, green doors and barred windows where the school building appears in the revised schoolyard. The Hard menu and Hard 7 court use the rust-red roof, exposed trusses and pale columns.
+
+These details apply to the planned menu, schoolyard and court illustrations. Keep reference photographs in scratch and draw original game characters.
+
 ## Rollout checks
 
 ### Earthquake Easy Editor check
@@ -266,6 +368,10 @@ For the boy and the girl, 32x50, in the v2 style, drawn by `student.lua` as new 
 - **Result:** The researcher approved all seven Hard Levels with no changes requested, so no fixes were made.
 - **Checks before the play-through:** A new EditMode test confirms that all 15 Earthquake Levels use the Student flow and that each Setting has a v2 `LevelSetting` in the Level scene. The build, all 189 EditMode and 82 PlayMode tests passed, and all 180 screenshots matched the previous run byte for byte. Two Reactions overlap scenery slightly and were left as they are: at the Hard 4 stop it touches the top of the mall exit door frame, and at the Hard 6 stop it covers part of the "Meet here" board.
 
+### Earthquake Android phone check
+
+On November 25, 2026, the researcher confirmed playing the ticket 14 APK on their Android phone. They reported that gameplay felt smooth and the layout fit the screen. These observations apply to that phone. The device model and screen size were not recorded.
+
 ### Earthquake cleanup (ticket 15, R7)
 
 - **Removed:** Bantay (component, sprites, source, drawing, lines and the bark sound), the 59 Choice pictures and the `picture` field of every Scenario, the Choice card flow in `LevelController` and the builder, the 11 v1 Setting backgrounds with their moving parts and scripts, the unused `story` and `choice` Tutorial Page pictures, and the speech bubble tail that only Bantay used. The "Earn Stars" Tutorial Page picture no longer shows Bantay.
@@ -278,5 +384,4 @@ None. Q15 and the voice blip were settled in the rollout interview (R1, R2).
 
 ## Not verified
 
-- No phone test of the new flow yet: the pilot was played in the Unity Editor only.
 - The 50-pixel Student's readability on a 6-inch phone is assumed from the 4-units-per-art-pixel scale and still needs checking on the device.
