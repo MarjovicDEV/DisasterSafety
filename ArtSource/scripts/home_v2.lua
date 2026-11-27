@@ -123,6 +123,52 @@ return function(L, ST)
     L.px(img, x + 50, y + 32, R.red[2])
   end
 
+  function M.typhoonHardIcons()
+    local P=L.P
+    local bike=L.newImage(16,16)
+    for _,x in ipairs({3,12}) do
+      L.circle(bike,x,11,3,O)
+      L.circle(bike,x,11,2,L.CLEAR)
+    end
+    for _,v in ipairs({{3,11,6,6},{6,6,8,11},{8,11,3,11},{8,11,11,6},{11,6,6,6},{10,3,12,11}}) do
+      L.line(bike,v[1],v[2],v[3],v[4],P.red2)
+    end
+    L.hline(bike,4,7,5,O)
+    L.hline(bike,9,12,3,O)
+    local friend=L.newImage(16,16)
+    box(friend,1,1,12,14,R.wood)
+    L.rect(friend,3,3,8,11,R.navy[3])
+    L.ellipse(friend,7,7,3,3,P.skin2)
+    L.hline(friend,5,9,5,P.hair)
+    L.px(friend,8,7,O)
+    L.rect(friend,5,10,5,4,P.teal)
+    L.rect(friend,12,5,3,7,P.paper)
+    L.px(friend,13,8,P.yellow2)
+    return {typhoon_get_bike=bike,typhoon_visit_friend=friend}
+  end
+
+  function M.schoolModule()
+    local img=L.newImage(14,10)
+    box(img,0,0,14,10,R.navy)
+    L.rect(img,2,1,11,7,L.P.paper)
+    L.vline(img,2,1,7,L.P.paper3)
+    L.rect(img,4,2,3,3,L.P.teal)
+    L.hline(img,8,11,2,L.P.navy)
+    L.hline(img,8,10,4,L.P.gray3)
+    L.hline(img,4,10,6,L.P.gray3)
+    return img
+  end
+
+  function M.signalScreen(number)
+    local img=L.newImage(50,27)
+    L.rect(img,0,0,50,27,R.navy[2])
+    L.rect(img,0,15,50,12,R.navy[3])
+    for i,text in ipairs({"SIGNAL","NO. "..number}) do
+      L.text(img,(50-L.F.width(text,1))//2,3+(i-1)*13,text,L.P.white,1)
+    end
+    return img
+  end
+
   local function board(img, x, y)
     box(img, x, y, 58, 42, R.wood)
     L.rect(img, x + 3, y + 3, 52, 36, R.cork[2])
@@ -265,6 +311,27 @@ return function(L, ST)
     sofa(img, table.unpack(A.sofa))
     glassCabinet(img, table.unpack(A.cabinet))
     drawRightSide(img, table.unpack(rightSide))
+    return img
+  end
+
+  function M.menuLivingRoom()
+    local img = L.newImage(480, 270)
+    L.rect(img, 0, 0, 480, 208, R.wall[2])
+    box(img, -2, -2, 484, 15, R.wood)
+    L.rect(img, 0, 163, 480, 41, R.wall[1])
+    L.hline(img, 0, 479, 162, R.wall[3])
+    box(img, -2, 203, 484, 5, R.wood)
+    floor(img)
+    door(img, 112, 104)
+    window(img, 308, 92)
+    glassCabinet(img, 12, 104)
+    sofa(img, 321, 167)
+    -- A woven mat in front of the sofa.
+    L.poly(img,{302,222,395,222,410,237,291,237},O)
+    L.poly(img,{303,223,394,223,407,236,293,236},R.cork[2])
+    for y=225,234,3 do
+      L.hline(img,303-(y-223)//2,394+(y-223)//2,y,R.cork[1])
+    end
     return img
   end
 

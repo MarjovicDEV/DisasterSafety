@@ -428,6 +428,34 @@ return function(L)
     return padTop(g)
   end
 
+  function M.flashlightFrames(kind, flashlight)
+    local frames = {}
+    for f = 0, 1 do
+      local g = front(kind, true)
+      paste(g, fit(arm({6,22,6,29,14,27}), kind), 0, 0)
+      paste(g, fit(arm({25,22,26,28,19,31}), kind), 0, 0)
+      hairOnTop(g, kind)
+      local img = toImage(finish(g))
+      -- Keep the light below the hands, with its transparent edge inside the frame.
+      local tip = 27 - f
+      L.poly(img,{19,34,23,32,tip+3,43,tip-3,46},pc.rgba(255,236,156,94))
+      L.poly(img,{20,34,22,33,tip+1,42,tip-2,44},pc.rgba(255,245,192,166))
+      -- Sample the home prop at a downward angle, retaining the metal rim and switch.
+      local angle = math.rad(51 + 5*f)
+      local cs,sn = math.cos(angle),math.sin(angle)
+      for y=22,37 do for x=10,26 do
+        local dx,dy=x-14,y-25
+        local u=math.floor(dx*cs+dy*sn+0.5)
+        local v=math.floor(-dx*sn+dy*cs+4.5)
+        if L.opaque(flashlight,u,v) then L.px(img,x,y,L.get(flashlight,u,v)) end
+      end end
+      L.line(img,13,27,15,28,KEY.t)
+      L.line(img,18,31,20,30,KEY.S)
+      frames[#frames+1] = img
+    end
+    return frames
+  end
+
   function M.portrait(kind) return M.idle(kind, 0) end
 
   -- "Whoa!": arms flung out and down, hands open, eyes wide.

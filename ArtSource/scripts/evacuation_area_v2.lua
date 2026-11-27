@@ -401,5 +401,36 @@ return function(L, ST, GU)
 
   function M.neighboursFrames() return { neighboursFrame(0), neighboursFrame(1) } end
 
+  function M.leavingFrames()
+    local frames={}
+    local kids=ST.frames("boy","walk")
+    for f=0,3 do
+      local img=L.newImage(44,62)
+      local adult=neighbour("mom","walk",f,{GREEN})
+      local child=kids[(f+2)%4+1]
+      recolorRows(child,20,34,toMap(YELLOW))
+      -- A smaller child in the near lane leaves both faces in profile.
+      L.blit(img,adult,-2,0)
+      for y=0,37 do for x=0,23 do
+        local c=child:getPixel(x*32//24,y*50//38)
+        if app.pixelColor.rgbaA(c)>0 then L.px(img,18+x,24+y,c) end
+      end end
+      local hx=({9,16,24,16})[f+1]-2
+      local hy=({36,37,36,37})[f+1]
+      L.line(img,hx,hy,hx-2,hy+4,P.brown2)
+      L.line(img,hx,hy,hx+3,hy+4,P.brown2)
+      L.rect(img,hx-4,hy+4,10,9,O)
+      L.rect(img,hx-3,hy+5,8,7,P.brown3)
+      L.hline(img,hx-2,hx+3,hy+6,P.tan)
+      -- The family walks in the back lane beside the tents.
+      local distant=L.newImage(22,31)
+      for y=0,30 do for x=0,21 do
+        L.px(distant,x,y,img:getPixel(2*x+1,2*y+1))
+      end end
+      frames[#frames+1]=distant
+    end
+    return frames
+  end
+
   return M
 end

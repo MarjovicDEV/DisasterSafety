@@ -92,6 +92,23 @@ if want("fire_fx") then
   dofile(here .. "fire_fx.lua")(L)
 end
 
+if only.typhoon_fx then
+  dofile(here .. "typhoon_fx.lua")(L, root)
+end
+
+if want("menu_typhoon") then
+  local menu = dofile(here .. "background.lua")(L, ST)
+  local home = dofile(here .. "home_v2.lua")(L, ST)
+  local court = dofile(here .. "evacuation_area_v2.lua")(L, ST)
+  for name, image in pairs({
+    barangay_hall = menu.barangayHall(), typhoon_easy = menu.goBagDoorway(home, court),
+    typhoon_normal = menu.rainyWindows(), typhoon_hard = menu.evacuationGym(),
+  }) do
+    local path = "Background/bg_menu_" .. name
+    L.save(image, path, path)
+  end
+end
+
 if want("menu_fire") then
   local menu = dofile(here .. "background.lua")(L, ST)
   local home = dofile(here .. "home_v2.lua")(L, ST)
@@ -122,6 +139,13 @@ end
 local posesOnly = {}
 for p in (app.params.poses or ""):gmatch("[^,%s]+") do posesOnly[p] = true end
 local allPoses = next(posesOnly) == nil
+if only.student_typhoon and (allPoses or posesOnly.flashlight) then
+  local home = dofile(here .. "home_v2.lua")(L, ST)
+  for _, kind in ipairs({"boy","girl"}) do
+    local name = "Student/" .. kind .. "_flashlight"
+    L.saveFrames(ST.flashlightFrames(kind,home.flashlight()),name,name,350)
+  end
+end
 if want("student_fire") then
   for _, kind in ipairs({"boy","girl"}) do
     for _, pose in ipairs(ST.FIRE_POSES) do
@@ -277,6 +301,135 @@ if want("icons_fire_mall") then
     local mall=dofile(here .. "mall_v2.lua")(L,ST)
     local path="UI/icon_fire_exit_stairs"
     L.save(mall.exitStairsIcon(),path,path)
+  end
+end
+
+if only.evacuation_area_typhoon or only.yard_damage or only.icons_typhoon_after then
+  local kit=dofile(here .. "icons_v2.lua")(L,ST)
+  if only.evacuation_area_typhoon then
+    local adults=dofile(here .. "grownups_v2.lua")(L,ST)
+    local court=dofile(here .. "evacuation_area_v2.lua")(L,ST,adults)
+    local path="Level/v2/evacuation_area_leaving"
+    L.saveFrames(court.leavingFrames(),path,path,140)
+  end
+  if only.yard_damage then
+    local yard=dofile(here .. "yard_v2.lua")(L,kit)
+    for name,img in pairs(yard.damage()) do
+      local path="Level/v2/"..name
+      L.save(img,path,path)
+    end
+  end
+  if only.icons_typhoon_after then
+    local selected={}
+    for name in (app.params.icons or ""):gmatch("[^,%s]+") do selected[name]=true end
+    for name,img in pairs(kit.typhoonAfterIcons()) do
+      if not next(selected) or selected[name] then
+        local path="UI/icon_"..name
+        L.save(img,path,path)
+      end
+    end
+  end
+end
+
+if only.home_night_typhoon or only.home_typhoon_hard or only.icons_typhoon_home_hard then
+  local kit=dofile(here .. "icons_v2.lua")(L,ST)
+  local home=dofile(here .. "home_v2.lua")(L,ST)
+  local night=dofile(here .. "home_night_v2.lua")(L,ST,home,kit)
+  if only.home_night_typhoon then
+    for name,img in pairs({shelf=night.typhoonShelf(),candle_unlit=night.unlitCandle(),matches=night.closedMatches()}) do
+      local path="Level/v2/home_night_"..name
+      L.save(img,path,path)
+    end
+  end
+  -- Hard 4's Setting reuses the approved home window, bicycle and radio.
+  -- Its two home-specific icons can also be rendered by the home part alone.
+  if only.home_typhoon_hard or only.icons_typhoon_home_hard then
+    local icons=only.icons_typhoon_home_hard and kit.typhoonHomeHardIcons(home,night) or home.typhoonHardIcons()
+    local selected={}
+    for name in (app.params.icons or ""):gmatch("[^,%s]+") do selected[name]=true end
+    for name,img in pairs(icons) do
+      if not next(selected) or selected[name] then
+        local path="UI/icon_"..name
+        L.save(img,path,path)
+      end
+    end
+  end
+end
+
+if only.coast or only.icons_typhoon_coast then
+  local kit=dofile(here .. "icons_v2.lua")(L,ST)
+  if only.coast then dofile(here .. "coast_v2.lua")(L,kit).save() end
+  if only.icons_typhoon_coast then
+    local selected={}
+    for name in (app.params.icons or ""):gmatch("[^,%s]+") do selected[name]=true end
+    for name,img in pairs(kit.typhoonCoastIcons()) do
+      if not next(selected) or selected[name] then
+        local path="UI/icon_"..name
+        L.save(img,path,path)
+      end
+    end
+  end
+end
+
+if only.street_storm or only.icons_typhoon_street then
+  local kit=dofile(here .. "icons_v2.lua")(L,ST)
+  if only.street_storm then dofile(here .. "street_storm_v2.lua")(L,kit).save() end
+  if only.icons_typhoon_street then
+    local selected={}
+    for name in (app.params.icons or ""):gmatch("[^,%s]+") do selected[name]=true end
+    for name,img in pairs(kit.typhoonStreetIcons()) do
+      if not next(selected) or selected[name] then
+        local path="UI/icon_"..name
+        L.save(img,path,path)
+      end
+    end
+  end
+end
+
+if only.home_typhoon_normal or only.icons_typhoon_normal then
+  local home=dofile(here .. "home_v2.lua")(L,ST)
+  if only.home_typhoon_normal then
+    local path="Level/v2/home_module"
+    L.save(home.schoolModule(),path,path)
+  end
+  if only.icons_typhoon_normal then
+    local kit=dofile(here .. "icons_v2.lua")(L,ST)
+    local selected={}
+    for name in (app.params.icons or ""):gmatch("[^,%s]+") do selected[name]=true end
+    for name,img in pairs(kit.typhoonNormalIcons(home)) do
+      if not next(selected) or selected[name] then
+        local path="UI/icon_"..name
+        L.save(img,path,path)
+      end
+    end
+  end
+end
+
+if only.home_typhoon or only.yard_typhoon or only.icons_typhoon_easy then
+  local kit=dofile(here .. "icons_v2.lua")(L,ST)
+  local home=dofile(here .. "home_v2.lua")(L,ST)
+  local yard=dofile(here .. "yard_v2.lua")(L,kit)
+  local function save(name,img)
+    L.save(img,name,name)
+  end
+  if only.home_typhoon then
+    for n=1,2 do save("Level/v2/home_tv_signal_"..n,home.signalScreen(n)) end
+  end
+  local props=yard.typhoonProps()
+  if only.yard_typhoon then
+    for name,img in pairs(props) do save("Level/v2/"..name,img) end
+    local tree,clothes=yard.swayFrames()
+    for name,frames in pairs({yard_tree_sway=tree,yard_clothes=clothes}) do
+      local path="Level/v2/"..name
+      L.saveFrames(frames,path,path,200)
+    end
+  end
+  if only.icons_typhoon_easy then
+    local selected={}
+    for name in (app.params.icons or ""):gmatch("[^,%s]+") do selected[name]=true end
+    for name,img in pairs(kit.typhoonEasyIcons(props,home)) do
+      if not next(selected) or selected[name] then save("UI/icon_"..name,img) end
+    end
   end
 end
 
@@ -479,6 +632,11 @@ if want("home_reachup") then
 end
 
 -- The Grown-ups (36x62): GrownUp/<who>_<pose>_<n>.png
+if only.grownups_typhoon then
+  local grownups = dofile(here .. "grownups_v2.lua")(L, ST)
+  local home = dofile(here .. "home_v2.lua")(L, ST)
+  grownups.saveTyphoonPoses(posesOnly, home.bagClosed())
+end
 if want("grownups_fire") then
   local grownups = dofile(here .. "grownups_v2.lua")(L, ST)
   grownups.saveFirePoses(posesOnly)

@@ -68,5 +68,31 @@ return function(L, ST, home, kit)
     return img
   end
   M.flashlight=home.flashlight
+  function M.typhoonShelf()
+    local img=L.newImage(45,9)
+    for _,x in ipairs({5,35}) do
+      L.poly(img,{x,2,x+6,2,x,9},P.ink2)
+      L.line(img,x+1,6,x+4,3,P.brown)
+    end
+    box(img,0,0,45,4,kit.WOOD)
+    return img
+  end
+  function M.unlitCandle()
+    local img=L.newImage(12,15)
+    box(img,4,3,5,9,kit.WHITE)
+    L.vline(img,6,1,3,P.ink)
+    L.ellipse(img,6,12,5,2,P.ink)
+    L.ellipse(img,6,12,4,1,P.glass3)
+    L.hline(img,3,7,11,P.glass2)
+    return img
+  end
+  function M.closedMatches()
+    local img=L.newImage(10,6)
+    box(img,0,0,10,6,kit.WOOD)
+    L.rect(img,2,1,6,2,P.paper2)
+    L.hline(img,2,7,4,P.brown2)
+    for x=3,7,2 do L.px(img,x,4,P.tan2) end
+    return img
+  end
   return M
 end

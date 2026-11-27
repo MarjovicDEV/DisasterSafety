@@ -879,6 +879,151 @@ return function(L, ST)
     end
   end
 
+  -- Cone is drawn from grip to bell. The lip and open bell remain distinct at 1x.
+  local function megaphone(img,x,y,dir,tilt)
+    local horn=L.newImage(15,14)
+    L.poly(horn,{0,5,4,5,13,1+tilt,14,1+tilt,14,12+tilt,12,12+tilt,4,8,0,8},P.ink)
+    L.poly(horn,{1,6,5,6,12,3+tilt,12,10+tilt,5,7,1,7},P.gray1)
+    L.line(horn,5,6,11,4+tilt,P.white)
+    L.vline(horn,13,3+tilt,10+tilt,P.teal2)
+    L.rect(horn,4,8,3,4,P.ink)
+    L.vline(horn,5,8,10,P.gray3)
+    L.blit(img,horn,x,y,dir<0)
+  end
+
+  local function tanod(pose,f)
+    local side=pose=="walk"
+    local dy=side and WALK[f+1].down or (pose=="idle" and f or 0)
+    local grid
+    if side then
+      grid=sideFigure("dad",WALK[f+1],{16,23,18,30,24,36})
+    elseif pose=="megaphone" then
+      grid=front("dad",nil,function(g)
+        oneArm(g,"dad",{7,23,5,26,11,20})
+        oneArm(g,"dad",{28,23,31,30,33,24})
+      end)
+    else
+      grid=M[pose]("dad",f)
+    end
+    local img=toImage(grid)
+    local shirt={w=P.navy,W=P.blue2,v=P.navy2,r=P.navy,p=P.navy,q=P.navy2}
+    for y=0,39+dy do for x=0,35 do
+      local sleeve=y>=20+dy or (pose=="wave" and x>=28)
+      local c=sleeve and shirt[getc(grid,x,y)]
+      if c then L.px(img,x,y,c) end
+    end end
+    for y=54,61 do for x=0,35 do
+      local c=getc(grid,x,y)
+      if c=="n" or c=="m" or c=="N" then L.px(img,x,y,y==54 and P.gray4 or P.ink2) end
+    end end
+    local vest=L.newImage(36,42)
+    if side then
+      L.poly(vest,{12,20,17,20,21,24,22,37,10,37,10,24},P.yellow2)
+      L.rect(vest,12,22,4,14,P.yellow)
+      L.hline(vest,11,21,32,P.paper)
+    else
+      L.poly(vest,{10,20,13,20,17,25,21,20,25,20,25,27,27,37,25,39,10,39,8,37,10,27},P.ink)
+      L.poly(vest,{11,21,13,21,17,26,22,21,24,21,24,27,26,36,24,38,11,38,9,36,11,27},P.yellow)
+      L.hline(vest,10,25,36,P.paper)
+    end
+    L.blit(img,vest,0,dy)
+    local function drawArm(points,offset)
+      local arm=shadeArm("dad",armBase("dad",points))
+      for y=0,61 do for x=0,35 do
+        local token=getc(arm,x,y)
+        if KEY[token] then L.px(img,x,y+offset,shirt[token] or KEY[token]) end
+      end end
+    end
+    if side then
+      drawArm({16,23,18,30,24,36},dy)
+    elseif pose=="megaphone" then
+      drawArm({7,23,5,26,11,20},0)
+      drawArm({28,23,31,30,33,24},0)
+      L.vline(img,34,20,23,KEY.S)
+      L.vline(img,32,21,24,KEY.t)
+    end
+    local brim=side and 30 or 25
+    L.poly(img,{7,6+dy,9,2+dy,13,dy,21,dy,25,3+dy,26,6+dy},P.ink)
+    L.poly(img,{9,5+dy,11,2+dy,16,1+dy,21,2+dy,24,5+dy},P.navy)
+    L.hline(img,12,18,2+dy,P.blue2)
+    L.rect(img,7,5+dy,brim-6,3,P.ink)
+    L.hline(img,8,brim-1,6+dy,P.navy)
+    if pose=="megaphone" then
+      megaphone(img,1,10,-1,-f)
+      L.hline(img,9,12,20,KEY.t)
+      L.hline(img,10,12,21,KEY.S)
+    elseif side then
+      megaphone(img,19,26+dy,1,0)
+      L.hline(img,22,25,36+dy,KEY.t)
+    else
+      megaphone(img,1,27,1,1)
+      L.hline(img,4,7,37,KEY.t)
+      L.hline(img,5,7,38,KEY.S)
+    end
+    return img
+  end
+
+  local function typhoonWalk(name,f,bag)
+    local step=WALK[f+1]
+    local dy=step.down
+    if name=="mom_walk_gobag" then
+      local img=L.newImage(FW,FH)
+      L.blit(img,bag,2,18+dy)
+      L.blit(img,toImage(M.walk("mom",f)),0,0)
+      L.line(img,13,22+dy,17,25+dy,P.red2,2)
+      L.line(img,17,25+dy,16,30+dy,P.red2)
+      return img
+    elseif name=="mom_umbrella" then
+      local img=toImage(sideFigure("mom",step,{16,23,18,30,23,34}))
+      L.line(img,22,31+dy,24,31+dy,P.ink)
+      L.line(img,24,31+dy,26,39+dy,P.ink)
+      L.poly(img,{25,36+dy,28,38+dy,31,49+dy,32,56+dy,29,53+dy,24,41+dy},P.ink)
+      L.poly(img,{25,38+dy,27,39+dy,30,49+dy,30,52+dy,26,44+dy},P.teal)
+      L.line(img,26,39+dy,29,48+dy,P.teal3)
+      L.hline(img,26,28,42+dy,P.navy)
+      L.px(img,28,45+dy,P.glass2)
+      L.px(img,30,50+dy,P.glass2)
+      return img
+    end
+    local img=toImage(sideFigure("dad",step,{16,23,19,31,25,31}))
+    local chair=L.newImage(36,56)
+    -- Side-on moulded chair, slotted back and four slightly splayed legs.
+    L.poly(chair,{27,16,34,16,33,32,34,34,33,36,35,48,32,48,30,36,23,36,22,47,19,47,21,35,19,34,19,32,26,31},P.ink)
+    L.poly(chair,{28,17,33,17,32,32,33,34,21,34,21,33,27,32},P.gray1)
+    L.line(chair,29,19,28,26,P.gray4)
+    L.line(chair,31,19,30,26,P.gray4)
+    L.vline(chair,32,19,26,P.white)
+    L.line(chair,22,35,20,46,P.gray2)
+    L.line(chair,31,35,33,47,P.gray2)
+    L.line(chair,26,35,25,44,P.gray3)
+    L.line(chair,32,35,34,44,P.gray3)
+    L.blit(img,chair,0,dy)
+    L.rect(img,23,30+dy,4,3,KEY.S)
+    L.hline(img,24,26,30+dy,KEY.t)
+    L.line(img,20,25+dy,26,28+dy,KEY.S,2)
+    L.rect(img,26,27+dy,4,3,KEY.S)
+    L.hline(img,27,29,27+dy,KEY.t)
+    return img
+  end
+
+  function M.saveTyphoonPoses(selected,bag)
+    local sets={{"tanod","idle",2,500},{"tanod","walk",4,140},{"tanod","megaphone",2,350},
+      {"tanod","wave",2,260},{"mom","umbrella",4,140},{"mom","walk_gobag",4,140},
+      {"dad","carry",4,140},{"dad","idle",2,500}}
+    for _,s in ipairs(sets) do
+      local name=s[1].."_"..s[2]
+      if not next(selected) or selected[name] or selected[s[2]] then
+        local frames={}
+        for f=0,s[3]-1 do
+          if s[1]=="tanod" then frames[#frames+1]=tanod(s[2],f)
+          elseif name=="dad_idle" then frames[#frames+1]=toImage(M.idle("dad",f))
+          else frames[#frames+1]=typhoonWalk(name,f,bag) end
+        end
+        L.saveFrames(frames,"GrownUp/"..name,"GrownUp/"..name,s[4])
+      end
+    end
+  end
+
   -- All frames ---------------------------------------------------------------------
   M.CHARACTERS = {
     teacher = { "idle", "wave", "walk" },

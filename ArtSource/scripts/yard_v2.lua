@@ -81,6 +81,99 @@ return function(L, kit)
     end
     return img
   end
+  function M.typhoonProps()
+    local pail=L.newImage(12,12)
+    L.line(pail,2,6,3,1,P.ink)
+    L.hline(pail,3,8,1,P.gray3)
+    L.line(pail,8,1,10,5,P.ink)
+    L.poly(pail,{0,4,12,4,10,12,2,12},P.ink)
+    L.poly(pail,{1,5,11,5,9,11,3,11},P.teal)
+    L.hline(pail,1,10,5,P.teal3)
+    L.vline(pail,3,6,9,P.teal3)
+    L.vline(pail,9,6,9,P.teal2)
+    local ball=L.newImage(8,8)
+    L.ellipse(ball,3.5,3.5,3.6,3.6,P.ink)
+    L.ellipse(ball,3.5,3.5,2.8,2.8,P.orange)
+    L.line(ball,2,5,5,2,P.yellow3)
+    L.px(ball,5,5,P.orange2)
+    local chair=L.newImage(18,22)
+    L.poly(chair,{3,0,15,0,15,10,17,12,17,15,16,15,17,22,14,22,13,15,5,15,4,22,1,22,3,15,0,14,1,12,4,10},P.ink)
+    L.poly(chair,{4,1,14,1,14,11,16,12,15,14,2,14,2,12,5,11},P.gray1)
+    for x=6,12,3 do L.vline(chair,x,3,8,P.gray3) end
+    L.hline(chair,3,15,12,P.white)
+    L.line(chair,4,15,2,20,P.gray2)
+    L.line(chair,14,15,15,20,P.gray2)
+    local rope=L.newImage(36,12)
+    for _,y in ipairs({2,6}) do
+      L.line(rope,1,y,12,y+2,P.brown2,2)
+      L.hline(rope,12,25,y+2,P.tan)
+      L.line(rope,25,y+2,34,y,P.brown)
+    end
+    L.line(rope,9,3,15,10,P.brown2,2)
+    L.line(rope,15,4,10,10,P.tan)
+    return {yard_pail=pail,yard_ball=ball,yard_chair=chair,yard_rope=rope}
+  end
+
+  function M.swayFrames()
+    local base=M.background()
+    local tree,clothes={},{}
+    -- Replace only displaced pixels. Revealed sky matches the Batch 2 Dark Sky.
+    local function patch(scene,x0,y0,w,h)
+      local img=L.newImage(w,h)
+      for y=0,h-1 do for x=0,w-1 do
+        local c=scene:getPixel(x+x0,y+y0)
+        if c~=base:getPixel(x+x0,y+y0) then
+          if c==P.sky3 or c==P.sky4 or c==P.cream then
+            local pc=app.pixelColor
+            local function shade(v,s) return (v*85+s*170+127)//255 end
+            c=pc.rgba(shade(pc.rgbaR(c),110),shade(pc.rgbaG(c),124),shade(pc.rgbaB(c),140),255)
+          end
+          L.px(img,x,y,c)
+        end
+      end end
+      return img
+    end
+    for _,wind in ipairs({1,4,2,-2}) do
+      local scene=M.background(wind)
+      tree[#tree+1]=patch(scene,8,18,160,112)
+      clothes[#clothes+1]=patch(scene,252,86,191,38)
+    end
+    return tree,clothes
+  end
+
+  function M.damage()
+    local shed=L.newImage(76,65)
+    kit.box(shed,6,18,62,46,kit.WOOD)
+    for x=10,64,7 do L.vline(shed,x,21,61,P.brown2) end
+    L.poly(shed,{0,23,15,6,36,3,40,7,33,11,36,15,26,18,23,23},P.ink)
+    L.poly(shed,{3,21,16,8,36,5,32,10,34,13,24,17,22,21},P.roof2)
+    for x=10,25,6 do L.line(shed,x,18,x+9,8,P.roof3) end
+    L.line(shed,33,17,46,4,P.brown2,3)
+    L.line(shed,46,4,72,20,P.brown2,3)
+    L.line(shed,48,8,64,19,P.tan2)
+    kit.box(shed,23,28,26,36,kit.WOOD)
+    L.rect(shed,26,30,20,32,P.ink2)
+    L.poly(shed,{47,29,62,34,59,64,46,61},P.ink)
+    L.poly(shed,{49,31,60,35,57,62,48,60},P.brown)
+    L.line(shed,50,35,56,57,P.brown3,2)
+    L.hline(shed,46,50,32,P.gray3)
+    local sheet=L.newImage(43,15)
+    L.poly(sheet,{0,10,13,1,42,3,31,14},P.gray4)
+    L.poly(sheet,{3,10,14,2,39,4,30,13},P.gray2)
+    for x=11,31,5 do L.line(sheet,x+4,4,x-4,10,P.gray3) end
+    local glass=L.newImage(23,8)
+    for _,s in ipairs({{0,5,6,2,4,6},{9,5,12,1,15,6},{17,6,22,4,21,7}}) do
+      L.poly(glass,s,P.glass3);L.px(glass,s[1]+2,s[2],P.glass2)
+    end
+    local broom=L.newImage(17,37)
+    L.line(broom,1,1,10,24,P.brown2,3)
+    L.line(broom,1,1,9,22,P.brown3)
+    L.poly(broom,{8,19,11,19,16,33,13,36,4,35},P.brown2)
+    for dx=5,15,2 do L.line(broom,10,21,dx,34-dx%2,P.tan2) end
+    L.hline(broom,8,12,23,P.brown)
+    return {yard_shed_broken=shed,yard_roof_sheet=sheet,yard_glass=glass,yard_broom=broom}
+  end
+
   function M.siga(f)
     local img=L.newImage(46,31)
     L.ellipse(img,23,23,21,6,P.brown2)

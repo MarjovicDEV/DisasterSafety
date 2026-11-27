@@ -946,5 +946,328 @@ return function(L, ST)
     return out
   end
 
+  function M.typhoonAfterIcons()
+    local P=L.P
+    local icons={}
+    local function icon(name)
+      local im=L.newImage(16,16)
+      icons["typhoon_"..name]=im
+      return im
+    end
+    local tanod=icon("wait_tanod")
+    L.ellipse(tanod,7,7,4,4,P.skin2)
+    M.box(tanod,3,1,9,5,M.NAVY)
+    L.hline(tanod,3,13,5,P.navy2)
+    L.px(tanod,7,7,O); L.px(tanod,10,7,O)
+    L.poly(tanod,{1,15,3,11,6,10,8,12,10,10,13,12,14,15},P.yellow)
+    L.hline(tanod,4,11,14,P.paper)
+    L.poly(tanod,{10,9,15,6,15,12,10,10},P.gray1)
+    L.outline(tanod,O)
+    local run=icon("run_play")
+    L.poly(run,{4,3,8,4,8,8,14,9,15,12,12,14,3,10},P.navy)
+    L.line(run,3,9,12,13,P.gray1,2)
+    L.hline(run,1,4,5,P.teal); L.hline(run,0,3,7,P.teal2)
+    L.outline(run,O)
+    local friend=icon("find_friend")
+    L.circle(friend,6,6,5,O)
+    L.circle(friend,6,6,4,P.glass2)
+    L.ellipse(friend,6,6,2,3,P.skin2)
+    L.hline(friend,4,8,4,P.hair)
+    L.line(friend,10,10,14,14,P.navy2,3)
+    local mom=icon("stay_mom")
+    for _,p in ipairs({{5,5,4,P.red2},{11,8,3,P.teal}}) do
+      local x,y,r,c=table.unpack(p)
+      L.ellipse(mom,x,y,r,r+1,P.hair)
+      L.ellipse(mom,x+1,y+1,r-1,r-1,P.skin1)
+      L.poly(mom,{x-3,y+r,x+2,y+r,x+4,15,x-4,15},c)
+    end
+    L.outline(mom,O)
+    local metal=icon("roof_sheet")
+    L.poly(metal,{0,10,7,3,15,5,9,13},P.gray3)
+    for x=5,11,3 do L.line(metal,x+2,5,x-3,10,P.gray2) end
+    L.outline(metal,O)
+    local shed=icon("enter_shed")
+    M.box(shed,2,6,12,9,M.WOOD)
+    L.poly(shed,{0,7,4,2,8,1,7,5,4,7},P.roof2)
+    L.line(shed,8,2,15,6,P.brown2)
+    L.rect(shed,6,8,5,7,P.ink2)
+    L.poly(shed,{10,8,14,10,13,15,10,14},P.brown)
+    local broom=icon("sweep_glass")
+    L.line(broom,13,1,6,10,P.brown2,2)
+    L.poly(broom,{5,8,8,10,6,15,0,12},P.tan)
+    L.line(broom,5,10,2,13,P.brown)
+    L.poly(broom,{10,13,13,10,14,14},P.glass2)
+    L.outline(broom,O)
+    return icons
+  end
+
+  function M.typhoonHomeHardIcons(home,night)
+    local P=L.P
+    local icons=home.typhoonHardIcons()
+    local function icon(name)
+      local img=L.newImage(16,16)
+      icons["typhoon_"..name]=img
+      return img
+    end
+    local beam=icon("flashlight_on")
+    L.poly(beam,{9,7,15,3,15,14,9,10},P.yellow3)
+    L.blit(beam,home.flashlight(),0,5)
+    L.hline(beam,12,15,8,P.paper)
+    local candle=icon("light_candle")
+    L.blit(candle,night.unlitCandle(),-1,0)
+    L.blit(candle,night.closedMatches(),6,10)
+    local door=icon("check_lights")
+    M.box(door,1,2,9,13,M.WOOD)
+    L.rect(door,3,4,5,5,P.navy2)
+    L.px(door,7,11,P.yellow)
+    L.ellipse(door,12,5,3,4,P.ink2)
+    L.ellipse(door,12,5,2,3,P.gray2)
+    L.hline(door,11,13,9,P.gray4)
+    local phone=icon("phone_games")
+    M.box(phone,0,3,16,10,M.NAVY)
+    L.rect(phone,3,5,10,6,P.glass2)
+    L.hline(phone,4,6,8,P.navy2)
+    L.vline(phone,5,7,9,P.navy2)
+    L.px(phone,10,8,P.red2)
+    L.px(phone,11,7,P.red2)
+    local play=icon("go_play")
+    L.ellipse(play,10,9,4,4,P.ink)
+    L.ellipse(play,10,9,3,3,P.orange)
+    L.line(play,8,10,11,7,P.yellow3)
+    L.line(play,1,8,5,4,P.teal2)
+    L.line(play,2,12,6,8,P.teal)
+    return icons
+  end
+
+  function M.typhoonCoastIcons()
+    local P=L.P
+    local swim=L.newImage(16,16)
+    L.ellipse(swim,11,6,3,3,P.skin2)
+    L.ellipse(swim,11,5,3,2,P.blue2)
+    L.hline(swim,11,13,6,P.navy2)
+    L.line(swim,2,8,6,4,P.skin2,3)
+    L.line(swim,6,4,9,9,P.skin2,3)
+    L.line(swim,4,10,10,8,P.teal2,3)
+    for x=1,13,6 do
+      L.line(swim,x,12,x+2,10,P.glass3,2)
+      L.line(swim,x+2,10,x+4,12,P.glass,2)
+    end
+    L.outline(swim,O)
+    local shell=L.newImage(16,16)
+    L.poly(shell,{1,6,3,3,6,2,8,3,10,2,13,4,15,7,13,10,9,13,9,14,6,14,6,12,2,9},P.brown2)
+    L.poly(shell,{2,6,4,4,6,3,8,4,10,3,13,5,14,7,12,9,8,12,6,11,3,8},P.paper2)
+    for _,v in ipairs({{3,6},{6,4},{10,4},{13,6}}) do
+      L.line(shell,v[1],v[2],8,11,P.tan2)
+    end
+    L.hline(shell,6,9,13,P.paper)
+    L.outline(shell,O)
+    return {typhoon_swim=swim,typhoon_shells=shell}
+  end
+
+  function M.typhoonStreetIcons()
+    local P=L.P
+    local icons={}
+    local function icon(name)
+      local img=L.newImage(16,16)
+      icons["typhoon_"..name]=img
+      return img
+    end
+    local sign=icon("evac_route")
+    M.box(sign,7,8,3,8,M.WOOD)
+    M.box(sign,0,1,16,10,M.GREEN)
+    L.rect(sign,3,5,7,2,P.white)
+    L.poly(sign,{9,3,13,6,9,9},P.white)
+    local toy=icon("back_for_toy")
+    L.line(toy,3,4,12,4,P.blue2,2)
+    L.poly(toy,{1,4,6,0,6,8},P.blue2)
+    L.poly(toy,{2,10,5,10,7,7,11,7,13,10,15,11,15,14,2,14},P.red)
+    L.hline(toy,7,10,9,P.glass2)
+    for _,x in ipairs({5,12}) do L.circle(toy,x,13,2,O);L.px(toy,x,13,P.gray1) end
+    local path=icon("creek_shortcut")
+    L.poly(path,{1,15,6,9,9,7,6,5,7,4,12,7,9,11,8,15},P.tan)
+    for x=1,13,4 do L.line(path,x+1,8,x,2+x%3,P.green3);L.line(path,x+1,8,x+3,3,P.grass2) end
+    local house=icon("stay_home")
+    M.box(house,2,7,12,8,M.WOOD)
+    L.poly(house,{0,8,7,1,9,1,15,8},P.green3)
+    L.line(house,2,6,7,2,P.grass2)
+    M.box(house,8,8,5,7,M.WOOD);L.rect(house,4,9,3,3,P.glass2)
+    local tell=icon("tell_dad_wire")
+    L.ellipse(tell,5,8,4,5,P.skin2)
+    L.ellipse(tell,5,5,4,2,P.hair)
+    L.hline(tell,3,4,8,O);L.px(tell,7,8,O)
+    L.poly(tell,{0,15,2,12,8,12,10,15},P.white);L.vline(tell,5,12,14,P.red2)
+    M.box(tell,8,0,8,8,M.WHITE)
+    L.line(tell,13,2,12,5,O);L.hline(tell,10,12,5,O);L.px(tell,9,8,O)
+    local stick=icon("poke_stick")
+    L.line(stick,2,13,13,3,P.brown2,3);L.line(stick,3,12,12,4,P.brown3)
+    L.line(stick,8,8,8,4,P.brown2)
+    local branch=icon("move_branch")
+    L.line(branch,2,14,12,3,P.brown2,2)
+    for _,b in ipairs({{4,8},{9,4},{12,8}}) do
+      L.ellipse(branch,b[1],b[2],3,2,P.green3);L.hline(branch,b[1]-2,b[1],b[2]-1,P.grass2)
+    end
+    L.outline(branch,O)
+    local puddle=icon("puddle")
+    L.ellipse(puddle,8,10,7,3,P.glass3)
+    L.ellipse(puddle,8,9,6,2,P.glass)
+    L.hline(puddle,4,8,9,P.glass2)
+    L.outline(puddle,O)
+    return icons
+  end
+
+  function M.typhoonNormalIcons(home)
+    local P=L.P
+    local icons={}
+    local function icon(name)
+      local img=L.newImage(16,16)
+      icons["typhoon_"..name]=img
+      return img
+    end
+    local function window(img)
+      M.box(img,1,1,14,13,M.WOOD)
+      M.box(img,3,3,10,8,M.GLASS)
+      L.vline(img,8,3,10,O)
+      L.hline(img,3,12,7,M.GLASS[3])
+      L.px(img,9,8,P.paper)
+    end
+    local function house(img)
+      M.box(img,3,7,10,8,M.WOOD)
+      L.poly(img,{0,8,8,1,15,8},O)
+      L.poly(img,{2,7,8,3,13,7},P.roof)
+      L.rect(img,7,10,4,5,P.brown2)
+      L.px(img,9,12,P.yellow3)
+    end
+    local function eye(img,x,y)
+      L.poly(img,{x,y+2,x+3,y,x+6,y,x+9,y+2,x+6,y+5,x+3,y+5},O)
+      L.hline(img,x+2,x+7,y+2,P.white)
+      L.rect(img,x+4,y+1,2,3,P.navy2)
+    end
+    local function bubble(img,x,y)
+      M.box(img,x,y,8,6,M.WHITE)
+      L.px(img,x+2,y+6,O)
+      L.hline(img,x+2,x+5,y+2,P.navy)
+    end
+    local teacher=icon("stay_teacher")
+    L.ellipse(teacher,7,6,5,5,P.hair)
+    L.ellipse(teacher,7,7,4,4,P.skin2)
+    L.hline(teacher,3,10,6,P.navy2)
+    L.px(teacher,5,7,P.glass2); L.px(teacher,9,7,P.glass2)
+    L.poly(teacher,{1,15,2,12,6,10,9,10,13,12,14,15},P.navy)
+    L.line(teacher,6,11,8,14,P.red)
+    L.outline(teacher,O)
+    local walk=icon("walk_home")
+    house(walk)
+    L.ellipse(walk,2,13,1,2,P.navy)
+    L.ellipse(walk,4,10,1,1,P.navy)
+    local gate=icon("wait_gate")
+    for x=2,14,3 do M.box(gate,x,4,2,11,M.METAL) end
+    L.hline(gate,1,15,7,P.navy); L.hline(gate,1,15,12,P.navy)
+    local book=icon("module")
+    L.blit(book,home.schoolModule(),0,4)
+    L.line(book,8,11,14,3,O,3); L.line(book,8,10,14,3,P.yellow,2)
+    local school=icon("walk_school")
+    M.box(school,1,6,14,8,M.WHITE)
+    L.poly(school,{0,7,3,3,12,3,15,7},P.green3)
+    M.box(school,6,8,4,6,M.WOOD)
+    L.rect(school,3,8,2,3,P.glass); L.rect(school,11,8,2,3,P.glass)
+    local rain=icon("play_rain")
+    for x=3,15,5 do L.line(rain,x,1,x-2,5,P.glass3) end
+    L.ellipse(rain,8,13,7,2,P.glass)
+    L.ellipse(rain,8,12,4,1,P.glass2)
+    L.line(rain,3,8,5,11,P.blue); L.line(rain,13,7,10,11,P.blue)
+    local sofa=icon("living_room")
+    M.box(sofa,2,4,12,8,M.SAGE); M.box(sofa,1,9,14,5,M.SAGE)
+    L.vline(sofa,8,5,9,M.SAGE[3]); L.px(sofa,3,14,O); L.px(sofa,12,14,O)
+    local watch=icon("watch_window")
+    window(watch); eye(watch,0,10)
+    local reach=icon("open_window")
+    window(reach)
+    L.line(reach,14,14,10,9,O,4); L.line(reach,14,13,10,9,P.skin1,2)
+    local inside=icon("stay_inside")
+    house(inside); L.ellipse(inside,8,9,2,2,P.skin1)
+    L.rect(inside,6,12,5,2,P.teal)
+    local fruit=icon("pick_mangoes")
+    for _,p in ipairs({{5,8},{10,11}}) do
+      local x,y=p[1],p[2]
+      L.ellipse(fruit,x,y,3,4,P.orange2)
+      L.ellipse(fruit,x-1,y-1,2,3,P.yellow)
+      L.line(fruit,x,y-4,x+2,y-6,P.green3)
+    end
+    L.outline(fruit,O)
+    local clothes=icon("bring_clothes")
+    L.hline(clothes,0,15,3,O)
+    L.poly(clothes,{2,4,5,3,7,5,9,3,12,4,15,7,12,9,11,8,11,14,4,14,4,8,2,9,0,7},P.teal)
+    L.hline(clothes,5,10,12,P.teal3); L.outline(clothes,O)
+    L.vline(clothes,4,2,5,P.tan); L.vline(clothes,10,2,5,P.tan)
+    local function tanod(img)
+      L.ellipse(img,6,8,4,4,P.skin2)
+      M.box(img,2,2,9,5,M.NAVY); L.hline(img,2,12,6,P.navy2)
+      L.px(img,5,8,O); L.px(img,8,8,O)
+      L.poly(img,{1,15,2,12,5,11,7,13,9,11,12,13,13,15},P.yellow)
+      L.hline(img,3,10,14,P.paper)
+    end
+    local tell=icon("tell_tanod")
+    tanod(tell); bubble(tell,8,0)
+    local toy=icon("keep_playing")
+    L.poly(toy,{1,8,4,8,6,4,10,4,13,8,15,9,15,12,1,12},P.red)
+    L.rect(toy,6,6,4,2,P.glass2)
+    for _,x in ipairs({4,12}) do L.circle(toy,x,12,2,O); L.px(toy,x,12,P.gray1) end
+    L.outline(toy,O)
+    local see=icon("see_tanod")
+    tanod(see); eye(see,6,10)
+    return icons
+  end
+
+  function M.typhoonEasyIcons(yard,home)
+    local P=L.P
+    local result={}
+    local function icon(name)
+      local img=L.newImage(16,16)
+      result["typhoon_"..name]=img
+      return img
+    end
+    local tell=icon("tell_news")
+    L.ellipse(tell,4,9,3,4,P.skin1)
+    L.line(tell,2,6,5,5,P.hair,2)
+    L.px(tell,5,9,O)
+    L.rect(tell,6,1,9,7,P.white)
+    L.line(tell,7,8,9,6,P.white)
+    L.hline(tell,8,12,3,P.navy)
+    L.hline(tell,8,11,5,P.navy)
+    L.outline(tell,O)
+    local tv=icon("cartoons")
+    M.box(tv,0,2,16,12,M.NAVY)
+    L.rect(tv,2,4,12,8,P.glass2)
+    L.circle(tv,5,6,2,P.orange)
+    L.circle(tv,11,6,2,P.orange)
+    L.ellipse(tv,8,8,4,3,P.yellow)
+    L.px(tv,6,7,O)
+    L.px(tv,10,7,O)
+    L.hline(tv,7,9,9,P.brown)
+    local inside=icon("bring_inside")
+    M.box(inside,8,2,8,13,M.WOOD)
+    L.rect(inside,10,4,5,10,P.ink2)
+    L.blit(inside,yard.yard_pail,0,4)
+    L.line(inside,3,3,10,3,P.yellow3)
+    L.line(inside,8,1,10,3,P.yellow3)
+    L.line(inside,10,3,8,5,P.yellow3)
+    local play=icon("play_ball")
+    L.blit(play,yard.yard_ball,7,3)
+    L.line(play,1,8,4,6,P.blue2)
+    L.line(play,3,11,6,9,P.blue)
+    L.hline(play,8,13,14,P.grass3)
+    local bag=icon("flashlight_bag")
+    M.box(bag,1,6,13,10,M.NAVY)
+    L.rect(bag,2,8,11,6,P.red)
+    L.hline(bag,3,12,7,P.ink)
+    L.hline(bag,4,10,11,P.red3)
+    L.blit(bag,home.flashlight(),4,0)
+    local light=icon("play_flashlight")
+    L.poly(light,{9,6,15,2,15,13,9,10},P.yellow3)
+    L.blit(light,home.flashlight(),0,4)
+    L.px(light,14,5,P.yellow)
+    return result
+  end
+
   return M
 end

@@ -977,5 +977,155 @@ return function(L, ST)
     return { a, b }
   end
 
+  local function placard(img, text, cx, y)
+    local w = L.F.width(text, 1) + 10
+    box(img, cx - w // 2, y, w, 17, R.cream)
+    signText(img, text, cx, y + 3, R.navy[3])
+  end
+
+  local function roof(img, x, y, w, h, ramp)
+    L.poly(img, {x,y+h, x+20,y, x+w-20,y, x+w,y+h}, O)
+    L.poly(img, {x+3,y+h-1, x+21,y+1, x+w-21,y+1, x+w-3,y+h-1}, ramp[2])
+    for dx = 22,w-22,8 do
+      L.line(img,x+dx,y+2,x+dx-5,y+h-2,ramp[1])
+    end
+    box(img,x,y+h,w,5,ramp)
+  end
+
+  function M.barangayHall()
+    local img = L.newImage(480,270)
+    L.vgrad(img,0,0,480,180,{R.metal[3],R.metal[2],R.sign[3],R.sign[2]})
+    treeLine(img,153,317)
+    L.rect(img,0,177,480,93,R.concrete[2])
+    noise(img,0,178,479,269,R.concrete[2],R.concrete[3],550,18)
+    for _,p in ipairs({{131,239,18},{389,222,13}}) do
+      L.ellipse(img,p[1],p[2],p[3],3,R.metal[3])
+      L.hline(img,p[1]-p[3]+3,p[1]+3,p[2],R.sign[2])
+    end
+    box(img,9,83,327,107,R.cream)
+    roof(img,1,55,343,27,R.roofgreen)
+    for _,x in ipairs({27,101,232,282}) do
+      box(img,x,115,35,37,R.board)
+      for y=118,146,7 do box(img,x+3,y,29,7,R.glass) end
+    end
+    box(img,157,121,48,68,R.wood)
+    box(img,162,125,38,37,R.cork)
+    L.circle(img,197,165,2,R.metal[1])
+    roof(img,4,101,338,12,R.roofgreen)
+    for _,x in ipairs({12,147,210,328}) do box(img,x,118,7,74,R.column) end
+    box(img,6,190,334,5,R.concrete)
+    box(img,2,195,342,5,R.concrete)
+    placard(img,"BARANGAY HALL",58,62)
+    box(img,357,56,3,158,R.metal)
+    L.circle(img,358,56,2,R.metal[1])
+    palm(img,441,191,93,17,0.91)
+    box(img,401,222,5,30,R.wood)
+    placard(img,"SIGNAL NO. 2",403,217)
+    return img
+  end
+
+  local function roomFloor(img, y, ramp)
+    L.rect(img,0,y,480,270-y,ramp[2])
+    for _,row in ipairs({y+10,y+28,y+54}) do L.hline(img,0,479,row,ramp[3]) end
+    for x=-120,600,55 do L.line(img,x,y,240+(x-240)*2,269,ramp[3]) end
+    box(img,-2,y-6,484,7,R.wood)
+  end
+
+  function M.goBagDoorway(home,court)
+    local img = L.newImage(480,270)
+    L.vgrad(img,0,0,480,210,{R.cream[2],R.cream[1]})
+    for x=0,479,28 do L.vline(img,x,0,202,R.cream[3]) end
+    roomFloor(img,208,R.road)
+    box(img,293,62,82,147,R.wood)
+    for _,y in ipairs({70,137}) do box(img,300,y,68,56,R.cork) end
+    L.circle(img,362,139,4,O)
+    L.circle(img,362,138,3,R.yellow[2])
+    local view=L.newImage(79,64)
+    L.vgrad(view,0,0,79,64,{R.metal[3],R.metal[2],R.sign[3]})
+    palm(view,38,80,26,10,0.65)
+    box(img,382,75,85,70,R.wood)
+    L.blit(img,view,385,78)
+    box(img,423,78,3,64,R.wood)
+    box(img,379,144,91,5,R.cork)
+    for _,x in ipairs({380,409}) do box(img,x,199,5,24,R.wood) end
+    box(img,375,194,44,7,R.cork)
+    L.blit(img,court.radioOff(),380,165)
+    L.blit(img,home.bagClosed(),338,199)
+    L.blit(img,home.flashlight(),362,215)
+    L.poly(img,{289,211,331,211,338,223,282,223},R.cork[3])
+    for y=214,220,3 do L.hline(img,289,331,y,R.cork[1]) end
+    return img
+  end
+
+  function M.rainyWindows()
+    local img=L.newImage(480,270)
+    L.vgrad(img,0,0,480,203,{R.cream[3],R.cream[2]})
+    box(img,-2,17,484,8,R.roofgreen)
+    roomFloor(img,201,R.concrete)
+    box(img,12,81,96,69,R.wood)
+    box(img,15,84,90,63,R.board)
+    box(img,120,59,348,109,R.roofgreen)
+    L.seed(271)
+    for x=126,448,48 do
+      for y=65,145,16 do
+        L.rect(img,x,y,44,16,R.metal[2])
+        L.hline(img,x,x+43,y,R.sign[2])
+        L.hline(img,x,x+43,y+15,R.metal[3])
+        for k=1,7 do
+          local dx,dy=L.randi(3,41),L.randi(1,7)
+          L.line(img,x+dx,y+dy,x+dx-2,y+dy+6,R.sign[3])
+        end
+      end
+    end
+    box(img,115,166,357,6,R.roofgreen)
+    for _,p in ipairs({{42,177,0.8},{110,177,0.8},{142,218,1.1},{389,211,1.2}}) do
+      local x,y,s=table.unpack(p)
+      local w,h=math.floor(30*s),math.floor(26*s)
+      L.poly(img,{x,y+h,x+w-1,y+h,x+w+7,y+h-7,x+8,y+h-7},R.green[3])
+      box(img,x+w+4,y+h-7,3,12,R.roofgreen)
+      chairBack(img,x,y,s)
+    end
+    return img
+  end
+
+  function M.evacuationGym()
+    local img=L.newImage(480,270)
+    L.vgrad(img,0,0,480,270,{R.navy[2],R.navy[1],R.metal[3]})
+    L.rect(img,0,213,480,57,R.metal[3])
+    L.seed(184)
+    for i=1,540 do
+      local x,y=L.randi(0,479),L.randi(0,266)
+      L.line(img,x,y,x-1,y+4,R.metal[2])
+    end
+    box(img,30,72,388,140,R.concrete)
+    roof(img,13,39,422,35,R.navy)
+    box(img,52,99,164,72,R.board)
+    for x=57,200,26 do box(img,x,104,22,60,R.cork) end
+    box(img,235,102,168,111,R.wood)
+    L.vgrad(img,240,107,158,96,{R.cork[2],R.cream[2],R.cream[1]})
+    L.rect(img,240,175,158,36,R.road[2])
+    for x=250,365,55 do box(img,x,114,24,4,R.paper) end
+    for _,t in ipairs({{250,152,R.blue},{309,147,R.rust}}) do
+      local x,y,r=t[1],t[2],t[3]
+      L.poly(img,{x,y+28,x+19,y,x+38,y+1,x+52,y+28},O)
+      L.poly(img,{x+2,y+26,x+19,y+2,x+33,y+26},r[1])
+      L.poly(img,{x+21,y+2,x+37,y+3,x+49,y+26,x+35,y+26},r[2])
+      L.poly(img,{x+8,y+26,x+18,y+10,x+26,y+26},r[3])
+    end
+    for x=257,345,44 do
+      L.poly(img,{x,187,x+24,187,x+32,198,x-3,198},R.cork[3])
+      for y=189,195,3 do L.hline(img,x,x+23,y,R.cork[1]) end
+    end
+    box(img,235,211,169,4,R.concrete)
+    for _,x in ipairs({228,401}) do
+      box(img,x,103,9,107,R.wood)
+      box(img,x+2,111,5,38,R.glass)
+      L.px(img,x+4,164,R.metal[1])
+    end
+    box(img,395,75,4,17,R.wood)
+    placard(img,"EVACUATION CENTER",398,78)
+    return img
+  end
+
   return M
 end
