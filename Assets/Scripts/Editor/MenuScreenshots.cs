@@ -213,7 +213,9 @@ namespace DisasterSafety.EditorTools
             }
             Levels("04-levels-normal", Episode.Earthquake, Difficulty.Normal, MenuBackground.Schoolyard);
             Levels("04-levels-hard", Episode.Earthquake, Difficulty.Hard, MenuBackground.CoveredCourt);
-            Levels("04-levels-fire", Episode.Fire, Difficulty.Easy, MenuBackground.StationNoticeboard);
+            Levels("04-levels-fire", Episode.Fire, Difficulty.Easy, MenuBackground.FireHome);
+            Levels("04-levels-fire-normal", Episode.Fire, Difficulty.Normal, MenuBackground.FireCorridor);
+            Levels("04-levels-fire-hard", Episode.Fire, Difficulty.Hard, MenuBackground.FireStreet);
             // Put back the Earthquake Easy staging that 04-levels used, without capturing it again.
             StageLevels(Episode.Earthquake, Difficulty.Easy);
         }

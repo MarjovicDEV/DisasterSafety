@@ -133,7 +133,8 @@ namespace DisasterSafety.EditorTools
                 AssetDatabase.CreateAsset(lib, path);
             }
             var playable = GameServices.LoadScenarios().Playable;
-            var required = Curriculum.AllLevels().Where(playable.IsPlayable)
+            var required = Curriculum.AllLevels()
+                .Where(level => playable.IsPlayable(level) || MusicAheadOfLevels.Contains(level.Episode))
                 .SelectMany(level => new[] { EpisodeMusic.ForLevel(level), EpisodeMusic.ForCompletion(level.Episode) })
                 .Concat(EpisodeMusic.MenuPlaylist).ToHashSet();
             lib.music = new AudioClip[Enum.GetValues(typeof(MusicTrack)).Length];
@@ -158,6 +159,10 @@ namespace DisasterSafety.EditorTools
             lib.blip = Clip("Sfx/sfx_blip");
             EditorUtility.SetDirty(lib);
         }
+
+        // Episodes whose music ships before their Levels are Playable. Fire's menus open after
+        // Earthquake Hard, and its Set B music is in place for its first Playable Level.
+        static readonly Episode[] MusicAheadOfLevels = { Episode.Fire };
 
         static AudioClip ImportMusic(string title)
         {
@@ -279,7 +284,7 @@ namespace DisasterSafety.EditorTools
         static readonly string[] MenuBackgroundArt =
         {
             "gate", "noticeboard", "drill_ground", "fire_station", "classroom", "schoolyard", "covered_court",
-            "station_noticeboard"
+            "fire_easy", "fire_normal", "fire_hard"
         };
 
         static MenuWorld BuildWorld(RectTransform root)
