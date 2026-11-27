@@ -1394,3 +1394,751 @@ aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param onl
 
 [Placements, animation timing and clearances](D:/GameDEV/typhoon-episode-scratch/art/10-after/placements.md). [Corrected Tanod poses](D:/GameDEV/typhoon-episode-scratch/art/10-after/tanod-hand-poses.png).
 
+## Flood Batch 1 — Floodwater at home (approved)
+
+Approved sheet: D:/GameDEV/flood-episode-scratch/art/01-home-seep/preview.png. Run from the project root:
+
+~~~text
+aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=flood_home --script ArtSource/scripts/build.lua
+~~~
+
+All sources are in ArtSource/Level/v2 and exports in Assets/Art/Level/v2. Each name below has an .aseprite source. No Choice icons in this batch.
+
+| Source basename | PNG basename | Canvas | Frames | Frame time |
+|---|---|---|---:|---|
+| home_flood_seep_1, home_flood_seep_2, home_flood_seep_3 | Each with suffix _0 and _1 | 120×30 | 2 each | 300 ms |
+| home_fan | home_fan_0, home_fan_1 | 22×40 | 2 | 80 ms |
+| home_outlet_low | home_outlet_low | 24×26 | 1 | Still |
+| home_window_flood | home_window_flood_0 through _3 | 60×65 | 4 | 180 ms |
+
+Art pixels from the upper left. Actor points mark the feet; prop points mark the top left. The floor starts at y 208; the walk line is y 232 in front of the table.
+
+| Piece | Placement |
+|---|---|
+| home_flood_seep_1 to _3 (120x30, 2 frames, 300 ms) | (0,208). The sill (x 16 to 72) stays dry above row 212. Step 3 rightmost pixel is x 104. |
+| home_outlet_low (24x26) | (72,188): plate at (76,190), cord along the back of the floor to the fan base. |
+| home_fan (22x40, 2 frames, 80 ms; frame 0 held when the power is off) | (89,173), canvas bottom row 212. |
+| home_window_flood (60x65, 4 frames, 180 ms) | (304,72); waterline at row 53 of the view. |
+| home_switch_box (Fire) | (148,161). |
+| Mom (mom_sit) | (314,220) on the sofa. |
+
+### Act-out points and water clearance
+
+| Step | Student pose and feet | Dad pose and feet | Student gap | Dad gap | Mom gap |
+|---|---|---|---:|---:|---:|
+| Start: water seeps in under the door | idle (214,232) | dad_idle (530,232) | 129.9 | off-screen | 220.2 |
+| The water spreads: surprised | surprised (214,232) | dad_idle (530,232) | 115.3 | off-screen | 205.2 |
+| Furthest step of the water | idle (214,232) | dad_idle (530,232) | 101.8 | off-screen | 192.1 |
+| Unsafe stop: Unplug the fan | reach (162,232) | dad_idle (530,232) | 55.0 | off-screen | 192.1 |
+| Unsafe stop: Wipe up the water | crouch (140,232) | dad_idle (530,232) | 30.8 | off-screen | 192.1 |
+| Safe: walk away from the door | walk (330,232) | dad_idle (530,232) | 211.8 | off-screen | 192.1 |
+| Safe: step back and call Dad, who walks in | call (402,232) | dad_walk (458,230) | 292.6 | 343.4 | 192.1 |
+| Safe: Dad walks to the switch box | idle (402,232) | dad_walk (250,226) | 288.6 | 135.5 | 192.1 |
+| Safe: Dad turns off the main switch | happy (402,232) | dad_switch (144,221) | 288.6 | 30.8 | 192.1 |
+
+Minimum clearance across stops and pose frames: 30.8 art pixels.
+The happy Reaction plays at (402,232). Dad enters from the right, faces left while walking, and uses the original switch pose.
+
+
+## Flood Batch 2 — Home and kitchen (approved)
+
+Approved sheet: D:/GameDEV/flood-episode-scratch/art/02-home-kitchen/preview.png. Run from the project root:
+
+```text
+aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=flood_home_more,flood_kitchen,icons_flood_home --script ArtSource/scripts/build.lua
+```
+
+Sources under ArtSource; PNGs in the matching Assets/Art subfolder.
+
+| Source | PNGs | Canvas | Frames | Frame time |
+|---|---|---|---:|---|
+| Level/v2/home_shelf_high.aseprite | home_shelf_high.png | 40×8 | 1 | Still |
+| Level/v2/home_tv_rainfall_red.aseprite | home_tv_rainfall_red.png | 50×27 | 1 | Still |
+| Level/v2/home_window_flood_high.aseprite | home_window_flood_high_0.png, home_window_flood_high_1.png, home_window_flood_high_2.png, home_window_flood_high_3.png | 60×65 | 4 | 180 ms |
+| Level/v2/home_workbook.aseprite | home_workbook.png | 12×7 | 1 | Still |
+| Level/v2/kitchen_jug.aseprite | kitchen_jug.png | 15×18 | 1 | Still |
+| Level/v2/kitchen_rain_drum.aseprite | kitchen_rain_drum.png | 24×32 | 1 | Still |
+| Level/v2/kitchen_window_rain.aseprite | kitchen_window_rain_0.png, kitchen_window_rain_1.png, kitchen_window_rain_2.png, kitchen_window_rain_3.png | 90×55 | 4 | 180 ms |
+| UI/icon_flood_bag_floor.aseprite | icon_flood_bag_floor.png | 16×16 | 1 | Still |
+| UI/icon_flood_bag_up.aseprite | icon_flood_bag_up.png | 16×16 | 1 | Still |
+| UI/icon_flood_boiled_water.aseprite | icon_flood_boiled_water.png | 16×16 | 1 | Still |
+| UI/icon_flood_bridge.aseprite | icon_flood_bridge.png | 16×16 | 1 | Still |
+| UI/icon_flood_leave_now.aseprite | icon_flood_leave_now.png | 16×16 | 1 | Still |
+| UI/icon_flood_rain_drum.aseprite | icon_flood_rain_drum.png | 16×16 | 1 | Still |
+| UI/icon_flood_riverbank.aseprite | icon_flood_riverbank.png | 16×16 | 1 | Still |
+| UI/icon_flood_tap.aseprite | icon_flood_tap.png | 16×16 | 1 | Still |
+| UI/icon_flood_unplug.aseprite | icon_flood_unplug.png | 16×16 | 1 | Still |
+| UI/icon_flood_wait_water.aseprite | icon_flood_wait_water.png | 16×16 | 1 | Still |
+| UI/icon_flood_wipe.aseprite | icon_flood_wipe.png | 16×16 | 1 | Still |
+
+Coordinates are art pixels from the upper left. Actor anchors are the centre of the feet, Student (16,49) and Grown-up (18,61). All other anchors are top left. Floor begins at home y=208 and kitchen y=206. Main walking line y=232. Backgrounds are bottom anchored. The wide view drops rows 0–53.
+
+Home shelf (166,163), 40×8. Bag on floor (120,209), on shelf (166,141); workbook top left bag + (4,-3). Right-facing carry bag offset from feet (-2,-40), one row lower on frames 0 and 2. Shelf height follows the reachup fingertips at feet (162,208). Mom at cabinet (372,214), box (388,171); Mom only changes pose at the ending. Normal 5 Mom (314,220), toy (353,218). Hard 1 Dad (36,215), Mom with Go Bag (61,218), waiting at door. Toy (396,217); phone (432,218), hidden during phone pose. The school bag stays on the shelf throughout evacuation. No Grown-up travels in these four layouts.
+
+Home window (304,72), 60×65, four frames at 180 ms. High waterline y=116 (local 44). Red TV insert (90,95), 50×27 still. Kitchen glass (117,72), 90×55, four frames at 180 ms. Jug (422,145), 15×18; cup (437,151); drum (85,180), 24×32. Props and icons are still. Water gap is measured against the window Floodwater for Hard 1. Other Levels contain no Floodwater pixels. Rain and stored drinking water are excluded.
+
+Choice icons reused: icon_fire_tell_dad (Normal 2), icon_typhoon_stay_home (Normal 5), icon_toy_car and icon_phone_all_day (Hard 1). The two belongings routes in Normal 5 follow the same Safe Choice.
+
+### easy-1
+
+| Act-out | Pose | Feet | Facing | Bag | Minimum water gap |
+|---|---|---|---|---|---|
+| Start | idle | (92,232) | right | floor | No Floodwater |
+| Safe: pick up the school bag | crouch | (118,232) | right | floor | No Floodwater |
+| Safe: carry the bag and workbook | carry | (146,222) | right | carry | No Floodwater |
+| Safe: place the bag on the shelf | reachup | (162,208) | right | shelf | No Floodwater |
+| Ending: Mom cheers | happy | (162,210) | right | shelf | No Floodwater |
+| Leave it: stop toward the sofa | wait | (285,232) | right | floor | No Floodwater |
+
+Level minimum: no Floodwater.
+
+### normal-3
+
+| Act-out | Pose | Feet | Facing | Bag | Minimum water gap |
+|---|---|---|---|---|---|
+| Start | idle | (243,232) | right | — | No Floodwater |
+| Safe: walk to the counter | walk | (381,232) | right | — | No Floodwater |
+| Safe: reach toward the covered jug and cup | reach | (455,209) | left | — | No Floodwater |
+| Ending: drinking water choice | happy | (455,211) | right | — | No Floodwater |
+| Rain drum: stop beside the screen door | reach | (112,221) | left | — | No Floodwater |
+| Tap: stop short of the sink | reach | (187,216) | left | — | No Floodwater |
+
+Level minimum: no Floodwater.
+
+### normal-5
+
+| Act-out | Pose | Feet | Facing | Bag | Minimum water gap |
+|---|---|---|---|---|---|
+| Start | idle | (188,232) | right | floor | No Floodwater |
+| Safe: stay with Mom | walk | (259,232) | right | floor | No Floodwater |
+| Safe: sit beside Mom | sit | (340,222) | right | floor | No Floodwater |
+| Ending beside Mom | happy | (341,223) | right | floor | No Floodwater |
+| Optional: pick up bag | crouch | (118,232) | right | floor | No Floodwater |
+| Safe: carry the bag and workbook | carry | (146,222) | right | carry | No Floodwater |
+| Safe: place the bag on the shelf | reachup | (162,208) | right | shelf | No Floodwater |
+| Optional: sit beside Mom | sit | (340,222) | right | shelf | No Floodwater |
+| Optional ending | happy | (341,223) | right | shelf | No Floodwater |
+| Riverbank: stop before the closed door | wait | (76,232) | left | floor | No Floodwater |
+| Bridge: stop farther back | wait | (108,232) | left | floor | No Floodwater |
+
+Level minimum: no Floodwater.
+
+### hard-1
+
+| Act-out | Pose | Feet | Facing | Bag | Minimum water gap |
+|---|---|---|---|---|---|
+| Start: Red Rainfall Warning | surprised | (246,232) | right | shelf | 106.5 px |
+| Safe: walk to the front door | walk | (154,232) | left | shelf | 165.3 px |
+| Safe: join Mom and Dad | idle | (83,225) | left | shelf | 229.5 px |
+| Ending: ready to leave | happy | (83,225) | right | shelf | 229.5 px |
+| Wait: sit by the sofa | sit | (324,225) | right | shelf | 87.0 px |
+| Toy: stop beside it | crouch | (389,232) | right | shelf | 94.8 px |
+| Game: stop to use the phone | phone | (432,232) | right | shelf | 111.5 px |
+
+Level minimum: 87.0 px.
+Hard 1 Caption centre x=268 in both aspect ratios, 28 art pixels right of centre, to clear both TV lines. Normal 3 cup leaves the counter during the safe reach: cup top left at feet + (-19,-32), then (+5,-32) for the ending. This stages the cup in hand with the Student on dry floor.
+
+
+## Flood Batch 3 — Outdoor Floodwater (approved)
+
+Approved review: D:/GameDEV/flood-episode-scratch/art/03-outdoor/preview.png. Run from the project root:
+
+~~~text
+aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=flood_outdoor,icons_flood_outdoor --script ArtSource/scripts/build.lua
+~~~
+
+All coordinates are art pixels from the top left. Student feet register at (16,49), Grown-up feet at (18,61). Backgrounds anchor at the bottom. Full-size overlay top left (0,0). The 2400×1080 crop removes rows 0–53. Pink outlines are the Caption, Hint and Pause.
+
+Yard: lawn behind the actors begins at y=175, walking line y=231. Ball and ripple top left (309,208), 16×11, two frames at 400 ms. Mom enters from off-screen left (-18,226) to (89,226).
+
+Schoolyard: flooded road starts at y=166 on the far left; dry forecourt walking line y=238 rises to the doorway threshold at y=221. Teacher stays at (211,220).
+
+Storm street: road y=148–187; near pavement y=188 onward. Walking lines Student y=234, Dad y=225. Bridge (96,158), 60×24, still. Deck shows the scrolling water underneath. Route sign (379,93) points right. Dad waits at his start on all Unsafe branches.
+
+Overlay timing: yard two frames at 400 ms. Schoolyard and street four frames at 180 ms; current runs left. Light Rain covers each view, three frames at 120 ms, using the source alpha. Yard and storm street reuse their own Dark Sky layers. Reused Choice icon: icon_fire_tell_mom for Normal 1.
+
+### normal-1
+
+| Step | Student pose and feet | Grown-up pose and feet | Smallest gap (px) |
+|---|---|---|---:|
+| Start: ball on the water | idle (135,231) facing right | off-screen | 88.7 |
+| Safe: turn away and call Mom | call (117,231) facing left | off-screen | 110.5 |
+| Safe: Mom enters from the left | idle (117,231) facing left | mom_walk (20,226) facing right | 106.6 |
+| Safe: Mom joins the Student | idle (117,231) facing left | mom_walk (89,226) facing right | 106.6 |
+| Ending with Mom | happy (117,231) facing right | mom_idle (89,226) facing right | 106.6 |
+| Wade for ball: stop on grass | reach (186,231) facing right | off-screen | 42.2 |
+| Splash: stop on grass | walk (163,231) facing right | off-screen | 57.9 |
+
+Minimum including walks: 35.4 art pixels. Happy Reaction top left (84,150), 67×26.
+
+### normal-4
+
+| Step | Student pose and feet | Grown-up pose and feet | Smallest gap (px) |
+|---|---|---|---:|
+| Start: road past gate flooded | idle (273,238) facing left | teacher_idle (211,220) facing right | 107.5 |
+| Safe: walk toward Teacher | walk (246,232) facing left | teacher_idle (211,220) facing right | 107.5 |
+| Safe: wait under roof | wait (231,221) facing left | teacher_idle (211,220) facing right | 107.5 |
+| Ending at the doorway | happy (231,221) facing right | teacher_idle (211,220) facing right | 107.5 |
+| Cross: stop before flooded exit | wait (151,238) facing left | teacher_idle (211,220) facing right | 43.2 |
+| Wade: stop to reach for shoes | crouch (173,236) facing left | teacher_idle (211,220) facing right | 64.4 |
+
+Minimum including walks: 40.3 art pixels. Happy Reaction top left (198,140), 67×26.
+
+### hard-2
+
+| Step | Student pose and feet | Grown-up pose and feet | Smallest gap (px) |
+|---|---|---|---:|
+| Start: low road flooded | idle (209,234) facing right | dad_idle (237,225) facing right | 36.0 |
+| Safe: walk east with Dad | walk (291,234) facing right | dad_walk (323,225) facing right | 61.6 |
+| Safe: follow evacuation sign | walk (377,234) facing right | dad_walk (407,225) facing right | 135.7 |
+| Ending on the high road | happy (377,234) facing right | dad_idle (407,225) facing right | 140.7 |
+| Cross: stop on near pavement | wait (175,229) facing left | dad_idle (237,225) facing right | 36.0 |
+| Bridge: stop facing the deck | reach (123,228) facing left | dad_idle (237,225) facing right | 36.0 |
+| Barefoot: stop to reach for shoes | crouch (152,231) facing left | dad_idle (237,225) facing right | 36.0 |
+
+Minimum including walks: 36.0 art pixels. Happy Reaction top left (344,153), 67×26.
+
+### File inventory
+
+| Aseprite source under ArtSource | PNGs under matching Assets/Art folder | Size | Frames | Frame time |
+|---|---|---|---:|---|
+| Level/v2/flood_ball.aseprite | flood_ball_0.png, flood_ball_1.png | 16×11 | 2 | 400 |
+| Level/v2/flood_schoolyard.aseprite | flood_schoolyard_0.png, flood_schoolyard_1.png, flood_schoolyard_2.png, flood_schoolyard_3.png | 480×270 | 4 | 180 |
+| Level/v2/flood_street_storm.aseprite | flood_street_storm_0.png, flood_street_storm_1.png, flood_street_storm_2.png, flood_street_storm_3.png | 480×270 | 4 | 180 |
+| Level/v2/flood_yard.aseprite | flood_yard_0.png, flood_yard_1.png | 480×270 | 2 | 400 |
+| Level/v2/street_storm_bridge.aseprite | street_storm_bridge.png | 60×24 | 1 | Still |
+| UI/icon_flood_cross_water.aseprite | icon_flood_cross_water.png | 16×16 | 1 | Still |
+| UI/icon_flood_flooded_bridge.aseprite | icon_flood_flooded_bridge.png | 16×16 | 1 | Still |
+| UI/icon_flood_high_road.aseprite | icon_flood_high_road.png | 16×16 | 1 | Still |
+| UI/icon_flood_shoes_off.aseprite | icon_flood_shoes_off.png | 16×16 | 1 | Still |
+| UI/icon_flood_splash.aseprite | icon_flood_splash.png | 16×16 | 1 | Still |
+| UI/icon_flood_stay_teacher.aseprite | icon_flood_stay_teacher.png | 16×16 | 1 | Still |
+| UI/icon_flood_wade_ball.aseprite | icon_flood_wade_ball.png | 16×16 | 1 | Still |
+| UI/icon_flood_wade_barefoot.aseprite | icon_flood_wade_barefoot.png | 16×16 | 1 | Still |
+
+
+## Flood Batch 4 — Provincial creek (approved)
+
+Approved sheet: D:/GameDEV/flood-episode-scratch/art/04-creek/preview.png. Run from the project root:
+
+~~~text
+aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=creek,icons_flood_creek --script ArtSource/scripts/build.lua
+~~~
+
+All positions are art pixels from the upper left. The creek background is bottom anchored. Floodwater top left (0,99), 386×83, four frames at 180 ms. Flow is left, toward the foreground. The bridge is drawn into the background at (314,99). The water mask leaves its railings and deck clear. Rain has stopped. Stones (56,223), 21×9. Four new 16×16 Choice icons; no reused icons.
+
+There is no flat indoor floor line. The dry dirt path slopes from the left foreground toward the houses. Safe walking line runs through (177,227), (212,218), (279,204) and (332,188). Mom holds mom_idle facing left at (352,180). Actor coordinates mark the feet: Student local (16,49), Mom (18,61). Happy Reaction top left (299,107), 67×26.
+
+| Step | Student pose | Feet | Facing | Student gap | Mom gap |
+|---|---|---|---|---:|---:|
+| Start on the dirt path | idle | (177,227) | right | 83.0 px | 65.7 px |
+| Safe: turn toward home | walk | (212,218) | right | 75.4 px | 65.7 px |
+| Safe: follow the upper path | walk | (279,204) | right | 66.8 px | 65.7 px |
+| Safe: join Mom | idle | (332,188) | right | 66.7 px | 65.7 px |
+| Ending with Mom | happy | (332,188) | right | 66.7 px | 65.7 px |
+| Swim: stop well back | wait | (109,222) | left | 56.8 px | 65.7 px |
+| Fish: crouch on dry ground | crouch | (144,217) | left | 64.3 px | 65.7 px |
+| Stones: stop before picking one up | reach | (82,232) | left | 58.5 px | 65.7 px |
+
+Minimum over both Students, Mom, all pose frames and all six walk segments: 55.4 px.
+### Provincial neighborhood
+
+Eight homes are built into bg_creek. Facade left x and base y, far bank: (11,115), (58,118), (116,105), (156,109), (220,105), (272,102). Near the path: (439,127) and (377,139). Two covered porches face the lanes.
+
+### File inventory
+
+| Aseprite source under ArtSource | PNGs under matching Assets/Art folder | Size | Frames | Frame time |
+|---|---|---|---:|---|
+| Level/v2/bg_creek.aseprite | bg_creek.png | 480×270 | 1 | Still |
+| Level/v2/creek_stones.aseprite | creek_stones.png | 21×9 | 1 | Still |
+| Level/v2/creek_water.aseprite | creek_water_0.png, creek_water_1.png, creek_water_2.png, creek_water_3.png | 386×83 | 4 | 180 |
+| UI/icon_flood_fish.aseprite | icon_flood_fish.png | 16×16 | 1 | Still |
+| UI/icon_flood_swim.aseprite | icon_flood_swim.png | 16×16 | 1 | Still |
+| UI/icon_flood_throw_stones.aseprite | icon_flood_throw_stones.png | 16×16 | 1 | Still |
+| UI/icon_flood_walk_home.aseprite | icon_flood_walk_home.png | 16×16 | 1 | Still |
+
+
+## Flood Batch 5 — Easy street and yard props (approved)
+
+Approved sheet: D:/GameDEV/flood-episode-scratch/art/05-easy-props/preview.png. Run from the project root:
+
+~~~text
+aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=flood_street,flood_yard_easy,icons_flood_easy --script ArtSource/scripts/build.lua
+~~~
+
+Positions are art pixels from the upper left. Prop coordinates mark the top left. Student feet register at (16,49), Dad at (18,61). Backgrounds anchor at the bottom. Both Levels use daylight with Rain off. All new props and icons are stills; the Act-outs switch prop states. No new Student pose or reused Choice icon.
+
+Easy 2: near pavement begins at y=191, walking line y=233–234. Dry grate (92,188), covered bin (304,199), bin slot near (312,205). The Student keeps the wrapper at the canal stop. Right-facing wrapper top-left offsets from the sprite top left for walk frames 0–3 are (8,32), (13,31), (18,32), (13,31) for the boy; add 3 to y for the girl. Reach (25+f,22-f); crouch (23,42+f), f=0 or 1. Mirror the full composite when facing left. At release draw only the top two rows at (312,204), then hide.
+
+Easy 3: near lawn begins at y=175; walking line y=232–233. Upright can (193,220); tipped can (193,222). Full tire (302,217); tire on edge (302,203). Dad stays at (291,232), facing right. Switch to dad_kneel before changing the tire state. The existing crouch palm meets the left side of the can as it tips away from the Student. Wet patches extend to the right of both containers.
+
+### easy-2
+
+| Step | Student pose | Feet | Facing | Prop state | Floodwater gap |
+|---|---|---|---|---|---|
+| Start with wrapper | walk | (203,233) | right | held | No Floodwater |
+| Safe: walk to the covered bin | walk | (260,234) | right | held | No Floodwater |
+| Safe: reach over the slot | reach | (299,232) | right | held | No Floodwater |
+| Safe: let the wrapper drop | reach | (299,232) | right | dropping | No Floodwater |
+| Ending at the bin | happy | (299,232) | right | gone | No Floodwater |
+| Canal: stop with wrapper in hand | crouch | (151,216) | left | held | No Floodwater |
+
+Minimum Floodwater gap: not applicable; no Floodwater layer. The can and tire contain ordinary rainwater. Happy Reaction 67×26 at (266,151).
+
+### easy-3
+
+| Step | Student pose | Feet | Facing | Prop state | Floodwater gap |
+|---|---|---|---|---|---|
+| Start after the rain | idle | (142,233) | right | full | No Floodwater |
+| Safe: walk to the can | walk | (174,232) | right | full | No Floodwater |
+| Safe: crouch beside the can | crouch | (187,232) | right | full | No Floodwater |
+| Safe: tip the can | crouch | (187,232) | right | can | No Floodwater |
+| Safe: Dad kneels to tip the tire | idle | (208,232) | right | kneel | No Floodwater |
+| Safe: tire on edge | idle | (208,232) | right | both | No Floodwater |
+| Ending: both containers drained | happy | (208,232) | right | both | No Floodwater |
+| Leave it: stop past the full can | wait | (235,232) | right | full | No Floodwater |
+
+Minimum Floodwater gap: not applicable; no Floodwater layer. The can and tire contain ordinary rainwater. Happy Reaction 67×26 at (175,151).
+
+### File inventory
+
+| Aseprite source under ArtSource | PNGs under matching Assets/Art folder | Size | Frames | Frame time |
+|---|---|---|---:|---|
+| Level/v2/street_canal_grate.aseprite | street_canal_grate.png | 51×13 | 1 | Still |
+| Level/v2/street_trash_bin.aseprite | street_trash_bin.png | 38×35 | 1 | Still |
+| Level/v2/street_wrapper.aseprite | street_wrapper.png | 8×6 | 1 | Still |
+| Level/v2/yard_can_tipped.aseprite | yard_can_tipped.png | 25×13 | 1 | Still |
+| Level/v2/yard_can_water.aseprite | yard_can_water.png | 12×14 | 1 | Still |
+| Level/v2/yard_tire_tipped.aseprite | yard_tire_tipped.png | 41×30 | 1 | Still |
+| Level/v2/yard_tire_water.aseprite | yard_tire_water.png | 31×17 | 1 | Still |
+| UI/icon_flood_canal.aseprite | icon_flood_canal.png | 16×16 | 1 | Still |
+| UI/icon_flood_leave_water.aseprite | icon_flood_leave_water.png | 16×16 | 1 | Still |
+| UI/icon_flood_tip_water.aseprite | icon_flood_tip_water.png | 16×16 | 1 | Still |
+| UI/icon_flood_trash_bin.aseprite | icon_flood_trash_bin.png | 16×16 | 1 | Still |
+
+
+## Flood Batch 6 — After the flood (approved)
+
+Approved sheet: D:/GameDEV/flood-episode-scratch/art/06-after/preview.png. Run from the project root:
+
+~~~text
+aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=flood_after,student_flood,icons_flood_after --script-param poses=wash --script ArtSource/scripts/build.lua
+~~~
+
+Actor anchors are the feet, local (16,49) for the Student and (18,61) for Mom. All props register at their top left. Coordinates are art pixels from the upper left. Backgrounds are bottom anchored. Pink outlines show the Caption, Hint and Pause in both screen crops. Mom holds her listed position throughout each Level.
+
+Hard 4: dry slab begins at y=156. Walking line y=231–235. Basin with soap (293,216), stored dipper (298,213). Hide stored dipper during wash, when the Student holds it. Wash loops two frames at 300 ms. Rain and Floodwater off.
+
+Hard 5 and 6: floor begins at y=208, main walking line y=232. Mud (0,184), matte smears confined to door area. Hard 5 bread (380,221), cat (34,190). Carried bread follows the feet at (-21,-32) facing left or (-2,-32) right. Handoff offset (-24,-32); Mom holds at (286,204). Crouching lift offset (+5,-12). Hard 6 switch box (148,161), outlet (72,188), fan (89,173), held off on frame 0.
+
+Hard 7 uses bg_street because bg_street_after shows fire damage and a fire engine. Near pavement starts at y=191. Start line y=233; route to the home passes left of the cart. Mud (279,177), leftover water (281,149), two frames at 400 ms. One small slipper floats in the patch. Choice icon reused: icon_typhoon_keep_playing.
+
+### hard-4
+
+Mom: mom_sit at (118,236), facing right.
+
+| Act-out | Pose | Feet | Facing | Prop state | Min. water gap |
+|---|---|---|---|---|---|
+| Start on the slab | idle | (224,232) | right | default | No Floodwater |
+| Safe: walk to the basin | walk | (267,231) | right | default | No Floodwater |
+| Safe: wash feet | wash | (278,231) | right | default | No Floodwater |
+| Safe: walk to Mom on the mat | walk | (189,235) | left | default | No Floodwater |
+| Safe: tell Mom | call | (145,235) | left | default | No Floodwater |
+| Ending beside Mom | happy | (145,235) | right | default | No Floodwater |
+| Shirt: stop crouching | crouch | (235,232) | right | default | No Floodwater |
+| Play: stop toward open court | walk | (357,232) | right | default | No Floodwater |
+| Dry: sit at the mat edge | sit | (205,237) | right | default | No Floodwater |
+
+Happy Reaction top left (112,154), 67×26. Minimum including walks: no Floodwater.
+
+### hard-5
+
+Mom: mom_idle at (280,230), facing right.
+
+| Act-out | Pose | Feet | Facing | Prop state | Min. water gap |
+|---|---|---|---|---|---|
+| Start by the cabinet | idle | (354,233) | right | default | No Floodwater |
+| Safe: pick up damp bread | crouch | (374,232) | right | default | No Floodwater |
+| Safe: carry to Mom | carry | (339,232) | left | carry | No Floodwater |
+| Safe: hand over the bag | reach | (302,232) | left | handoff | No Floodwater |
+| Ending: Mom holds the bread | happy | (305,232) | right | mom | No Floodwater |
+| Eat: stop holding bread low | carry | (377,233) | right | carry | No Floodwater |
+| Wipe: stop before wiping | crouch | (364,232) | right | lift | No Floodwater |
+| Cat: stop inside the room | carry | (115,235) | left | carry | No Floodwater |
+
+Happy Reaction top left (272,151), 67×26. Minimum including walks: no Floodwater.
+
+### hard-6
+
+Mom: mom_sit at (314,220), facing right.
+
+| Act-out | Pose | Feet | Facing | Prop state | Min. water gap |
+|---|---|---|---|---|---|
+| Start with the power off | idle | (236,233) | right | default | No Floodwater |
+| Safe: walk to Mom | walk | (273,232) | right | default | No Floodwater |
+| Safe: sit beside Mom | sit | (338,223) | right | default | No Floodwater |
+| Ending beside Mom | happy | (340,227) | right | default | No Floodwater |
+| TV: stop short | reach | (136,229) | left | default | No Floodwater |
+| Fan: stop before the outlet | reach | (125,236) | left | default | No Floodwater |
+| Switch: stop before the box | reachup | (177,231) | left | default | No Floodwater |
+
+Happy Reaction top left (307,146), 67×26. Minimum including walks: no Floodwater.
+
+### hard-7
+
+Mom: mom_idle at (201,183), facing right.
+
+| Act-out | Pose | Feet | Facing | Prop state | Min. water gap |
+|---|---|---|---|---|---|
+| Start on the near pavement | idle | (212,233) | right | default | 81.0 px |
+| Safe: walk toward home | walk | (183,213) | left | default | 81.0 px |
+| Safe: pass the cart on its left | walk | (181,190) | right | default | 81.0 px |
+| Safe: join Mom at the door | idle | (177,188) | right | default | 81.0 px |
+| Ending at home | happy | (177,188) | right | default | 81.0 px |
+| See: stop on the pavement | wait | (244,233) | right | default | 79.2 px |
+| Mud: stop before the road edge | crouch | (300,224) | right | default | 58.0 px |
+| Water: stop on dry pavement | reach | (313,216) | right | default | 50.0 px |
+
+Happy Reaction top left (144,107), 67×26. Minimum including walks: 50.0 px.
+
+### File inventory
+
+| Aseprite source under ArtSource | PNGs under matching Assets/Art folder | Size | Frames | Frame time |
+|---|---|---|---:|---|
+| Level/v2/evacuation_area_basin.aseprite | evacuation_area_basin.png | 36×16 | 1 | Still |
+| Level/v2/evacuation_area_dipper.aseprite | evacuation_area_dipper.png | 12×8 | 1 | Still |
+| Level/v2/flood_street_leftover.aseprite | flood_street_leftover_0.png, flood_street_leftover_1.png | 65×17 | 2 | 400 |
+| Level/v2/home_after_bread.aseprite | home_after_bread.png | 20×13 | 1 | Still |
+| Level/v2/home_after_mud.aseprite | home_after_mud.png | 105×33 | 1 | Still |
+| Level/v2/street_mud.aseprite | street_mud.png | 98×12 | 1 | Still |
+| Student/boy_wash.aseprite | boy_wash_0.png, boy_wash_1.png | 32×50 | 2 | 300 |
+| Student/girl_wash.aseprite | girl_wash_0.png, girl_wash_1.png | 32×50 | 2 | 300 |
+| UI/icon_flood_eat_bread.aseprite | icon_flood_eat_bread.png | 16×16 | 1 | Still |
+| UI/icon_flood_feed_cat.aseprite | icon_flood_feed_cat.png | 16×16 | 1 | Still |
+| UI/icon_flood_give_bread.aseprite | icon_flood_give_bread.png | 16×16 | 1 | Still |
+| UI/icon_flood_let_dry.aseprite | icon_flood_let_dry.png | 16×16 | 1 | Still |
+| UI/icon_flood_pick_water.aseprite | icon_flood_pick_water.png | 16×16 | 1 | Still |
+| UI/icon_flood_play_mud.aseprite | icon_flood_play_mud.png | 16×16 | 1 | Still |
+| UI/icon_flood_plug_fan.aseprite | icon_flood_plug_fan.png | 16×16 | 1 | Still |
+| UI/icon_flood_see_street.aseprite | icon_flood_see_street.png | 16×16 | 1 | Still |
+| UI/icon_flood_stay_mom.aseprite | icon_flood_stay_mom.png | 16×16 | 1 | Still |
+| UI/icon_flood_switch_box.aseprite | icon_flood_switch_box.png | 16×16 | 1 | Still |
+| UI/icon_flood_turn_on_tv.aseprite | icon_flood_turn_on_tv.png | 16×16 | 1 | Still |
+| UI/icon_flood_wait_check.aseprite | icon_flood_wait_check.png | 16×16 | 1 | Still |
+| UI/icon_flood_wash_feet.aseprite | icon_flood_wash_feet.png | 16×16 | 1 | Still |
+| UI/icon_flood_wipe_bread.aseprite | icon_flood_wipe_bread.png | 16×16 | 1 | Still |
+| UI/icon_flood_wipe_shirt.aseprite | icon_flood_wipe_shirt.png | 16×16 | 1 | Still |
+
+
+## Flood Batch 7 — Flood menu backgrounds (approved)
+
+Approved review: D:/GameDEV/flood-episode-scratch/art/07-menu/preview.png. The Hard menu uses the revised raised road with a grassy embankment and a covered Evacuation Center entrance.
+
+~~~text
+aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=menu_flood --script ArtSource/scripts/build.lua
+~~~
+
+| Source in ArtSource/Background | Export in Assets/Art/Background | Canvas | Frames | Timing |
+|---|---|---|---:|---|
+| bg_menu_flood_easy.aseprite | bg_menu_flood_easy.png | 480×270 | 1 | Still |
+| bg_menu_flood_episode.aseprite | bg_menu_flood_episode.png | 480×270 | 1 | Still |
+| bg_menu_flood_hard.aseprite | bg_menu_flood_hard.png | 480×270 | 1 | Still |
+| bg_menu_flood_normal.aseprite | bg_menu_flood_normal.png | 480×270 | 1 | Still |
+
+All four stills are 480×270, bottom anchored, in Background/. Each has a matching Aseprite source. No actor starts, walk paths, Choice icons or animated art in this batch. No people are painted into the backgrounds. Water gaps for actors do not apply.
+
+Placement previews reconstruct the header, Back, Difficulty cards and lock extents, Level slots including selection frame, Start, Menu Student and speech bubble from ProjectBuilder.cs. The Backdrop tint is included. Controls are outlined for visibility. 1920×1080 uses 4× art. 2400×1080 uses 5× art and crops rows 0–53. Both checks conservatively reserve the optional speech bubble. Distances below are between background landmarks and control rectangles, in art pixels.
+
+### episode
+
+Near grassy bank begins near y=170 at left and curves down to the lower right. Houses at x=93,153,236,371,433, upstream palm (69,131).
+
+| Landmark and bounds (left, top, right, bottom) | 1920 clearance | 2400 clearance |
+|---|---:|---:|
+| bridge (1, 119, 55, 176) | 12.5 | 30.7 |
+| water gauge (46, 152, 54, 186) | 13.5 | 31.7 |
+| visible current (263, 218, 284, 222) | 28.0 | 6.8 |
+
+### easy
+
+Door opening (15,71), floor/threshold y=202, outer step y=211, path starts y=222. Outdoor rain ends at the sheltered facade.
+
+| Landmark and bounds (left, top, right, bottom) | 1920 clearance | 2400 clearance |
+|---|---:|---:|
+| book and bag (41, 97, 61, 123) | 85.0 | 78.5 |
+| shelf (29, 122, 75, 132) | 80.5 | 70.5 |
+| left boot (42, 183, 59, 204) | 25.0 | 29.3 |
+| right boot (62, 183, 79, 204) | 25.0 | 29.3 |
+
+### normal
+
+Road y=143–200, moving-looking water starts around y=150. The gate spans the threshold at y=201. Dry pavement begins at y=201.
+
+| Landmark and bounds (left, top, right, bottom) | 1920 clearance | 2400 clearance |
+|---|---:|---:|
+| left gatepost (22, 86, 40, 203) | 26.0 | 30.3 |
+| right gatepost (466, 86, 479, 200) | 2.5 | 1.2 |
+| flooded road sample (97, 187, 139, 191) | 28.5 | 4.0 |
+| dry forecourt sample (104, 209, 146, 216) | 19.1 | 26.0 |
+
+### hard
+
+Paved road enters at (0,255), bends at (300,162), and meets the landing at (416,125). The uphill verge connects to the houses on the left. A grass-and-earth bank slopes down to the flooded field on the right. Center roof (355,57), porch landing (357,119), route board (99,198), far houses (42,112) and (113,107).
+
+| Landmark and bounds (left, top, right, bottom) | 1920 clearance | 2400 clearance |
+|---|---:|---:|
+| center sign (362, 73, 469, 90) | 1.5 | 21.4 |
+| route sign and arrow (99, 198, 182, 222) | 3.2 | 10.6 |
+| open road sample (194, 193, 214, 203) | 20.0 | 10.0 |
+| flooded field sample (320, 228, 359, 240) | 25.0 | 21.1 |
+
+## Flood art file inventory
+
+<details>
+<summary>Batch 1 — home seep (6 sources, 13 PNGs)</summary>
+
+~~~text
+ArtSource/Level/v2/home_fan.aseprite
+ArtSource/Level/v2/home_flood_seep_1.aseprite
+ArtSource/Level/v2/home_flood_seep_2.aseprite
+ArtSource/Level/v2/home_flood_seep_3.aseprite
+ArtSource/Level/v2/home_outlet_low.aseprite
+ArtSource/Level/v2/home_window_flood.aseprite
+Assets/Art/Level/v2/home_fan_0.png
+Assets/Art/Level/v2/home_fan_1.png
+Assets/Art/Level/v2/home_flood_seep_1_0.png
+Assets/Art/Level/v2/home_flood_seep_1_1.png
+Assets/Art/Level/v2/home_flood_seep_2_0.png
+Assets/Art/Level/v2/home_flood_seep_2_1.png
+Assets/Art/Level/v2/home_flood_seep_3_0.png
+Assets/Art/Level/v2/home_flood_seep_3_1.png
+Assets/Art/Level/v2/home_outlet_low.png
+Assets/Art/Level/v2/home_window_flood_0.png
+Assets/Art/Level/v2/home_window_flood_1.png
+Assets/Art/Level/v2/home_window_flood_2.png
+Assets/Art/Level/v2/home_window_flood_3.png
+~~~
+
+</details>
+
+<details>
+<summary>Batch 2 — home kitchen (18 sources, 24 PNGs)</summary>
+
+~~~text
+ArtSource/Level/v2/home_shelf_high.aseprite
+ArtSource/Level/v2/home_tv_rainfall_red.aseprite
+ArtSource/Level/v2/home_window_flood_high.aseprite
+ArtSource/Level/v2/home_workbook.aseprite
+ArtSource/Level/v2/kitchen_jug.aseprite
+ArtSource/Level/v2/kitchen_rain_drum.aseprite
+ArtSource/Level/v2/kitchen_window_rain.aseprite
+ArtSource/UI/icon_flood_bag_floor.aseprite
+ArtSource/UI/icon_flood_bag_up.aseprite
+ArtSource/UI/icon_flood_boiled_water.aseprite
+ArtSource/UI/icon_flood_bridge.aseprite
+ArtSource/UI/icon_flood_leave_now.aseprite
+ArtSource/UI/icon_flood_rain_drum.aseprite
+ArtSource/UI/icon_flood_riverbank.aseprite
+ArtSource/UI/icon_flood_tap.aseprite
+ArtSource/UI/icon_flood_unplug.aseprite
+ArtSource/UI/icon_flood_wait_water.aseprite
+ArtSource/UI/icon_flood_wipe.aseprite
+Assets/Art/Level/v2/home_shelf_high.png
+Assets/Art/Level/v2/home_tv_rainfall_red.png
+Assets/Art/Level/v2/home_window_flood_high_0.png
+Assets/Art/Level/v2/home_window_flood_high_1.png
+Assets/Art/Level/v2/home_window_flood_high_2.png
+Assets/Art/Level/v2/home_window_flood_high_3.png
+Assets/Art/Level/v2/home_workbook.png
+Assets/Art/Level/v2/kitchen_jug.png
+Assets/Art/Level/v2/kitchen_rain_drum.png
+Assets/Art/Level/v2/kitchen_window_rain_0.png
+Assets/Art/Level/v2/kitchen_window_rain_1.png
+Assets/Art/Level/v2/kitchen_window_rain_2.png
+Assets/Art/Level/v2/kitchen_window_rain_3.png
+Assets/Art/UI/icon_flood_bag_floor.png
+Assets/Art/UI/icon_flood_bag_up.png
+Assets/Art/UI/icon_flood_boiled_water.png
+Assets/Art/UI/icon_flood_bridge.png
+Assets/Art/UI/icon_flood_leave_now.png
+Assets/Art/UI/icon_flood_rain_drum.png
+Assets/Art/UI/icon_flood_riverbank.png
+Assets/Art/UI/icon_flood_tap.png
+Assets/Art/UI/icon_flood_unplug.png
+Assets/Art/UI/icon_flood_wait_water.png
+Assets/Art/UI/icon_flood_wipe.png
+~~~
+
+</details>
+
+<details>
+<summary>Batch 3 — outdoor (13 sources, 21 PNGs)</summary>
+
+~~~text
+ArtSource/Level/v2/flood_ball.aseprite
+ArtSource/Level/v2/flood_schoolyard.aseprite
+ArtSource/Level/v2/flood_street_storm.aseprite
+ArtSource/Level/v2/flood_yard.aseprite
+ArtSource/Level/v2/street_storm_bridge.aseprite
+ArtSource/UI/icon_flood_cross_water.aseprite
+ArtSource/UI/icon_flood_flooded_bridge.aseprite
+ArtSource/UI/icon_flood_high_road.aseprite
+ArtSource/UI/icon_flood_shoes_off.aseprite
+ArtSource/UI/icon_flood_splash.aseprite
+ArtSource/UI/icon_flood_stay_teacher.aseprite
+ArtSource/UI/icon_flood_wade_ball.aseprite
+ArtSource/UI/icon_flood_wade_barefoot.aseprite
+Assets/Art/Level/v2/flood_ball_0.png
+Assets/Art/Level/v2/flood_ball_1.png
+Assets/Art/Level/v2/flood_schoolyard_0.png
+Assets/Art/Level/v2/flood_schoolyard_1.png
+Assets/Art/Level/v2/flood_schoolyard_2.png
+Assets/Art/Level/v2/flood_schoolyard_3.png
+Assets/Art/Level/v2/flood_street_storm_0.png
+Assets/Art/Level/v2/flood_street_storm_1.png
+Assets/Art/Level/v2/flood_street_storm_2.png
+Assets/Art/Level/v2/flood_street_storm_3.png
+Assets/Art/Level/v2/flood_yard_0.png
+Assets/Art/Level/v2/flood_yard_1.png
+Assets/Art/Level/v2/street_storm_bridge.png
+Assets/Art/UI/icon_flood_cross_water.png
+Assets/Art/UI/icon_flood_flooded_bridge.png
+Assets/Art/UI/icon_flood_high_road.png
+Assets/Art/UI/icon_flood_shoes_off.png
+Assets/Art/UI/icon_flood_splash.png
+Assets/Art/UI/icon_flood_stay_teacher.png
+Assets/Art/UI/icon_flood_wade_ball.png
+Assets/Art/UI/icon_flood_wade_barefoot.png
+~~~
+
+</details>
+
+<details>
+<summary>Batch 4 — creek (7 sources, 10 PNGs)</summary>
+
+~~~text
+ArtSource/Level/v2/bg_creek.aseprite
+ArtSource/Level/v2/creek_stones.aseprite
+ArtSource/Level/v2/creek_water.aseprite
+ArtSource/UI/icon_flood_fish.aseprite
+ArtSource/UI/icon_flood_swim.aseprite
+ArtSource/UI/icon_flood_throw_stones.aseprite
+ArtSource/UI/icon_flood_walk_home.aseprite
+Assets/Art/Level/v2/bg_creek.png
+Assets/Art/Level/v2/creek_stones.png
+Assets/Art/Level/v2/creek_water_0.png
+Assets/Art/Level/v2/creek_water_1.png
+Assets/Art/Level/v2/creek_water_2.png
+Assets/Art/Level/v2/creek_water_3.png
+Assets/Art/UI/icon_flood_fish.png
+Assets/Art/UI/icon_flood_swim.png
+Assets/Art/UI/icon_flood_throw_stones.png
+Assets/Art/UI/icon_flood_walk_home.png
+~~~
+
+</details>
+
+<details>
+<summary>Batch 5 — easy props (11 sources, 11 PNGs)</summary>
+
+~~~text
+ArtSource/Level/v2/street_canal_grate.aseprite
+ArtSource/Level/v2/street_trash_bin.aseprite
+ArtSource/Level/v2/street_wrapper.aseprite
+ArtSource/Level/v2/yard_can_tipped.aseprite
+ArtSource/Level/v2/yard_can_water.aseprite
+ArtSource/Level/v2/yard_tire_tipped.aseprite
+ArtSource/Level/v2/yard_tire_water.aseprite
+ArtSource/UI/icon_flood_canal.aseprite
+ArtSource/UI/icon_flood_leave_water.aseprite
+ArtSource/UI/icon_flood_tip_water.aseprite
+ArtSource/UI/icon_flood_trash_bin.aseprite
+Assets/Art/Level/v2/street_canal_grate.png
+Assets/Art/Level/v2/street_trash_bin.png
+Assets/Art/Level/v2/street_wrapper.png
+Assets/Art/Level/v2/yard_can_tipped.png
+Assets/Art/Level/v2/yard_can_water.png
+Assets/Art/Level/v2/yard_tire_tipped.png
+Assets/Art/Level/v2/yard_tire_water.png
+Assets/Art/UI/icon_flood_canal.png
+Assets/Art/UI/icon_flood_leave_water.png
+Assets/Art/UI/icon_flood_tip_water.png
+Assets/Art/UI/icon_flood_trash_bin.png
+~~~
+
+</details>
+
+<details>
+<summary>Batch 6 — after (23 sources, 26 PNGs)</summary>
+
+~~~text
+ArtSource/Level/v2/evacuation_area_basin.aseprite
+ArtSource/Level/v2/evacuation_area_dipper.aseprite
+ArtSource/Level/v2/flood_street_leftover.aseprite
+ArtSource/Level/v2/home_after_bread.aseprite
+ArtSource/Level/v2/home_after_mud.aseprite
+ArtSource/Level/v2/street_mud.aseprite
+ArtSource/Student/boy_wash.aseprite
+ArtSource/Student/girl_wash.aseprite
+ArtSource/UI/icon_flood_eat_bread.aseprite
+ArtSource/UI/icon_flood_feed_cat.aseprite
+ArtSource/UI/icon_flood_give_bread.aseprite
+ArtSource/UI/icon_flood_let_dry.aseprite
+ArtSource/UI/icon_flood_pick_water.aseprite
+ArtSource/UI/icon_flood_play_mud.aseprite
+ArtSource/UI/icon_flood_plug_fan.aseprite
+ArtSource/UI/icon_flood_see_street.aseprite
+ArtSource/UI/icon_flood_stay_mom.aseprite
+ArtSource/UI/icon_flood_switch_box.aseprite
+ArtSource/UI/icon_flood_turn_on_tv.aseprite
+ArtSource/UI/icon_flood_wait_check.aseprite
+ArtSource/UI/icon_flood_wash_feet.aseprite
+ArtSource/UI/icon_flood_wipe_bread.aseprite
+ArtSource/UI/icon_flood_wipe_shirt.aseprite
+Assets/Art/Level/v2/evacuation_area_basin.png
+Assets/Art/Level/v2/evacuation_area_dipper.png
+Assets/Art/Level/v2/flood_street_leftover_0.png
+Assets/Art/Level/v2/flood_street_leftover_1.png
+Assets/Art/Level/v2/home_after_bread.png
+Assets/Art/Level/v2/home_after_mud.png
+Assets/Art/Level/v2/street_mud.png
+Assets/Art/Student/boy_wash_0.png
+Assets/Art/Student/boy_wash_1.png
+Assets/Art/Student/girl_wash_0.png
+Assets/Art/Student/girl_wash_1.png
+Assets/Art/UI/icon_flood_eat_bread.png
+Assets/Art/UI/icon_flood_feed_cat.png
+Assets/Art/UI/icon_flood_give_bread.png
+Assets/Art/UI/icon_flood_let_dry.png
+Assets/Art/UI/icon_flood_pick_water.png
+Assets/Art/UI/icon_flood_play_mud.png
+Assets/Art/UI/icon_flood_plug_fan.png
+Assets/Art/UI/icon_flood_see_street.png
+Assets/Art/UI/icon_flood_stay_mom.png
+Assets/Art/UI/icon_flood_switch_box.png
+Assets/Art/UI/icon_flood_turn_on_tv.png
+Assets/Art/UI/icon_flood_wait_check.png
+Assets/Art/UI/icon_flood_wash_feet.png
+Assets/Art/UI/icon_flood_wipe_bread.png
+Assets/Art/UI/icon_flood_wipe_shirt.png
+~~~
+
+</details>
+
+<details>
+<summary>Batch 7 — menu (4 sources, 4 PNGs)</summary>
+
+~~~text
+ArtSource/Background/bg_menu_flood_easy.aseprite
+ArtSource/Background/bg_menu_flood_episode.aseprite
+ArtSource/Background/bg_menu_flood_hard.aseprite
+ArtSource/Background/bg_menu_flood_normal.aseprite
+Assets/Art/Background/bg_menu_flood_easy.png
+Assets/Art/Background/bg_menu_flood_episode.png
+Assets/Art/Background/bg_menu_flood_hard.png
+Assets/Art/Background/bg_menu_flood_normal.png
+~~~
+
+</details>
+
+
