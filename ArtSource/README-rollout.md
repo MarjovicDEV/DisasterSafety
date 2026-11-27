@@ -986,3 +986,411 @@ Assets/Art/UI/icon_fire_watch.png
 
 </details>
 
+## Typhoon Batch 1 — Menu backgrounds (approved)
+
+Run from the project root with Aseprite.
+
+```
+aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=menu_typhoon --script ArtSource/scripts/build.lua
+```
+
+Each basename has an editable source in `ArtSource/Background/<basename>.aseprite` and an export in `Assets/Art/Background/<basename>.png`. Each background is a single still frame with no animation timing. All coordinates are art pixels from the upper left. Backgrounds use the bottom anchor. Sign coordinates give the horizontal centre and top row.
+
+| Basename | Size | Floor and landmarks |
+| --- | --- | --- |
+| bg_menu_barangay_hall | 480×270 | Ground starts at y=177. Porch steps start at y=190. Door (157,121). Four window frames start at x=27, 101, 232 and 282, y=115. BARANGAY HALL sign (58,62). SIGNAL NO. 2 board (403,217). Bare flagpole top centre (358,56) for the moving flag. Palm base (441,191). |
+| bg_menu_typhoon_easy | 480×270 | Floor starts at y=208. Closed door (293,62). Closed window (382,75), glass (385,78), 79×64. Go Bag (338,199), radio (380,165), stool top (375,194), flashlight (362,215). The art reuses home_bag_closed, evacuation_area_radio and home_flashlight. |
+| bg_menu_typhoon_normal | 480×270 | Floor starts at y=201. Board (12,81). Window frame (120,59), sill (115,166). Seven closed jalousie bays start at x=126, with 48 pixels between bays. Each has six 44×16 panes starting at y=65, spaced 16 pixels apart. Rain is drawn into the glass. Chair backs start at (42,177), (110,177), (142,218) and (389,211). |
+| bg_menu_typhoon_hard | 480×270 | Interior floor starts at y=175, threshold at y=211, wet pavement at y=213. Entrance (235,102), door leaves (228,103) and (401,103), window bank (52,99). EVACUATION CENTER sign (398,78). Interior lights at x=250, 305 and 360, y=114. Blue tent (250,152), rust tent (309,147). Mat top edges start at x=257, 301 and 345, y=187. |
+
+[Approved comparison sheet](D:/GameDEV/typhoon-episode-scratch/art/01-menu-typhoon/preview.png). The widescreen views retain rows 54–269 and show the menu bounds.
+
+## Typhoon Batch 2 — Storm layers and window views (approved)
+
+Run from the project root with Aseprite.
+
+```
+aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=typhoon_fx --script ArtSource/scripts/build.lua
+```
+
+Editable sources live in `ArtSource/Level/v2/`. PNG exports live in `Assets/Art/Level/v2/`. Numbered ranges include both endpoints.
+
+| Source (.aseprite) | PNG basename(s) | Size | Frames | Time per frame |
+| --- | --- | --- | --- | --- |
+| bedroom_window_rattle | bedroom_window_rattle_0 … bedroom_window_rattle_1 | 72×92 | 2 | 120 ms |
+| bedroom_window_storm | bedroom_window_storm_0 … bedroom_window_storm_3 | 62×82 | 4 | 180 ms |
+| classroom_window_storm | classroom_window_storm_0 … classroom_window_storm_3 | 68×82 | 4 | 180 ms |
+| home_night_window_storm | home_night_window_storm_0 … home_night_window_storm_3 | 60×65 | 4 | 180 ms |
+| home_window_bike | home_window_bike | 60×65 | 1 | Still |
+| home_window_calm | home_window_calm | 60×65 | 1 | Still |
+| home_window_clothes | home_window_clothes_0 … home_window_clothes_3 | 60×65 | 4 | 180 ms |
+| home_window_grey | home_window_grey | 60×65 | 1 | Still |
+| home_window_mangoes | home_window_mangoes | 60×65 | 1 | Still |
+| home_window_mask | home_window_mask | 60×65 | 1 | Still |
+| home_window_storm | home_window_storm_0 … home_window_storm_3 | 60×65 | 4 | 180 ms |
+| typhoon_dark_sky_evacuation_area | typhoon_dark_sky_evacuation_area | 480×270 | 1 | Still |
+| typhoon_dark_sky_yard | typhoon_dark_sky_yard | 480×270 | 1 | Still |
+| typhoon_leaf | typhoon_leaf_0 … typhoon_leaf_3 | 4×3 | 4 | 180 ms |
+| typhoon_rain_heavy | typhoon_rain_heavy_0 … typhoon_rain_heavy_2 | 480×270 | 3 | 120 ms |
+| typhoon_rain_light | typhoon_rain_light_0 … typhoon_rain_light_2 | 480×270 | 3 | 120 ms |
+
+Coordinates use art pixels from the upper left. Outdoor Rain and Dark Sky anchor at (0,0). Light and heavy Rain loop at 120 ms per frame, 35% and 55% alpha. Each drop moves down-left. The tumbling leaf and all swaying window views use 180 ms per frame. Bedroom rattle uses 120 ms. Still layers hold.
+
+### Window registration
+
+Classroom (341,67), 68×82. Home and home at night (304,72), 60×65. Bedroom (53,59), 62×82 inside the 72×92 frame. The rattle anchors at (48,54). Mount all home window inserts and the Tanod glass mask at (304,72). Preserve alpha around curtains, fixed sash, and the classroom sill plant. Draw the Tanod behind the mullion.
+
+### Leaf bands
+
+Ranges include the entire 4×3 leaf. Classroom x=348–400, y=71–73. Home and home at night x=311–358, y=75–78, within the clear glass only. Bedroom x=59–108, y=63–67, clipped by glass. Only the classroom view includes a baked leaf. Keep leaves off during a window visit by the Tanod and during still, calm or after views. Yard x=180–300, y=63–72. Evacuation Center x=440–473, y=58–68 outside the roof, unused during Hard 5. Reserve x=12–115, y=57–66 for street_storm and coast pending their own Setting and actor reviews. A band ending at row 72 requires all heads to remain at row 112 or lower. Apply the same 40-pixel check against the bottom of each other band.
+
+### Candidate Act-out checks
+
+The linked sheets show clearance against existing art. Proposed feet positions are for art review. Props, poses and Settings scheduled in later batches need their own final layout checks. Existing Grown-up poses mark scale. Each sheet shows both menu-independent Level crops with the Caption, Hint and Pause bounds.
+
+[Easy 1](D:/GameDEV/typhoon-episode-scratch/art/02-storm-layers/placement-easy-1.png). start (144,230), call Mom (180,230), reach toward TV (111,230).
+
+[Easy 2](D:/GameDEV/typhoon-episode-scratch/art/02-storm-layers/placement-easy-2.png). start (180,230), pick up pail (194,230), carry to house (42,230), set down (42,230), stop at ball (260,230).
+
+[Easy 3](D:/GameDEV/typhoon-episode-scratch/art/02-storm-layers/placement-easy-3.png). start (141,230), pick up flashlight (161,230), pack Go Bag (190,230), play with flashlight (161,230).
+
+[Normal 1](D:/GameDEV/typhoon-episode-scratch/art/02-storm-layers/placement-normal-1.png). start (146,230), meet Teacher (270,230), sit at desk (242,230), meet Mom (93,230), walk home stop (114,230), gate stop (72,230).
+
+[Normal 2](D:/GameDEV/typhoon-episode-scratch/art/02-storm-layers/placement-normal-2.png). start (144,230), put down bag (180,230), sit and write (235,230), school stop (89,230), rain stop (119,230).
+
+[Normal 3](D:/GameDEV/typhoon-episode-scratch/art/02-storm-layers/placement-normal-3.png). start (290,230), walk to Mom (323,230), exit (349,230), bed end (221,230), reach short of latch (139,230).
+
+[Normal 4](D:/GameDEV/typhoon-episode-scratch/art/02-storm-layers/placement-normal-4.png). start (165,230), sit by Mom (292,230), mango stop (113,230), clothes stop (85,230).
+
+[Normal 5](D:/GameDEV/typhoon-episode-scratch/art/02-storm-layers/placement-normal-5.png). start (177,230), call Mom (143,230), pick up Go Bag (215,230), bring to Mom (92,230), sit with toy (286,230), window stop (329,230).
+
+[Hard 3](D:/GameDEV/typhoon-episode-scratch/art/02-storm-layers/placement-hard-3.png). start (168,230), shelf pickup (267,230), sit with Mom (148,230), candle stop (241,230), door stop (89,230), phone stop (168,230).
+
+[Hard 4](D:/GameDEV/typhoon-episode-scratch/art/02-storm-layers/placement-hard-4.png). start (166,230), sit by radio (280,230), run-start (119,230), bike stop (87,230), friend stop (146,230).
+
+[Hard 5](D:/GameDEV/typhoon-episode-scratch/art/02-storm-layers/placement-hard-5.png). start on mat (185,230), sit by Mom (161,230), court edge stop (395,230), open side stop (75,230), between tents (241,230).
+
+[Hard 7](D:/GameDEV/typhoon-episode-scratch/art/02-storm-layers/placement-hard-7.png). start (154,230), stand by Mom (127,230), roof sheet stop (190,230), shed door stop (226,230), broom stop (87,230).
+
+[Approved preview](D:/GameDEV/typhoon-episode-scratch/art/02-storm-layers/preview.png) · [Motion preview](D:/GameDEV/typhoon-episode-scratch/art/02-storm-layers/motion.gif)
+
+
+## Typhoon Batch 3 — Barangay Tanod and Grown-up poses (approved)
+
+Run from the project root with Aseprite.
+
+```
+aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=grownups_typhoon --script ArtSource/scripts/build.lua
+```
+
+Editable sources live in `ArtSource/GrownUp/`. PNG exports live in `Assets/Art/GrownUp/`. Numbered ranges include both endpoints.
+
+| Source (.aseprite) | PNG basename(s) | Size | Frames | Time per frame |
+| --- | --- | --- | --- | --- |
+| dad_carry | dad_carry_0 … dad_carry_3 | 36×62 | 4 | 140 ms |
+| dad_idle | dad_idle_0 … dad_idle_1 | 36×62 | 2 | 500 ms |
+| mom_umbrella | mom_umbrella_0 … mom_umbrella_3 | 36×62 | 4 | 140 ms |
+| mom_walk_gobag | mom_walk_gobag_0 … mom_walk_gobag_3 | 36×62 | 4 | 140 ms |
+| tanod_idle | tanod_idle_0 … tanod_idle_1 | 36×62 | 2 | 500 ms |
+| tanod_megaphone | tanod_megaphone_0 … tanod_megaphone_1 | 36×62 | 2 | 350 ms |
+| tanod_walk | tanod_walk_0 … tanod_walk_3 | 36×62 | 4 | 140 ms |
+| tanod_wave | tanod_wave_0 … tanod_wave_1 | 36×62 | 2 | 260 ms |
+
+Each frame is 36×62. Register the feet at (18,61), measured from the upper left. The walking poses face right. For a horizontal mirror, replace x with 35−x. Animation timing and frame counts are labeled on the comparison sheet.
+
+| Pose | Local placement in art pixels |
+| --- | --- |
+| tanod_idle | Hands (6,37) and (29,37). Hip megaphone bell (14,35). |
+| tanod_walk | Grip (24,36+d). Hip bell (32,33+d). |
+| tanod_megaphone | Grip hand (11,20). Open hand (33,24). Mouthpiece (15,16). Project the speech bubble from the open bell at (2,17) then (2,16). |
+| tanod_wave | Megaphone hand (6,37). Wave hand (30,8) then (33,8). Hip bell (14,35). |
+| mom_umbrella | Grip (23,34+d). Umbrella point (32,56+d). |
+| mom_walk_gobag | Bag drawn at (2,18+d). Swinging hand (9,35+d), (16,37+d), (24,35+d), (16,37+d). |
+| dad_carry | Chair grips (25,31+d) and (28,28+d). Hide the ground chair during carry. |
+| dad_idle | Hands (6,37) and (29,37). |
+
+For walks, d is 1,0,1,0. During the Normal 5 window pass, the feet move from (284,135) to (386,135) in Setting coordinates. Composite the Tanod through the Batch 2 glass mask at (304,72). The route begins and ends behind the wall. Keep the leaf effect off during his pass.
+
+[Approved preview](D:/GameDEV/typhoon-episode-scratch/art/03-grownups/preview.png) · [Motion preview](D:/GameDEV/typhoon-episode-scratch/art/03-grownups/motion.gif) · [Normal 5 window walk](D:/GameDEV/typhoon-episode-scratch/art/03-grownups/window-walk.gif)
+
+
+## Typhoon Batch 4 — Student flashlight pose (approved)
+
+```
+aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=student_typhoon --script-param poses=flashlight --script ArtSource/scripts/build.lua
+```
+
+| Editable source in ArtSource/Student | PNG exports in Assets/Art/Student | Size | Frames | Time per frame |
+| --- | --- | --- | --- | --- |
+| boy_flashlight.aseprite | boy_flashlight_0.png, boy_flashlight_1.png | 32×50 | 2 | 350 ms |
+| girl_flashlight.aseprite | girl_flashlight_0.png, girl_flashlight_1.png | 32×50 | 2 | 350 ms |
+
+Both front poses use two 32Ã—50 frames, 350 ms each, registered at the feet (16,49). The beam is part of the standing pose. The walk uses the existing side-view frames and the existing home_night_flashlight prop.
+
+| Walk frame | Boy hand | Girl hand |
+| --- | --- | --- |
+| 0 | (9,32) | (9,35) |
+| 1 | (14,31) | (14,34) |
+| 2 | (19,32) | (19,35) |
+| 3 | (14,31) | (14,34) |
+
+Coordinates are art pixels from the top left. For a right-facing walk, align the prop grip (3,4) to the hand. Mirror both together for a left-facing walk. Preview Student feet use (161,230) in Easy 3 and (267,230) in Hard 3.
+
+[Approved preview](D:/GameDEV/typhoon-episode-scratch/art/04-student-flashlight/preview.png).
+
+## Typhoon Batch 5 — Easy props and icons (approved)
+
+```
+aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=home_typhoon,yard_typhoon,icons_typhoon_easy --script ArtSource/scripts/build.lua
+```
+
+| Source under ArtSource | PNGs under Assets/Art | Size | Frames | Timing |
+| --- | --- | --- | --- | --- |
+| Level/v2/home_tv_signal_1.aseprite | Level/v2/home_tv_signal_1.png | 50×27 | 1 | Still |
+| Level/v2/home_tv_signal_2.aseprite | Level/v2/home_tv_signal_2.png | 50×27 | 1 | Still |
+| Level/v2/yard_ball.aseprite | Level/v2/yard_ball.png | 8×8 | 1 | Still |
+| Level/v2/yard_chair.aseprite | Level/v2/yard_chair.png | 18×22 | 1 | Still |
+| Level/v2/yard_clothes.aseprite | Level/v2/yard_clothes_0.png … _3.png | 191×38 | 4 | 200 ms |
+| Level/v2/yard_pail.aseprite | Level/v2/yard_pail.png | 12×12 | 1 | Still |
+| Level/v2/yard_rope.aseprite | Level/v2/yard_rope.png | 36×12 | 1 | Still |
+| Level/v2/yard_tree_sway.aseprite | Level/v2/yard_tree_sway_0.png … _3.png | 160×112 | 4 | 200 ms |
+| UI/icon_typhoon_bring_inside.aseprite | UI/icon_typhoon_bring_inside.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_cartoons.aseprite | UI/icon_typhoon_cartoons.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_flashlight_bag.aseprite | UI/icon_typhoon_flashlight_bag.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_play_ball.aseprite | UI/icon_typhoon_play_ball.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_play_flashlight.aseprite | UI/icon_typhoon_play_flashlight.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_tell_news.aseprite | UI/icon_typhoon_tell_news.png | 16×16 | 1 | Still |
+
+Coordinates are art pixels from the upper left. Actor coordinates mark the feet. Prop coordinates mark the top left. All Easy Student paths use y=230. Home floor begins at y=208 and the yard lawn at y=169. For the overlays use a single frame at a time.
+
+| Asset | Placement and playback |
+| --- | --- |
+| home_tv_signal_1 and home_tv_signal_2 | 50Ã—27 at (90,95), three pixels inside the television frame at (87,92). Hold still. The two-line blue screen keeps the signal readable at 4Ã—. |
+| evacuation_area_radio and evacuation_area_radio_on_0/_1 | Reuse at (199,151) on the home table for Easy 1 and Hard 4. All states share this anchor. |
+| yard_pail | 12Ã—12, starts (197,216), ends (37,216). Support the base at local (6,11) on the Student carry palm (23,30), one row lower on frames 0 and 2. Right-facing top-left relative to the Student frame (17,19+d). Mirror the composite for left-facing carry. |
+| yard_ball | 8Ã—8 at (274,221). Stop beside the ball. |
+| yard_chair | 18Ã—22 at (347,205). Switch to the chair drawn in dad_carry when Dad lifts it. The house is beyond the left edge. |
+| yard_rope | 36Ã—12 at (406,158), tied around the drum at (408,148). |
+| yard_tree_sway and yard_clothes | 160Ã—112 at (8,18) and 191Ã—38 at (252,86). Four frames each, 200 ms per frame. Composite above the yard Dark Sky layer. The trunk base, line and clothespins stay fixed. |
+
+### Actor routes
+
+- Easy 1. Student starts (144,230). Mom stands at (181,221) on the left of the table. Call from (158,230) and switch the radio on. For cartoons, stop at (109,230) facing the TV and reach.
+- Easy 2. Student starts (180,230), picks up from (191,230), carries left through (123,230), and sets down at (42,230). For the ball, stop at (260,230). Dad starts kneeling at (403,213) beside the knot, walks to (358,213) to lift the chair, then carries left through (219,213) and (92,213) toward the house.
+- Easy 3. Student starts (141,230). Mom stands at (273,219), the open Go Bag is at (239,207), and the flashlight is at (167,221). Pick up at (161,230). Walk to (233,230), pack, and close the bag at the same anchor. For the play Choice, hold the lit flashlight at (161,230).
+
+The existing home grey window is at (304,72). The yard leaf band spans x=180â€“300 and y=63â€“72. Batch 5 introduces six Choice icons and reuses the existing radio, Go Bag and flashlight props. The still props and icons have one frame each.
+
+[Easy 1 placement sheet](D:/GameDEV/typhoon-episode-scratch/art/05-easy-props/easy-1-placements.png) Â· [Easy 2 placement sheet](D:/GameDEV/typhoon-episode-scratch/art/05-easy-props/easy-2-placements.png) Â· [Easy 3 placement sheet](D:/GameDEV/typhoon-episode-scratch/art/05-easy-props/easy-3-placements.png)
+
+[Approved preview](D:/GameDEV/typhoon-episode-scratch/art/05-easy-props/preview.png).
+
+## Typhoon Batch 6 — Normal props and icons (approved)
+
+```
+aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=home_typhoon_normal,icons_typhoon_normal --script ArtSource/scripts/build.lua
+```
+
+| Source under ArtSource | Export under Assets/Art | Size | Frames | Timing |
+| --- | --- | --- | --- | --- |
+| Level/v2/home_module.aseprite | Level/v2/home_module.png | 14×10 | 1 | Still |
+| UI/icon_typhoon_bring_clothes.aseprite | UI/icon_typhoon_bring_clothes.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_keep_playing.aseprite | UI/icon_typhoon_keep_playing.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_living_room.aseprite | UI/icon_typhoon_living_room.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_module.aseprite | UI/icon_typhoon_module.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_open_window.aseprite | UI/icon_typhoon_open_window.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_pick_mangoes.aseprite | UI/icon_typhoon_pick_mangoes.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_play_rain.aseprite | UI/icon_typhoon_play_rain.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_see_tanod.aseprite | UI/icon_typhoon_see_tanod.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_stay_inside.aseprite | UI/icon_typhoon_stay_inside.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_stay_teacher.aseprite | UI/icon_typhoon_stay_teacher.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_tell_tanod.aseprite | UI/icon_typhoon_tell_tanod.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_wait_gate.aseprite | UI/icon_typhoon_wait_gate.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_walk_home.aseprite | UI/icon_typhoon_walk_home.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_walk_school.aseprite | UI/icon_typhoon_walk_school.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_watch_window.aseprite | UI/icon_typhoon_watch_window.png | 16×16 | 1 | Still |
+
+Coordinates are art pixels from the upper left. Actor points mark the feet. The walking line is y=230. The wide views retain rows 54â€“269.
+
+**Normal 1.** Teacher (290,220), desk front (198,188), seated Student (242,207). Keep the classroom door closed until Mom arrives. Her entry starts at (46,214), then she stops at (79,214). The Student meets her at (103,230), inside the room. Both Unsafe stops keep the Student clear of the door. The placement sheet uses the existing classroom backdrop to mark her entry.
+
+**Normal 2.** TV Signal No. 2 (90,95), school module (226,178), classroom_bag on the floor (172,215). Sit and write at (235,201), with the table front at (174,188). Show the bag in hand for the school stop. The home door at (18,107) stays closed.
+
+**Normal 3.** Bed (104,194). Closed/open bedroom door frames (319,102). Mom waits at (363,211) for the Safe exit. Keep the window closed for every Choice. The reach stop at x=143 is right of the window frame; the bed-end stop at x=225 is beyond the headboard.
+
+**Normal 4.** Mom (319,215). Mangoes and pinned clothes share the home window origin (304,72). Both outside Choices stop in the room, separated by 30 pixels.
+
+**Normal 5.** Tanod crosses behind the glass mask from (284,135) to (386,135). Mom starts at (130,219) and meets the Student at the door side at (72,219). Go Bag (221,202), toy (300,218). The toy and window branches stop on clear floor.
+
+### Act-out points
+
+[Normal 1](D:/GameDEV/typhoon-episode-scratch/art/06-normal-props/normal-1-placements.png). Start (146,230), Meet Teacher (270,230), Sit at desk (242,207), Mom enters at door (242,207), Meet Mom inside (103,230), Walk home alone (114,230), Wait at gate (92,230).
+
+[Normal 2](D:/GameDEV/typhoon-episode-scratch/art/06-normal-props/normal-2-placements.png). Start with school bag (144,230), Put bag down (180,230), Sit at table (235,201), Write in module (235,201), Walk to school (95,230), Play in rain (126,230).
+
+[Normal 3](D:/GameDEV/typhoon-episode-scratch/art/06-normal-props/normal-3-placements.png). Start (290,230), Approach bedroom door (320,230), Exit with Mom (349,230), Watch from bed end (225,230), Reach short of latch (143,230).
+
+[Normal 4](D:/GameDEV/typhoon-episode-scratch/art/06-normal-props/normal-4-placements.png). Start (165,230), Sit with Mom (292,230), Pick up mangoes (120,230), Bring in clothes (90,230).
+
+[Normal 5](D:/GameDEV/typhoon-episode-scratch/art/06-normal-props/normal-5-placements.png). Tanod passes window (177,230), Call to Mom (155,230), Pick up Go Bag (215,230), Carry Go Bag (145,230), Bring bag to Mom (98,230), Keep playing (286,230), Go see Tanod (329,230).
+
+[Approved preview](D:/GameDEV/typhoon-episode-scratch/art/06-normal-props/preview.png).
+
+## Typhoon Batch 7 — Storm street (approved)
+
+```
+aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=street_storm,icons_typhoon_street --script ArtSource/scripts/build.lua
+```
+
+| Source under ArtSource | Export under Assets/Art | Size | Frames | Timing |
+| --- | --- | --- | --- | --- |
+| Level/v2/bg_street_storm.aseprite | Level/v2/bg_street_storm.png | 480×270 | 1 | Still |
+| Level/v2/street_storm_branch.aseprite | Level/v2/street_storm_branch.png | 42×19 | 1 | Still |
+| Level/v2/street_storm_puddle.aseprite | Level/v2/street_storm_puddle_0.png … _1.png | 32×8 | 2 | 400 ms |
+| Level/v2/street_storm_stick.aseprite | Level/v2/street_storm_stick.png | 20×8 | 1 | Still |
+| Level/v2/street_storm_tree_sway.aseprite | Level/v2/street_storm_tree_sway_0.png … _3.png | 78×55 | 4 | 200 ms |
+| Level/v2/street_storm_wire.aseprite | Level/v2/street_storm_wire.png | 85×163 | 1 | Still |
+| Level/v2/typhoon_dark_sky_street_storm.aseprite | Level/v2/typhoon_dark_sky_street_storm.png | 480×270 | 1 | Still |
+| UI/icon_typhoon_back_for_toy.aseprite | UI/icon_typhoon_back_for_toy.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_creek_shortcut.aseprite | UI/icon_typhoon_creek_shortcut.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_evac_route.aseprite | UI/icon_typhoon_evac_route.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_move_branch.aseprite | UI/icon_typhoon_move_branch.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_poke_stick.aseprite | UI/icon_typhoon_poke_stick.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_puddle.aseprite | UI/icon_typhoon_puddle.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_stay_home.aseprite | UI/icon_typhoon_stay_home.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_tell_dad_wire.aseprite | UI/icon_typhoon_tell_dad_wire.png | 16×16 | 1 | Still |
+
+All coordinates are art pixels from the upper left. Actors register at the feet. Props and effects use their top-left corner. The road begins at y=148, near pavement at y=188 and the Student walking line at y=232. Bottom-anchor the Setting and retain rows 54â€“269 on wide screens.
+
+### Setting layers
+
+Background and sky mask (0,0), 480Ã—270. Tree sway (234,94), 78Ã—55, four frames at 200 ms above the Dark Sky. Light Rain tiles over the Hard 1 view. Allow the entire leaf only within x=12â€“115, y=57â€“66. The highest foreground Grown-up frame begins at y=157. Hard 6 uses the still background after the Rain. The route sign at (379,93) points right. The reed path begins near (124,198). The water is out of view.
+
+### Hard 1
+
+Student starts (210,232), Mom with Go Bag (246,226), Tanod (407,218). During the Safe walk they pass x=302,331,370 respectively, then finish at x=380,404,442 on their respective walking lines. Toy stop (87,232), creek path (124,232), stay-home stop (57,232). Use the existing 67Ã—26 Reaction above the Student, centred at (clamp(Student x,36,444),151).
+
+### Hard 6
+
+Wire (289,63), meets right-hand utility pole at (369,63). Branch (300,202) lies over the grounded wire. Puddle (214,222), 32Ã—8, two ripple frames at 400 ms. Stick (142,225), on the Student side. Dad (72,224), Tanod (435,219). Student starts (147,232), steps back to (123,232), then calls from (99,232) as Dad uses his phone. Stick stop (139,232), branch stop (158,232), puddle stop (154,232). Use the same Reaction registration as Hard 1.
+
+Closest clearance from the entire swept Student frame rectangle is 42.0 px. Individual minimums are wire 118.0, branch 128.0, puddle 42.0. Closest puddle-to-wire edge distance is 46.0 px. Distances use occupied sprite pixels.
+
+[Hard 1 placements](D:/GameDEV/typhoon-episode-scratch/art/07-street-storm/hard-1-placements.png) Â· [Hard 6 placements](D:/GameDEV/typhoon-episode-scratch/art/07-street-storm/hard-6-placements.png)
+
+[Approved preview](D:/GameDEV/typhoon-episode-scratch/art/07-street-storm/preview.png).
+
+## Typhoon Batch 8 — Coast (approved)
+
+```
+aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=coast,icons_typhoon_coast --script ArtSource/scripts/build.lua
+```
+
+| Source under ArtSource | Export under Assets/Art | Size | Frames | Timing |
+| --- | --- | --- | --- | --- |
+| Level/v2/bg_coast.aseprite | Level/v2/bg_coast.png | 480×270 | 1 | Still |
+| Level/v2/coast_palm_sway.aseprite | Level/v2/coast_palm_sway_0.png … _3.png | 77×49 | 4 | 200 ms |
+| Level/v2/coast_shells.aseprite | Level/v2/coast_shells.png | 19×7 | 1 | Still |
+| Level/v2/coast_waves.aseprite | Level/v2/coast_waves_0.png … _3.png | 205×39 | 4 | 180 ms |
+| UI/icon_typhoon_shells.aseprite | UI/icon_typhoon_shells.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_swim.aseprite | UI/icon_typhoon_swim.png | 16×16 | 1 | Still |
+
+All coordinates use art pixels from the upper left. Actor points are feet. Anchor the background at the bottom. The wide crop retains rows 54–269. The road starts at y=169 and the walking line starts at y=238.
+
+| Asset | Size and placement |
+| --- | --- |
+| bg_coast | 480×270 at (0,0). Light Rain and overcast sky are painted in. |
+| coast_waves | 205×39 at (0,85). Four opaque replacement frames, 180 ms each. Crests break offshore. |
+| coast_palm_sway | 77×49 at (119,36). Four opaque replacement frames, 200 ms each. |
+| coast_shells | 19×7 at (125,137) on sand at the foot of the steps. |
+| evacuation_area_radio and radio_on_0/_1 | Reused at (209,150) on the doorstep, bottom at y=179. |
+
+The near sea wall starts at (0,144). The right-hand return wall separates the cove from the house. The banca rests on sand around (60,137). The landing is at the road end of the stairs near (145,218). The sign spans (365,68) to (442,92). Leaf pixels stay within x=12–115 and y=55–57. The highest possible actor frame starts at y=98. Place the 67×26 Reaction above the Student for road stops. At the sign place its centre at (320,124) to clear the sign and controls.
+
+### Act-outs
+
+| Step | Student feet | Dad feet |
+| --- | --- | --- |
+| Start / radio at Lola’s house | (216, 238) | (252, 236) |
+| Turn onto the uphill path | (262, 236) | (281, 222) |
+| Climb with Dad | (320, 203) | (342, 190) |
+| Reach the Evacuation Center sign | (364, 175) | (390, 159) |
+| Watch from the road | (91, 235) | (252, 236) |
+| Swim Choice / stop at the top | (157, 222) | (252, 236) |
+| Shell Choice / crouch at the top | (123, 222) | (252, 236) |
+
+Minimum distance from the whole animated wave rectangle to the swept actor frames: Student 50.0 px, Dad 59.7 px. The swim and shells stops are 34 px apart and both remain on the road side.
+
+Reuse icon_high_ground for the uphill route and icon_watch_waves for watching. New icons are icon_typhoon_swim and icon_typhoon_shells, both 16×16.
+
+[All stops at both screen sizes](D:/GameDEV/typhoon-episode-scratch/art/08-coast/hard-2-placements.png).
+
+[Approved preview](D:/GameDEV/typhoon-episode-scratch/art/08-coast/preview.png).
+
+## Typhoon Batch 9 — Hard home props and icons (approved)
+
+Approved by the user on 2026-11-27. The imported PNGs are byte-identical to the approved review files. Run from the project root:
+
+```
+aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=home_night_typhoon,home_typhoon_hard,icons_typhoon_home_hard --script ArtSource/scripts/build.lua
+```
+
+| Source under ArtSource | Export under Assets/Art | Size | Frames | Timing |
+| --- | --- | --- | --- | --- |
+| Level/v2/home_night_shelf.aseprite | Level/v2/home_night_shelf.png | 45×9 | 1 | Still |
+| Level/v2/home_night_candle_unlit.aseprite | Level/v2/home_night_candle_unlit.png | 12×15 | 1 | Still |
+| Level/v2/home_night_matches.aseprite | Level/v2/home_night_matches.png | 10×6 | 1 | Still |
+| UI/icon_typhoon_flashlight_on.aseprite | UI/icon_typhoon_flashlight_on.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_light_candle.aseprite | UI/icon_typhoon_light_candle.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_check_lights.aseprite | UI/icon_typhoon_check_lights.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_phone_games.aseprite | UI/icon_typhoon_phone_games.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_go_play.aseprite | UI/icon_typhoon_go_play.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_get_bike.aseprite | UI/icon_typhoon_get_bike.png | 16×16 | 1 | Still |
+| UI/icon_typhoon_visit_friend.aseprite | UI/icon_typhoon_visit_friend.png | 16×16 | 1 | Still |
+
+Reused: `icon_radio` for "Stay inside and listen to the radio"; `bg_home_night`, `home_night_window_storm`, `home_night_flashlight`, `bg_home`, `home_window_storm`, `home_window_calm` and `home_window_bike`; the radio on the home table. The candle is unlit and the matchbox closed; neither is ever in a hand (ADR 0005). The phone-games icon shows game controls.
+
+All coordinates are art pixels from the upper left. Actor points mark the feet. The home floor starts at y=208 and the walk line is y=230. The wide crop retains rows 54–269. The home and night windows use the glass at (304,72). In the storm the optional leaf band lies inside the glass at x=311–358, y=75–78. Disable Wind during the calm step.
+
+### Hard 3 — Brownout (`home_night`)
+
+Shelf (262,170), 45×9, just above the small table. Flashlight (264,162), unlit candle in holder (281,156), closed matchbox (296,164). Mom sits at (123,225). Only the flashlight leaves the shelf; the walk to Mom uses the approved Batch 4 mirrored walk grips. At the seated ending the flashlight rests beside the Student at (155,224). The Reaction uses the usual 67×26 frame centred at (Student x,151), shifted to (213,151) at the shelf to keep the items visible.
+
+| Step | Student feet |
+| --- | --- |
+| Start in the brownout | (176,230) |
+| Approach the shelf | (254,222) |
+| Pick up the flashlight | (260,213) |
+| Turn on the flashlight | (267,230) |
+| Carry the light to Mom | (201,230) |
+| Sit beside Mom | (151,230) |
+| Candle stop (left of every shelf item; upright frame ends at x=250) | (235,230) |
+| Lights stop at the closed door | (93,230) |
+| Phone stop | (176,230) |
+
+### Hard 4 — Eye of the storm (`home`)
+
+Radio (199,151) on the home table; Mom sits at (314,220) on the sofa. Blend the storm glass to the calm glass with the bicycle overlay, then back to the storm glass during the Safe ending. The door at (18,107) stays closed. Reaction centre (Student x,151); at the radio use (265,151) to clear the radio and Mom.
+
+| Step | Student feet |
+| --- | --- |
+| Start in the storm | (166,230) |
+| Rain eases in the window | (166,230) |
+| Walk to Mom by the radio | (254,230) |
+| Sit and listen as the Rain returns | (282,230) |
+| Play stop (run-start toward the door) | (119,230) |
+| Bike stop | (87,230) |
+| Friend stop, facing right toward the window | (146,230) |
+
+[Hard 3 placements](D:/GameDEV/typhoon-episode-scratch/art/09-hard-home/hard-3-placements.png). [Hard 4 placements](D:/GameDEV/typhoon-episode-scratch/art/09-hard-home/hard-4-placements.png). [Approved preview](D:/GameDEV/typhoon-episode-scratch/art/09-hard-home/preview.png).
+
+## Typhoon Batch 10 — Evacuation Center and damaged shed (approved)
+
+Verified 15 exported PNGs and 12 Aseprite sources against the approved review files. The Tanod wears a plain yellow vest and grips his megaphone. Reuse icon_go_home for the return-home Choice.
+
+```
+aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=evacuation_area_typhoon,yard_damage,icons_typhoon_after --script ArtSource/scripts/build.lua
+```
+
+[Placements, animation timing and clearances](D:/GameDEV/typhoon-episode-scratch/art/10-after/placements.md). [Corrected Tanod poses](D:/GameDEV/typhoon-episode-scratch/art/10-after/tanod-hand-poses.png).
+
