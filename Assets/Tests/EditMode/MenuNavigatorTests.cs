@@ -266,7 +266,7 @@ namespace DisasterSafety.Tests
         }
 
         [Test]
-        public void Background_ExistingSave_OpensFireWithTheStationAndAnEmptyNoticeboard()
+        public void Background_ExistingSave_OpensFireWithTheStationAndTheLivingRoom()
         {
             state.HasDisplayName = true;
             state.EarthquakeDone = true;
@@ -274,7 +274,7 @@ namespace DisasterSafety.Tests
             Assert.That(nav.SelectEpisode(Episode.Fire), Is.True, "Fire is open after Earthquake Hard");
             Assert.That(nav.Background, Is.EqualTo(MenuBackground.FireStation), "Fire Difficulty selection");
             Assert.That(nav.SelectDifficulty(Difficulty.Easy), Is.True);
-            Assert.That(nav.Background, Is.EqualTo(MenuBackground.StationNoticeboard), "empty Fire Level selection");
+            Assert.That(nav.Background, Is.EqualTo(MenuBackground.FireHome), "Fire Easy Level selection");
 
             nav.Back();
             Assert.That(nav.Background, Is.EqualTo(MenuBackground.FireStation));
@@ -284,6 +284,26 @@ namespace DisasterSafety.Tests
             // Choosing Earthquake after Fire swaps the Episode background.
             nav.SelectEpisode(Episode.Earthquake);
             Assert.That(nav.Background, Is.EqualTo(MenuBackground.DrillGround));
+        }
+
+        [TestCase(Difficulty.Easy, MenuBackground.FireHome)]
+        [TestCase(Difficulty.Normal, MenuBackground.FireCorridor)]
+        [TestCase(Difficulty.Hard, MenuBackground.FireStreet)]
+        public void Background_FireLevelSelection_MatchesTheDifficulty(Difficulty difficulty, MenuBackground expected)
+        {
+            Assert.That(MenuBackgrounds.For(MenuScreen.LevelSelect, Episode.Fire, difficulty), Is.EqualTo(expected));
+            Assert.That(MenuBackgrounds.For(MenuScreen.DifficultySelect, Episode.Fire, difficulty),
+                Is.EqualTo(MenuBackground.FireStation), "Fire Difficulty selection keeps the fire station");
+        }
+
+        [TestCase(Difficulty.Easy, MenuBackground.Classroom)]
+        [TestCase(Difficulty.Normal, MenuBackground.Schoolyard)]
+        [TestCase(Difficulty.Hard, MenuBackground.CoveredCourt)]
+        public void Background_EarthquakeLevelSelection_StaysTheSame(Difficulty difficulty, MenuBackground expected)
+        {
+            Assert.That(MenuBackgrounds.For(MenuScreen.LevelSelect, Episode.Earthquake, difficulty), Is.EqualTo(expected));
+            Assert.That(MenuBackgrounds.For(MenuScreen.DifficultySelect, Episode.Earthquake, difficulty),
+                Is.EqualTo(MenuBackground.DrillGround));
         }
 
         [TestCase(Difficulty.Easy, MenuBackground.Classroom)]

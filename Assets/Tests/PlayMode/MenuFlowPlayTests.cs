@@ -697,13 +697,15 @@ namespace DisasterSafety.Tests
         }
 
         [UnityTest]
-        public IEnumerator Backgrounds_ExistingSave_OpensFireOnTheStationAndAnEmptyNoticeboard()
+        public IEnumerator Backgrounds_ExistingSave_OpensFireOnTheStationAndItsOwnLevelSelection()
         {
             GameServices.Initialize(dir);
             GameServices.Progress.SetDisplayName("Ana");
             GameServices.Progress.SetStudent(StudentKind.Girl);
             GameServices.Progress.Open(Episode.Earthquake, Difficulty.Hard);
             GameServices.Progress.Open(Episode.Fire, Difficulty.Easy);
+            GameServices.Progress.Open(Episode.Fire, Difficulty.Normal);
+            GameServices.Progress.Open(Episode.Fire, Difficulty.Hard);
             GameServices.SaveProgress();
             yield return BootToMenu();
             var c = UnityEngine.Object.FindAnyObjectByType<MainMenuController>();
@@ -715,18 +717,33 @@ namespace DisasterSafety.Tests
             Assert.That(c.difficultyPanel.IsVisible, Is.True, "Fire is open");
             AssertBackground(c, MenuBackground.FireStation, "bg_menu_fire_station", "Fire Difficulty selection");
 
-            c.difficultyCards[0].button.onClick.Invoke();
-            yield return Wait(0.5f);
-            Assert.That(c.levelPanel.IsVisible, Is.True);
-            AssertBackground(c, MenuBackground.StationNoticeboard, "bg_menu_station_noticeboard", "empty Fire Level selection");
-            c.levelSlots[0].button.onClick.Invoke();
-            yield return null;
-            Assert.That(c.startButton.interactable, Is.False, "Fire has no Playable Level yet");
-            Assert.That(MenuStudent().bubble.Line, Is.EqualTo(UIStrings.StudentLevelSoon), "the Student says the Level is coming soon");
+            var expected = new[]
+            {
+                (MenuBackground.FireHome, "bg_menu_fire_easy"),
+                (MenuBackground.FireCorridor, "bg_menu_fire_normal"),
+                (MenuBackground.FireStreet, "bg_menu_fire_hard"),
+            };
+            for (var i = 0; i < 3; i++)
+            {
+                var difficulty = Curriculum.Difficulties[i];
+                c.difficultyCards[i].button.onClick.Invoke();
+                yield return Wait(0.5f);
+                Assert.That(c.levelPanel.IsVisible, Is.True, "Fire " + difficulty + " opens Level selection");
+                AssertBackground(c, expected[i].Item1, expected[i].Item2, "Fire " + difficulty + " Level selection");
+                if (difficulty == Difficulty.Easy)
+                {
+                    c.levelSlots[0].button.onClick.Invoke();
+                    yield return null;
+                    Assert.That(c.startButton.interactable, Is.False, "Fire Easy 1 is not Playable yet");
+                    Assert.That(MenuStudent().bubble.Line, Is.EqualTo(UIStrings.StudentLevelSoon),
+                        "the Student says the Level is coming soon");
+                }
 
-            c.levelBack.onClick.Invoke();
-            yield return Wait(0.5f);
-            AssertBackground(c, MenuBackground.FireStation, "bg_menu_fire_station", "Back to Fire Difficulty selection");
+                c.levelBack.onClick.Invoke();
+                yield return Wait(0.5f);
+                AssertBackground(c, MenuBackground.FireStation, "bg_menu_fire_station", "Back from Fire " + difficulty);
+            }
+
             c.difficultyBack.onClick.Invoke();
             yield return Wait(0.5f);
             AssertBackground(c, MenuBackground.Noticeboard, "bg_menu_noticeboard", "Back to Episode selection");

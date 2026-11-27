@@ -2831,6 +2831,39 @@ namespace DisasterSafety.Tests
             Assert.That(MusicSource().loop, Is.False);
         }
 
+        [UnityTest]
+        public IEnumerator FireMusic_PlaysSetBByDifficulty_AndTheMenuMusicComesBack()
+        {
+            GameServices.Initialize(dir);
+            GameScenes.ToMainMenu();
+            yield return WaitFor(MenuMusicSelected, "music in the Main Menu");
+            var menuScene = SceneManager.GetActiveScene();
+
+            // Fire has no Scenario yet, so an empty scene named Level stands in for the Level scene:
+            // the music follows the active scene's name and GameServices.CurrentLevel.
+            var expected = new[] { "Cheery Monday", "B-Roll", "Machinations" };
+            for (var i = 0; i < MusicDifficulties.Length; i++)
+            {
+                GameServices.CurrentLevel = new LevelId(Episode.Fire, MusicDifficulties[i], 1);
+                var level = SceneManager.CreateScene(GameScenes.Level);
+                SceneManager.SetActiveScene(level);
+                yield return WaitFor(() => AudioManager.CurrentMusic?.name == expected[i],
+                    $"Set B gameplay music for Fire {MusicDifficulties[i]}");
+                Assert.That(MusicSource().loop, Is.True);
+
+                if (MusicDifficulties[i] == Difficulty.Hard)
+                {
+                    AudioManager.PlayCompletionMusic(Episode.Fire);
+                    yield return WaitFor(() => AudioManager.CurrentMusic?.name == "Piano Between", "the Fire completion cue");
+                    Assert.That(MusicSource().loop, Is.False, "the completion cue plays once");
+                }
+
+                SceneManager.SetActiveScene(menuScene);
+                yield return SceneManager.UnloadSceneAsync(level);
+                yield return WaitFor(MenuMusicSelected, $"menu music after Fire {MusicDifficulties[i]}");
+            }
+        }
+
         static AudioSource MusicSource() =>
             Array.Find(UnityEngine.Object.FindAnyObjectByType<AudioManager>().GetComponents<AudioSource>(),
                 source => source.clip != null && source.clip == AudioManager.CurrentMusic);
