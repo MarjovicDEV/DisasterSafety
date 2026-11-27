@@ -88,6 +88,21 @@ if want("menu") then
   end
 end
 
+if want("fire_fx") then
+  dofile(here .. "fire_fx.lua")(L)
+end
+
+if want("menu_fire") then
+  local menu = dofile(here .. "background.lua")(L, ST)
+  local home = dofile(here .. "home_v2.lua")(L, ST)
+  for _, entry in ipairs({
+    { "easy", menu.fireEasy(home) }, { "normal", menu.fireNormal() }, { "hard", menu.fireHard() },
+  }) do
+    local name = "Background/bg_menu_fire_" .. entry[1]
+    L.save(entry[2], name, name)
+  end
+end
+
 -- The school gate scene on the Main Menu: the gate leaves (closed to open), the guard, and the
 -- Students walking in seen from behind.
 if want("menu_gate") then
@@ -107,6 +122,20 @@ end
 local posesOnly = {}
 for p in (app.params.poses or ""):gmatch("[^,%s]+") do posesOnly[p] = true end
 local allPoses = next(posesOnly) == nil
+if want("student_fire") then
+  for _, kind in ipairs({"boy","girl"}) do
+    for _, pose in ipairs(ST.FIRE_POSES) do
+      if allPoses or posesOnly[pose.name] then
+        local name = "Student/" .. kind .. "_" .. pose.name
+        L.saveFrames(ST.fireFrames(kind,pose),name,name,pose.ms)
+      end
+    end
+  end
+  if allPoses or posesOnly.sleeve_flame then
+    local name = "Student/sleeve_flame"
+    L.saveFrames(ST.sleeveFlames(),name,name,150)
+  end
+end
 if want("student") then
   for _, kind in ipairs({ "boy", "girl" }) do
     for _, pose in ipairs(ST.POSES) do
@@ -193,6 +222,180 @@ if want("bedroom_v2") then
 end
 
 -- The shared v2 living room, its Act-out props and its swaying lamp.
+if want("fire_smoke_motion") then
+  local smoke=dofile(here .. "fire_smoke_v2.lua")(L)
+  for _,set in ipairs({{"smoke_drift",smoke.band},{"street_roof_smoke",smoke.plume}}) do
+    local frames={}
+    for f=0,23 do frames[#frames+1]=set[2](f,24) end
+    local path="Level/v2/"..set[1]
+    L.saveFrames(frames,path,path,80)
+  end
+end
+
+if want("street") or want("street_after") then
+  local kit=dofile(here .. "icons_v2.lua")(L,ST)
+  local menu=dofile(here .. "background.lua")(L,ST)
+  local grownups=dofile(here .. "grownups_v2.lua")(L,ST)
+  local street=dofile(here .. "street_v2.lua")(L,kit,menu,grownups)
+  local function still(name,img)
+    local path="Level/v2/"..name
+    L.save(img,path,path)
+  end
+  if want("street") then
+    still("bg_street",street.background(false))
+    still("street_cat",street.cat())
+    still("street_phone",street.phone())
+    still("street_hiding_box",street.crates())
+  end
+  if want("street_after") then still("bg_street_after",street.background(true)) end
+end
+
+if want("icons_fire_street") then
+  local kit=dofile(here .. "icons_v2.lua")(L,ST)
+  local selected={}
+  for key in (app.params.icons or ""):gmatch("[^,%s]+") do selected[key]=true end
+  for name,img in pairs(kit.fireStreetIcons()) do
+    if next(selected)==nil or selected[name] then
+      local path="UI/icon_"..name
+      L.save(img,path,path)
+    end
+  end
+end
+
+if want("mall_fire") then
+  local mall=dofile(here .. "mall_v2.lua")(L,ST)
+  local sign="Level/v2/mall_exit_sign"
+  local toy="Level/v2/mall_toy_shop_toy"
+  L.save(mall.fireExitSign(),sign,sign)
+  L.save(mall.shopToy(),toy,toy)
+end
+
+if want("icons_fire_mall") then
+  local selected={}
+  for key in (app.params.icons or ""):gmatch("[^,%s]+") do selected[key]=true end
+  if next(selected)==nil or selected.fire_exit_stairs then
+    local mall=dofile(here .. "mall_v2.lua")(L,ST)
+    local path="UI/icon_fire_exit_stairs"
+    L.save(mall.exitStairsIcon(),path,path)
+  end
+end
+
+if want("yard") then
+  local kit=dofile(here .. "icons_v2.lua")(L,ST)
+  local yard=dofile(here .. "yard_v2.lua")(L,kit)
+  local bg="Level/v2/bg_yard"
+  L.save(yard.background(),bg,bg)
+  local path="Level/v2/yard_siga"
+  L.saveFrames({yard.siga(0),yard.siga(1),yard.siga(2),yard.siga(3)},path,path,160)
+end
+
+if want("icons_fire_yard") then
+  local kit=dofile(here .. "icons_v2.lua")(L,ST)
+  local selected={}
+  for key in (app.params.icons or ""):gmatch("[^,%s]+") do selected[key]=true end
+  for name,img in pairs(kit.fireYardIcons()) do
+    if next(selected)==nil or selected[name] then
+      local path="UI/icon_"..name
+      L.save(img,path,path)
+    end
+  end
+end
+
+if want("bedroom_fire") then
+  local kit=dofile(here .. "icons_v2.lua")(L,ST)
+  local bedroom=dofile(here .. "bedroom_fire_v2.lua")(L,kit)
+  for name,img in pairs({
+    bedroom_closet_door=bedroom.closet(), bedroom_toy=bedroom.toy(),
+    bedroom_blanket=bedroom.blanket(false), bedroom_blanket_gap=bedroom.blanket(true),
+    bedroom_cloth=bedroom.cloth(), bedroom_window_open=bedroom.window(),
+  }) do
+    local path="Level/v2/"..name
+    L.save(img,path,path)
+  end
+  local path="Level/v2/bedroom_door"
+  L.saveFrames({bedroom.door(0),bedroom.door(1)},path,path,300)
+end
+
+if want("icons_fire_bedroom") then
+  local kit=dofile(here .. "icons_v2.lua")(L,ST)
+  local selected={}
+  for key in (app.params.icons or ""):gmatch("[^,%s]+") do selected[key]=true end
+  for name,img in pairs(kit.fireBedroomIcons()) do
+    if next(selected)==nil or selected[name] then
+      local path="UI/icon_"..name
+      L.save(img,path,path)
+    end
+  end
+end
+
+if want("fire_normal_props") then
+  local kit=dofile(here .. "icons_v2.lua")(L,ST)
+  local props=dofile(here .. "fire_normal_v2.lua")(L,kit)
+  for name,img in pairs({
+    classroom_bag=props.bag(), corridor_handkerchief=props.cloth(),
+    corridor_cr_door=props.door(), home_switch_box=props.switchBox(),
+  }) do
+    local path="Level/v2/"..name
+    L.save(img,path,path)
+  end
+  local path="Level/v2/home_outlet"
+  L.saveFrames({props.outlet(0),props.outlet(1),props.outlet(2)},path,path,150)
+end
+
+if want("icons_fire_normal") then
+  local kit=dofile(here .. "icons_v2.lua")(L,ST)
+  local selected={}
+  for key in (app.params.icons or ""):gmatch("[^,%s]+") do selected[key]=true end
+  for name,img in pairs(kit.fireNormalIcons()) do
+    if next(selected)==nil or selected[name] then
+      local path="UI/icon_"..name
+      L.save(img,path,path)
+    end
+  end
+end
+
+-- Fire Easy Settings, props and Choice icons. Each part can render independently.
+if want("home_night") or want("kitchen") or want("icons_fire_easy") then
+  local kit=dofile(here .. "icons_v2.lua")(L,ST)
+  local function still(name,img)
+    local path="Level/v2/"..name
+    L.save(img,path,path)
+  end
+  local function pair(name,draw,ms)
+    local path="Level/v2/"..name
+    L.saveFrames({draw(0),draw(1)},path,path,ms)
+  end
+  if want("home_night") then
+    local home=dofile(here .. "home_v2.lua")(L,ST)
+    local night=dofile(here .. "home_night_v2.lua")(L,ST,home,kit)
+    still("bg_home_night",night.background())
+    still("home_lighter",night.lighter())
+    still("home_night_plate",night.plate())
+    still("home_night_flashlight",night.flashlight())
+    pair("home_night_candle",night.candle,240)
+    pair("home_night_curtain",night.curtain,420)
+  end
+  if want("kitchen") then
+    local kitchen=dofile(here .. "kitchen_v2.lua")(L,kit)
+    still("bg_kitchen",kitchen.background())
+    still("kitchen_pan",kitchen.pan())
+    still("kitchen_pan_lid",kitchen.lid())
+    still("kitchen_cup",kitchen.cup())
+    pair("kitchen_pot",kitchen.pot,260)
+    pair("kitchen_burner",kitchen.burner,180)
+  end
+  if want("icons_fire_easy") then
+    local selected={}
+    for key in (app.params.icons or ""):gmatch("[^,%s]+") do selected[key]=true end
+    for name,img in pairs(kit.fireEasyIcons()) do
+      if next(selected)==nil or selected[name] then
+        local path="UI/icon_"..name
+        L.save(img,path,path)
+      end
+    end
+  end
+end
+
 if want("home_v2") then
   local HM = dofile(here .. "home_v2.lua")(L, ST)
   local function homeSprite(draw, name)
@@ -276,6 +479,10 @@ if want("home_reachup") then
 end
 
 -- The Grown-ups (36x62): GrownUp/<who>_<pose>_<n>.png
+if want("grownups_fire") then
+  local grownups = dofile(here .. "grownups_v2.lua")(L, ST)
+  grownups.saveFirePoses(posesOnly)
+end
 if want("grownups_v2") then
   local GU = dofile(here .. "grownups_v2.lua")(L, ST)
   for _, who in ipairs({ "teacher", "mom", "dad" }) do

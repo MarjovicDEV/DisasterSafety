@@ -426,5 +426,57 @@ return function(L, ST)
     return img
   end
 
+  -- Hard 5: the sign sits over the existing food-court doorway. The down
+  -- arrow marks this opening; the stair landing has its own existing EXIT sign.
+  function M.fireExitSign()
+    local img=L.newImage(48,15)
+    box(img,0,0,48,15,{R.green[1],SIGN,R.green[3]})
+    L.text(img,15,4,"EXIT",K.W,1)
+    L.circle(img,8,4,1,K.W)
+    L.line(img,7,6,5,9,K.W,2)
+    L.line(img,7,6,10,8,K.W)
+    L.line(img,6,9,9,12,K.W)
+    L.line(img,5,10,3,12,K.W)
+    L.vline(img,41,4,10,K.W)
+    L.line(img,38,8,41,11,K.W)
+    L.line(img,41,11,44,8,K.W)
+    return img
+  end
+
+  function M.shopToy()
+    -- Toy jeepney with a silver roof, contrasting bonnet and two little wheels.
+    local img=L.newImage(27,15)
+    box(img,2,2,18,4,R.metal)
+    box(img,2,5,20,6,R.red)
+    for x=4,16,5 do
+      L.rect(img,x,5,3,3,R.glass[1])
+      L.hline(img,x,x+2,7,R.glass[3])
+    end
+    box(img,19,7,7,5,R.red)
+    L.hline(img,3,22,10,L.P.yellow)
+    L.px(img,24,8,K.W)
+    for _,x in ipairs({7,21}) do
+      L.circle(img,x,12,2,O)
+      L.px(img,x,12,R.metal[1])
+    end
+    return img
+  end
+
+  function M.exitStairsIcon()
+    local img=L.newImage(16,16)
+    L.rect(img,0,0,16,16,O)
+    L.rect(img,1,1,14,14,SIGN)
+    L.hline(img,1,14,1,R.green[1])
+    L.line(img,3,3,9,9,K.W)
+    L.vline(img,9,5,9,K.W)
+    L.hline(img,5,9,9,K.W)
+    for i=0,2 do
+      local x,y=2+i*4,10+i
+      L.hline(img,x,x+4,y,K.W)
+      L.vline(img,x+4,y,y+1,K.W)
+    end
+    return img
+  end
+
   return M
 end

@@ -615,5 +615,336 @@ return function(L, ST)
     return out
   end
 
+  function M.fireEasyIcons()
+    local out={}
+    local function sprite(name)
+      local img=L.newImage(16,16)
+      out["fire_"..name]=img
+      return img
+    end
+    local lighter=sprite("lighter")
+    M.box(lighter,4,5,8,10,M.RED)
+    M.box(lighter,4,2,8,5,M.METAL)
+    L.rect(lighter,5,2,3,2,O)
+    local give=sprite("give_mom")
+    M.box(give,6,3,5,7,M.RED)
+    L.hline(give,7,9,4,M.METAL[1])
+    L.poly(give,{1,10,4,9,6,11,10,11,13,8,15,9,12,13,7,15,1,13},O)
+    L.poly(give,{2,11,4,10,6,12,11,12,14,9,11,13,7,14,2,12},M.SKIN[1])
+    local candle=sprite("candle")
+    M.box(candle,5,7,6,8,M.WHITE)
+    L.poly(candle,{6,6,6,4,9,0,10,4,9,6},O)
+    L.line(candle,8,5,9,2,L.P.orange)
+    L.px(candle,8,4,L.P.yellow3)
+    -- Mom's long hair and red shirt identify the recipient in both speech Choices.
+    for _,name in ipairs({"tell_mom","call_mom"}) do
+      local img=sprite(name)
+      L.ellipse(img,5,7,4,5,O)
+      L.rect(img,1,7,9,6,O)
+      L.ellipse(img,5,7,3,3,M.SKIN[2])
+      L.hline(img,3,7,4,ST.KEY.H)
+      L.px(img,6,7,O)
+      M.box(img,1,11,10,5,M.RED)
+      if name=="tell_mom" then
+        M.box(img,9,1,7,6,M.WHITE)
+        L.line(img,11,6,9,8,O)
+        L.vline(img,12,2,4,M.NAVY[2])
+      else
+        for k=0,2 do L.line(img,11,7+k,14,4+k*4,M.NAVY[2]) end
+      end
+    end
+    local pot=sprite("move_pot")
+    M.box(pot,3,7,10,7,M.METAL)
+    L.hline(pot,1,5,8,O)
+    L.hline(pot,11,14,8,O)
+    L.ellipse(pot,8,7,5,2,O)
+    L.hline(pot,5,10,7,M.WHITE[1])
+    L.line(pot,5,4,6,2,M.METAL[3])
+    L.line(pot,9,4,10,1,M.METAL[3])
+    return out
+  end
+
+  function M.fireNormalIcons()
+    local out={}
+    local P=L.P
+    local function icon(name)
+      local img=L.newImage(16,16)
+      out["fire_"..name]=img
+      return img
+    end
+    local function child(img,x,y,shirt)
+      L.rect(img,x-1,y+4,3,4,shirt)
+      L.circle(img,x,y+2,2,M.SKIN[2])
+      L.hline(img,x-1,x+1,y,ST.KEY.H)
+      L.vline(img,x-1,y+8,y+9,P.navy2)
+      L.vline(img,x+1,y+8,y+9,P.navy2)
+    end
+    local line=icon("line_up")
+    child(line,3,5,P.blue)
+    child(line,9,5,P.teal)
+    L.line(line,7,2,13,2,P.green3)
+    L.line(line,12,1,14,2,P.green3)
+    L.line(line,14,2,12,4,P.green3)
+    L.outline(line,O)
+    local class=icon("stay_class")
+    child(class,3,4,P.teal)
+    child(class,8,2,P.red)
+    child(class,12,5,P.blue)
+    L.outline(class,O)
+    local bag=icon("bag")
+    M.box(bag,5,0,6,6,M.NAVY)
+    L.rect(bag,7,2,2,2,L.CLEAR)
+    M.box(bag,2,4,12,12,M.SAGE)
+    M.round(bag,2,4,12,12)
+    M.box(bag,4,9,8,5,M.NAVY)
+    L.px(bag,10,10,P.yellow)
+    local function smoke(img)
+      for x=2,13 do
+        L.vline(img,x,1,2+((x//3)%2),P.gray2)
+      end
+      L.hline(img,3,8,2,P.gray1)
+    end
+    local low=icon("stay_low")
+    smoke(low)
+    L.line(low,4,10,9,8,P.paper,3)
+    L.line(low,4,10,3,13,P.navy,2)
+    L.line(low,6,11,8,13,P.navy2,2)
+    L.circle(low,11,8,2,M.SKIN[2])
+    L.hline(low,10,12,6,ST.KEY.H)
+    L.line(low,9,10,12,10,P.white)
+    L.outline(low,O)
+    local run=icon("run_smoke")
+    smoke(run)
+    L.circle(run,10,5,2,M.SKIN[2])
+    L.hline(run,9,11,3,ST.KEY.H)
+    L.line(run,8,7,6,10,P.blue,2)
+    L.line(run,9,8,12,7,P.skin1)
+    L.line(run,7,10,10,13,P.navy,2)
+    L.line(run,7,10,3,13,P.navy2,2)
+    L.outline(run,O)
+    local door=icon("hide_cr")
+    M.box(door,1,1,14,15,M.SAGE)
+    L.rect(door,2,3,12,8,P.paper)
+    L.map(door,4,4,{"###.##.","#...#.#","#...##.","#...#.#","###.#.#"},{["#"]=P.navy2})
+    L.px(door,12,12,P.yellow)
+    local shout=icon("shout")
+    M.box(shout,1,1,14,11,M.WHITE)
+    L.poly(shout,{3,10,8,10,3,15},O)
+    L.poly(shout,{4,10,7,10,4,13},P.white)
+    L.rect(shout,7,3,2,4,P.red2)
+    L.rect(shout,7,8,2,2,P.red2)
+    local water=icon("water")
+    L.poly(water,{8,1,13,8,13,11,10,14,6,14,3,11,3,8},P.blue2)
+    L.ellipse(water,8,10,4,3,P.blue)
+    L.line(water,5,9,7,6,P.blue3)
+    L.outline(water,O)
+    local pan=icon("carry_pan")
+    L.ellipse(pan,9,9,5,3,P.gray4)
+    L.hline(pan,1,6,7,P.brown3)
+    L.hline(pan,6,12,8,P.gray2)
+    L.line(pan,4,13,8,12,P.skin1)
+    L.line(pan,8,12,13,12,P.skin2)
+    L.outline(pan,O)
+    local dad=icon("tell_dad")
+    L.rect(dad,2,10,9,5,P.paper)
+    L.rect(dad,6,11,2,4,P.red)
+    L.ellipse(dad,6,7,4,4,P.skin1)
+    L.rect(dad,2,3,8,3,ST.KEY.H)
+    L.px(dad,7,7,O)
+    L.rect(dad,10,1,5,5,P.white)
+    L.vline(dad,12,2,3,P.red)
+    L.px(dad,12,5,P.red)
+    L.outline(dad,O)
+    local plugs=icon("pull_plugs")
+    M.box(plugs,1,1,7,9,M.WHITE)
+    L.vline(plugs,3,4,6,O)
+    L.vline(plugs,5,4,6,O)
+    L.line(plugs,8,8,10,6,P.gray3)
+    L.line(plugs,10,10,12,8,P.gray3)
+    M.box(plugs,8,9,6,5,M.NAVY)
+    L.line(plugs,12,13,14,15,O)
+    return out
+  end
+
+  function M.fireBedroomIcons()
+    local icons,P={},L.P
+    local function icon(name)
+      local img=L.newImage(16,16)
+      icons["fire_"..name]=img
+      return img
+    end
+    local function head(img,x,y)
+      L.circle(img,x,y,2,P.skin1)
+      L.hline(img,x-2,x+1,y-1,ST.KEY.H)
+      L.px(img,x+1,y,O)
+    end
+    local function bed(img,y)
+      M.box(img,1,y,14,4,M.WOOD)
+      L.vline(img,2,y+3,14,O)
+      L.vline(img,13,y+3,14,O)
+      L.hline(img,3,12,y,P.teal3)
+    end
+    local crawl=icon("crawl")
+    head(crawl,11,7)
+    L.line(crawl,4,9,8,8,P.white,2)
+    L.line(crawl,4,10,6,12,P.navy,2)
+    L.hline(crawl,2,6,13,P.navy2)
+    L.line(crawl,9,10,12,13,P.skin1,2)
+    L.outline(crawl,O)
+    local hide=icon("hide_bed")
+    bed(hide,5)
+    head(hide,9,11)
+    L.hline(hide,4,7,12,P.navy)
+    local wait=icon("wait_bed")
+    bed(wait,10)
+    head(wait,4,7)
+    L.rect(wait,7,7,7,3,P.teal)
+    local run=icon("run_standing")
+    head(run,10,3)
+    L.line(run,9,6,7,9,P.blue,2)
+    L.line(run,9,7,13,6,P.skin1)
+    L.line(run,7,10,3,13,P.navy,2)
+    L.line(run,8,10,11,13,P.navy2,2)
+    L.hline(run,1,4,6,P.blue3)
+    L.outline(run,O)
+    local bear=icon("toy")
+    for _,x in ipairs({3,11}) do L.circle(bear,x,3,2,P.brown) end
+    L.ellipse(bear,7,7,5,5,P.brown3)
+    L.ellipse(bear,7,12,4,2,P.tan)
+    L.px(bear,5,6,O)
+    L.px(bear,9,6,O)
+    L.hline(bear,6,8,9,P.brown2)
+    L.outline(bear,O)
+    local feel=icon("feel_door")
+    M.box(feel,10,0,6,16,M.WOOD)
+    L.poly(feel,{1,11,4,8,5,5,6,5,7,7,8,4,9,5,9,10,6,13,3,14},O)
+    L.poly(feel,{2,11,5,8,6,6,7,9,8,6,8,10,5,12,3,13},P.skin1)
+    local opened=icon("open_door")
+    M.box(opened,2,1,12,15,M.WOOD)
+    L.rect(opened,4,3,8,11,P.teal3)
+    L.poly(opened,{4,2,9,5,9,12,4,14},P.brown2)
+    L.px(opened,7,8,P.yellow)
+    local closet=icon("closet")
+    M.box(closet,1,1,14,15,M.WOOD)
+    L.vline(closet,7,2,14,O)
+    for _,x in ipairs({3,9}) do
+      for y=4,8,2 do L.hline(closet,x,x+3,y,P.brown2) end
+    end
+    L.px(closet,6,10,P.yellow)
+    L.px(closet,9,10,P.yellow)
+    local signal=icon("signal")
+    L.line(signal,3,13,6,4,P.brown2,2)
+    L.poly(signal,{6,3,10,2,14,4,13,9,9,7,5,8},P.red)
+    L.hline(signal,8,11,3,P.red3)
+    L.outline(signal,O)
+    local jump=icon("jump")
+    M.box(jump,1,1,8,9,M.WOOD)
+    L.rect(jump,3,3,4,5,P.sky3)
+    L.line(jump,6,6,10,7,P.navy,2)
+    L.line(jump,10,7,12,12,P.navy,2)
+    L.poly(jump,{9,11,15,10,13,15},P.navy2)
+    local video=icon("video")
+    M.box(video,3,0,10,16,M.NAVY)
+    M.box(video,4,2,8,10,M.GLASS)
+    L.circle(video,8,7,2,P.red2)
+    L.px(video,7,6,P.red3)
+    L.hline(video,6,9,13,P.gray2)
+    return icons
+  end
+
+  function M.fireYardIcons()
+    local P=L.P
+    local key={h=ST.KEY.H,s=P.skin1,t=P.skin2,w=P.white,n=P.navy,b=P.gray4,
+      a=P.teal2,l=P.teal3,y=P.yellow2}
+    local function draw(rows)
+      local img=L.newImage(16,16)
+      L.map(img,1,1,rows,key)
+      L.outline(img,O)
+      return img
+    end
+    return {
+      fire_stop_drop_roll=draw({
+        ".....aaaa.....","...aallllaa...", "..aa......aa..","..a........a..",
+        "..........aaaa","...........aa.","....www.hhh.a.","...wwwwhhss...",
+        "..nnwwwwsss...","..nnnwwtsts...",".bbnn..tss....","..............",
+      }),
+      fire_run_help=draw({
+        ".......hhh..y.",".......hss..y.",".......sss....","......www...y.",
+        "....stwwwwss..","...ss.wwww....","......nnn.....",".....nnnn.....",
+        "...nnn..nn....","..bn.....nn...","..bb......bb..","..............",
+      }),
+      fire_beat_hands=draw({
+        ".....y..y.....","......yy......","..............","..s.s....s.s..",
+        ".ssss....ssss.",".sssst..tssss.","..ssssttssss..","...sssttsss...",
+        "...ttt..ttt...","..www....www..",".www......www.",
+      }),
+      fire_wave_arms=draw({
+        "..l..hhhh..l..","s...hhsshh...s","ss..hssss...ss",".ss..ssss..ss.",
+        "..ss..ww..ss..","...wwwwwwww...",".....wwww.....",".....wwww.....",
+        ".....nnnn.....",".....n..n.....","....bb..bb....",
+      }),
+    }
+  end
+
+  function M.fireStreetIcons()
+    local out,P={},L.P
+    local function icon(name)
+      local img=L.newImage(16,16)
+      out["fire_"..name]=img
+      return img
+    end
+    local phone=icon("call_911")
+    M.box(phone,0,1,16,14,M.NAVY)
+    L.rect(phone,1,3,14,8,P.paper)
+    L.map(phone,2,4,{"###..#...#.","#.#.##..##.","###..#...#.","..#..#...#.","###.###.###"},{["#"]=P.navy2})
+    L.hline(phone,6,9,12,P.gray2)
+    local eye=icon("watch")
+    L.poly(eye,{1,8,5,4,10,4,14,8,10,12,5,12},P.white)
+    L.circle(eye,8,8,3,P.teal)
+    L.circle(eye,8,8,1,O)
+    L.px(eye,7,6,P.white)
+    L.outline(eye,O)
+    local film=icon("film")
+    M.box(film,1,4,9,9,M.NAVY)
+    L.poly(film,{10,7,14,4,14,12,10,9},O)
+    L.rect(film,3,6,5,4,P.glass2)
+    L.px(film,3,11,P.red)
+    local function house(img)
+      M.box(img,2,7,12,8,M.WOOD)
+      L.poly(img,{0,8,7,1,9,1,15,8},P.red2)
+      L.line(img,1,7,7,2,P.red3)
+      L.rect(img,7,10,3,5,O)
+    end
+    local inside=icon("run_inside")
+    house(inside)
+    L.hline(inside,1,11,10,P.yellow3)
+    L.line(inside,8,8,11,10,P.yellow3)
+    L.line(inside,11,10,8,12,P.yellow3)
+    local home=icon("run_home")
+    house(home)
+    for i=0,2 do L.hline(home,0,4-i,10+i*2,P.blue3) end
+    local function helmet(img)
+      L.ellipse(img,8,8,5,6,P.skin1)
+      L.ellipse(img,8,5,6,4,P.yellow2)
+      L.hline(img,1,14,6,P.yellow3)
+      L.px(img,6,9,O)
+      L.px(img,10,9,O)
+      L.hline(img,7,9,12,P.brown2)
+      L.outline(img,O)
+    end
+    helmet(icon("go_firefighter"))
+    local hide=icon("hide_firefighter")
+    helmet(hide)
+    M.box(hide,0,9,11,7,M.WOOD)
+    L.line(hide,2,14,8,11,P.tan)
+    local cat=icon("cat")
+    L.poly(cat,{2,2,6,5,9,5,13,2,13,11,9,14,5,14,2,11},P.tan)
+    L.px(cat,5,8,O)
+    L.px(cat,10,8,O)
+    L.hline(cat,7,10,10,P.brown2)
+    L.outline(cat,O)
+    return out
+  end
+
   return M
 end

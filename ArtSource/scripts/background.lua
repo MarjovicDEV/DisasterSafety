@@ -533,6 +533,39 @@ return function(L, ST)
     return img
   end
 
+  local function parkedEngine(img, ex, ey)
+    outlined(img, function(layer)
+      L.rect(layer, ex, ey, 150, 46, R.fire[2])
+      L.hline(layer, ex, ex + 149, ey, R.fire[1])
+      L.vline(layer, ex, ey, ey + 45, R.fire[1])
+      L.rect(layer, ex, ey + 40, 150, 6, R.fire[3])
+      -- cab
+      L.rect(layer, ex + 108, ey - 20, 42, 22, R.fire[2])
+      L.hline(layer, ex + 108, ex + 149, ey - 20, R.fire[1])
+      L.rect(layer, ex + 116, ey - 16, 28, 12, R.glass[2])
+      L.hline(layer, ex + 116, ex + 143, ey - 16, R.glass[1])
+      -- ladder on top
+      L.rect(layer, ex + 6, ey - 6, 98, 2, R.metal[2])
+      L.rect(layer, ex + 6, ey - 2, 98, 2, R.metal[2])
+      for k = ex + 8, ex + 102, 6 do L.vline(layer, k, ey - 5, ey - 2, R.metal[1]) end
+      -- light bar
+      L.rect(layer, ex + 118, ey - 24, 6, 4, P.blue)
+      L.rect(layer, ex + 126, ey - 24, 6, 4, P.red)
+      -- stripe and lockers
+      L.rect(layer, ex, ey + 22, 150, 3, R.paper[1])
+      for k = 0, 3 do L.rect(layer, ex + 6 + k * 24, ey + 6, 20, 14, R.fire[3]) end
+      L.rect(layer, ex + 140, ey + 32, 10, 4, R.yellow[2])
+      -- wheels
+      for _, wx in ipairs({ ex + 26, ex + 74, ex + 126 }) do
+        L.circle(layer, wx, ey + 46, 9, rgb(44, 40, 52))
+        L.circle(layer, wx, ey + 46, 4, R.metal[2])
+        L.px(layer, wx - 1, ey + 45, R.metal[1])
+      end
+    end)
+  end
+
+  M.parkedEngine = parkedEngine
+
   -- Fire Episode background (C4): the fire station forecourt and a parked engine ----------
   function M.fireStation()
     local img = L.newImage(M.W, M.H)
@@ -569,35 +602,7 @@ return function(L, ST)
     for x = 30, M.W, 60 do L.line(img, x, 182, x - 40, M.H - 1, R.concrete[3]) end
     L.rect(img, 280, 212, 160, 4, P.yellow)
     -- the parked engine, pulled out of the open bay
-    outlined(img, function(layer)
-      local ex, ey = 150, 160
-      L.rect(layer, ex, ey, 150, 46, R.fire[2])
-      L.hline(layer, ex, ex + 149, ey, R.fire[1])
-      L.vline(layer, ex, ey, ey + 45, R.fire[1])
-      L.rect(layer, ex, ey + 40, 150, 6, R.fire[3])
-      -- cab
-      L.rect(layer, ex + 108, ey - 20, 42, 22, R.fire[2])
-      L.hline(layer, ex + 108, ex + 149, ey - 20, R.fire[1])
-      L.rect(layer, ex + 116, ey - 16, 28, 12, R.glass[2])
-      L.hline(layer, ex + 116, ex + 143, ey - 16, R.glass[1])
-      -- ladder on top
-      L.rect(layer, ex + 6, ey - 6, 98, 2, R.metal[2])
-      L.rect(layer, ex + 6, ey - 2, 98, 2, R.metal[2])
-      for k = ex + 8, ex + 102, 6 do L.vline(layer, k, ey - 5, ey - 2, R.metal[1]) end
-      -- light bar
-      L.rect(layer, ex + 118, ey - 24, 6, 4, P.blue)
-      L.rect(layer, ex + 126, ey - 24, 6, 4, P.red)
-      -- stripe and lockers
-      L.rect(layer, ex, ey + 22, 150, 3, R.paper[1])
-      for k = 0, 3 do L.rect(layer, ex + 6 + k * 24, ey + 6, 20, 14, R.fire[3]) end
-      L.rect(layer, ex + 140, ey + 32, 10, 4, R.yellow[2])
-      -- wheels
-      for _, wx in ipairs({ ex + 26, ex + 74, ex + 126 }) do
-        L.circle(layer, wx, ey + 46, 9, rgb(44, 40, 52))
-        L.circle(layer, wx, ey + 46, 4, R.metal[2])
-        L.px(layer, wx - 1, ey + 45, R.metal[1])
-      end
-    end)
+    parkedEngine(img, 150, 160)
     -- a hydrant
     box(img, 452, 196, 10, 18, R.fire)
     box(img, 450, 192, 14, 5, R.fire)
@@ -826,6 +831,80 @@ return function(L, ST)
   }
 
   -- Philippine flag, 4 waving frames, 44x30.
+  -- Fire Level Selection. The row of Level tiles occupies the middle of the wall.
+  function M.fireEasy(home)
+    return home.menuLivingRoom()
+  end
+
+  function M.fireNormal()
+    local img = L.newImage(M.W, M.H)
+    L.rect(img, 0, 0, M.W, 213, R.cream[2])
+    for x = 1, M.W, 9 do
+      L.vline(img, x, 23, 163, R.cream[3])
+      L.vline(img, x + 1, 23, 163, R.cream[1])
+    end
+    box(img, -2, 0, 484, 24, R.wood)
+    L.rect(img, 0, 164, M.W, 46, R.column[1])
+    L.hline(img, 0, 479, 209, R.column[3])
+    L.rect(img, 0, 210, M.W, 60, R.concrete[2])
+    for x = -64, 544, 72 do
+      L.line(img, x, 210, x + (x - 240) // 5, 269, R.concrete[3])
+    end
+    L.hline(img, 0, 479, 239, R.concrete[3])
+    for _, x in ipairs({48, 284}) do
+      box(img, x, 74, 61, 137, R.green)
+      box(img, x+4, 79, 53, 128, R.roofgreen)
+      box(img, x+10, 86, 41, 38, R.glass)
+      box(img, x+10, 142, 41, 53, R.roofgreen)
+      box(img, x+48, 131, 5, 4, R.yellow)
+    end
+    for _, x in ipairs({125, 358}) do
+      box(img, x, 89, 94, 65, R.green)
+      box(img, x+3, 92, 88, 59, R.glass)
+      for k=x+9,x+86,10 do L.vline(img,k,93,149,R.green[3]) end
+      for y=104,145,13 do L.hline(img,x+4,x+89,y,R.green[3]) end
+    end
+    box(img, 293, 56, 43, 14, R.leaf)
+    signText(img, "EXIT", 314, 59, P.white)
+    box(img, 16, 99, 23, 28, R.fire)
+    L.circle(img, 27, 110, 8, O)
+    L.circle(img, 27, 110, 7, R.fire[3])
+    L.circle(img, 26, 109, 6, R.fire[2])
+    L.circle(img, 24, 107, 2, R.fire[1])
+    box(img, 26, 118, 5, 4, R.metal)
+    return img
+  end
+
+  function M.fireHard()
+    local img = L.newImage(M.W, M.H)
+    L.vgrad(img, 0, 0, M.W, 167, {P.navy, P.purple, P.red3, P.paper2})
+    L.circle(img, 424, 107, 14, P.yellow3)
+    L.rect(img, 0, 167, M.W, 34, R.grass[3])
+    treeLine(img, 151, 231)
+    palm(img, 390, 191, 119, 6, 0.85)
+    schoolBlock(img, -12, 152, 96, 48, R.rust, true)
+    schoolBlock(img, 104, 157, 70, 40, R.roofgreen, true)
+    schoolBlock(img, 353, 145, 127, 57, R.roof, false)
+    box(img, 367, 161, 95, 35, R.wood)
+    box(img, 371, 165, 87, 25, R.board)
+    for k=0,12 do
+      local x=374+6*k
+      box(img,x,180-k%3,4,8+k%3,({R.yellow,R.green,R.fire})[k%3+1])
+    end
+    box(img, 364, 156, 101, 8, R.cream)
+    for x=365,460,12 do L.rect(img,x,157,6,6,R.rust[2]) end
+    box(img, 367, 190, 95, 7, R.wood)
+    box(img, 94, 86, 6, 116, R.trunk)
+    box(img, 84, 86, 26, 4, R.trunk)
+    powerLines(img, 78, 106)
+    L.rect(img,0,201,480,69,R.road[2])
+    L.hline(img,0,479,201,R.road[3])
+    noise(img,0,204,479,269,R.road[2],R.road[3],220,232)
+    L.ellipse(img,100,231,78,4,R.road[3])
+    parkedEngine(img, 25, 177)
+    return img
+  end
+
   function M.flagFrames()
     local frames = {}
     local FW, FH = 40, 20

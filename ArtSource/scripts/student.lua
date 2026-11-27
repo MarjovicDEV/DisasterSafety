@@ -1184,6 +1184,142 @@ return function(L)
     return padTop(g)
   end
 
+  -- Fire Episode side poses share the pilot head, limb shading and shoe palette.
+  local function fireLeg(g, kind, hipX, hipY, kneeX, kneeY, toeX, toeY)
+    chain(g,{hipX,hipY,kneeX,kneeY},6,"N")
+    chain(g,{kneeX,kneeY,toeX,toeY-2},4,kind=="girl" and "S" or "N")
+    rect(g,toeX-2,toeY-2,6,3,"B")
+  end
+
+  local function lowBody(kind, crawl, f, kneel)
+    local g = newGrid(FW,FH)
+    local stride = ({-3,0,3,0})[f+1]
+    local liftFoot = f==1 and 2 or 0
+    if crawl or kneel then
+      fireLeg(g,kind,10,39,14-stride,46,5-stride,47-liftFoot)
+      fireLeg(g,kind,9,39,11+stride,46,4+stride,48)
+    else
+      fireLeg(g,kind,12,33,17-stride,40,13-stride,48-liftFoot)
+      fireLeg(g,kind,12,33,15+stride,39,12+stride,48-(f==3 and 2 or 0))
+    end
+    local headY = crawl and 24 or (kneel and 15 or 10)
+    local hipY = crawl and 37 or (kneel and 36 or 32)
+    chain(g,{10,hipY,18,headY+14},9,"w")
+    ellipse(g,9,hipY+2,5,4,"N")
+    shadeLayer(g,"N","m","n")
+    shadeLayer(g,"w","W","v")
+    shadeLayer(g,"B","b",nil)
+    outline(g)
+    paste(g,sideHead(kind),5,headY)
+    return g
+  end
+
+  function M.crawl(kind,f)
+    local g = lowBody(kind,true,f,false)
+    local reach = ({-3,0,3,0})[f+1]
+    pasteLimb(g,arm({17,37,20,42,25-reach,46},{sleeveTo=0.4}))
+    pasteLimb(g,arm({17,37,19,43,24+reach,47},{sleeveTo=0.4}))
+    return g
+  end
+
+  function M.walk_low(kind,f)
+    local g = lowBody(kind,false,f,false)
+    pasteLimb(g,arm({16,25,18,32,26,24},{sleeveTo=0.45}))
+    chain(g,{24,22,28,23,26,27},3,"v")
+    chain(g,{25,22,28,22,26,25},2,"W")
+    return g
+  end
+
+  function M.feel_door(kind,f)
+    local g = lowBody(kind,false,0,true)
+    if f==0 then
+      local shifted=newGrid(FW,FH)
+      paste(shifted,g,-3,0)
+      g=shifted
+    end
+    local x = f==0 and 30 or 21
+    pasteLimb(g,arm({16,33,22,37,x,29},{sleeveTo=0.45}))
+    chain(g,{x,29,x,24},2,"S")
+    setc(g,x,25,"t")
+    outline(g)
+    return g
+  end
+
+  function M.signal(kind,f)
+    local g = front(kind,true)
+    paste(g,fit(arm({6,22,3,17,3+f,6},{sleeveTo=0.5}),kind),0,0)
+    paste(g,fit(arm({25,22,28,28,27,33},{sleeveTo=0.5}),kind),0,0)
+    hairOnTop(g,kind)
+    g=padTop(finish(g))
+    for x=4,13+f*4 do
+      local top=1+(x//5+f)%2
+      rect(g,x,top,1,4+(x+f)//8,"p")
+      setc(g,x,top,"r")
+      setc(g,x,top+3+(x+f)//8,"q")
+    end
+    outline(g)
+    return g
+  end
+
+  function M.stop_drop_roll(kind,f)
+    if f==0 then
+      return sidePose(kind,"stand",{{13,22,14,27,15,32}})
+    end
+    if f==1 then
+      local g=lowBody(kind,false,0,true)
+      pasteLimb(g,arm({16,33,21,37,24,30},{sleeveTo=0.45}))
+      return g
+    end
+    -- Tucked legs keep the horizontal silhouette within the 32-pixel canvas.
+    local g=newGrid(FW,FH)
+    local back=f==4
+    local bob=f%2
+    local knee=({6,10,12,4})[f-1]
+    fireLeg(g,kind,10,40,knee,44,knee-2,47-bob)
+    fireLeg(g,kind,11,41,10,46,6,48)
+    ellipse(g,13,40,8,6,"w")
+    ellipse(g,8,41,4,5,"N")
+    ellipse(g,22,39+bob,7,8,"H")
+    if kind=="girl" then ellipse(g,17,40+bob,4,6,"H") end
+    shadeLayer(g,"H","j","h")
+    shadeLayer(g,"w","W","v")
+    shadeLayer(g,"N","m","n")
+    if not back then
+      ellipse(g,25,40+bob,4,5,"S")
+      chain(g,{17,38,21,34,25,38+bob},4,"s")
+      chain(g,{19,35,22,34,25,37+bob},2,"t")
+      chain(g,{16,40,22,44-(f==3 and 3 or 0),26,39+bob},4,"S")
+      chain(g,{22,43,26,39+bob},2,"t")
+      setc(g,25,40+bob,"s")
+      setc(g,26,40+bob,"s")
+    end
+    outline(g)
+    return g
+  end
+
+  M.FIRE_POSES={
+    {name="crawl",frames=4,ms=160},{name="walk_low",frames=4,ms=160},
+    {name="feel_door",frames=2,ms=300},{name="signal",frames=2,ms=220},
+    {name="stop_drop_roll",frames=6,ms=240},
+  }
+  function M.fireFrames(kind,pose)
+    local frames={}
+    for f=0,pose.frames-1 do frames[#frames+1]=toImage(M[pose.name](kind,f)) end
+    return frames
+  end
+
+  function M.sleeveFlames()
+    local frames={}
+    for f=0,2 do
+      local img=L.newImage(6,8)
+      L.poly(img,{1,5,2,3,2+f,1,4,4,4,6,2,6},L.P.orange)
+      L.line(img,2,5,3,4+f%2,L.P.yellow)
+      L.outline(img,L.P.ink)
+      frames[#frames+1]=img
+    end
+    return frames
+  end
+
   -- All frames ------------------------------------------------------------------
   M.POSES = {
     { name = "idle", frames = 2, ms = 500 },

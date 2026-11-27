@@ -684,7 +684,7 @@ return function(L, ST)
     { down = 1, arm = "fwd", far = { 45, legXs(13, 13, 0.6) }, near = { 45, legXs(13, 13, -0.55) } },
     { down = 0, arm = "hang", far = { 44, legXs(14, 13, 0) }, near = { 44, legXs(10, 13, 0.4) } },
   }
-  local function sideFigure(who, spec)
+  local function sideFigure(who, spec, armPoints)
     local g = newGrid(FW, FH)
     paste(g, legSpan(who, true, spec.far[1], spec.far[2]), 0, 0)
     paste(g, legSpan(who, false, spec.near[1], spec.near[2]), 0, 0)
@@ -694,7 +694,7 @@ return function(L, ST)
     paste(body, sideHead(who), 0, 0)
     paste(g, body, 0, spec.down)
     local pts = {}
-    for i, v in ipairs(ARM_PTS[spec.arm]) do pts[i] = v end
+    for i, v in ipairs(armPoints or ARM_PTS[spec.arm]) do pts[i] = v end
     for i = 2, #pts, 2 do pts[i] = pts[i] + spec.down end
     if who == "teacher" then pts[2] = pts[2] + 2 end
     pasteLimb(g, shadeArm(who, armBase(who, pts)))
@@ -707,7 +707,7 @@ return function(L, ST)
 
   -- Dad kneels (side, facing right) beside Mom: one knee on the floor, the other leg bent
   -- forward, leaning over with a hand reaching down to her. The second frame pats her shoulder.
-  function M.kneel(who, f)
+  function M.kneel(who, f, reach)
     local g = newGrid(FW, FH)
     local oy = 11
     local legs = newGrid(FW, FH)
@@ -741,9 +741,142 @@ return function(L, ST)
     paste(torso, sideHead(who), 4, oy + 1)
     paste(g, torso, 0, 0)
     local down = (f == 1) and 1 or 0
-    pasteLimb(g, shadeArm(who, armBase(who, { 21, oy + 24, 27, oy + 30, 30, oy + 37 + down })))
+    local hand = reach and {21, oy+24, 26, oy+29, 33, oy+25-down} or
+      {21, oy+24, 27, oy+30, 30, oy+37+down}
+    pasteLimb(g, shadeArm(who, armBase(who, hand)))
     outline(g)
     return g
+  end
+
+  -- Fire actions preserve each Grown-up's original face, clothes and ground line.
+  local function actionArms(who, points, other)
+    return toImage(front(who,nil,function(g)
+      oneArm(g,who,other or lowerPts(who,HANG))
+      oneArm(g,who,points)
+    end))
+  end
+
+  local P=L.P
+  -- Stationary vendor in the Hard 6 street background. Use the same head,
+  -- sleeves, hands and trouser proportions as the other adult figures.
+  function M.isawanVendor()
+    local img=actionArms("dad",{28,23,30,31,28,37},{8,23,6,30,2,24})
+    -- Cross-back apron straps meet the bib below the white collar.
+    L.line(img,12,20,14,25,P.teal2,2)
+    L.line(img,23,20,21,25,P.teal2,2)
+    L.poly(img,{13,24,22,24,23,30,25,36,25,44,10,44,10,36,12,31},P.teal2)
+    L.poly(img,{14,25,21,25,22,32,23,36,23,42,12,42,12,35,14,30},P.teal)
+    L.hline(img,13,22,33,P.teal3)
+    L.rect(img,15,35,6,4,P.teal2)
+    L.hline(img,15,20,35,P.teal3)
+    -- A warm cap distinguishes the vendor from the teal cart canopy.
+    L.poly(img,{6,6,8,2,12,0,21,0,26,3,27,7,6,7},KEY.o)
+    L.poly(img,{8,5,10,2,14,1,21,1,25,4,25,6,8,6},P.orange2)
+    L.hline(img,12,19,2,P.tan)
+    L.rect(img,4,6,23,2,KEY.o)
+    L.hline(img,5,23,6,P.tan2)
+    -- Small moustache and smile below the nose, clear of the eyes.
+    L.hline(img,14,16,13,KEY.H)
+    L.hline(img,18,20,13,KEY.H)
+    return img
+  end
+
+  local function momLid(f)
+    -- The lid and pan are separate kitchen props. The hand meets their handle.
+    local handY=f==0 and 33 or 40
+    return actionArms("mom",{27,23,28,30,33,handY})
+  end
+  local function momReach(f)
+    local img=actionArms("mom",{27,23,28,31,32,f==0 and 33 or 28})
+    if f==1 then
+      L.rect(img,26,25,8,4,P.ink)
+      L.rect(img,27,26,5,2,P.teal)
+      L.rect(img,32,24,3,6,P.ink)
+      L.rect(img,33,25,1,4,P.yellow3)
+    end
+    return img
+  end
+  local function dadSwitch(f)
+    return actionArms("dad",{27,23,31,17,32,9+f*3})
+  end
+  local function dadPhone(f)
+    local img=actionArms("dad",{27,23,32,25,28,15+f})
+    L.rect(img,26,9+f,5,10,P.ink)
+    L.rect(img,27,10+f,3,7,P.gray4)
+    L.hline(img,27,28,10+f,P.gray2)
+    return img
+  end
+  local function teacherCount(f)
+    local img=actionArms("teacher",{27,25,29,31,23,32+f*3},{7,25,5,34,11,37})
+    L.rect(img,9,27,13,16,P.ink)
+    L.rect(img,10,28,11,14,P.brown3)
+    L.rect(img,11,29,9,11,P.paper)
+    L.rect(img,13,27,5,3,P.gray3)
+    for y=32,38,3 do L.hline(img,13,17,y,P.gray2) end
+    L.line(img,20,32+3*f,26,28+3*f,P.ink)
+    L.line(img,20,31+3*f,25,28+3*f,P.yellow)
+    return img
+  end
+
+  local function firefighter(pose,f)
+    local side=pose=="walk" or pose=="kneel"
+    local kneel=pose=="kneel"
+    local dy=kneel and 12 or (pose=="walk" and WALK[f+1].down or (pose=="idle" and f or 0))
+    local cx=kneel and 22 or 17
+    local grid=M[pose]("dad",f,kneel)
+    local img=toImage(grid)
+    local coat={W=P.tan,w=P.brown3,v=P.brown,p=P.brown3,r=P.tan,q=P.brown}
+    -- Convert the shirt and gloves separately so the exposed face keeps its skin tones.
+    for y=0,FH-1 do
+      for x=0,FW-1 do
+        local c=getc(grid,x,y)
+        local jacket=y>=20+dy and y<=38+dy
+        if (jacket or (pose=="wave" and x>=28)) and coat[c] then
+          local stripe=y==33+dy or y==34+dy
+          L.px(img,x,y,stripe and P.yellow or coat[c])
+        elseif (c=="S" or c=="t" or c=="s") and
+          (y>23+dy or (pose=="wave" and x>=29)) then
+          L.px(img,x,y,c=="t" and P.gray3 or P.gray4)
+        elseif y>=53 and (c=="N" or c=="n" or c=="m") then
+          L.px(img,x,y,y==54 and P.yellow2 or P.gray4)
+        end
+      end
+    end
+    -- A broad brim, raised crown rib and reflective band identify the helmet.
+    L.ellipse(img,cx,dy+4,11,4,P.ink)
+    L.ellipse(img,cx,dy+4,10,3,P.yellow2)
+    L.ellipse(img,cx-2,dy+4,7,3,P.yellow)
+    L.vline(img,cx-3,dy+2,dy+5,P.yellow3)
+    L.rect(img,cx-13,dy+5,27,3,P.ink)
+    L.hline(img,cx-12,cx+12,dy+6,P.yellow3)
+    -- Respirator hanging below the chin, with short straps and two filters.
+    local mx=side and cx+4 or cx
+    L.line(img,mx-5,dy+19,mx-2,dy+24,P.gray4)
+    L.line(img,mx+4,dy+19,mx+2,dy+24,P.gray4)
+    L.ellipse(img,mx,dy+24,4,3,P.ink)
+    L.ellipse(img,mx,dy+24,3,2,P.gray2)
+    for _,x in ipairs({mx-4,mx+3}) do L.rect(img,x,dy+24,2,3,P.gray4) end
+    return img
+  end
+
+  function M.saveFirePoses(selected)
+    local sets={
+      {"mom","lid",2,400,momLid},{"mom","reach",2,400,momReach},
+      {"dad","switch",2,300,dadSwitch},{"dad","phone",2,350,dadPhone},
+      {"teacher","count",2,350,teacherCount},
+      {"firefighter","idle",2,500},{"firefighter","walk",4,140},
+      {"firefighter","wave",2,260},{"firefighter","kneel",2,400},
+    }
+    for _,s in ipairs(sets) do
+      if next(selected)==nil or selected[s[2]] then
+        local frames={}
+        for f=0,s[3]-1 do
+          frames[#frames+1]=s[5] and s[5](f) or firefighter(s[2],f)
+        end
+        local name="GrownUp/"..s[1].."_"..s[2]
+        L.saveFrames(frames,name,name,s[4])
+      end
+    end
   end
 
   -- All frames ---------------------------------------------------------------------
