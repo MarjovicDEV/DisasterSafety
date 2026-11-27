@@ -417,3 +417,572 @@ No screen showed these, and no ticket plans them (see `.scratch/cleanup/inventor
 - `Icons/icon_cross` and `Icons/icon_pencil`: the PNGs and their sources. `ui.lua` no longer draws them.
 - `UI/button_gray_pressed`: the PNG and its source. Gray is only the disabled and Tried look, so `build.lua` saves no pressed state for it. `button_gray` stays.
 - The third-party `Assets/8K Skybox Pack Free` and `Assets/Clean Vector Icons` packs, which the game never used.
+
+## Fire Batch 1 — Difficulty backgrounds (approved)
+
+Run from the project root with Aseprite:
+
+```
+aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=menu_fire --script ArtSource/scripts/build.lua
+```
+
+Each basename below has an editable source in `ArtSource/Background/<basename>.aseprite` and an export in `Assets/Art/Background/<basename>.png`. All three are 480×270, one still frame each, with no animation timing. Coordinates below are art pixels from the upper left. The pictures are backdrops for Level selection. Student and Grown-up starts and Act-out points do not apply.
+
+| Basename | Floor and landmark placement |
+| --- | --- |
+| bg_menu_fire_easy | Floor starts at y=208. Door (112,104), cabinet (12,104), window (308,92), sofa (321,167), mat top edge (302,222) to (395,222). |
+| bg_menu_fire_normal | Floor starts at y=210. Doors (48,74) and (284,74), windows (125,89) and (358,89), Fire Bell box (16,99), EXIT sign (293,56). |
+| bg_menu_fire_hard | Road starts at y=201. Truck body (25,177), rear wheel centre (51,223), pole (94,86), shop counter (367,190), palm base (390,191). |
+
+Approved comparison sheet: `D:/GameDEV/fire-episode-scratch/art/01-menu-fire/preview.png`. Each widescreen view shows rows 54–269 at 5×.
+
+## Fire Batch 2 — Fire effects and Fire Bell (approved)
+
+From the project root run `aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=fire_fx --script ArtSource/scripts/build.lua`. Editable files use `ArtSource/Level/v2/<name>.aseprite`. PNGs use `Assets/Art/Level/v2/` and the filenames below. Number ranges include both endpoints.
+
+| Source name | PNGs | Art pixels | Frames | Timing per frame | Placement |
+| --- | --- | --- | --- | --- | --- |
+| fire_bell | fire_bell_0.png through fire_bell_1.png | 14×14 | 2 | 140 ms | Top-left wall mounts in the preview: classroom (104,129), corridor (263,117), mall_a (158,126). |
+| smoke_band | smoke_band_0.png through smoke_band_2.png | 480×110 | 3 | 220 ms | Scene top-left (0,0). Repeat horizontally every 480 pixels. |
+| flames_small | flames_small_0.png through flames_small_3.png | 20×24 | 4 | 150 ms | Base centre (10,23) in sprite space. Align to the Level's flame source. |
+| flames_pan | flames_pan_0.png through flames_pan_2.png | 16×10 | 3 | 150 ms | Base centre (8,9). Align to the pan rim. |
+| sparks | sparks_0.png through sparks_2.png | 14×12 | 3 | 110 ms | Centre (7,6). Align to the outlet. |
+| night_overlay | night_overlay.png | 480×270 | 1 | Still | Bedroom top-left (0,0). Window starts at (48,54), lamp centre (240,22). |
+
+These overlays introduce no floor, Student or Grown-up starts, or Act-out points. Existing Settings retain their placements. Approved sheet: `D:/GameDEV/fire-episode-scratch/art/02-fire-fx/preview.png`.
+
+## Fire Batch 3 — Student poses (approved)
+
+Run `aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=student_fire --script ArtSource/scripts/build.lua`. To export individual poses, add `--script-param poses=crawl,signal` with the desired names. The shared overlay selects as `sleeve_flame`.
+
+Each row except the overlay names two source files, `ArtSource/Student/boy_<pose>.aseprite` and `ArtSource/Student/girl_<pose>.aseprite`. Each frame exports to `Assets/Art/Student/<boy|girl>_<pose>_<index>.png`. Coordinates are art pixels from the top left of the frame. The floor is the bottom edge, y=50. Anchors below are registration points for placing the pose against the floor.
+
+| Pose | Frame indices | Size | Duration per frame | Registration and playback |
+| --- | --- | --- | --- | --- |
+| crawl | 0–3 | 32×50 | 160 ms | Ground (16,49) throughout. Loop facing right. |
+| walk_low | 0–3 | 32×50 | 160 ms | Feet (16,49) throughout. Handkerchief included. |
+| feel_door | 0–1 | 32×50 | 300 ms | Ground (16,49) both frames. Place the door surface at local x=31 for the extended hand. |
+| signal | 0–1 | 32×50 | 220 ms | Feet (16,49) both frames. Waving cloth included. |
+| stop_drop_roll | 0–5 | 32×50 | 240 ms | Frame 0 feet (16,49). Frame 1 ground (16,49). Frames 2, 3, 4 and 5 each use hip (8,41), eight pixels above ground registration. Remove the sleeve flame before frame 1. |
+| sleeve_flame | 0–2 | 6×8 | 150 ms | One shared source `ArtSource/Student/sleeve_flame.aseprite`. Exports `Assets/Art/Student/sleeve_flame_0.png` through `_2.png`. Place its top-left at (1,23) on surprised or (9,21) on stop, relative to the unmirrored Student. Mirror with the Student. |
+
+The poses introduce no Setting, prop in the world, or Grown-up start. Approved sheet: `D:/GameDEV/fire-episode-scratch/art/03-student/preview.png`.
+
+## Fire Batch 4 — Firefighter and Grown-up poses (approved)
+
+From the project root run `aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=grownups_fire --script ArtSource/scripts/build.lua`. An optional `poses=` list selects pose names. Each basename below has one source in `ArtSource/GrownUp/<basename>.aseprite` and one PNG per listed frame in `Assets/Art/GrownUp/<basename>_<index>.png`. Every frame measures 36×62. Register actors at (18,61), measured from the upper left. For kneeling this marks ground under the figure.
+
+| Basename | Frames | Duration per frame | Placement notes |
+| --- | --- | --- | --- |
+| firefighter_idle | 0–1 | 500 ms | Feet stay planted. |
+| firefighter_walk | 0–3 | 140 ms | Right-facing loop. |
+| firefighter_wave | 0–1 | 260 ms | Standing greeting. |
+| firefighter_kneel | 0–1 | 400 ms | Right-facing. Glove reaches (33,37) then (33,36). |
+| mom_lid | 0–1 | 400 ms | Align lid handle to (33,33), then stove knob to (33,40). |
+| mom_reach | 0–1 | 400 ms | Candle hand at (32,33). Flashlight included in hand at (32,28) for the handover. |
+| dad_switch | 0–1 | 300 ms | Align wall switch to (32,9), then (32,12). |
+| dad_phone | 0–1 | 350 ms | Mobile phone included at the ear. |
+| teacher_count | 0–1 | 350 ms | Clipboard and moving pencil included. |
+
+World starts and Act-out destinations belong to the Level layouts. Approved sheet: `D:/GameDEV/fire-episode-scratch/art/04-grownups/preview.png`.
+
+## Fire Batch 5 — Easy Settings, props and Choices (approved revision)
+
+From the project root run `aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=home_night,kitchen,icons_fire_easy --script ArtSource/scripts/build.lua`. Use `icons=fire_candle` or a comma-separated list to restrict the icon part. Every basename has a source `ArtSource/<folder>/<basename>.aseprite` and exports under `Assets/Art/<folder>/`. Stills use the basename plus `.png`. Pairs export `_0.png` and `_1.png`.
+
+| Folder | Basenames | Size in art pixels | Frames and timing |
+| --- | --- | --- | --- |
+| Level/v2 | bg_home_night, bg_kitchen | 480×270 each | Still |
+| Level/v2 | home_lighter | 6×4 | Still |
+| Level/v2 | home_night_plate, home_night_flashlight | 18×5, 12×8 | Still |
+| Level/v2 | home_night_candle, home_night_curtain | 6×12, 15×100 | Two each, 240 ms and 420 ms respectively |
+| Level/v2 | kitchen_pot, kitchen_burner | 28×20, 22×6 | Two each, 260 ms and 180 ms respectively |
+| Level/v2 | kitchen_pan, kitchen_pan_lid, kitchen_cup | 37×10, 24×9, 11×12 | Still |
+| UI | icon_fire_give_mom, icon_fire_lighter, icon_fire_tell_mom, icon_fire_candle, icon_fire_call_mom, icon_fire_move_pot | 16×16 each | Still |
+
+Coordinates below use art pixels from the upper left. Actor coordinates are the centre of the feet. Prop coordinates are top-left. Approved poses and placement snapshots: `D:/GameDEV/fire-episode-scratch/art/05-easy/preview.png`.
+
+- Easy 1, home: floor back y=208, walking line y=230. Student starts (237,230), picks up the lighter at (201,230), then gives it to Mom from (179,230). Mom stands at (156,230). The lighter starts at (196,229), moves to (190,223) at pickup and (168,209) at handover.
+- Easy 2, home_night: floor back y=208. Student starts at (147,230) and receives the flashlight at (206,230). Mom starts at (243,226), then hands it over from (178,221). Curtain (292,65), candle table (261,177), candle (289,166), plate (193,180), moved candle (199,170). The flashlight is drawn in Mom's hand for handover. Use the separate 12×8 prop once released.
+- Easy 3, kitchen: floor back y=206. Student starts and calls at (176,230). Mom starts outside the screen door and comes to the revised control position (295,210). The left knob centre is (310,189). Burner (314,170), boiling pot (311,155). Hide the burner when Mom turns down the heat.
+- Normal 4, kitchen: Student starts and calls at (176,230). Mom starts at (258,211). Cup (422,152), pan (301,166), small pan Flames (317,160), lid (254,154), covered lid (313,162). Use the same revised control position (295,210). Exit at (59,213) for the Student and (41,210) for Mom. The LPG tank and both hose fittings are drawn into the background. Actors stay in the open aisle.
+
+## Fire Batch 6 — Normal props and Choice icons (approved)
+
+Run `aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=fire_normal_props,icons_fire_normal --script ArtSource/scripts/build.lua`. The icon part accepts a comma-separated `icons=` list of names beginning with `fire_`. Each basename has a matching editable source in `ArtSource/<folder>/` and PNG in `Assets/Art/<folder>/`. Coordinates are art pixels from the upper left.
+
+| Folder | Basename | Size | Frames and timing | Placement in the review sheet |
+| --- | --- | --- | --- | --- |
+| Level/v2 | classroom_bag | 18×23 | Still | Top left (284,187), on the chair. |
+| Level/v2 | corridor_cr_door | 50×94 | Still | Top left (22,114), threshold at the back of the floor. |
+| Level/v2 | corridor_handkerchief | 8×7 | Still | Separate hand prop. The walk_low pose already includes a cloth at the nose. |
+| Level/v2 | home_outlet | 34×30 | Three frames, 150 ms each | Top left (271,149). PNGs home_outlet_0.png through home_outlet_2.png. |
+| Level/v2 | home_switch_box | 22×29 | Still | Top left (148,161). Lever aligned with Dad's raised hand. |
+| UI | icon_fire_line_up, icon_fire_bag, icon_fire_stay_low, icon_fire_run_smoke, icon_fire_hide_cr, icon_fire_stay_class, icon_fire_shout, icon_fire_water, icon_fire_carry_pan, icon_fire_tell_dad, icon_fire_pull_plugs | 16×16 each | Still | Choice icons. |
+
+The existing classroom and corridor walking lines are y=230. In the corridor preview the Student's feet are at (307,230), following the Teacher at (348,230). In the home preview the Student stands back at (104,235) and Dad operates the switch from (144,221). This batch adds props to existing Settings. Approved sheet: `D:/GameDEV/fire-episode-scratch/art/06-normal/preview.png`.
+
+### Original three-frame Smoke preview
+
+Batch 10 supplies the final Smoke animations and playback guidance. The original Smoke source contains three distinct 480×110 frames at 220 ms each. Their patterns shift left by eight art pixels per frame. For continuous drift, play frames 0, 1 and 2 in order, then shift the tiled layer left by 24 art pixels when returning to frame 0. Wrap the displacement at 480 pixels. This produces a seamless 60-step, 13.2-second cycle. The art preview uses the imported PNGs over the Hard 1 bedroom: `D:/GameDEV/fire-episode-scratch/art/07-bedroom/smoke-drift.gif`. Unity playback belongs to the gameplay integration ticket.
+
+## Fire Batch 7 — Hard bedroom props and Choices (approved)
+
+Run `aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=bedroom_fire,icons_fire_bedroom --script ArtSource/scripts/build.lua`. The icon part accepts an optional `icons=` list. Each basename has a matching editable source under `ArtSource/<folder>/` and PNG under `Assets/Art/<folder>/`.
+
+| Folder | Basename | Art pixels | Frames | Top-left placement in the bedroom |
+| --- | --- | --- | --- | --- |
+| Level/v2 | bedroom_door | 58×107 | _0 closed, _1 open, 300 ms source timing. Hold the appropriate state. | (319,102) |
+| Level/v2 | bedroom_closet_door | 46×92 | Still | (236,122) |
+| Level/v2 | bedroom_toy | 16×18 | Still | (287,198) |
+| Level/v2 | bedroom_blanket | 31×15 | Still | (148,191) on bed |
+| Level/v2 | bedroom_blanket_gap | 55×6 | Still | (320,205) below closed door |
+| Level/v2 | bedroom_cloth | 17×13 | Still | (394,155) on shelf. The signal pose includes the raised cloth. |
+| Level/v2 | bedroom_window_open | 68×86 | Still | (50,57) within existing window |
+| UI | icon_fire_crawl, icon_fire_hide_bed, icon_fire_run_standing, icon_fire_toy, icon_fire_feel_door, icon_fire_open_door, icon_fire_closet, icon_fire_wait_bed, icon_fire_signal, icon_fire_jump, icon_fire_video | 16×16 each | Still | Choice icons |
+
+Actor coordinates below refer to the centre of the feet or ground registration in art pixels. The existing bedroom walking line is y=230. The bed is at (104,194). In the Hard 1 preview the Student crawls toward the open door from (299,230). Hard 2 shows the door check at (304,216) and the second exit at (86,221). Hard 3 shows the Student signaling at (86,215). The Firefighter appears outside the window, cropped to the opening at (66,99); the visible portion is 36×41. Approved sheet: `D:/GameDEV/fire-episode-scratch/art/07-bedroom/preview.png`.
+
+## Fire Batch 8 — Yard and siga (approved)
+
+Run `aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=yard,icons_fire_yard --script ArtSource/scripts/build.lua`. Use `icons=` to select individual Choice icons. Each basename has an editable source under `ArtSource/<folder>/` and PNG exports under `Assets/Art/<folder>/`.
+
+| Folder | Basename | Art pixels | Frames and timing |
+| --- | --- | --- | --- |
+| Level/v2 | bg_yard | 480×270 | Still |
+| Level/v2 | yard_siga | 46×31 | Four frames, _0 through _3, 160 ms each |
+| UI | icon_fire_stop_drop_roll, icon_fire_run_help, icon_fire_beat_hands, icon_fire_wave_arms | 16×16 each | Still |
+
+Art coordinates from the upper left: the lawn begins at y=169 and the Student uses ground y=230. Place the siga at top-left (94,194). The Student starts at (181,230), stops and drops there, then moves across the clear grass. The six ground registration points in order are (181,230), (181,230), (181,230), (196,230), (211,230), and (226,230). Use the Batch 3 frame anchors. Show the shared sleeve flame on the stop frame at local (9,21); remove it on drop. No Grown-up enters this Act-out. The mango tree is drawn at (8,18), the clothesline spans x=252–442, and the water drum stands at (408,148). Approved sheet: `D:/GameDEV/fire-episode-scratch/art/08-yard/preview.png`.
+
+## Fire Batch 9 — Mall art (approved)
+
+Run `aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=mall_fire,icons_fire_mall --script ArtSource/scripts/build.lua`. Each basename has one editable source under `ArtSource/<folder>/` and one PNG under `Assets/Art/<folder>/`. All three are still frames.
+
+| Folder | Basename | Art pixels | Placement |
+| --- | --- | --- | --- |
+| Level/v2 | mall_exit_sign | 48×15 | Top-left (30,110) above the food-court doorway. |
+| Level/v2 | mall_toy_shop_toy | 27×15 | Top-left (317,147) on the toy-shop shelf. |
+| UI | icon_fire_exit_stairs | 16×16 | Choice icon. |
+
+Both mall backgrounds retain their existing layout. The preview places the Fire Bell at (158,126) and light Smoke at (0,0). Student and Mom start at (229,230) and (253,230), measured at their feet. The food-court walking line is y=230. The landing in mall_b is y=178; use the existing stair points in mall_v2.lua. Preview mid-descent positions are (179,190) and (201,203). The outside Meeting Place is (430,230). Approved sheet: `D:/GameDEV/fire-episode-scratch/art/09-mall/preview.png`.
+
+## Fire Batch 10 — Street, street after and revised Smoke (approved)
+
+From the project root run `aseprite.exe -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=street,street_after,icons_fire_street,fire_smoke_motion --script ArtSource/scripts/build.lua`. The icon part accepts a comma-separated `icons=` list. Each basename has one editable source under `ArtSource/<folder>/` and exports under `Assets/Art/<folder>/`.
+
+| Folder | Basenames | Art pixels | Frames and timing |
+| --- | --- | --- | --- |
+| Level/v2 | bg_street, bg_street_after | 480×270 | Still |
+| Level/v2 | street_cat, street_phone, street_hiding_box | 21×17, 7×11, 43×34 | Still |
+| Level/v2 | smoke_drift | 480×110 | Frames 0–23, 80 ms each |
+| Level/v2 | street_roof_smoke | 67×73 | Frames 0–23, 80 ms each |
+| UI | icon_fire_call_911, icon_fire_watch, icon_fire_film, icon_fire_run_inside, icon_fire_go_firefighter, icon_fire_hide_firefighter, icon_fire_cat, icon_fire_run_home | 16×16 each | Still |
+
+Placement coordinates use art pixels from the upper left. Actor coordinates mark the centre of the feet. Prop and effect coordinates mark the top left.
+
+- **Hard 6, street.** The near pavement begins at y=188. The Student starts at (168,233), steps back to (150,233), and calls to Dad at (126,234). Dad's phone pose includes the phone. For another pose, align the separate phone to the raised hand. The distant window Flames start at (291,110) and the roof plume at (279,17). The isawan cart is drawn at (213,133) and the vendor at (259,150), in the daytime backdrop.
+- **Hard 7, street_after.** The Student starts at (191,230) and meets the kneeling Firefighter at (347,230). The Firefighter enters the preview at (265,229) and kneels at (320,229). Place the cat at (71,183) and the crates at (411,174). The parked engine body starts at (109,137). The Meeting Place sign is at (337,166). The stain above the home's window is part of the backdrop.
+- **Smoke playback.** Use the shared ceiling band in the corridor, the night bedroom for Hard 1–3, and both mall Settings. Anchor it at (0,0), repeat horizontally every 480 art pixels, and advance the texture left two pixels per 80 ms frame. Each sprite cycle lasts 1.92 seconds. After ten cycles both the frame and scroll position return to their starting points (19.2 seconds). The mall preview uses half the band opacity. The street plume cycles in place at its roof anchor. Hard 7 shows the fire out. For Unity integration, advance frame and scroll from the same pausable Level clock and apply the entry fade specified in the Fire design.
+
+Approved Batch 10 sheet: `D:/GameDEV/fire-episode-scratch/art/10-street/preview.png`. Animated Smoke comparison: `D:/GameDEV/fire-episode-scratch/art/10-street/smoke-motion.gif`.
+
+## Fire art file inventory
+
+The ten approved batches contain 210 PNGs and 105 editable Aseprite sources. Paths below are relative to the project root.
+
+<details>
+<summary>01-menu-fire (6 files)</summary>
+
+```text
+ArtSource/Background/bg_menu_fire_easy.aseprite
+ArtSource/Background/bg_menu_fire_hard.aseprite
+ArtSource/Background/bg_menu_fire_normal.aseprite
+Assets/Art/Background/bg_menu_fire_easy.png
+Assets/Art/Background/bg_menu_fire_hard.png
+Assets/Art/Background/bg_menu_fire_normal.png
+```
+
+</details>
+
+<details>
+<summary>02-fire-fx (22 files)</summary>
+
+```text
+ArtSource/Level/v2/fire_bell.aseprite
+ArtSource/Level/v2/flames_pan.aseprite
+ArtSource/Level/v2/flames_small.aseprite
+ArtSource/Level/v2/night_overlay.aseprite
+ArtSource/Level/v2/smoke_band.aseprite
+ArtSource/Level/v2/sparks.aseprite
+Assets/Art/Level/v2/fire_bell_0.png
+Assets/Art/Level/v2/fire_bell_1.png
+Assets/Art/Level/v2/flames_pan_0.png
+Assets/Art/Level/v2/flames_pan_1.png
+Assets/Art/Level/v2/flames_pan_2.png
+Assets/Art/Level/v2/flames_small_0.png
+Assets/Art/Level/v2/flames_small_1.png
+Assets/Art/Level/v2/flames_small_2.png
+Assets/Art/Level/v2/flames_small_3.png
+Assets/Art/Level/v2/night_overlay.png
+Assets/Art/Level/v2/smoke_band_0.png
+Assets/Art/Level/v2/smoke_band_1.png
+Assets/Art/Level/v2/smoke_band_2.png
+Assets/Art/Level/v2/sparks_0.png
+Assets/Art/Level/v2/sparks_1.png
+Assets/Art/Level/v2/sparks_2.png
+```
+
+</details>
+
+<details>
+<summary>03-student (50 files)</summary>
+
+```text
+ArtSource/Student/boy_crawl.aseprite
+ArtSource/Student/boy_feel_door.aseprite
+ArtSource/Student/boy_signal.aseprite
+ArtSource/Student/boy_stop_drop_roll.aseprite
+ArtSource/Student/boy_walk_low.aseprite
+ArtSource/Student/girl_crawl.aseprite
+ArtSource/Student/girl_feel_door.aseprite
+ArtSource/Student/girl_signal.aseprite
+ArtSource/Student/girl_stop_drop_roll.aseprite
+ArtSource/Student/girl_walk_low.aseprite
+ArtSource/Student/sleeve_flame.aseprite
+Assets/Art/Student/boy_crawl_0.png
+Assets/Art/Student/boy_crawl_1.png
+Assets/Art/Student/boy_crawl_2.png
+Assets/Art/Student/boy_crawl_3.png
+Assets/Art/Student/boy_feel_door_0.png
+Assets/Art/Student/boy_feel_door_1.png
+Assets/Art/Student/boy_signal_0.png
+Assets/Art/Student/boy_signal_1.png
+Assets/Art/Student/boy_stop_drop_roll_0.png
+Assets/Art/Student/boy_stop_drop_roll_1.png
+Assets/Art/Student/boy_stop_drop_roll_2.png
+Assets/Art/Student/boy_stop_drop_roll_3.png
+Assets/Art/Student/boy_stop_drop_roll_4.png
+Assets/Art/Student/boy_stop_drop_roll_5.png
+Assets/Art/Student/boy_walk_low_0.png
+Assets/Art/Student/boy_walk_low_1.png
+Assets/Art/Student/boy_walk_low_2.png
+Assets/Art/Student/boy_walk_low_3.png
+Assets/Art/Student/girl_crawl_0.png
+Assets/Art/Student/girl_crawl_1.png
+Assets/Art/Student/girl_crawl_2.png
+Assets/Art/Student/girl_crawl_3.png
+Assets/Art/Student/girl_feel_door_0.png
+Assets/Art/Student/girl_feel_door_1.png
+Assets/Art/Student/girl_signal_0.png
+Assets/Art/Student/girl_signal_1.png
+Assets/Art/Student/girl_stop_drop_roll_0.png
+Assets/Art/Student/girl_stop_drop_roll_1.png
+Assets/Art/Student/girl_stop_drop_roll_2.png
+Assets/Art/Student/girl_stop_drop_roll_3.png
+Assets/Art/Student/girl_stop_drop_roll_4.png
+Assets/Art/Student/girl_stop_drop_roll_5.png
+Assets/Art/Student/girl_walk_low_0.png
+Assets/Art/Student/girl_walk_low_1.png
+Assets/Art/Student/girl_walk_low_2.png
+Assets/Art/Student/girl_walk_low_3.png
+Assets/Art/Student/sleeve_flame_0.png
+Assets/Art/Student/sleeve_flame_1.png
+Assets/Art/Student/sleeve_flame_2.png
+```
+
+</details>
+
+<details>
+<summary>04-grownups (29 files)</summary>
+
+```text
+ArtSource/GrownUp/dad_phone.aseprite
+ArtSource/GrownUp/dad_switch.aseprite
+ArtSource/GrownUp/firefighter_idle.aseprite
+ArtSource/GrownUp/firefighter_kneel.aseprite
+ArtSource/GrownUp/firefighter_walk.aseprite
+ArtSource/GrownUp/firefighter_wave.aseprite
+ArtSource/GrownUp/mom_lid.aseprite
+ArtSource/GrownUp/mom_reach.aseprite
+ArtSource/GrownUp/teacher_count.aseprite
+Assets/Art/GrownUp/dad_phone_0.png
+Assets/Art/GrownUp/dad_phone_1.png
+Assets/Art/GrownUp/dad_switch_0.png
+Assets/Art/GrownUp/dad_switch_1.png
+Assets/Art/GrownUp/firefighter_idle_0.png
+Assets/Art/GrownUp/firefighter_idle_1.png
+Assets/Art/GrownUp/firefighter_kneel_0.png
+Assets/Art/GrownUp/firefighter_kneel_1.png
+Assets/Art/GrownUp/firefighter_walk_0.png
+Assets/Art/GrownUp/firefighter_walk_1.png
+Assets/Art/GrownUp/firefighter_walk_2.png
+Assets/Art/GrownUp/firefighter_walk_3.png
+Assets/Art/GrownUp/firefighter_wave_0.png
+Assets/Art/GrownUp/firefighter_wave_1.png
+Assets/Art/GrownUp/mom_lid_0.png
+Assets/Art/GrownUp/mom_lid_1.png
+Assets/Art/GrownUp/mom_reach_0.png
+Assets/Art/GrownUp/mom_reach_1.png
+Assets/Art/GrownUp/teacher_count_0.png
+Assets/Art/GrownUp/teacher_count_1.png
+```
+
+</details>
+
+<details>
+<summary>05-easy (40 files)</summary>
+
+```text
+ArtSource/Level/v2/bg_home_night.aseprite
+ArtSource/Level/v2/bg_kitchen.aseprite
+ArtSource/Level/v2/home_lighter.aseprite
+ArtSource/Level/v2/home_night_candle.aseprite
+ArtSource/Level/v2/home_night_curtain.aseprite
+ArtSource/Level/v2/home_night_flashlight.aseprite
+ArtSource/Level/v2/home_night_plate.aseprite
+ArtSource/Level/v2/kitchen_burner.aseprite
+ArtSource/Level/v2/kitchen_cup.aseprite
+ArtSource/Level/v2/kitchen_pan.aseprite
+ArtSource/Level/v2/kitchen_pan_lid.aseprite
+ArtSource/Level/v2/kitchen_pot.aseprite
+ArtSource/UI/icon_fire_call_mom.aseprite
+ArtSource/UI/icon_fire_candle.aseprite
+ArtSource/UI/icon_fire_give_mom.aseprite
+ArtSource/UI/icon_fire_lighter.aseprite
+ArtSource/UI/icon_fire_move_pot.aseprite
+ArtSource/UI/icon_fire_tell_mom.aseprite
+Assets/Art/Level/v2/bg_home_night.png
+Assets/Art/Level/v2/bg_kitchen.png
+Assets/Art/Level/v2/home_lighter.png
+Assets/Art/Level/v2/home_night_candle_0.png
+Assets/Art/Level/v2/home_night_candle_1.png
+Assets/Art/Level/v2/home_night_curtain_0.png
+Assets/Art/Level/v2/home_night_curtain_1.png
+Assets/Art/Level/v2/home_night_flashlight.png
+Assets/Art/Level/v2/home_night_plate.png
+Assets/Art/Level/v2/kitchen_burner_0.png
+Assets/Art/Level/v2/kitchen_burner_1.png
+Assets/Art/Level/v2/kitchen_cup.png
+Assets/Art/Level/v2/kitchen_pan.png
+Assets/Art/Level/v2/kitchen_pan_lid.png
+Assets/Art/Level/v2/kitchen_pot_0.png
+Assets/Art/Level/v2/kitchen_pot_1.png
+Assets/Art/UI/icon_fire_call_mom.png
+Assets/Art/UI/icon_fire_candle.png
+Assets/Art/UI/icon_fire_give_mom.png
+Assets/Art/UI/icon_fire_lighter.png
+Assets/Art/UI/icon_fire_move_pot.png
+Assets/Art/UI/icon_fire_tell_mom.png
+```
+
+</details>
+
+<details>
+<summary>06-normal (34 files)</summary>
+
+```text
+ArtSource/Level/v2/classroom_bag.aseprite
+ArtSource/Level/v2/corridor_cr_door.aseprite
+ArtSource/Level/v2/corridor_handkerchief.aseprite
+ArtSource/Level/v2/home_outlet.aseprite
+ArtSource/Level/v2/home_switch_box.aseprite
+ArtSource/UI/icon_fire_bag.aseprite
+ArtSource/UI/icon_fire_carry_pan.aseprite
+ArtSource/UI/icon_fire_hide_cr.aseprite
+ArtSource/UI/icon_fire_line_up.aseprite
+ArtSource/UI/icon_fire_pull_plugs.aseprite
+ArtSource/UI/icon_fire_run_smoke.aseprite
+ArtSource/UI/icon_fire_shout.aseprite
+ArtSource/UI/icon_fire_stay_class.aseprite
+ArtSource/UI/icon_fire_stay_low.aseprite
+ArtSource/UI/icon_fire_tell_dad.aseprite
+ArtSource/UI/icon_fire_water.aseprite
+Assets/Art/Level/v2/classroom_bag.png
+Assets/Art/Level/v2/corridor_cr_door.png
+Assets/Art/Level/v2/corridor_handkerchief.png
+Assets/Art/Level/v2/home_outlet_0.png
+Assets/Art/Level/v2/home_outlet_1.png
+Assets/Art/Level/v2/home_outlet_2.png
+Assets/Art/Level/v2/home_switch_box.png
+Assets/Art/UI/icon_fire_bag.png
+Assets/Art/UI/icon_fire_carry_pan.png
+Assets/Art/UI/icon_fire_hide_cr.png
+Assets/Art/UI/icon_fire_line_up.png
+Assets/Art/UI/icon_fire_pull_plugs.png
+Assets/Art/UI/icon_fire_run_smoke.png
+Assets/Art/UI/icon_fire_shout.png
+Assets/Art/UI/icon_fire_stay_class.png
+Assets/Art/UI/icon_fire_stay_low.png
+Assets/Art/UI/icon_fire_tell_dad.png
+Assets/Art/UI/icon_fire_water.png
+```
+
+</details>
+
+<details>
+<summary>07-bedroom (37 files)</summary>
+
+```text
+ArtSource/Level/v2/bedroom_blanket.aseprite
+ArtSource/Level/v2/bedroom_blanket_gap.aseprite
+ArtSource/Level/v2/bedroom_closet_door.aseprite
+ArtSource/Level/v2/bedroom_cloth.aseprite
+ArtSource/Level/v2/bedroom_door.aseprite
+ArtSource/Level/v2/bedroom_toy.aseprite
+ArtSource/Level/v2/bedroom_window_open.aseprite
+ArtSource/UI/icon_fire_closet.aseprite
+ArtSource/UI/icon_fire_crawl.aseprite
+ArtSource/UI/icon_fire_feel_door.aseprite
+ArtSource/UI/icon_fire_hide_bed.aseprite
+ArtSource/UI/icon_fire_jump.aseprite
+ArtSource/UI/icon_fire_open_door.aseprite
+ArtSource/UI/icon_fire_run_standing.aseprite
+ArtSource/UI/icon_fire_signal.aseprite
+ArtSource/UI/icon_fire_toy.aseprite
+ArtSource/UI/icon_fire_video.aseprite
+ArtSource/UI/icon_fire_wait_bed.aseprite
+Assets/Art/Level/v2/bedroom_blanket.png
+Assets/Art/Level/v2/bedroom_blanket_gap.png
+Assets/Art/Level/v2/bedroom_closet_door.png
+Assets/Art/Level/v2/bedroom_cloth.png
+Assets/Art/Level/v2/bedroom_door_0.png
+Assets/Art/Level/v2/bedroom_door_1.png
+Assets/Art/Level/v2/bedroom_toy.png
+Assets/Art/Level/v2/bedroom_window_open.png
+Assets/Art/UI/icon_fire_closet.png
+Assets/Art/UI/icon_fire_crawl.png
+Assets/Art/UI/icon_fire_feel_door.png
+Assets/Art/UI/icon_fire_hide_bed.png
+Assets/Art/UI/icon_fire_jump.png
+Assets/Art/UI/icon_fire_open_door.png
+Assets/Art/UI/icon_fire_run_standing.png
+Assets/Art/UI/icon_fire_signal.png
+Assets/Art/UI/icon_fire_toy.png
+Assets/Art/UI/icon_fire_video.png
+Assets/Art/UI/icon_fire_wait_bed.png
+```
+
+</details>
+
+<details>
+<summary>08-yard (15 files)</summary>
+
+```text
+ArtSource/Level/v2/bg_yard.aseprite
+ArtSource/Level/v2/yard_siga.aseprite
+ArtSource/UI/icon_fire_beat_hands.aseprite
+ArtSource/UI/icon_fire_run_help.aseprite
+ArtSource/UI/icon_fire_stop_drop_roll.aseprite
+ArtSource/UI/icon_fire_wave_arms.aseprite
+Assets/Art/Level/v2/bg_yard.png
+Assets/Art/Level/v2/yard_siga_0.png
+Assets/Art/Level/v2/yard_siga_1.png
+Assets/Art/Level/v2/yard_siga_2.png
+Assets/Art/Level/v2/yard_siga_3.png
+Assets/Art/UI/icon_fire_beat_hands.png
+Assets/Art/UI/icon_fire_run_help.png
+Assets/Art/UI/icon_fire_stop_drop_roll.png
+Assets/Art/UI/icon_fire_wave_arms.png
+```
+
+</details>
+
+<details>
+<summary>09-mall (6 files)</summary>
+
+```text
+ArtSource/Level/v2/mall_exit_sign.aseprite
+ArtSource/Level/v2/mall_toy_shop_toy.aseprite
+ArtSource/UI/icon_fire_exit_stairs.aseprite
+Assets/Art/Level/v2/mall_exit_sign.png
+Assets/Art/Level/v2/mall_toy_shop_toy.png
+Assets/Art/UI/icon_fire_exit_stairs.png
+```
+
+</details>
+
+<details>
+<summary>10-street (76 files)</summary>
+
+```text
+ArtSource/Level/v2/bg_street.aseprite
+ArtSource/Level/v2/bg_street_after.aseprite
+ArtSource/Level/v2/smoke_drift.aseprite
+ArtSource/Level/v2/street_cat.aseprite
+ArtSource/Level/v2/street_hiding_box.aseprite
+ArtSource/Level/v2/street_phone.aseprite
+ArtSource/Level/v2/street_roof_smoke.aseprite
+ArtSource/UI/icon_fire_call_911.aseprite
+ArtSource/UI/icon_fire_cat.aseprite
+ArtSource/UI/icon_fire_film.aseprite
+ArtSource/UI/icon_fire_go_firefighter.aseprite
+ArtSource/UI/icon_fire_hide_firefighter.aseprite
+ArtSource/UI/icon_fire_run_home.aseprite
+ArtSource/UI/icon_fire_run_inside.aseprite
+ArtSource/UI/icon_fire_watch.aseprite
+Assets/Art/Level/v2/bg_street.png
+Assets/Art/Level/v2/bg_street_after.png
+Assets/Art/Level/v2/smoke_drift_0.png
+Assets/Art/Level/v2/smoke_drift_1.png
+Assets/Art/Level/v2/smoke_drift_10.png
+Assets/Art/Level/v2/smoke_drift_11.png
+Assets/Art/Level/v2/smoke_drift_12.png
+Assets/Art/Level/v2/smoke_drift_13.png
+Assets/Art/Level/v2/smoke_drift_14.png
+Assets/Art/Level/v2/smoke_drift_15.png
+Assets/Art/Level/v2/smoke_drift_16.png
+Assets/Art/Level/v2/smoke_drift_17.png
+Assets/Art/Level/v2/smoke_drift_18.png
+Assets/Art/Level/v2/smoke_drift_19.png
+Assets/Art/Level/v2/smoke_drift_2.png
+Assets/Art/Level/v2/smoke_drift_20.png
+Assets/Art/Level/v2/smoke_drift_21.png
+Assets/Art/Level/v2/smoke_drift_22.png
+Assets/Art/Level/v2/smoke_drift_23.png
+Assets/Art/Level/v2/smoke_drift_3.png
+Assets/Art/Level/v2/smoke_drift_4.png
+Assets/Art/Level/v2/smoke_drift_5.png
+Assets/Art/Level/v2/smoke_drift_6.png
+Assets/Art/Level/v2/smoke_drift_7.png
+Assets/Art/Level/v2/smoke_drift_8.png
+Assets/Art/Level/v2/smoke_drift_9.png
+Assets/Art/Level/v2/street_cat.png
+Assets/Art/Level/v2/street_hiding_box.png
+Assets/Art/Level/v2/street_phone.png
+Assets/Art/Level/v2/street_roof_smoke_0.png
+Assets/Art/Level/v2/street_roof_smoke_1.png
+Assets/Art/Level/v2/street_roof_smoke_10.png
+Assets/Art/Level/v2/street_roof_smoke_11.png
+Assets/Art/Level/v2/street_roof_smoke_12.png
+Assets/Art/Level/v2/street_roof_smoke_13.png
+Assets/Art/Level/v2/street_roof_smoke_14.png
+Assets/Art/Level/v2/street_roof_smoke_15.png
+Assets/Art/Level/v2/street_roof_smoke_16.png
+Assets/Art/Level/v2/street_roof_smoke_17.png
+Assets/Art/Level/v2/street_roof_smoke_18.png
+Assets/Art/Level/v2/street_roof_smoke_19.png
+Assets/Art/Level/v2/street_roof_smoke_2.png
+Assets/Art/Level/v2/street_roof_smoke_20.png
+Assets/Art/Level/v2/street_roof_smoke_21.png
+Assets/Art/Level/v2/street_roof_smoke_22.png
+Assets/Art/Level/v2/street_roof_smoke_23.png
+Assets/Art/Level/v2/street_roof_smoke_3.png
+Assets/Art/Level/v2/street_roof_smoke_4.png
+Assets/Art/Level/v2/street_roof_smoke_5.png
+Assets/Art/Level/v2/street_roof_smoke_6.png
+Assets/Art/Level/v2/street_roof_smoke_7.png
+Assets/Art/Level/v2/street_roof_smoke_8.png
+Assets/Art/Level/v2/street_roof_smoke_9.png
+Assets/Art/UI/icon_fire_call_911.png
+Assets/Art/UI/icon_fire_cat.png
+Assets/Art/UI/icon_fire_film.png
+Assets/Art/UI/icon_fire_go_firefighter.png
+Assets/Art/UI/icon_fire_hide_firefighter.png
+Assets/Art/UI/icon_fire_run_home.png
+Assets/Art/UI/icon_fire_run_inside.png
+Assets/Art/UI/icon_fire_watch.png
+```
+
+</details>
+
