@@ -3,7 +3,7 @@
 The recordings below are by Kevin MacLeod (incompetech.com), licensed under
 [Creative Commons Attribution 4.0 International](https://creativecommons.org/licenses/by/4.0/).
 
-The game ships the two menu recordings and Set A. Set A's Level Completed cue is now the CC0 ukulele recording listed below; Light Sting is no longer used. The Set B recordings are prepared for Fire and Flood and are held in the ticket scratch folder until either Episode has Playable Levels. The Music Credits view is available offline from Settings.
+The game ships the two menu recordings, Set A and Set B. Set A's Level Completed cue is now the CC0 ukulele recording listed below; Light Sting is no longer used. Set B plays in Fire and ships ahead of Fire's first Playable Level; Flood will use the same recordings. The Music Credits view is available offline from Settings.
 
 All prepared recordings were loudness matched and converted from the supplied MP3s to 44.1 kHz stereo WAV files with signed 16-bit PCM. The loops received 12 ms edge fades to avoid clicks. Unity imports recordings used by the game as Vorbis audio.
 
