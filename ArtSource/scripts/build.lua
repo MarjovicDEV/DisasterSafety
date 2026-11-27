@@ -702,4 +702,32 @@ if only.menu_flood then
   end
 end
 
+if only.landslide_hillside or only.icons_landslide_signs or only.landslide_hillside_more or only.icons_landslide_hillside then
+  dofile(here .. "hillside_v2.lua")(L, root, only)
+end
+if only.grownups_landslide and (not app.params.poses or (","..app.params.poses..","):find(",shovel,",1,true)) then
+  dofile(here.."grownups_v2.lua")(L,ST).saveShovel()
+end
+
+if only.hill_road or only.icons_landslide_road then
+  dofile(here.."hill_road_v2.lua")(L,root,only)
+end
+
+if only.landslide_home or only.icons_landslide_indoor then
+  dofile(here.."landslide_fx.lua")(L,root,only)
+end
+
+if only.menu_landslide then
+  local menus=dofile(here.."background.lua")(L,ST).landslideMenus(root)
+  for name,img in pairs(menus) do
+    local path="Background/bg_menu_landslide_"..name
+    L.save(img,path,path)
+  end
+end
+
+if only.safety_reminder then
+  local img=dofile(here.."background.lua")(L,ST).safetyReminder()
+  L.save(img,"Background/bg_safety_reminder","Background/bg_safety_reminder")
+end
+
 print("Built " .. #L.made .. " images")

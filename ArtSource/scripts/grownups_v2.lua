@@ -1006,6 +1006,36 @@ return function(L, ST)
     return img
   end
 
+  function M.saveShovel()
+    local frames={}
+    for f=0,1 do
+      local img=L.newImage(FW,FH)
+      local figure=sideFigure("dad",WALK[2],{16,23,19,30,23,34-f*2})
+      L.blit(img,toImage(figure),6,0,true)
+      -- Both boots are planted while the short blade lifts at the near edge.
+      L.rect(img,0,50,36,12,L.CLEAR)
+      for _,boot in ipairs({{29,49,6,10},{24,51,7,10}}) do
+        local x,y,w,h=table.unpack(boot)
+        L.rect(img,x,y,w,h,P.ink)
+        L.rect(img,x+1,y+1,w-2,h-2,P.teal2)
+        L.rect(img,x-1,y+h-3,w+1,3,P.ink)
+        L.hline(img,x,x+4,y+h-2,P.teal2)
+      end
+      local lift=5+4*f
+      L.line(img,2,52-lift,23,28-f,P.ink,3)
+      L.line(img,3,52-lift,24,28-f,P.brown3)
+      L.poly(img,{0,51-lift,4,48-lift,8,52-lift,4,56-lift,0,57-lift},P.ink)
+      L.poly(img,{1,52-lift,4,50-lift,6,52-lift,3,55-lift,1,55-lift},P.metal2)
+      L.line(img,1,53-lift,3,51-lift,P.metal)
+      L.line(img,24,25,24,29-f,KEY.S,2)
+      L.rect(img,21,28-f,4,3,KEY.S)
+      L.rect(img,16,33-2*f,4,3,KEY.S)
+      L.hline(img,16,18,33-2*f,KEY.t)
+      frames[#frames+1]=img
+    end
+    L.saveFrames(frames,"GrownUp/dad_shovel","GrownUp/dad_shovel",400)
+  end
+
   function M.saveTyphoonPoses(selected,bag)
     local sets={{"tanod","idle",2,500},{"tanod","walk",4,140},{"tanod","megaphone",2,350},
       {"tanod","wave",2,260},{"mom","umbrella",4,140},{"mom","walk_gobag",4,140},

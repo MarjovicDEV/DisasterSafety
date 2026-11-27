@@ -1319,5 +1319,275 @@ return function(L, ST)
     return {episode=episode,easy=easy,normal=normal,hard=hard}
   end
 
+  function M.landslideMenus(root)
+    local function foothills(colors)
+      local img=L.newImage(480,270)
+      L.vgrad(img,0,0,480,158,colors)
+      L.poly(img,{0,112,40,91,72,100,127,65,180,91,236,58,301,90,349,77,402,102,451,79,480,90,480,161,0,161},P.hill)
+      L.poly(img,{0,122,53,99,91,115,150,92,218,115,275,88,334,110,376,96,430,117,480,98,480,166,0,166},P.hill2)
+      L.rect(img,0,155,480,115,P.grass2)
+      return img
+    end
+    local function board(img,x,y)
+      box(img,x+23,y+17,5,23,R.wood)
+      local w=L.F.width("LANDSLIDE")+8
+      box(img,x,y,w,23,R.cream)
+      L.text(img,x+4,y+3,"LANDSLIDE",P.ink)
+      L.text(img,x+(w-L.F.width("ZONE"))//2,y+12,"ZONE",P.ink)
+    end
+    local function home(img,x,y,w,h,paint,wall)
+      box(img,x+4,y,w-8,h,wall)
+      for yy=y+5,y+h-3,5 do L.hline(img,x+6,x+w-7,yy,wall[3]) end
+      roof(img,x-2,y-13,w+4,12,paint)
+      box(img,x+10,y+8,14,12,R.glass)
+      L.vline(img,x+17,y+9,y+18,P.brown2)
+      box(img,x+w-21,y+7,11,h-7,R.wood)
+      L.px(img,x+w-13,y+18,P.paper)
+      L.hline(img,x+w-24,x+w-8,y+h,P.concrete3)
+    end
+    local ep=foothills({P.mount3,P.sky4,P.sky5})
+    -- Field terraces follow the local contours; the houses sit on the flat bench.
+    for x=0,479 do
+      local crest=math.floor(80+0.14*x+9*math.sin(x/34))
+      L.vline(ep,x,crest,161,P.grass3)
+      for j=0,3 do
+        local y=crest+2+j*12
+        if y<155 then
+          L.vline(ep,x,y,math.min(y+5,159),j%2==0 and P.grass or P.hill)
+          L.px(ep,x,y+6,P.green3)
+        end
+      end
+    end
+    L.poly(ep,{0,185,88,174,181,176,273,163,364,155,480,157,480,168,371,166,279,174,188,190,93,189,0,206},P.concrete3)
+    L.poly(ep,{0,189,89,177,181,179,276,165,367,157,480,159,480,165,370,163,276,171,187,187,91,186,0,201},P.gray3)
+    L.poly(ep,{91,270,145,234,206,212,236,185,276,171,291,171,250,193,224,221,178,245,153,270},P.dirt)
+    L.poly(ep,{98,270,149,236,210,213,239,186,279,172,286,172,248,192,221,219,175,243,147,270},P.tan)
+    for _,v in ipairs({{80,148,49,27,R.rust,R.cream},{144,147,53,28,R.roofgreen,R.wood},{221,143,44,24,R.metal,R.cream},{290,133,47,24,R.rust,R.wood},{415,124,60,32,R.roofgreen,R.cream}}) do
+      home(ep,table.unpack(v))
+    end
+    palm(ep,374,158,108,-6,.58)
+    -- Roadside veranda, upstairs vent and a wider corner shopfront distinguish the homes.
+    box(ep,78,160,49,4,R.wood)
+    for _,x in ipairs({79,124}) do box(ep,x,164,3,12,R.wood) end
+    box(ep,152,150,36,7,R.board)
+    for x=155,183,4 do L.vline(ep,x,151,155,P.tan) end
+    box(ep,419,133,28,15,R.wood)
+    box(ep,421,135,24,10,R.glass)
+    box(ep,417,131,32,4,R.rust)
+    box(ep,418,146,31,3,R.wood)
+    tree(ep,205,164,{{203,140,9},{212,143,7},{196,144,6}},17)
+    board(ep,5,102)
+    bush(ep,25,214,18,7); bush(ep,465,214,22,9)
+    noise(ep,0,197,479,269,P.grass2,P.grass3,550,507)
+
+    local easy=foothills({P.sky2,P.sky4,P.sky5})
+    L.poly(easy,{190,158,251,124,286,107,330,75,361,63,396,70,429,92,480,105,480,173,190,173},P.grass3)
+    L.poly(easy,{237,151,293,115,333,81,361,68,389,75,358,77,336,90,300,125},P.grass)
+    L.poly(easy,{0,203,148,183,257,180,360,191,480,180,480,270,0,270},P.paper3)
+    -- Split bamboo wall, raised sill, vent slats and an extended porch eave.
+    box(easy,-12,86,180,97,R.wood)
+    for x=0,167,5 do
+      L.vline(easy,x,90,180,P.tan)
+      for yy=99+x%13,175,24 do L.hline(easy,x,x+3,yy,P.brown2) end
+    end
+    roof(easy,-32,47,217,36,R.rust)
+    box(easy,13,99,51,46,R.wood)
+    for yy=103,138,6 do
+      L.rect(easy,17,yy,43,3,P.brown2)
+      L.hline(easy,17,59,yy,P.paper3)
+    end
+    box(easy,95,97,42,85,R.wood)
+    box(easy,100,101,33,78,R.board)
+    L.poly(easy,{101,102,115,108,115,173,101,179},P.brown)
+    box(easy,-4,181,173,6,R.concrete)
+    box(easy,88,187,57,5,R.concrete)
+    local function asset(name) return Image{fromFile=root.."/Assets/Art/Level/v2/"..name..".png"} end
+    L.blit(easy,asset("hillside_garden_box"),31,196)
+    for _,x in ipairs({42,53,62}) do
+      L.vline(easy,x,193,200,P.green3)
+      L.ellipse(easy,x-2,194,3,2,P.green2)
+      L.ellipse(easy,x+2,192,3,2,P.grass3)
+    end
+    -- A timber barrier follows the level strip at the toe of the hill.
+    L.poly(easy,{332,153,356,149,400,150,445,148,480,151,480,158,419,161,369,160,332,158},P.grass2)
+    local fencePosts={337,379,421,463}
+    for _,x in ipairs(fencePosts) do
+      L.ellipse(easy,x+5,156,7,2,P.grass3)
+    end
+    for _,y in ipairs({131,144}) do
+      box(easy,338,y,130,5,R.wood)
+      for _,x in ipairs({349,391,438}) do L.hline(easy,x,x+12,y+2,P.brown) end
+    end
+    for i,x in ipairs(fencePosts) do
+      local top=(i==2 or i==3) and 101 or 125
+      box(easy,x,top,6,157-top,R.wood)
+      for _,y in ipairs({132,145}) do
+        L.line(easy,x,y+2,x+5,y,P.paper3)
+        L.line(easy,x,y,x+5,y+2,P.tan)
+      end
+    end
+    -- Bolt the warning across both tall posts; leave a clear margin around the lettering.
+    local warning="LANDSLIDE ZONE"
+    local boardWidth=102
+    local boardLeft=(fencePosts[1]+fencePosts[4]+6-boardWidth)//2
+    box(easy,boardLeft,99,boardWidth,22,R.wood)
+    box(easy,boardLeft+2,101,boardWidth-4,18,R.cream)
+    L.text(easy,boardLeft+(boardWidth-L.F.width(warning))//2,106,warning,P.ink)
+    for _,x in ipairs({fencePosts[2]+3,fencePosts[3]+2}) do
+      L.px(easy,x,103,P.gray4);L.px(easy,x,116,P.gray4)
+    end
+    noise(easy,0,197,479,269,P.paper3,P.concrete3,550,508)
+
+    local normal=foothills({P.mount2,P.mount3,P.gray1})
+    L.poly(normal,{0,115,52,99,85,104,142,121,190,130,249,117,306,108,374,119,430,108,480,102,480,168,0,168},P.grass3)
+    -- Road bends around the hillside beyond the dry school forecourt.
+    L.poly(normal,{0,135,65,130,114,113,146,111,194,118,215,123,260,124,260,128,213,128,184,123,147,116,122,119,73,140,0,149},P.concrete)
+    L.poly(normal,{0,137,66,132,116,115,147,112,195,119,215,124,257,125,216,126,184,121,148,115,121,118,73,138,0,147},P.gray4)
+    for _,v in ipairs({{25,139,39,137},{58,134,68,132},{90,125,96,123}}) do
+      L.line(normal,v[1],v[2],v[3],v[4],P.paper2)
+    end
+    L.rect(normal,0,163,480,45,P.concrete2)
+    L.hline(normal,0,479,165,P.concrete)
+    for x=8,478,52 do L.line(normal,x,166,x+(x-240)//9,207,P.concrete3) end
+    for x=14,465,27 do box(normal,x,149,3,15,R.wood) end
+    L.rect(normal,7,153,459,2,P.brown)
+    L.seed(509)
+    for i=1,270 do
+      local x,y=L.randi(6,472),L.randi(45,193)
+      L.line(normal,x,y,x-1,y+L.randi(2,5),P.mount3)
+    end
+    -- A classroom-side view through timber casements, with a sill and chalk tray.
+    for _,x in ipairs({0,152,320,472}) do box(normal,x,31,8,171,R.wood) end
+    box(normal,0,36,480,7,R.wood)
+    for _,span in ipairs({{6,148},{159,162},{327,146}}) do box(normal,span[1],65,span[2],3,R.wood) end
+    -- Far end of the lane disappears behind a wooded spur.
+    for _,v in ipairs({{242,119,10},{252,123,13},{262,117,11},{273,119,8}}) do
+      bush(normal,v[1],v[2],v[3],7)
+    end
+    box(normal,-3,198,486,10,R.wood)
+    L.rect(normal,0,208,480,62,P.hill)
+    for x=0,480,23 do L.vline(normal,x,208,269,P.hill2) end
+    box(normal,10,214,66,5,R.wood)
+    box(normal,22,209,22,5,R.board)
+    L.hline(normal,50,62,212,P.white)
+
+    local hard=foothills({P.tan,P.paper2,P.yellow3})
+    L.circle(hard,458,83,13,P.yellow3)
+    L.poly(hard,{164,145,252,109,300,122,357,94,385,67,404,60,423,70,452,99,480,104,480,165,164,165},P.hill2)
+    L.poly(hard,{385,75,395,65,404,62,420,71,440,91,428,90,414,81,401,77},P.paper3)
+    L.poly(hard,{399,66,404,66,408,71,415,76,418,81,414,83,409,78,403,75},P.dirt2)
+    L.poly(hard,{410,79,416,78,422,82,419,84,411,83},P.rock2)
+    L.poly(hard,{0,155,89,144,198,142,284,160,350,189,480,212,480,270,0,270},P.grass3)
+    L.poly(hard,{0,158,139,145,216,151,282,168,340,193,381,204,347,207,268,182,202,166,102,167,0,185},P.concrete2)
+    box(hard,-12,60,181,116,R.cream)
+    roof(hard,-32,28,226,31,R.roofgreen)
+    placard(hard,"EVACUATION CENTER",66,67)
+    box(hard,51,93,61,83,R.wood)
+    box(hard,55,96,53,76,R.board)
+    box(hard,56,96,51,11,R.yellow)
+    L.poly(hard,{57,109,70,114,70,166,57,172},P.brown)
+    box(hard,126,97,31,37,R.glass)
+    for y=103,131,7 do L.hline(hard,128,154,y,P.brown) end
+    box(hard,-8,174,191,8,R.concrete)
+    box(hard,41,182,83,7,R.concrete)
+    box(hard,34,189,98,6,R.concrete)
+    -- A loop hangs from a wall peg; the flared bell faces left.
+    box(hard,21,99,5,4,R.wood)
+    L.line(hard,23,101,19,110,P.brown2)
+    L.line(hard,23,101,27,114,P.brown2)
+    L.poly(hard,{17,108,29,114,34,113,36,117,30,120,27,120,27,126,23,127,21,119,12,120},O)
+    L.poly(hard,{17,110,28,115,29,118,14,118},P.paper)
+    L.line(hard,15,118,18,109,P.roof,3)
+    L.line(hard,25,120,25,124,P.brown)
+    L.hline(hard,30,33,116,P.metal2)
+    for x=195,331,21 do
+      local y=151+(x-195)//3
+      box(hard,x,y-12,4,13,R.wood)
+      L.line(hard,x+1,y-9,x+22,y-2,P.brown2,2)
+    end
+    bush(hard,19,200,14,7);bush(hard,145,189,10,5)
+    bush(hard,352,200,15,6);bush(hard,369,204,12,5)
+    noise(hard,0,185,479,269,P.grass3,P.green3,780,510)
+    return {episode=ep,easy=easy,normal=normal,hard=hard}
+  end
+
+  function M.safetyReminder()
+    local img=L.newImage(480,270)
+    L.vgrad(img,0,0,480,150,{P.mount3,P.paper2,P.yellow3,P.cream})
+    L.circle(img,79,72,11,P.yellow3)
+    L.poly(img,{0,115,41,98,66,102,119,84,155,99,198,91,252,105,298,89,339,102,396,80,437,99,480,90,480,148,0,148},P.hill)
+    L.poly(img,{0,132,48,118,92,124,133,110,177,120,216,113,273,124,322,109,379,119,428,105,480,117,480,149,0,149},P.hill2)
+    L.rect(img,0,137,480,133,P.paper3)
+    L.poly(img,{101,141,262,138,328,142,470,270,0,270},P.paper2)
+    -- Low classroom wings and a shaded veranda frame the far side of the court.
+    local function wing(x,y,w,ramp)
+      box(img,x,y,w,32,R.cream)
+      roof(img,x-5,y-14,w+10,13,ramp)
+      for col=x+6,x+w-18,21 do
+        box(img,col,y+6,15,11,R.glass)
+        L.vline(img,col+7,y+7,y+15,P.brown)
+        L.hline(img,col+1,col+13,y+12,P.brown)
+        box(img,col-3,y+2,3,28,R.wood)
+      end
+      box(img,x-2,y+31,w+4,3,R.concrete)
+    end
+    wing(-13,114,102,R.rust)
+    wing(401,111,87,R.roofgreen)
+    -- The path joints and post shadows stay at the sides of the reading area.
+    L.poly(img,{46,208,53,208,124,242,111,242},P.concrete2)
+    L.poly(img,{419,209,439,208,480,228,480,236},P.concrete3)
+    for _,v in ipairs({{5,262,64,218},{421,221,472,261}}) do L.line(img,v[1],v[2],v[3],v[4],P.tan2) end
+    -- Inward-open wrought-iron leaves, foreshortened toward the courtyard.
+    local function gate(left)
+      local function xx(x) return left and x or 479-x end
+      local function beam(x,y,u,v,c,w) L.line(img,xx(x),y,xx(u),v,c,w) end
+      for i=0,7 do
+        local x=40+i*5
+        local y=113+i
+        beam(x,y,x,202-3*i,P.ink2,3)
+        beam(x,y+1,x,200-3*i,P.teal2,1)
+        L.poly(img,{xx(x-1),y,xx(x+1),y-4,xx(x+3),y},P.ink2)
+      end
+      for _,v in ipairs({{121,127},{177,163},{201,180}}) do
+        beam(40,v[1],75,v[2],P.ink,3)
+        beam(40,v[1],75,v[2],P.teal,1)
+      end
+      local x=left and 18 or 437
+      box(img,x,92,25,117,R.column)
+      box(img,x-2,90,29,5,R.concrete)
+      box(img,x-3,84,31,7,R.cream)
+      box(img,x-2,197,29,13,R.concrete)
+      for yy=102,190,14 do L.hline(img,x+2,x+22,yy,P.wall2) end
+      box(img,x+9,76,7,9,R.gate)
+      box(img,x+6,64,13,13,R.yellow)
+      box(img,x+4,62,17,4,R.gate)
+      L.vline(img,x+12,66,75,P.brown2)
+    end
+    gate(true);gate(false)
+    -- Welcome pennants hang in short cords at the edges, above the open leaves.
+    local function bunting(right)
+      local function x(t) return right and 479-t or t end
+      local cloth={R.roof,R.yellow,R.roofgreen,R.blue}
+      local function sag(t) return 61+math.floor(11*math.sin(t*math.pi/96)) end
+      L.line(img,x(95),61,x(95),143,P.brown2,2)
+      L.line(img,x(95),62,x(95),142,P.tan)
+      for t=0,95 do L.px(img,x(t),sag(t),P.brown2) end
+      for t=4,90,13 do
+        local y=sag(t)
+        local ramp=cloth[(t//13+(right and 2 or 0))%4+1]
+        L.poly(img,{x(t),y+1,x(t+9),sag(t+9)+1,x(t+5),y+12},P.ink2)
+        L.poly(img,{x(t+1),y+2,x(t+8),sag(t+8)+1,x(t+5),y+9},ramp[2])
+        L.line(img,x(t+2),y+2,x(t+7),sag(t+7)+1,ramp[1])
+      end
+    end
+    bunting(false);bunting(true)
+    for _,x in ipairs({3,463}) do
+      bush(img,x+6,184,12,8)
+      box(img,x,188,17,13,R.wood)
+      box(img,x-1,186,19,4,R.rust)
+    end
+    return img
+  end
+
   return M
 end
