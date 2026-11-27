@@ -653,4 +653,53 @@ if want("grownups_v2") then
   end
 end
 
+-- Flood Batch 1 (docs/design/flood-episode.md): Floodwater seep at the home door, the stand fan,
+-- its low outlet and the flooded window view. Built only when asked: only=flood_home.
+if only.flood_home then
+  local FX = dofile(here .. "flood_fx.lua")(L, root)
+  for step = 1, 3 do
+    local path = "Level/v2/home_flood_seep_" .. step
+    L.saveFrames({ FX.seep(step, 0), FX.seep(step, 1) }, path, path, 300)
+  end
+  L.saveFrames({ FX.fan(0), FX.fan(1) }, "Level/v2/home_fan", "Level/v2/home_fan", 80)
+  L.save(FX.outletLow(), "Level/v2/home_outlet_low", "Level/v2/home_outlet_low")
+  local views = {}
+  for i = 0, 3 do views[#views + 1] = FX.windowFlood(i) end
+  L.saveFrames(views, "Level/v2/home_window_flood", "Level/v2/home_window_flood", 180)
+end
+
+if only.flood_home_more or only.flood_kitchen or only.icons_flood_home then
+  dofile(here .. "flood_home_more.lua")(L, root, only)
+end
+
+if only.flood_outdoor or only.icons_flood_outdoor then
+  dofile(here .. "flood_outdoor_v2.lua")(L, root, only)
+end
+
+if only.creek or only.icons_flood_creek then
+  dofile(here .. "creek_v2.lua")(L, root, only)
+end
+
+if only.flood_street or only.flood_yard_easy or only.icons_flood_easy then
+  dofile(here .. "flood_easy_v2.lua")(L, only)
+end
+
+if only.student_flood and (not app.params.poses or (","..app.params.poses..","):find(",wash,",1,true)) then
+  for _,kind in ipairs({"boy","girl"}) do
+    local path="Student/"..kind.."_wash"
+    L.saveFrames(ST.washFrames(kind),path,path,300)
+  end
+end
+if only.flood_after or only.icons_flood_after then
+  dofile(here .. "flood_after_v2.lua")(L, root, only)
+end
+
+if only.menu_flood then
+  local menus=dofile(here.."background.lua")(L,ST).floodMenus(root)
+  for name,img in pairs(menus) do
+    local path="Background/bg_menu_flood_"..name
+    L.save(img,path,path)
+  end
+end
+
 print("Built " .. #L.made .. " images")

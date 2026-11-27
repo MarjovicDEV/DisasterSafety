@@ -866,7 +866,7 @@ return function(L)
   -- Student fits under the desk top while moving in. The head top is at row 18 (art y 198),
   -- under the desk top (art y 194). On the second frame the body bobs down 1 pixel and the
   -- near foot slides back 1 pixel.
-  function M.crouch(kind, f)
+  function M.crouch(kind, f, wash)
     local girl = kind == "girl"
     local d = f
     local b = newGrid(FW, FH)
@@ -883,7 +883,11 @@ return function(L)
     else
       rect(b, 4, 39 + d, 10, 1, "x")               -- belt
     end
-    rect(b, 17 - f, 46, 9, 3, "B")                 -- near shoe
+    rect(b, 17 - f, 46, 9, 3, wash and "S" or "B") -- exposed foot during the wash
+    if wash then
+      rect(b, 18-f, 44, 4, 3, "S")
+      rect(b, 23-f, 47, 3, 1, "t")
+    end
     shadeLayer(b, "w", "W", "v")
     shadeLayer(b, "N", "m", "n")
     shadeLayer(b, "S", "t", "s")
@@ -892,7 +896,11 @@ return function(L)
     outline(b)
     local g = newGrid(FW, FH)
     paste(g, b, 0, 0)
-    pasteLimb(g, arm({ 14, 37 + d, 19, 41 + d, 23, 43 + d }, { sleeveTo = 0.55 }))
+    if wash then
+      pasteLimb(g, arm({14,37+d, 19,42+d, 24,40+d}, {sleeveTo=0.55}))
+    else
+      pasteLimb(g, arm({ 14, 37 + d, 19, 41 + d, 23, 43 + d }, { sleeveTo = 0.55 }))
+    end
     paste(g, sideHead(kind), 4, 18 + d)
     shade(g, 0)
     return g
@@ -1378,6 +1386,22 @@ return function(L)
     return out
   end
   function M.portraitImage(kind) return toImage(M.portrait(kind)) end
+
+  function M.washFrames(kind)
+    local frames = {}
+    for f=0,1 do
+      local img = toImage(M.crouch(kind, f, true))
+      local p = L.P
+      L.line(img,24,40+f,28,38+f,p.ink,2)
+      L.line(img,24,40+f,28,38+f,p.teal3)
+      L.poly(img,{26,37+f,31,39+f,29,42+f,26,41+f},p.teal2)
+      L.line(img,26,37+f,31,39+f,p.teal3)
+      L.line(img,29,42+f,27,44+f,p.water3)
+      L.px(img,26,46+f,p.water)
+      frames[#frames+1]=img
+    end
+    return frames
+  end
 
   return M
 end

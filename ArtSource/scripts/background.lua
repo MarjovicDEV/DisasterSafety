@@ -1127,5 +1127,197 @@ return function(L, ST)
     return img
   end
 
+  -- Four still menus. Landmarks sit in the open bands around the menu controls.
+  function M.floodMenus(root)
+    local water=dofile(root.."/ArtSource/scripts/flood_fx.lua")(L,root).WATER
+    local function landscape(dusk)
+      local img=L.newImage(480,270)
+      L.vgrad(img,0,0,480,155,dusk and {P.mount2,P.mount,P.paper2} or {P.mount,P.mount3,P.gray1})
+      L.poly(img,{0,118,51,94,85,106,149,76,200,104,273,84,320,105,390,81,479,99,479,172,0,172},P.hill2)
+      treeLine(img,133,717)
+      L.rect(img,0,135,480,135,P.grass2)
+      return img
+    end
+    local function cottage(img,x,y,w,paint)
+      box(img,x,y,w,22,R.cream)
+      roof(img,x-4,y-12,w+8,10,paint)
+      box(img,x+4,y+6,10,8,R.glass)
+      box(img,x+w-13,y+5,9,17,R.wood)
+    end
+    local function creekBand(img,upper,lower)
+      for x=0,479 do
+        local top,bottom=upper(x),lower(x)
+        for y=top,bottom do
+          local band=y%9
+          local phase=x+(y//9)*17
+          local c=water.mid
+          if y==top or y==bottom then c=water.dark
+          elseif band==2 and phase%47<17 then c=water.light
+          elseif band==6 and phase%61<9 then c=water.sheen end
+          L.px(img,x,y,c)
+        end
+      end
+    end
+    local function rain(img)
+      local drops=Image{fromFile=root.."/Assets/Art/Level/v2/typhoon_rain_light_0.png"}
+      img:drawImage(drops,Point(0,0))
+    end
+    local episode=landscape(false)
+    palm(episode,69,131,71,9,0.57)
+    for _,h in ipairs({{93,107,35},{153,111,42},{236,106,38},{371,111,43},{433,115,39}}) do
+      cottage(episode,h[1],h[2],h[3],h[1]%2==0 and R.roofgreen or R.rust)
+    end
+    creekBand(episode,function(x) return 139+math.floor(x/25+3*math.sin(x/31)) end,
+      function(x) return 170+math.floor(x/5+5*math.sin(x/35)) end)
+    -- A small diagonal crossing spans the channel; foundations finish on the banks.
+    for _,dx in ipairs({0,10}) do
+      L.poly(episode,{2+dx,173,41+dx,132,45+dx,132,7+dx,175},P.gray4)
+    end
+    L.poly(episode,{3,171,41,131,54,132,16,175},P.concrete2)
+    for _,dx in ipairs({0,12}) do
+      for j=0,3 do box(episode,3+dx+j*12,161-j*13,3,11,R.concrete) end
+      L.line(episode,4+dx,161,40+dx,122,P.ink,3)
+      L.line(episode,4+dx,160,40+dx,121,P.metal,1)
+    end
+    box(episode,46,152,8,34,R.wood)
+    for y=155,181,4 do L.hline(episode,47,50+(y%8==3 and 1 or 0),y,P.white) end
+    L.rect(episode,47,153,6,3,P.red)
+    for _,v in ipairs({{20,191},{84,199},{189,219},{296,248}}) do
+      for j=-3,3 do
+        L.line(episode,v[1]+j,v[2],v[1]+3*j,v[2]-8+(j*j)%5,P.green3)
+      end
+    end
+    noise(episode,0,169,479,269,P.grass2,P.grass3,800,473)
+
+    local easy=landscape(false)
+    cottage(easy,379,114,46,R.roofgreen)
+    palm(easy,345,151,77,10,0.7)
+    rain(easy)
+    -- Sheltered frontage, with rain visible only outside the eave.
+    box(easy,-4,54,303,153,R.cream)
+    for y=67,199,13 do L.hline(easy,0,297,y,R.cream[3]) end
+    roof(easy,-23,27,332,31,R.rust)
+    box(easy,15,71,99,135,R.wood)
+    L.rect(easy,20,76,89,125,P.paper2)
+    L.rect(easy,21,77,61,121,P.wall)
+    L.poly(easy,{86,77,107,84,107,197,86,201},P.brown)
+    L.line(easy,88,80,88,198,P.tan)
+    L.circle(easy,102,145,2,P.yellow2)
+    box(easy,29,122,46,5,R.wood)
+    box(easy,35,126,4,6,R.wood)
+    box(easy,67,126,4,6,R.wood)
+    local function asset(n) return Image{fromFile=root.."/Assets/Art/Level/v2/"..n..".png"} end
+    L.blit(easy,asset("home_workbook"),45,97)
+    L.blit(easy,asset("classroom_bag"),41,100)
+    for _,x in ipairs({147,220}) do
+      box(easy,x,89,48,53,R.wood)
+      box(easy,x+3,92,42,46,R.glass)
+      box(easy,x+22,92,4,46,R.wood)
+    end
+    box(easy,-4,202,306,9,R.concrete)
+    box(easy,-4,211,315,11,R.concrete)
+    for _,x in ipairs({40,60}) do
+      local boot=L.newImage(19,23)
+      L.rect(boot,3,2,9,15,P.yellow2)
+      L.rect(boot,4,4,4,12,P.yellow)
+      L.poly(boot,{3,13,11,13,12,16,16,17,17,20,3,20},P.yellow2)
+      L.hline(boot,3,16,20,P.brown2)
+      L.hline(boot,3,11,2,P.brown2)
+      L.outline(boot,P.ink)
+      L.blit(easy,boot,x,182)
+    end
+    L.poly(easy,{35,222,91,222,157,269,9,269},P.tan)
+    noise(easy,0,222,479,269,P.tan,P.tan2,450,237)
+    bush(easy,325,192,12,8)
+    bush(easy,347,195,14,9)
+
+    local normal=landscape(false)
+    cottage(normal,81,105,45,R.rust); cottage(normal,325,108,51,R.roofgreen)
+    palm(normal,295,138,86,-7,0.52)
+    L.rect(normal,0,143,480,58,P.gray3)
+    creekBand(normal,function(x) return 150+math.floor(3*math.sin(x/28)) end,
+      function(x) return 193+math.floor(2*math.sin(x/35)) end)
+    L.rect(normal,0,201,480,69,P.concrete2)
+    L.hline(normal,0,479,201,P.ink2)
+    L.hline(normal,0,479,204,P.concrete)
+    for x=8,480,63 do L.line(normal,x,205,x+(x-240)//6,269,P.concrete3) end
+    L.hline(normal,0,479,240,P.concrete3)
+    noise(normal,0,205,479,269,P.concrete2,P.concrete,480,829)
+    box(normal,24,89,13,114,R.column);box(normal,22,86,17,6,R.concrete)
+    box(normal,468,89,9,111,R.column);box(normal,466,86,13,6,R.concrete)
+    box(normal,-3,116,28,4,R.roofgreen);box(normal,-3,186,28,4,R.roofgreen)
+    for x=-2,20,6 do box(normal,x,113,3,78,R.roofgreen) end
+    rain(normal)
+
+    local hard=landscape(true)
+    -- The low field is on the downhill side only. The uphill side remains
+    -- continuous with the settlement, so the climb reads as a road on land.
+    creekBand(hard,function(x) return 157+math.floor(4*math.sin(x/33)) end,function() return 269 end)
+    L.poly(hard,{0,128,479,128,479,150,433,152,381,171,351,182,
+      321,210,265,230,219,241,174,269,0,269},P.dirt2)
+    L.poly(hard,{0,126,479,126,479,145,431,147,378,166,348,176,
+      319,203,261,224,215,236,168,269,0,269},P.grass3)
+    L.poly(hard,{0,127,479,127,479,139,426,140,372,158,341,169,
+      311,196,258,216,210,230,158,269,0,269},P.grass2)
+    -- Earthen slope: tufts follow its contour, with exposed stones at its toe.
+    for _,v in ipairs({{172,261},{191,249},{218,233},{247,224},{276,214},
+        {304,204},{329,190},{352,173},{390,160},{428,146},{459,141}}) do
+      local x,y=v[1],v[2]
+      L.line(hard,x,y,x-3,y-4,P.green3)
+      L.line(hard,x,y,x+2,y-5,P.grass)
+      L.ellipse(hard,x+2,y+4,3,1,P.rock2)
+      L.hline(hard,x,x+2,y+3,P.rock3)
+    end
+    -- A paved bend with gravel shoulders and short perspective road markings.
+    local verge={0,251,74,231,140,206,211,188,268,170,294,151,340,136,
+      395,118,438,119,441,131,351,154,324,166,300,187,229,212,
+      173,230,119,257,97,269,0,269}
+    L.poly(hard,verge,P.concrete3)
+    L.poly(hard,{0,255,76,234,141,209,213,191,269,173,296,153,341,138,
+      396,120,436,121,437,128,350,151,322,163,298,184,228,209,
+      172,226,117,254,90,269,0,269},P.gray3)
+    for _,v in ipairs({{35,260,63,248},{101,234,122,225},{158,212,175,206},
+        {215,194,230,189},{264,178,275,172},{299,156,307,152},{337,143,347,140}}) do
+      L.line(hard,v[1],v[2],v[3],v[4],P.paper2,v[2]>200 and 2 or 1)
+    end
+    noise(hard,0,145,479,269,P.grass2,P.grass3,1200,83)
+    noise(hard,0,142,479,269,P.gray3,P.gray4,320,74)
+    cottage(hard,42,112,42,R.rust)
+    cottage(hard,113,107,37,R.roofgreen)
+    palm(hard,88,138,77,9,0.65)
+    for x=8,82,12 do box(hard,x,147,3,11,R.wood) end
+    L.hline(hard,8,82,151,P.brown)
+    bush(hard,206,141,12,6)
+    bush(hard,224,143,8,5)
+    -- Covered entrance, illuminated transom, louvered windows and broad landing.
+    box(hard,357,119,120,9,R.concrete)
+    box(hard,362,76,110,42,R.cream)
+    roof(hard,355,57,122,17,R.roofgreen)
+    for _,x in ipairs({369,443}) do
+      box(hard,x,94,21,16,R.wood)
+      box(hard,x+2,96,17,11,R.yellow)
+      L.vline(hard,x+10,96,106,P.brown2)
+      L.hline(hard,x+2,x+18,101,P.tan)
+      box(hard,x-1,110,23,3,R.concrete)
+    end
+    box(hard,400,91,33,28,R.wood)
+    box(hard,403,93,27,5,R.glass)
+    L.rect(hard,404,100,25,18,P.yellow3)
+    L.vline(hard,417,100,117,P.tan2)
+    L.px(hard,414,110,P.brown2)
+    for _,x in ipairs({359,469}) do box(hard,x,90,4,29,R.column) end
+    box(hard,397,118,39,4,R.concrete)
+    box(hard,394,122,45,4,R.concrete)
+    placard(hard,"EVACUATION CENTER",415,73)
+    -- Route board planted on the dry grassy shoulder outside the paved bend.
+    box(hard,107,217,5,16,R.wood)
+    box(hard,99,198,83,24,R.board)
+    L.text(hard,104,201,"EVACUATION",P.white,1)
+    L.text(hard,104,212,"ROUTE",P.white,1)
+    L.line(hard,163,215,174,204,P.white,3)
+    L.poly(hard,{167,203,176,203,176,212},P.white)
+    return {episode=episode,easy=easy,normal=normal,hard=hard}
+  end
+
   return M
 end
