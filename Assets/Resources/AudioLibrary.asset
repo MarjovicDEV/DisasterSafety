@@ -19,10 +19,10 @@ MonoBehaviour:
   - {fileID: 8300000, guid: b48bc0b28ead192439928a4f0ccb0359, type: 3}
   - {fileID: 8300000, guid: 107766cbb3ef03c4a816052d165d4231, type: 3}
   - {fileID: 8300000, guid: 4395c119a44799c4fa467cf4fed12728, type: 3}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 8300000, guid: f913462d3a1fd974c8970d8ee171f47a, type: 3}
+  - {fileID: 8300000, guid: 60fb7c6bd621ea34ab8cb331d8fc9b64, type: 3}
+  - {fileID: 8300000, guid: 18b3c3aca17efc944b6053375f609c24, type: 3}
+  - {fileID: 8300000, guid: 404653da7d4c99f42b4fc1c013bf2fc2, type: 3}
   click: {fileID: 8300000, guid: e6121a1a8d56c9d42a94c2deb271a962, type: 3}
   back: {fileID: 8300000, guid: 1927eec3db610fa41a475d174c9435e7, type: 3}
   open: {fileID: 8300000, guid: 82002e5ff840bfa48a00eed3040ddce1, type: 3}
