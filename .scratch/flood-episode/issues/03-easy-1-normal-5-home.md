@@ -1,0 +1,22 @@
+# 03: Easy 1 bag up high and Normal 5 stay home, in `home`
+
+**What to build:** Flood Easy 1 is a "before" Scenario in `home` with Rain in the window from the first frame: it has rained all day, Mom is moving things up high, and the school bag with a workbook showing lies on the floor. It starts still and shows the Action Bar after 1 second. The two Choices are "Put your bag up high" (Safe: the Student walks to the bag, plays `crouch`, picks it up, carries it to the high wall shelf and plays `reach-up` to set it there, while Mom puts a box up in `mom_reach` and then plays `mom_happy`; the workbook stays visible on the shelf; "All ready!") and "Leave it on the floor" (the Student walks past the bag toward the sofa and stops) (FL-04). Flood Normal 5 is a "during" Scenario in `home` with Rain in the window: the Caption says friends call from outside, "Let's see the big river!"; the friends are not drawn and the front door stays closed. The three Choices are "Stay home" (Safe: the Student walks to Mom and sits beside her, putting the bag and workbook on the shelf on the way if art Batch 2 approved that step), "Go to the riverbank" (the Student walks toward the door and stops) and "Go to the bridge" (the Student walks toward the door and stops at a different x) (FL-12, FL-11). Each Choice gets its own `home` action key and icon. This ticket also drafts the text of all three Easy Levels for the user.
+
+**Blocked by:** 01. Art Batch 2 (home and kitchen) must be approved and imported.
+
+**Status:** ready-for-agent
+
+Read the [Flood specification](../../../docs/specs/flood-episode.md), the [Flood design](../../../docs/design/flood-episode.md), [ADR 0005](../../../docs/adr/0005-typhoon-safety-rules.md), the [Flood research](../../../docs/research/flood-safety.md), the [Typhoon research](../../../docs/research/typhoon-safety.md), the [Flood art batches](../art-batches.md) and the [project rules](../../../AGENTS.md). Terms follow [CONTEXT.md](../../../CONTEXT.md). Work on `main` in `D:/GameDEV/DisasterSafety` with Unity 6000.6.9f1 and the Editor closed for batch runs; the batch commands with this folder are at the end of the specification (`AGENTS.md` still names the old `DisasterSafety-redesign` folder).
+
+## Done when
+
+- The drafted text for Easy 1 to Easy 3 is in the evidence folder with a finding ID on every safety line, and the user approved it before the Easy 1 Scenario file was committed.
+- Content tests: Easy 1 offers two Choices and Normal 5 three, each with its approved ids and Hint.
+- PlayMode: each Safe Choice completes its Level ("All ready!" in Easy 1, "I'm safe!" in Normal 5). Each Unsafe Choice shows Feedback, and Try Again returns the Student, Mom and the bag to their start.
+- Normal 5's two Unsafe stops are at different x, inside the room, before the front door.
+- Tests were written first, and a red run failed on an assertion before the behaviour was built.
+- The ticket uses only Flood art that the user approved in its Setting and that was imported from `ArtSource/` under [ADR 0001](../../../docs/adr/0001-v2-art-and-no-bantay.md) and the v2 art bar (480 x 270 backgrounds, Student 32 x 50, Grown-ups about 36 x 62, 16 x 16 icons). A missing picture or sound is named in the evidence and asked of the user; it is not drawn here.
+- Every Caption, Hint, Feedback, lesson, Choice label, warning and Act-out line cites an FL or TY finding where it states safety, and the user approved the wording before the Scenario files were committed.
+- Nobody is drawn standing in water. Every actor stop is on dry ground at least 24 art pixels from the nearest water pixel. No Unsafe Act-out reaches the water's edge, a plug, the tap, the TV or the switch box, no hand touches one, and nobody is shown hurt.
+- `BuildAllBatch`, the full EditMode and PlayMode suites and the screenshot batch pass. Affected Levels are checked at 1920 x 1080 and 2400 x 1080, with every Safe ending and Unsafe stop clear of the Caption, Hint and Pause. Every Earthquake, Fire and Typhoon screenshot stays byte-identical. Evidence is stored in `D:/GameDEV/flood-episode-scratch/03-easy-1-normal-5-home/`.
+- `ProjectSettings/ProjectSettings.asset`, `.vscode/settings.json` and untracked screenshots stay out of commits. Commit only when the user asks, in 6 to 9 commits as `AGENTS.md` says. Each message is one sentence in basic English with no co-author line or other attribution.
