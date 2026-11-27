@@ -10,7 +10,7 @@ namespace DisasterSafety.Game.UI
     /// that belong to it. The flag flies over the school gate and the drill ground, clouds and
     /// birds cross every outdoor background, the guard lets the Students in at the school gate, the
     /// two walking children cross the drill ground and the schoolyard, and the leaves fall from the
-    /// trees on those two.
+    /// trees on those two. Fire's three Level selection backgrounds stay still.
     /// </summary>
     public sealed class MenuWorld : MonoBehaviour
     {
