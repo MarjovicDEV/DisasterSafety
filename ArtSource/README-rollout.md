@@ -2142,3 +2142,732 @@ Assets/Art/Background/bg_menu_flood_normal.png
 </details>
 
 
+## Landslide Batch 1 — hillside (approved)
+
+All coordinates are art pixels from top left. The 480×270 Setting is bottom anchored. The flat packed-earth yard starts near x 210. Student feet register at (16,49), Grown-up feet at (18,61). The walking line is y 236. The slope toe ends at x 206, the coconut trunk meets the hillside at (84,151), and the low door step spans x 370–415 at y 206–209. The central Caption and the Pause and Hint boxes use the Flood HUD outlines. The wide view drops rows 0–53.
+
+Easy 1 uses hillside_crack at (176,218). Normal 1 uses the sky tint and light Rain at (0,0), and the spring at (136,200). Play its four frames once at 220 ms, then hold muddy frame 3. Rain repeats three frames at 120 ms. Hard 4 uses hillside_soil at (0,137), hillside_toy_soil at (161,207), hillside_sign at (147,168) and hillside_rope at (199,197). The toy reuses home_toy with its wheels covered. The board fits the shared font on two lines.
+
+Use the existing boy and girl poses. A run-start is a left-facing walk stride held at the stop. Idle, happy and wait are front views. For Dad’s turn, hold mirrored dad_walk frame 0. Mom comes along the yard to the open door from the right, starting at (455,245); the Grown-ups stand at (392,245) where their faces clear the wide Hint. Each ending reserves the 67×26 Reaction above the Student at (325,150).
+
+The mask includes the painted Slope, climbing path, foot path and active props. The Normal 1 mask unions all spring frames. Gaps use the lowest three opaque rows of each pose across its frames, both Students and both directions as staged. The route column checks each intermediate art pixel. A dash means no actor or no movement.
+
+### Easy-1
+
+| Step | From | Student pose, feet, facing | Grown-up pose, feet, facing | Student gap | Grown-up gap | Walking route minimum |
+|---|---|---|---|---:|---:|---:|
+| 0. Start by the yard | — | idle (300,236) front | dad_idle (392,245) front | 82.6 px | 174.7 px | — |
+| 1. Jump / hold first stride | 0 | walk (243,236) left | dad_idle (392,245) front | 25.8 px | 174.7 px | 25.8 px |
+| 2. Safe / turn away from the crack | 0 | walk (300,236) right | dad_idle (392,245) front | 77.5 px | 174.7 px | — |
+| 3. Safe / walk to Dad | 2 | walk (358,236) right | dad_idle (392,245) front | 134.8 px | 174.7 px | 77.5 px |
+| 4. Safe / call to Dad | 3 | call (358,236) right | dad_idle (392,245) front | 143.8 px | 174.7 px | — |
+| 5. Dad turns toward the crack | 4 | idle (358,236) front | dad_walk (392,245) left | 139.9 px | 173.7 px | — |
+| 6. Ending / stay with Dad | 5 | happy (358,236) front | dad_walk (392,245) left | 139.9 px | 173.7 px | — |
+
+Minimum hazard gap including routes: 25.8 art pixels.
+
+### Normal-1
+
+| Step | From | Student pose, feet, facing | Grown-up pose, feet, facing | Student gap | Grown-up gap | Walking route minimum |
+|---|---|---|---|---:|---:|---:|
+| 0. Start / clear seep | — | idle (300,236) front | — | 91.5 px | — | — |
+| 1. Notice the muddy spring | 0 | surprised (300,236) front | — | 91.5 px | — | — |
+| 2. Splash / hold first stride | 1 | walk (235,236) left | — | 36.1 px | — | 36.1 px |
+| 3. Look / stop on flat ground | 1 | wait (247,236) front | — | 46.7 px | — | 43.8 px |
+| 4. Safe / walk to the door | 1 | walk (358,236) right | — | 141.7 px | — | 86.5 px |
+| 5. Safe / call to Mom | 4 | call (358,236) right | — | 150.4 px | — | — |
+| 6. Mom walks to the door from the right | 5 | call (358,236) right | mom_walk (455,245) left | 150.4 px | 242.2 px | — |
+| 7. Ending / Mom joins the Student | 6 | happy (358,236) front | mom_idle (392,245) front | 146.7 px | 181.7 px | 180.7 px |
+
+Minimum hazard gap including routes: 36.1 art pixels.
+
+### Hard-4
+
+| Step | From | Student pose, feet, facing | Grown-up pose, feet, facing | Student gap | Grown-up gap | Walking route minimum |
+|---|---|---|---|---:|---:|---:|
+| 0. Start / soil lies across the path | — | idle (300,236) front | mom_idle (392,245) front | 68.1 px | 160.3 px | — |
+| 1. Climb / stop before the rope | 0 | walk (259,236) left | mom_idle (392,245) front | 25.5 px | 160.3 px | 25.5 px |
+| 2. Toy / crouch on the yard side | 0 | crouch (270,236) left | mom_idle (392,245) front | 37.6 px | 160.3 px | 35.7 px |
+| 3. Look / stop farther back | 0 | wait (282,236) front | mom_idle (392,245) front | 50.4 px | 160.3 px | 47.3 px |
+| 4. Safe / walk back to Mom | 0 | walk (350,236) right | mom_idle (392,245) front | 112.5 px | 160.3 px | 63.0 px |
+| 5. Safe / stand with Mom | 4 | idle (358,236) front | mom_idle (392,245) front | 125.6 px | 160.3 px | 112.5 px |
+| 6. Ending / stay beside the door | 5 | happy (358,236) front | mom_idle (392,245) front | 125.6 px | 160.3 px | — |
+
+Minimum hazard gap including routes: 25.5 art pixels.
+
+### Choice icons
+
+Reused icon_fire_tell_dad for telling Dad about the crack, and icon_fire_tell_mom for telling Mom about the spring. All icons are 16×16 and still.
+
+### Imported art inventory
+
+| Source / matching PNG stem | Size | Frames | Frame duration |
+|---|---|---:|---|
+| Level/v2/bg_hillside | 480×270 | 1 | still |
+| Level/v2/hillside_crack | 36×9 | 1 | still |
+| Level/v2/hillside_rope | 25×29 | 1 | still |
+| Level/v2/hillside_sign | 57×36 | 1 | still |
+| Level/v2/hillside_soil | 200×90 | 1 | still |
+| Level/v2/hillside_spring | 56×24 | 4 | 220 ms |
+| Level/v2/hillside_toy_soil | 15×9 | 1 | still |
+| Level/v2/landslide_dark_sky_hillside | 480×270 | 1 | still |
+| UI/icon_landslide_climb_soil | 16×16 | 1 | still |
+| UI/icon_landslide_jump_crack | 16×16 | 1 | still |
+| UI/icon_landslide_look_close | 16×16 | 1 | still |
+| UI/icon_landslide_look_spring | 16×16 | 1 | still |
+| UI/icon_landslide_splash_mud | 16×16 | 1 | still |
+| UI/icon_landslide_stay_back | 16×16 | 1 | still |
+| UI/icon_landslide_toy_soil | 16×16 | 1 | still |
+`ArtSource/<stem>.aseprite` is the editable source. PNGs under `Assets/Art/<stem>.png` use the same stem, with frame suffixes `_0` to `_3` for the spring.
+
+Approved [preview](D:/GameDEV/landslide-episode-scratch/art/01-hillside/preview.png).
+
+Import command from the project root
+
+```powershell
+& "C:/Users/Marjovic/Desktop/aseprite/build/bin/aseprite.exe" -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=landslide_hillside,icons_landslide_signs --script ArtSource/scripts/build.lua
+```
+
+## Landslide Batch 2 — Hillside habits, rain and after (approved)
+
+Art pixels from upper left. Background 480×270, bottom anchored. Wide view crops rows 0–53. Actor feet are local (16,49) for a Student or (18,61) for a Grown-up. Props and effects use their top left. Slope toe and packed-earth yard follow the approved Batch 1 background. Student walk line y 236 except for the two H1 door stops and the H5 crouch beside the pail. Grown-up paths use their own feet below. Every segment interpolates in a straight line from the listed parent. The red mask outline is a review guide.
+
+Pot top left relative to feet, facing right: carry (+5,−28) on passing frames or (+5,−27) on contact frames, crouch (+5,−14) frame 0 and (+5,−13) frame 1. Mirror around the feet for the left-facing Dig stop. Empty changes to full at the garden box. H1 and N2 use light Rain (0,0), 3×120 ms. Composite the N2 lean patch after Dark Sky so it restores sky behind the former crown. Hold the tree still. N5 follows the rain. H7 starts after the earthquake with a still, dry Setting.
+
+The rearmost safe yard entry is on the left side of the yard, x 242. The Slope occupies the left screen edge. H5 Dad faces left as authored, stays planted and uses the 400 ms shovel frames. H1 family order from left to right is Student, Mom, Dad, Tanod. Continue to the offscreen coordinates for the ending. Reserve the H1 Reaction before the group exits.
+
+### easy-2
+
+Props: hillside_garden_box (362,215).
+
+Reaction top left (315,148), 67×26.
+
+| Step | Parent | Student | Grown-ups | Pose gaps in actor order (px) | Smallest route gap (px) |
+|---|---:|---|---|---|---:|
+| 0. Start with the empty pot | — | carry (298,236) right | — | 84.7 | — |
+| 1. Dig / stop on flat ground | 0 | crouch (249,236) left | — | 46.7 | 45.3 |
+| 2. Safe / carry the pot to the garden box | 0 | carry (348,236) right | — | 132.0 | 84.7 |
+| 3. Safe / crouch beside the box | 2 | crouch (348,236) right | — | 133.0 | — |
+| 4. Safe / fill the pot | 3 | crouch (348,236) right | — | 133.0 | — |
+| 5. Ending / stand with the full pot | 4 | carry (348,236) right | — | 132.0 | — |
+
+Minimum including both Students, every pose frame and all walks: 45.3 px.
+
+### easy-3
+
+Props: yard_ball (169,208), hillside_sign (143,163), hillside_rope (199,197).
+
+Reaction top left (325,148), 67×26.
+
+| Step | Parent | Student | Grown-ups | Pose gaps in actor order (px) | Smallest route gap (px) |
+|---|---:|---|---|---|---:|
+| 0. Start / ball past the rope | — | idle (292,236) front | mom_idle (392,245) front | 60.2, 160.3 | — |
+| 1. Rope / crouch on the yard side | 0 | crouch (260,236) left | mom_idle (392,245) front | 28.2, 160.3 | 26.4 |
+| 2. Safe / turn from the ball | 0 | walk (292,236) right | mom_idle (392,245) front | 55.1, 160.3 | — |
+| 3. Safe / walk to Mom at the door | 2 | walk (358,236) right | mom_idle (392,245) front | 120.5, 160.3 | 55.1 |
+| 4. Ending / stay with Mom | 3 | happy (358,236) front | mom_idle (392,245) front | 125.6, 160.3 | — |
+
+Minimum including both Students, every pose frame and all walks: 26.4 px.
+
+### normal-2
+
+Props: landslide_dark_sky_hillside (0,0), hillside_tree_lean (60,54).
+
+Reaction top left (359,148), 67×26.
+
+| Step | Parent | Student | Grown-ups | Pose gaps in actor order (px) | Smallest route gap (px) |
+|---|---:|---|---|---|---:|
+| 0. Enter at the left edge of the safe yard | — | walk (242,236) right | — | 39.1 | — |
+| 1. Walk home / notice the leaning tree | 0 | idle (288,236) front | — | 80.5 | 39.1 |
+| 2. Tree / stop before the foot | 1 | wait (246,236) front | — | 46.0 | 43.1 |
+| 3. Coconut / reach up on the flat | 1 | reachup (263,236) left | — | 60.7 | 55.8 |
+| 4. Safe / walk along the yard | 1 | walk (337,236) right | — | 121.5 | 75.6 |
+| 5. Ending / arrive at the door | 4 | happy (392,236) front | — | 179.8 | 121.5 |
+
+Minimum including both Students, every pose frame and all walks: 39.1 px.
+
+### normal-5
+
+Props: hillside_wet_slope (0,62), hillside_banana_leaf (221,225).
+
+Reaction top left (290,148), 67×26.
+
+| Step | Parent | Student | Grown-ups | Pose gaps in actor order (px) | Smallest route gap (px) |
+|---|---:|---|---|---|---:|
+| 0. Start after Rain | — | idle (286,236) front | — | 78.7 | — |
+| 1. Slide / stop near the banana leaf | 0 | wait (248,236) front | — | 47.4 | 44.6 |
+| 2. Climb / stop before the path | 0 | walk (262,236) left | — | 55.0 | 55.0 |
+| 3. Safe / move to the middle of the yard | 0 | walk (323,236) right | — | 108.2 | 73.8 |
+| 4. Ending / play on the flat | 3 | happy (323,236) front | — | 113.2 | — |
+
+Minimum including both Students, every pose frame and all walks: 44.6 px.
+
+### hard-1
+
+Props: landslide_dark_sky_hillside (0,0), home_toy (391,192).
+
+Reaction top left (341,148), 67×26.
+
+| Step | Parent | Student | Grown-ups | Pose gaps in actor order (px) | Smallest route gap (px) |
+|---|---:|---|---|---|---:|
+| 0. Start / the Tanod calls | — | idle (306,236) front | mom_walk_gobag (406,250) right; dad_idle (433,249) front; tanod_megaphone (463,246) front | 97.1, 191.6, 222.5, 251.2 | — |
+| 1. Rain / sit on the low step | 0 | sit (374,220) right | mom_walk_gobag (406,250) right; dad_idle (433,249) front; tanod_megaphone (463,246) front | 153.3, 191.6, 222.5, 251.2 | 92.1 |
+| 2. Toy / stop before the open door | 0 | wait (366,221) front | mom_walk_gobag (406,250) right; dad_idle (433,249) front; tanod_megaphone (463,246) front | 151.6, 191.6, 222.5, 251.2 | 92.1 |
+| 3. Look / stop on the flat | 0 | walk (248,236) left | mom_walk_gobag (406,250) right; dad_idle (433,249) front; tanod_megaphone (463,246) front | 44.6, 191.6, 222.5, 251.2 | 44.6 |
+| 4. Safe / join Mom and Dad | 0 | walk (374,236) right | mom_walk_gobag (406,250) right; dad_idle (433,249) front; tanod_megaphone (463,246) front | 157.2, 191.6, 222.5, 251.2 | 92.1 |
+| 5. Safe / follow the Tanod right | 4 | walk (411,236) right | mom_walk_gobag (446,250) right; dad_walk (476,249) right; tanod_walk (508,246) right | 193.4, 230.5, 259.7, 290.7 | 157.2 |
+| 6. Ending / family leaves the yard | 5 | walk (504,236) right | mom_walk_gobag (539,250) right; dad_walk (569,249) right; tanod_walk (601,246) right | 285.3, 321.9, 351.4, 382.8 | 193.4 |
+
+Minimum including both Students, every pose frame and all walks: 44.6 px.
+
+### hard-5
+
+Props: hillside_soil (0,137), hillside_sign (116,162), hillside_rope (173,172), hillside_shovel (322,166), hillside_pail (315,247).
+
+Reaction top left (324,148), 67×26.
+
+| Step | Parent | Student | Grown-ups | Pose gaps in actor order (px) | Smallest route gap (px) |
+|---|---:|---|---|---|---:|
+| 0. Start / Dad clears the edge | — | idle (304,236) front | dad_shovel (208,229) left; mom_idle (392,245) front | 95.3, 24.2, 181.7 | — |
+| 1. Shovel / stop before the spare tool | 0 | wait (346,234) front | dad_shovel (208,229) left; mom_idle (392,245) front | 134.6, 24.2, 181.7 | 90.2 |
+| 2. Pail / crouch short of the pail | 0 | crouch (345,257) left | dad_shovel (208,229) left; mom_idle (392,245) front | 139.8, 24.2, 181.7 | 90.2 |
+| 3. Mud / stop on the flat | 0 | wait (257,236) front | dad_shovel (208,229) left; mom_idle (392,245) front | 54.0, 24.2, 181.7 | 51.1 |
+| 4. Safe / walk to Mom | 0 | walk (357,236) right | dad_shovel (208,229) left; mom_idle (392,245) front | 140.7, 24.2, 181.7 | 90.2 |
+| 5. Ending / stand beside Mom | 4 | idle (357,236) front | dad_shovel (208,229) left; mom_idle (392,245) front | 145.8, 24.2, 181.7 | — |
+
+Minimum including both Students, every pose frame and all walks: 24.2 px.
+
+### hard-7
+
+Props: approved hillside only.
+
+Reaction top left (281,148), 67×26.
+
+| Step | Parent | Student | Grown-ups | Pose gaps in actor order (px) | Smallest route gap (px) |
+|---|---:|---|---|---|---:|
+| 0. Start at the door after shaking | — | idle (378,236) front | mom_idle (411,245) front | 166.2, 200.1 | — |
+| 1. Slope / stop on the flat | 0 | wait (247,236) front | mom_idle (411,245) front | 46.7, 200.1 | 43.8 |
+| 2. Tree / sit well back | 0 | sit (266,236) left | mom_idle (411,245) front | 55.8, 200.1 | 58.2 |
+| 3. Path / stop before the climb | 0 | walk (284,236) left | mom_idle (411,245) front | 73.8, 200.1 | 73.8 |
+| 4. Safe / walk together into the yard | 0 | walk (347,236) left | mom_walk (383,245) left | 133.0, 172.0 | 133.0 |
+| 5. Ending / stand together in the open | 4 | happy (314,236) front | mom_idle (350,245) front | 104.7, 141.4 | 101.5 |
+
+Minimum including both Students, every pose frame and all walks: 43.8 px.
+
+### Icon reuse
+
+Leave now → icon_flood_leave_now; stay with Mom → icon_flood_stay_mom; return for toy → icon_typhoon_back_for_toy; play in mud → icon_flood_play_mud.
+
+### Imported art inventory
+
+| Source stem in ArtSource / PNG stem in Assets/Art | Size | Frames | Timing |
+|---|---|---:|---|
+| GrownUp/dad_shovel | 36×62 | 2 | 400 ms |
+| Level/v2/hillside_banana_leaf | 24×8 | 1 | still |
+| Level/v2/hillside_garden_box | 44×20 | 1 | still |
+| Level/v2/hillside_pail | 17×17 | 1 | still |
+| Level/v2/hillside_pot_empty | 12×11 | 1 | still |
+| Level/v2/hillside_pot_full | 12×11 | 1 | still |
+| Level/v2/hillside_shovel | 17×38 | 1 | still |
+| Level/v2/hillside_tree_lean | 108×108 | 1 | still |
+| Level/v2/hillside_wet_slope | 209×154 | 1 | still |
+| UI/icon_landslide_by_slope | 16×16 | 1 | still |
+| UI/icon_landslide_climb_slope | 16×16 | 1 | still |
+| UI/icon_landslide_coconut | 16×16 | 1 | still |
+| UI/icon_landslide_dig_slope | 16×16 | 1 | still |
+| UI/icon_landslide_flat_yard | 16×16 | 1 | still |
+| UI/icon_landslide_garden_box | 16×16 | 1 | still |
+| UI/icon_landslide_leave_ball | 16×16 | 1 | still |
+| UI/icon_landslide_look_slope | 16×16 | 1 | still |
+| UI/icon_landslide_open_yard | 16×16 | 1 | still |
+| UI/icon_landslide_pail | 16×16 | 1 | still |
+| UI/icon_landslide_path_up | 16×16 | 1 | still |
+| UI/icon_landslide_shovel | 16×16 | 1 | still |
+| UI/icon_landslide_slide_leaf | 16×16 | 1 | still |
+| UI/icon_landslide_under_rope | 16×16 | 1 | still |
+| UI/icon_landslide_under_tree | 16×16 | 1 | still |
+| UI/icon_landslide_wait_rain | 16×16 | 1 | still |
+| UI/icon_landslide_walk_house | 16×16 | 1 | still |
+
+Approved [preview](D:/GameDEV/landslide-episode-scratch/art/02-hillside-habits/preview.png). Sources use .aseprite and exports use .png with _0 and _1 for the shovel animation.
+
+```powershell
+& "C:/Users/Marjovic/Desktop/aseprite/build/bin/aseprite.exe" -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=landslide_hillside_more,grownups_landslide,icons_landslide_hillside --script-param poses=shovel --script ArtSource/scripts/build.lua
+```
+
+## Landslide Batch 3 — Two hill roads (approved)
+
+Art pixels from upper left. Both 480×270 backgrounds are bottom anchored. Local feet are (16,49) for the Student and (18,61) for each Grown-up. Mask outlines and HUD outlines appear on placement sheets only. Both Rain and the matching Dark Sky tint register at (0,0). Light Rain loops at 120 ms. Render static background, sky tint, hazard overlays, actors in ascending foot-y order, then Rain.
+
+Normal 4 uses bg_hill_road and landslide_dark_sky_hill_road. Its asphalt bends past the elevated woven-panel home and the plaster bungalow, with the sign at (184,121). The Student and Dad use the broad gravel shoulder at y 236 and 246. Muddy Runoff crosses the asphalt from the left cut, four frames at 180 ms looping toward the near edge; the adjacent soil is still. Start offscreen right, enter to notice the blockage, then turn back on the Safe Choice.
+
+Hard 2 uses bg_hill_road_ridge and landslide_dark_sky_hill_road_ridge. The foreground is a broad concrete turnout with expansion joints. A guardrail separates the road from the valley. The sign is at (402,113). The distant bare hill across the valley is uninhabited. Play the six slide frames at 150 ms once and hold frame 5 through Choices and retries. The group walks toward the sign; the Unsafe run-ahead uses the foreground side of the turnout. Paths interpolate between the listed feet, one art pixel at a time. Walking lines vary from y 208 to 263, as recorded below.
+
+### normal-4
+
+Props: hill_road_runoff (84,176), hill_road_soil (151,190).
+
+Reaction top left (349,120), 67×26.
+
+| Step | Parent | Student | Grown-ups | Pose gaps in actor order (px) | Smallest route gap (px) |
+|---|---:|---|---|---|---:|
+| 0. Enter from the right with Dad | — | walk (500,236) left | dad_walk (539,246) left | 282.7, 324.6 | — |
+| 1. Notice the runoff across the bend | 0 | surprised (314,236) left | dad_walk (356,246) left | 103.1, 144.9 | 99.9 |
+| 2. Cross / stop on dry gravel | 1 | walk (242,236) left | dad_walk (356,246) left | 35.6, 144.9 | 35.6 |
+| 3. Soil / stop before the deposit | 1 | wait (262,236) front | dad_walk (356,246) left | 55.9, 144.9 | 52.8 |
+| 4. Safe / turn back together | 1 | walk (314,236) right | dad_walk (356,246) right | 98.0, 141.1 | — |
+| 5. Follow Dad back along the shoulder | 4 | walk (376,236) right | dad_walk (418,246) right | 158.1, 201.2 | 98.0 |
+| 6. Ending / take the long way | 5 | happy (409,236) front | dad_idle (450,245) front | 195.6, 237.4 | 158.1 |
+
+Minimum including both Students, every pose frame and all walks: 35.6 px.
+
+### hard-2
+
+Props: hill_road_far_slide (353,94).
+
+Reaction top left (313,120), 67×26.
+
+| Step | Parent | Student | Grown-ups | Pose gaps in actor order (px) | Smallest route gap (px) |
+|---|---:|---|---|---|---:|
+| 0. Start / notice movement across the valley | — | surprised (231,263) right | mom_walk_gobag (276,210) right; tanod_walk (317,208) right | 100.8, 100.9, 94.4 | — |
+| 1. The distant slide comes to rest | 0 | surprised (231,263) right | mom_walk_gobag (276,210) right; tanod_walk (317,208) right | 100.8, 100.9, 94.4 | — |
+| 2. Shortcut / stop before the cut Slope | 1 | walk (200,246) left | mom_walk_gobag (276,210) right; tanod_walk (317,208) right | 68.0, 100.9, 94.4 | 68.0 |
+| 3. Watch / pause facing the far hill | 1 | wait (250,263) front | mom_walk_gobag (276,210) right; tanod_walk (317,208) right | 113.1, 100.9, 94.4 | 97.3 |
+| 4. Ahead / stop past the Tanod on the turnout | 1 | walk (355,263) right | mom_walk_gobag (276,210) right; tanod_walk (317,208) right | 140.0, 100.9, 94.4 | 97.3 |
+| 5. Safe / follow Mom and the Tanod | 1 | walk (300,251) right | mom_walk_gobag (342,230) right; tanod_walk (383,238) right | 139.8, 108.3, 115.0 | 94.0 |
+| 6. Safe / reach the evacuation route sign | 5 | walk (373,245) right | mom_walk_gobag (412,246) right; tanod_walk (450,246) right | 122.0, 125.7, 138.6 | 108.0 |
+| 7. Ending / stay with the group | 6 | happy (373,245) front | mom_walk_gobag (412,246) right; tanod_walk (450,246) right | 122.0, 125.7, 138.6 | — |
+
+Minimum including both Students, every pose frame and all walks: 68.0 px.
+
+### Reused Choices
+
+Climb over the soil uses icon_landslide_climb_soil. Keep walking with the Tanod uses icon_typhoon_evac_route.
+
+### Imported inventory
+
+| Source stem and PNG stem | Size | Frames | Timing |
+|---|---|---:|---|
+| Level/v2/bg_hill_road | 480×270 | 1 | still |
+| Level/v2/bg_hill_road_ridge | 480×270 | 1 | still |
+| Level/v2/hill_road_far_slide | 30×33 | 6 | 150 ms |
+| Level/v2/hill_road_runoff | 120×47 | 4 | 180 ms |
+| Level/v2/hill_road_soil | 58×18 | 1 | still |
+| Level/v2/landslide_dark_sky_hill_road | 480×270 | 1 | still |
+| Level/v2/landslide_dark_sky_hill_road_ridge | 480×270 | 1 | still |
+| UI/icon_landslide_cross_mud | 16×16 | 1 | still |
+| UI/icon_landslide_long_way | 16×16 | 1 | still |
+| UI/icon_landslide_run_ahead | 16×16 | 1 | still |
+| UI/icon_landslide_shortcut | 16×16 | 1 | still |
+| UI/icon_landslide_watch_hill | 16×16 | 1 | still |
+
+Approved [preview](D:/GameDEV/landslide-episode-scratch/art/03-hill-road/preview.png). Sources use .aseprite, still exports use .png, and animated exports use zero-based frame suffixes.
+
+```powershell
+& "C:/Users/Marjovic/Desktop/aseprite/build/bin/aseprite.exe" -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=hill_road,icons_landslide_road --script ArtSource/scripts/build.lua
+```
+
+## Landslide Batch 4 — Classroom, Evacuation Center and home (approved)
+
+All coordinates are art pixels measured from upper left. Each new 480×270 background is bottom anchored. The wide crop removes rows 0–53. Student feet register at (16,49); Grown-up feet at (18,61). The tables list all actor coordinates and parent steps. Interpolate walking paths in a straight line between successive points. A dash in the route column means the actors hold position. “Clear” means no hazard pixels in this Setting.
+
+Normal 3: classroom floor begins at y 204. The closed door is part of the background. Show the open door overlay only from Mom’s arrival; she first appears at (46,214). Rain loops inside the glass only, four frames at 180 ms. Draw the desk front behind standing Students and in front of the seated Student. The bench top is at (226,207). The Teacher stands 5 px farther right than in the Typhoon staging to clear the walk. The Student leaves the desk via the foreground aisle and meets Mom at (112,238).
+
+Hard 3: pavilion slab begins at y 157. Mat top row 224, near edge 248. Two tents flank the central aisle. The small family follows the back aisle between the tents as the friend cue (4 frames, 140 ms). Top left moves from (255,129) to (279,129), three pixels per listed Act-out step. Fade the sky mask from full strength to clear by the announcement. The mask uses the Typhoon sky pixels clipped to the new pavilion openings. The Tanod enters at (442,235) and uses the aisle toward Mom. The Play stop uses the open right aisle to keep the run clear of seated Mom.
+
+Hard 6: floor begins at y 202. Roll on side table, top left (226,162). For the left-facing carry pose its top left is (feet x−17, feet y−35), one row lower on contact frames 0 and 2. The crack and the distant hillside behind the window are still. The mask includes the crack and a conservative silhouette of the entire hill in the glass. Hold mirrored dad_walk frame 0 for his turn.
+
+### normal-3
+
+Props: classroom_window_storm (341,67), desk_front (198,188), classroom_landslide_door_open (20,103).
+
+Reaction top left (90,145), 67×26.
+
+| Step | Parent | Student | Grown-ups | Pose gaps in actor order (px) | Smallest route gap (px) |
+|---|---:|---|---|---|---:|
+| 0. Start inside the classroom | — | idle (146,230) front | teacher_idle (295,221) front | Clear, Clear | — |
+| 1. Hill road / stop inside | 0 | walk (114,230) left | teacher_idle (295,221) front | Clear, Clear | Clear |
+| 2. Gate / face the closed door | 0 | walk (94,230) left | teacher_idle (295,221) front | Clear, Clear | Clear |
+| 3. Safe / walk to the Teacher | 0 | walk (263,238) right | teacher_idle (295,221) front | Clear, Clear | Clear |
+| 4. Safe / sit behind the desk | 3 | sit (242,207) right | teacher_idle (295,221) front | Clear, Clear | Clear |
+| 5. Mom arrives at the open door | 4 | sit (242,207) right | teacher_idle (295,221) front; mom_umbrella (46,214) right | Clear, Clear, Clear | — |
+| 6. Mom steps into the classroom | 5 | sit (242,207) right | teacher_idle (295,221) front; mom_umbrella (79,214) right | Clear, Clear, Clear | Clear |
+| 7. Safe / stand on the aisle side | 6 | walk (248,245) left | teacher_idle (295,221) front; mom_umbrella (79,214) right | Clear, Clear, Clear | Clear |
+| 8. Walk to Mom inside | 7 | walk (112,238) left | teacher_idle (295,221) front; mom_umbrella (79,214) right | Clear, Clear, Clear | Clear |
+| 9. Ending / together inside | 8 | happy (112,238) front | teacher_idle (295,221) front; mom_umbrella (79,214) right | Clear, Clear, Clear | — |
+
+No active hazard pixels.
+
+### hard-3
+
+Props: landslide_dark_sky_evacuation_area (0,0), evacuation_area_leaving (255,129).
+
+Reaction top left (193,120), 67×26.
+
+| Step | Parent | Student | Grown-ups | Pose gaps in actor order (px) | Smallest route gap (px) |
+|---|---:|---|---|---|---:|
+| 0. Start on the mat | — | idle (185,236) front | mom_sit (132,236) right | Clear, Clear | — |
+| 1. Friend / stop at the court edge | 0 | walk (388,229) right | mom_sit (132,236) right | Clear, Clear | Clear |
+| 2. House / stop between the tents | 0 | wait (241,181) front | mom_sit (132,236) right | Clear, Clear | Clear |
+| 3. Play / run-start toward the open aisle | 0 | walk (341,251) right | mom_sit (132,236) right | Clear, Clear | Clear |
+| 4. Safe / sit with Mom | 0 | sit (173,236) right | mom_sit (132,236) right | Clear, Clear | Clear |
+| 5. The Tanod enters from the right | 4 | sit (173,236) right | mom_sit (132,236) right; tanod_walk (442,235) left | Clear, Clear, Clear | — |
+| 6. The Tanod crosses the hall | 5 | sit (173,236) right | mom_sit (132,236) right; tanod_walk (366,235) left | Clear, Clear, Clear | Clear |
+| 7. Wait for the announcement | 6 | sit (173,236) right | mom_sit (132,236) right; tanod_megaphone (231,224) front | Clear, Clear, Clear | Clear |
+| 8. Ending / the Tanod has given the all-clear | 7 | happy (173,236) front | mom_sit (132,236) right; tanod_megaphone (231,224) front | Clear, Clear, Clear | — |
+
+No active hazard pixels.
+
+### hard-6
+
+Props: home_window_hill (304,72), home_wall_crack (139,154), home_poster (226,162).
+
+Reaction top left (289,145), 67×26.
+
+| Step | Parent | Student | Grown-ups | Pose gaps in actor order (px) | Smallest route gap (px) |
+|---|---:|---|---|---|---:|
+| 0. Start / notice the wall crack | — | surprised (279,234) right | dad_idle (407,244) front | 97.5, 111.3 | — |
+| 1. Poster / collect the roll at the table | 0 | carry (245,216) left | dad_idle (407,244) front | 89.8, 111.3 | 89.8 |
+| 2. Poster / stop short of the wall crack | 1 | carry (176,221) left | dad_idle (407,244) front | 33.8, 111.3 | 33.8 |
+| 3. Pick / reach short of the crack | 0 | reach (163,221) left | dad_idle (407,244) front | 30.9, 111.3 | 28.6 |
+| 4. Door / stop before the stuck door | 0 | reach (99,224) left | dad_idle (407,244) front | 49.7, 111.3 | 32.2 |
+| 5. Safe / walk to Dad | 0 | walk (371,236) right | dad_idle (407,244) front | 98.0, 111.3 | 96.0 |
+| 6. Safe / tell Dad | 5 | call (371,236) right | dad_idle (407,244) front | 98.0, 111.3 | — |
+| 7. Dad turns to look at the wall | 6 | idle (371,236) front | dad_walk (407,244) left | 98.0, 111.0 | — |
+| 8. Ending / stay with Dad | 7 | happy (371,236) front | dad_walk (407,244) left | 98.0, 111.0 | — |
+
+Minimum including both Students, all poses and walks: 28.6 px.
+
+### Reused Choices
+
+Wait with the Teacher → icon_flood_stay_teacher. Wait for the Tanod → icon_typhoon_wait_tanod. Go home with your friend → icon_typhoon_visit_friend. Run out to play → icon_typhoon_run_play. All remaining Choices have new icons.
+
+### Imported inventory
+
+| Source and PNG stem | Size | Frames | Timing |
+|---|---|---:|---|
+| Level/v2/bg_classroom_landslide | 480×270 | 1 | still |
+| Level/v2/bg_evacuation_area_landslide | 480×270 | 1 | still |
+| Level/v2/bg_home_landslide | 480×270 | 1 | still |
+| Level/v2/classroom_landslide_door_open | 54×98 | 1 | still |
+| Level/v2/home_poster | 15×18 | 1 | still |
+| Level/v2/home_wall_crack | 12×38 | 1 | still |
+| Level/v2/home_window_hill | 60×65 | 1 | still |
+| Level/v2/landslide_dark_sky_evacuation_area | 480×270 | 1 | still |
+| UI/icon_landslide_check_house | 16×16 | 1 | still |
+| UI/icon_landslide_gate | 16×16 | 1 | still |
+| UI/icon_landslide_hill_road | 16×16 | 1 | still |
+| UI/icon_landslide_pick_crack | 16×16 | 1 | still |
+| UI/icon_landslide_poster | 16×16 | 1 | still |
+| UI/icon_landslide_push_door | 16×16 | 1 | still |
+| UI/icon_landslide_tell_dad_wall | 16×16 | 1 | still |
+
+Approved [preview](D:/GameDEV/landslide-episode-scratch/art/04-indoor/preview.png). Each stem lists an editable .aseprite under ArtSource and a .png under Assets/Art.
+
+```powershell
+& "C:/Users/Marjovic/Desktop/aseprite/build/bin/aseprite.exe" -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=landslide_home,icons_landslide_indoor --script ArtSource/scripts/build.lua
+```
+
+## Landslide Batch 5 — Menu backgrounds (approved)
+
+Four 480×270 stills in Background/, each with an editable Aseprite source. Anchor bottom center (240,270). No frame timing or actor path. The menu renders its own Student. Foreground scenery and signs stay behind the menu controls. Distances are minimum art-pixel gaps between the listed detail and any control (including locks and the optional speech bubble).
+
+Both standard 4× and wide 5× layouts use the Flood menu review geometry. Wide drops rows 0–53. The outlines show the header, Difficulty cards or Level slots, Back, Start where applicable, and the Menu Student and speech bubble.
+
+### episode
+
+Terraced hillside ends at y 161. The residential bench sits along the road; house facade origins (84,148), (148,147), (225,143), (294,133), (419,124). Road bends from (0,195) through (181,183) to (479,162). Foreground lane branches near (283,172) and leaves the bottom edge around x 126. Palm rooted at (374,158).
+
+| Landmark and bounds (left, top, right, bottom) | 1920 clearance | 2400 clearance |
+|---|---:|---:|
+| LANDSLIDE ZONE board (5, 102, 65, 125) | 2.5 | 20.7 |
+| terrace strips at left (8, 82, 48, 98) | 19.5 | 40.5 |
+| eastern home facade (419, 124, 471, 156) | 6.0 | 16.2 |
+| lane in foreground (155, 230, 176, 240) | 40.0 | 18.8 |
+
+### easy
+
+Yard begins near y 203 at the left and y 180 at the right. Bamboo home sill at y 181, doorstep at (88,187), window at (13,99). Garden box at (31,196), bolted sign at (352,99), fence posts x 337, 379, 421, 463 and timber rails at y 131 and 144. Grassy Slope reaches its crest at (361,63).
+
+| Landmark and bounds (left, top, right, bottom) | 1920 clearance | 2400 clearance |
+|---|---:|---:|
+| bamboo window (13, 99, 64, 145) | 84.0 | 75.6 |
+| garden box and shoots (31, 189, 75, 216) | 13.0 | 17.3 |
+| timber fence and lashings (337, 121, 469, 158) | 4.0 | 15.4 |
+| mounted warning board (352, 99, 454, 121) | 27.5 | 12.7 |
+
+### normal
+
+From inside the classroom: road along the hill at y 111–149; fence at y 149–165; dry school forecourt y 163–197; timber sill at y 198. Vertical window frame members x 0, 152, 320, 472. The raindrops are still marks in the glass. Chalk and eraser rest on the indoor tray.
+
+| Landmark and bounds (left, top, right, bottom) | 1920 clearance | 2400 clearance |
+|---|---:|---:|
+| hill road bend at left (14, 132, 69, 147) | 30.5 | 45.3 |
+| rain on upper right glass (426, 77, 459, 90) | 45.5 | 68.8 |
+| dry forecourt sample (76, 179, 91, 193) | 22.2 | 23.3 |
+| chalk tray (10, 209, 76, 219) | 10.0 | 14.3 |
+
+### hard
+
+Porch landing y 174–181; lower steps at (41,182) and (34,189). Evacuation Center doorway at (51,93), window at (126,97), sign centred at (66,67), megaphone peg at (21,99). Rail follows the elevated approach from x 195 to x 343. Far hill crest at (404,60), static soil scar below; sunrise centred at (458,83).
+
+| Landmark and bounds (left, top, right, bottom) | 1920 clearance | 2400 clearance |
+|---|---:|---:|
+| Evacuation Center sign (10, 67, 122, 84) | 7.5 | 17.4 |
+| hanging megaphone (12, 99, 37, 128) | 6.5 | 27.2 |
+| bare hill and soil scar (397, 65, 423, 86) | 5.5 | 37.1 |
+| sunrise (445, 70, 472, 96) | 8.5 | 39.9 |
+
+
+### Imported files
+
+| File | Size | Frames | Timing |
+|---|---|---:|---|
+| ArtSource/Background/bg_menu_landslide_easy.aseprite | 480×270 | 1 | Still |
+| ArtSource/Background/bg_menu_landslide_episode.aseprite | 480×270 | 1 | Still |
+| ArtSource/Background/bg_menu_landslide_hard.aseprite | 480×270 | 1 | Still |
+| ArtSource/Background/bg_menu_landslide_normal.aseprite | 480×270 | 1 | Still |
+| Assets/Art/Background/bg_menu_landslide_easy.png | 480×270 | 1 | Still |
+| Assets/Art/Background/bg_menu_landslide_episode.png | 480×270 | 1 | Still |
+| Assets/Art/Background/bg_menu_landslide_hard.png | 480×270 | 1 | Still |
+| Assets/Art/Background/bg_menu_landslide_normal.png | 480×270 | 1 | Still |
+
+Approved [preview](D:/GameDEV/landslide-episode-scratch/art/05-menu/preview.png).
+
+```powershell
+& "C:/Users/Marjovic/Desktop/aseprite/build/bin/aseprite.exe" -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=menu_landslide --script ArtSource/scripts/build.lua
+```
+
+## Landslide Batch 6 — Safety Reminder (approved)
+
+The school gate at golden hour is the approved end-screen background. The review layout uses sample Tip wording. The implementation ticket owns final Tip text and the interactive screen.
+
+| File | Size | Frames | Timing |
+|---|---|---:|---|
+| ArtSource/Background/bg_safety_reminder.aseprite | 480×270 | 1 | Still |
+| Assets/Art/Background/bg_safety_reminder.png | 480×270 | 1 | Still |
+
+Bottom-centre anchor (240,270). No actor walk or hazard in this background.
+
+Approved [review sheet](D:/GameDEV/landslide-episode-scratch/art/06-safety-reminder/preview.png) and [placement sheet](D:/GameDEV/landslide-episode-scratch/art/06-safety-reminder/safety-reminder-placements.png).
+
+~~~powershell
+& "C:/Users/Marjovic/Desktop/aseprite/build/bin/aseprite.exe" -b --script-param root=D:/GameDEV/DisasterSafety --script-param only=safety_reminder --script ArtSource/scripts/build.lua
+~~~
+
+### Artwork
+
+Golden-hour light from the left. The sun is centred at (79,72). Pennant strings run across x 0–95 and 384–479, their ties at y 61 and low points near y 72. Gate caps start at (15,84) and (434,84). Gate leaves taper inside the piers to x 75 and 404. Near bases reach y 209. School wings flank the courtyard at y 111–148. The court starts at y 137, with the open path widening toward the bottom edge. The gate and bunting fit below the 54-row wide-screen crop. No lettering, emblems or actors are painted into the backdrop.
+
+### Proposed layout for the implementation agent
+
+Coordinates use art pixels from top left; rectangle limits are inclusive. The same anchors fit the standard view (4×) and wide crop (5× after removing rows 0–53). Header centred at (240,65), 2× shared art font. Free central panel (80,93)–(400,209). Emblem row y 99–138: five original 40×40 sprites with left edges 92, 156, 220, 284, 348. Episode labels start at y 143. Each Tip has a 58×52 area centred under its emblem, rows 156–207; line spacing 10. The panel fill is a preview UI layer. Student top left (82,213), feet (98,262); example Display Name centred at (149,231), with extra horizontal space through x 282 for a wider name or a Student line. Main Menu button (293,225)–(387,249). Earliest text y 65, 11 px below the wide crop. No Pause or Hint.
+
+## Landslide art file inventory
+
+<details>
+<summary>Batch 1 — Hillside and its signs (15 sources, 18 PNGs)</summary>
+
+~~~text
+ArtSource/Level/v2/bg_hillside.aseprite
+ArtSource/Level/v2/hillside_crack.aseprite
+ArtSource/Level/v2/hillside_rope.aseprite
+ArtSource/Level/v2/hillside_sign.aseprite
+ArtSource/Level/v2/hillside_soil.aseprite
+ArtSource/Level/v2/hillside_spring.aseprite
+ArtSource/Level/v2/hillside_toy_soil.aseprite
+ArtSource/Level/v2/landslide_dark_sky_hillside.aseprite
+ArtSource/UI/icon_landslide_climb_soil.aseprite
+ArtSource/UI/icon_landslide_jump_crack.aseprite
+ArtSource/UI/icon_landslide_look_close.aseprite
+ArtSource/UI/icon_landslide_look_spring.aseprite
+ArtSource/UI/icon_landslide_splash_mud.aseprite
+ArtSource/UI/icon_landslide_stay_back.aseprite
+ArtSource/UI/icon_landslide_toy_soil.aseprite
+Assets/Art/Level/v2/bg_hillside.png
+Assets/Art/Level/v2/hillside_crack.png
+Assets/Art/Level/v2/hillside_rope.png
+Assets/Art/Level/v2/hillside_sign.png
+Assets/Art/Level/v2/hillside_soil.png
+Assets/Art/Level/v2/hillside_spring_0.png
+Assets/Art/Level/v2/hillside_spring_1.png
+Assets/Art/Level/v2/hillside_spring_2.png
+Assets/Art/Level/v2/hillside_spring_3.png
+Assets/Art/Level/v2/hillside_toy_soil.png
+Assets/Art/Level/v2/landslide_dark_sky_hillside.png
+Assets/Art/UI/icon_landslide_climb_soil.png
+Assets/Art/UI/icon_landslide_jump_crack.png
+Assets/Art/UI/icon_landslide_look_close.png
+Assets/Art/UI/icon_landslide_look_spring.png
+Assets/Art/UI/icon_landslide_splash_mud.png
+Assets/Art/UI/icon_landslide_stay_back.png
+Assets/Art/UI/icon_landslide_toy_soil.png
+~~~
+
+</details>
+
+<details>
+<summary>Batch 2 — Hillside habits, rain and after (26 sources, 27 PNGs)</summary>
+
+~~~text
+ArtSource/GrownUp/dad_shovel.aseprite
+ArtSource/Level/v2/hillside_banana_leaf.aseprite
+ArtSource/Level/v2/hillside_garden_box.aseprite
+ArtSource/Level/v2/hillside_pail.aseprite
+ArtSource/Level/v2/hillside_pot_empty.aseprite
+ArtSource/Level/v2/hillside_pot_full.aseprite
+ArtSource/Level/v2/hillside_shovel.aseprite
+ArtSource/Level/v2/hillside_tree_lean.aseprite
+ArtSource/Level/v2/hillside_wet_slope.aseprite
+ArtSource/UI/icon_landslide_by_slope.aseprite
+ArtSource/UI/icon_landslide_climb_slope.aseprite
+ArtSource/UI/icon_landslide_coconut.aseprite
+ArtSource/UI/icon_landslide_dig_slope.aseprite
+ArtSource/UI/icon_landslide_flat_yard.aseprite
+ArtSource/UI/icon_landslide_garden_box.aseprite
+ArtSource/UI/icon_landslide_leave_ball.aseprite
+ArtSource/UI/icon_landslide_look_slope.aseprite
+ArtSource/UI/icon_landslide_open_yard.aseprite
+ArtSource/UI/icon_landslide_pail.aseprite
+ArtSource/UI/icon_landslide_path_up.aseprite
+ArtSource/UI/icon_landslide_shovel.aseprite
+ArtSource/UI/icon_landslide_slide_leaf.aseprite
+ArtSource/UI/icon_landslide_under_rope.aseprite
+ArtSource/UI/icon_landslide_under_tree.aseprite
+ArtSource/UI/icon_landslide_wait_rain.aseprite
+ArtSource/UI/icon_landslide_walk_house.aseprite
+Assets/Art/GrownUp/dad_shovel_0.png
+Assets/Art/GrownUp/dad_shovel_1.png
+Assets/Art/Level/v2/hillside_banana_leaf.png
+Assets/Art/Level/v2/hillside_garden_box.png
+Assets/Art/Level/v2/hillside_pail.png
+Assets/Art/Level/v2/hillside_pot_empty.png
+Assets/Art/Level/v2/hillside_pot_full.png
+Assets/Art/Level/v2/hillside_shovel.png
+Assets/Art/Level/v2/hillside_tree_lean.png
+Assets/Art/Level/v2/hillside_wet_slope.png
+Assets/Art/UI/icon_landslide_by_slope.png
+Assets/Art/UI/icon_landslide_climb_slope.png
+Assets/Art/UI/icon_landslide_coconut.png
+Assets/Art/UI/icon_landslide_dig_slope.png
+Assets/Art/UI/icon_landslide_flat_yard.png
+Assets/Art/UI/icon_landslide_garden_box.png
+Assets/Art/UI/icon_landslide_leave_ball.png
+Assets/Art/UI/icon_landslide_look_slope.png
+Assets/Art/UI/icon_landslide_open_yard.png
+Assets/Art/UI/icon_landslide_pail.png
+Assets/Art/UI/icon_landslide_path_up.png
+Assets/Art/UI/icon_landslide_shovel.png
+Assets/Art/UI/icon_landslide_slide_leaf.png
+Assets/Art/UI/icon_landslide_under_rope.png
+Assets/Art/UI/icon_landslide_under_tree.png
+Assets/Art/UI/icon_landslide_wait_rain.png
+Assets/Art/UI/icon_landslide_walk_house.png
+~~~
+
+</details>
+
+<details>
+<summary>Batch 3 — Two hill roads (12 sources, 20 PNGs)</summary>
+
+~~~text
+ArtSource/Level/v2/bg_hill_road.aseprite
+ArtSource/Level/v2/bg_hill_road_ridge.aseprite
+ArtSource/Level/v2/hill_road_far_slide.aseprite
+ArtSource/Level/v2/hill_road_runoff.aseprite
+ArtSource/Level/v2/hill_road_soil.aseprite
+ArtSource/Level/v2/landslide_dark_sky_hill_road.aseprite
+ArtSource/Level/v2/landslide_dark_sky_hill_road_ridge.aseprite
+ArtSource/UI/icon_landslide_cross_mud.aseprite
+ArtSource/UI/icon_landslide_long_way.aseprite
+ArtSource/UI/icon_landslide_run_ahead.aseprite
+ArtSource/UI/icon_landslide_shortcut.aseprite
+ArtSource/UI/icon_landslide_watch_hill.aseprite
+Assets/Art/Level/v2/bg_hill_road.png
+Assets/Art/Level/v2/bg_hill_road_ridge.png
+Assets/Art/Level/v2/hill_road_far_slide_0.png
+Assets/Art/Level/v2/hill_road_far_slide_1.png
+Assets/Art/Level/v2/hill_road_far_slide_2.png
+Assets/Art/Level/v2/hill_road_far_slide_3.png
+Assets/Art/Level/v2/hill_road_far_slide_4.png
+Assets/Art/Level/v2/hill_road_far_slide_5.png
+Assets/Art/Level/v2/hill_road_runoff_0.png
+Assets/Art/Level/v2/hill_road_runoff_1.png
+Assets/Art/Level/v2/hill_road_runoff_2.png
+Assets/Art/Level/v2/hill_road_runoff_3.png
+Assets/Art/Level/v2/hill_road_soil.png
+Assets/Art/Level/v2/landslide_dark_sky_hill_road.png
+Assets/Art/Level/v2/landslide_dark_sky_hill_road_ridge.png
+Assets/Art/UI/icon_landslide_cross_mud.png
+Assets/Art/UI/icon_landslide_long_way.png
+Assets/Art/UI/icon_landslide_run_ahead.png
+Assets/Art/UI/icon_landslide_shortcut.png
+Assets/Art/UI/icon_landslide_watch_hill.png
+~~~
+
+</details>
+
+<details>
+<summary>Batch 4 — Classroom, Evacuation Center and home (15 sources, 15 PNGs)</summary>
+
+~~~text
+ArtSource/Level/v2/bg_classroom_landslide.aseprite
+ArtSource/Level/v2/bg_evacuation_area_landslide.aseprite
+ArtSource/Level/v2/bg_home_landslide.aseprite
+ArtSource/Level/v2/classroom_landslide_door_open.aseprite
+ArtSource/Level/v2/home_poster.aseprite
+ArtSource/Level/v2/home_wall_crack.aseprite
+ArtSource/Level/v2/home_window_hill.aseprite
+ArtSource/Level/v2/landslide_dark_sky_evacuation_area.aseprite
+ArtSource/UI/icon_landslide_check_house.aseprite
+ArtSource/UI/icon_landslide_gate.aseprite
+ArtSource/UI/icon_landslide_hill_road.aseprite
+ArtSource/UI/icon_landslide_pick_crack.aseprite
+ArtSource/UI/icon_landslide_poster.aseprite
+ArtSource/UI/icon_landslide_push_door.aseprite
+ArtSource/UI/icon_landslide_tell_dad_wall.aseprite
+Assets/Art/Level/v2/bg_classroom_landslide.png
+Assets/Art/Level/v2/bg_evacuation_area_landslide.png
+Assets/Art/Level/v2/bg_home_landslide.png
+Assets/Art/Level/v2/classroom_landslide_door_open.png
+Assets/Art/Level/v2/home_poster.png
+Assets/Art/Level/v2/home_wall_crack.png
+Assets/Art/Level/v2/home_window_hill.png
+Assets/Art/Level/v2/landslide_dark_sky_evacuation_area.png
+Assets/Art/UI/icon_landslide_check_house.png
+Assets/Art/UI/icon_landslide_gate.png
+Assets/Art/UI/icon_landslide_hill_road.png
+Assets/Art/UI/icon_landslide_pick_crack.png
+Assets/Art/UI/icon_landslide_poster.png
+Assets/Art/UI/icon_landslide_push_door.png
+Assets/Art/UI/icon_landslide_tell_dad_wall.png
+~~~
+
+</details>
+
+<details>
+<summary>Batch 5 — Menu backgrounds (4 sources, 4 PNGs)</summary>
+
+~~~text
+ArtSource/Background/bg_menu_landslide_easy.aseprite
+ArtSource/Background/bg_menu_landslide_episode.aseprite
+ArtSource/Background/bg_menu_landslide_hard.aseprite
+ArtSource/Background/bg_menu_landslide_normal.aseprite
+Assets/Art/Background/bg_menu_landslide_easy.png
+Assets/Art/Background/bg_menu_landslide_episode.png
+Assets/Art/Background/bg_menu_landslide_hard.png
+Assets/Art/Background/bg_menu_landslide_normal.png
+~~~
+
+</details>
+
+<details>
+<summary>Batch 6 — Safety Reminder (1 sources, 1 PNGs)</summary>
+
+~~~text
+ArtSource/Background/bg_safety_reminder.aseprite
+Assets/Art/Background/bg_safety_reminder.png
+~~~
+
+</details>
+
